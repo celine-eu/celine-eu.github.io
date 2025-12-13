@@ -157,10 +157,6 @@ def materialize_links(repos: list[dict]) -> None:
 # ---------------------------------------------------------------------------
 
 
-def generate_mkdocs_yml() -> None:
-    shutil.copy2(MKDOCS_TEMPLATE, MKDOCS_FILE)
-
-
 def build_site() -> None:
     run(["mkdocs", "build", "--clean"], cwd=ROOT)
 

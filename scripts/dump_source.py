@@ -14,6 +14,7 @@ FILES = [
     ROOT / "mkdocs.tpl.yml",
     ROOT / "repos.yaml",
     ROOT / "taskfile.yaml",
+    ROOT / ".github/workflows/build-site.yml",
 ]
 
 README = None
