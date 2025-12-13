@@ -10,7 +10,6 @@ theme:
 
 plugins:
   - search
-  - awesome-pages
 
 nav:
   - Home: index.md
@@ -18,4 +17,4 @@ nav:
   - Ontologies: ontologies/
 
 docs_dir: site
-site_dir: public
+site_dir: docs
