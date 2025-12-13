@@ -1,0 +1,29 @@
+repos:
+  - name: Dataset API
+    slug: dataset-api
+    git: https://github.com/celine-eu/dataset-api.git
+
+    paths:
+      - README.md
+      - docs/**
+      - ontologies/**
+
+    nav:
+      - README
+      - ontologies
+
+    links:
+      - name: ontologies
+        source: projects/dataset-api/ontologies
+        target: ontologies
+
+  - name: CELINE Utils
+    slug: celine-utils
+    git: https://github.com/celine-eu/celine-utils.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README

@@ -1,0 +1,21 @@
+site_name: CELINE Project
+site_url: https://celine-eu.github.io
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+
+plugins:
+  - search
+  - awesome-pages
+
+nav:
+  - Home: index.md
+  - Tools: projects/
+  - Ontologies: ontologies/
+
+docs_dir: site
+site_dir: public

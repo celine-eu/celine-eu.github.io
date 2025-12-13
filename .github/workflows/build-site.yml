@@ -1,0 +1,34 @@
+name: Build and publish CELINE website
+
+on:
+    repository_dispatch:
+        types: [celine-docs-update]
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout site repo
+              uses: actions/checkout@v4
+
+            - name: Set up uv
+              uses: astral-sh/setup-uv@v3
+              with:
+                  python-version: "3.11"
+
+            - name: Install Task
+              uses: arduino/setup-task@v2
+
+            - name: Run CI build
+              run: task ci
+
+            - name: Publish to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: public
