@@ -30,3 +30,8 @@ repos:
       - README
       - docs/governance.md
       - Governance Schemas: docs/schemas.md
+
+    links:
+      - name: schemas
+        source: projects/celine-utils/schemas
+        target: schemas
