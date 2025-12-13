@@ -71,24 +71,6 @@ def copy_paths(repo_dir: Path, site_dir: Path, paths: List[str]) -> None:
 # ---------------------------------------------------------------------------
 
 
-def generate_project_pages(repo: dict) -> None:
-    project_dir = SITE_PROJECTS / repo["slug"]
-    pages = project_dir / ".pages"
-
-    lines = [
-        f"title: {repo['name']}",
-        "nav:",
-        "  - index.md",
-    ]
-
-    for item in repo.get("nav", []):
-        if item.upper() == "README":
-            continue
-        lines.append(f"  - {item}/")
-
-    pages.write_text("\n".join(lines))
-
-
 def generate_tools_pages(repos: list[dict]) -> None:
     pages = SITE_PROJECTS / ".pages"
 
@@ -182,14 +164,33 @@ def generate_mkdocs_yml(repos: list[dict]) -> None:
 
 def _repo_nav(repo: dict) -> list[dict]:
     base = f"projects/{repo['slug']}"
-
-    entries: list[dict] = [{"Overview": f"{base}/index.md"}]
+    entries: list[dict] = []
 
     for item in repo.get("nav", []):
-        if item.upper() == "README":
+        # 1. README → project root index
+        if isinstance(item, str) and item.upper() == "README":
+            entries.append({"Overview": f"{base}/index.md"})
             continue
 
-        entries.append({item.capitalize(): f"{base}/{item}/index.md"})
+        # 2. Explicit title mapping: {Title: path}
+        if isinstance(item, dict):
+            title, path = next(iter(item.items()))
+            entries.append({title: f"{base}/{path}"})
+            continue
+
+        if not isinstance(item, str):
+            raise ValueError(f"Unsupported nav entry type: {item!r}")
+
+        # 3. Explicit file reference
+        if item.endswith(".md"):
+            entries.append(
+                {Path(item).stem.replace("-", " ").title(): f"{base}/{item}"}
+            )
+            continue
+
+        # 4. Directory reference (with or without trailing slash)
+        path = item.rstrip("/")
+        entries.append({path.replace("-", " ").title(): f"{base}/{path}/index.md"})
 
     return entries
 
@@ -216,7 +217,6 @@ def main() -> None:
         site_dir.mkdir(parents=True)
 
         copy_paths(repo_dir, site_dir, repo.get("paths", []))
-        generate_project_pages(repo)
 
     generate_tools_index(repos)
     materialize_links(repos)
