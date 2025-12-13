@@ -24,7 +24,7 @@ repos:
     paths:
       - README.md
       - docs/**
-      - schemas/**
+      - schema/**
 
     nav:
       - README
@@ -32,6 +32,10 @@ repos:
       - Governance Schemas: docs/schemas.md
 
     links:
-      - name: schemas
-        source: projects/celine-utils/schemas
-        target: schemas
+      - name: schema
+        source: projects/celine-utils/schema
+        target: schema
+        list:
+          recursive: false
+          extensions: [.json]
+          sort: alpha

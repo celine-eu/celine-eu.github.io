@@ -14,7 +14,8 @@ plugins:
 nav:
   - Home: index.md
   - Tools: projects/
-  - Ontologies: ontologies/
+  - Ontology: ontologies/
+  - Governance schemas: schema/
 
 docs_dir: site
 site_dir: docs
