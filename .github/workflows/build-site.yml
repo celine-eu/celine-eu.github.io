@@ -1,14 +1,15 @@
-name: Build and publish CELINE website
+name: Build CELINE website
 
 on:
+  push:
+    branches:
+      - main
   repository_dispatch:
     types: [celine-docs-update]
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -26,16 +27,18 @@ jobs:
       - name: Install Task
         uses: arduino/setup-task@v2
 
-      - name: Run CI build
+      - name: Build site
         run: task ci
 
-      - name: Publish to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs
-          publish_branch: gh-pages
-          force_orphan: true
-          enable_jekyll: false
-          destination_dir: .
+      - name: Commit generated docs
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if git status --porcelain docs | grep .; then
+            git add docs
+            git commit -m "chore(docs): rebuild site"
+            git push
+          else
+            echo "No changes in docs/, skipping commit"
+          fi
