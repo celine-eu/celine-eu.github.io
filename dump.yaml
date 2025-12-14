@@ -1,0 +1,20 @@
+prompt: |
+  You are an expert software architect.
+  Analyze the following repository context.
+
+header: |
+  # CELINE Repository Context
+  Generated automatically. Do not edit manually.
+
+footer: |
+  # End of context
+
+contents:
+  - scripts
+  - mkdocs.tpl.yml
+  - repos.yaml
+  - taskfile.yaml
+  - .github/workflows
+
+# Optional – defaults to ./sources.txt
+output: sources.txt

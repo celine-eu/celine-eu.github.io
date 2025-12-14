@@ -52,4 +52,4 @@ tasks:
   generate_ontology_docs:
     desc: Generate ontology docs
     cmds:
-      - "{{.PYTHON}} scripts/generate_ontology_docs.py /home/lspxl/git/github.com/celine-eu/celine-eu.github.io/site/ontologies/celine.ttl /home/lspxl/git/github.com/celine-eu/celine-eu.github.io/site/ontologies/celine https://celine-eu.github.io/ontologies/celine#"
+      - "{{.PYTHON}} scripts/generate_ontology_docs.py site/ontologies/celine.ttl site/ontologies/celine https://celine-eu.github.io/ontologies/celine#"
