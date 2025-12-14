@@ -17,6 +17,8 @@ CONFIG_FILE = ROOT / "repos.yaml"
 MKDOCS_TEMPLATE = ROOT / "mkdocs.tpl.yml"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
+CELINE_TTL = SITE_DIR / "ontologies" / "celine.ttl"
+CELINE_DOCS = SITE_DIR / "ontologies" / "celine"
 
 # ---------------------------------------------------------------------------
 # Utilities
@@ -313,6 +315,19 @@ def _title_from_path(path: str) -> str:
     return stem.replace("-", " ").replace("_", " ").title()
 
 
+def generate_ontology_docs(ttl: Path, output_dir: Path, namespace: str) -> None:
+    run(
+        [
+            "python",
+            "scripts/generate_ontology_docs.py",
+            str(ttl),
+            str(output_dir),
+            namespace,
+        ],
+        cwd=ROOT,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -338,6 +353,13 @@ def main() -> None:
 
     generate_tools_index(repos)
     materialize_links(repos)
+
+    if CELINE_TTL.exists():
+        generate_ontology_docs(
+            ttl=CELINE_TTL,
+            output_dir=CELINE_DOCS,
+            namespace="https://celine-eu.github.io/ontologies/celine#",
+        )
 
     generate_mkdocs_yml(repos)
     build_site()
