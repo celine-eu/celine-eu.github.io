@@ -8,8 +8,6 @@ from typing import Iterable, List, Dict
 
 ROOT = Path.cwd().resolve()
 CONFIG_FILE = ROOT / "dump.yaml"
-OUTFILE = ROOT / "source.txt"
-
 
 # ---------------------------------------------------------------------------
 # File handling
@@ -138,6 +136,9 @@ def main() -> None:
 
     files = iter_content_files(contents)
     git_meta = get_git_metadata()
+
+    output_path = config.get("output", "sources.txt")
+    OUTFILE = (ROOT / output_path).resolve()
 
     with open(OUTFILE, "w", encoding="utf-8") as out:
         if prompt:
