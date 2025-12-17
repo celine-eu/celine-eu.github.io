@@ -1002,7 +1002,7 @@ It consolidates all prior sections into a <strong>single reference file</strong>
 <h2 id="creating-a-new-pipeline-application">Creating a New Pipeline Application</h2>
 <p>CELINE provides a CLI command to <strong>scaffold a complete pipeline application</strong> with sane defaults.</p>
 <p>From the root of your pipelines repository:</p>
-<pre><code class="language-bash">celine-cli pipeline init app demo_app
+<pre><code class="language-bash">celine-utils pipeline init app demo_app
 </code></pre>
 <p>This command creates a fully functional example pipeline with:</p>
 <ul>
@@ -1033,7 +1033,7 @@ It consolidates all prior sections into a <strong>single reference file</strong>
 </code></pre>
 <p>This image already contains:
 - Python + uv
-- <code>celine-cli</code>
+- <code>celine-utils</code>
 - Meltano
 - dbt
 - Prefect
@@ -1103,7 +1103,7 @@ OPENLINEAGE_URL=http://marquez-api:5000
       - tap-my-source target-postgres
 </code></pre>
 <p>Run manually:</p>
-<pre><code class="language-bash">celine-cli pipeline run meltano &quot;run import&quot;
+<pre><code class="language-bash">celine-utils pipeline run meltano &quot;run import&quot;
 </code></pre>
 <p>CELINE automatically:
 - Executes Meltano
@@ -1122,19 +1122,19 @@ OPENLINEAGE_URL=http://marquez-api:5000
 <tbody>
 <tr>
 <td>Staging</td>
-<td><code>celine-cli pipeline run dbt staging</code></td>
+<td><code>celine-utils pipeline run dbt staging</code></td>
 </tr>
 <tr>
 <td>Silver</td>
-<td><code>celine-cli pipeline run dbt silver</code></td>
+<td><code>celine-utils pipeline run dbt silver</code></td>
 </tr>
 <tr>
 <td>Gold</td>
-<td><code>celine-cli pipeline run dbt gold</code></td>
+<td><code>celine-utils pipeline run dbt gold</code></td>
 </tr>
 <tr>
 <td>Tests</td>
-<td><code>celine-cli pipeline run dbt test</code></td>
+<td><code>celine-utils pipeline run dbt test</code></td>
 </tr>
 </tbody>
 </table>
@@ -1167,13 +1167,13 @@ sources:
 <li>Emitted as a custom OpenLineage facet</li>
 </ul>
 <p>Generate interactively:</p>
-<pre><code class="language-bash">celine-cli governance generate marquez --app demo_app
+<pre><code class="language-bash">celine-utils governance generate marquez --app demo_app
 </code></pre>
 <p><strong>Note</strong> Since governance are openlineage facets, disabling openlineage using <code>OPENLINEAGE_ENABLED=false</code> will exclude the governance tracking capabilities.</p>
 <h2 id="python-prefect-flows">Python / Prefect Flows</h2>
 <p>Example <code>flows/pipeline.py</code>:</p>
 <pre><code class="language-python">from prefect import flow
-from celine.pipelines.pipeline import (
+from celine.utils.pipelines.pipeline import (
     meltano_run_import,
     dbt_run_staging,
     dbt_run_silver,
@@ -1275,7 +1275,7 @@ kubectl create namespace celine
 </table>
 <h2 id="key-takeaways">Key Takeaways</h2>
 <ul>
-<li>Use <code>celine-cli pipeline init</code> to bootstrap pipelines</li>
+<li>Use <code>celine-utils pipeline init</code> to bootstrap pipelines</li>
 <li>One Docker image per pipeline app</li>
 <li>Always use <code>ghcr.io/celine-eu/pipeline</code></li>
 <li>Governance is declarative and automatic</li>
