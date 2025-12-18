@@ -6,6 +6,10 @@ CELINE tools and services.
 
 - [dataset-api](./dataset-api/)
 
-## CELINE Utils
+## Utils
 
 - [celine-utils](./celine-utils/)
+
+## Open Data Pipelines
+
+- [celine-pipelines](./celine-pipelines/)

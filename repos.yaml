@@ -17,7 +17,7 @@ repos:
         source: projects/dataset-api/ontologies
         target: ontologies
 
-  - name: CELINE Utils
+  - name: Utils
     slug: celine-utils
     git: https://github.com/celine-eu/celine-utils.git
 
@@ -39,3 +39,18 @@ repos:
           recursive: false
           extensions: [.json]
           sort: alpha
+
+  - name: Open Data Pipelines
+    slug: celine-pipelines
+    git: https://github.com/celine-eu/celine-pipelines.git
+
+    paths:
+      - README.md
+      - apps/*/README.md
+
+    nav:
+      - README
+      - Copernicus: apps/copernicus
+      - DWD ICON: apps/dwd
+      - Open Street Map: apps/osm
+      - Open Weather Map: apps/owm
