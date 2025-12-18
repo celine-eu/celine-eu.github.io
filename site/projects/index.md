@@ -13,3 +13,7 @@ CELINE tools and services.
 ## Open Data Pipelines
 
 - [celine-pipelines](./celine-pipelines/)
+
+## Infrastructure
+
+- [celine-infra](./celine-infra/)

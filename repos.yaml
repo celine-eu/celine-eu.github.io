@@ -54,3 +54,13 @@ repos:
       - DWD ICON: apps/dwd
       - Open Street Map: apps/osm
       - Open Weather Map: apps/owm
+
+  - name: Infrastructure
+    slug: celine-infra
+    git: https://github.com/celine-eu/infra.git
+
+    paths:
+      - README.md
+
+    nav:
+      - README
