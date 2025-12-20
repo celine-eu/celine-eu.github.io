@@ -2,6 +2,10 @@
 
 CELINE tools and services.
 
+## Dashboards
+
+- [celine-dashboards](./celine-dashboards/)
+
 ## Dataset API
 
 - [dataset-api](./dataset-api/)

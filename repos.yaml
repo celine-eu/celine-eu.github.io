@@ -1,4 +1,14 @@
 repos:
+  - name: Dashboards
+    slug: celine-dashboards
+    git: https://github.com/celine-eu/celine-dashboards.git
+
+    paths:
+      - README.md
+
+    nav:
+      - README
+
   - name: Dataset API
     slug: dataset-api
     git: https://github.com/celine-eu/dataset-api.git
