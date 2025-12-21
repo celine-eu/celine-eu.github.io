@@ -6,6 +6,10 @@ CELINE tools and services.
 
 - [celine-dashboards](./celine-dashboards/)
 
+## Digital Twin
+
+- [celine-digital-twin](./celine-digital-twin/)
+
 ## Dataset API
 
 - [dataset-api](./dataset-api/)

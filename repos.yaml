@@ -9,6 +9,16 @@ repos:
     nav:
       - README
 
+  - name: Digital Twin
+    slug: celine-digital-twin
+    git: https://github.com/celine-eu/digital-twin.git
+
+    paths:
+      - README.md
+
+    nav:
+      - README
+
   - name: Dataset API
     slug: dataset-api
     git: https://github.com/celine-eu/dataset-api.git
