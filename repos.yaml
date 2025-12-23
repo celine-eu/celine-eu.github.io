@@ -15,9 +15,12 @@ repos:
 
     paths:
       - README.md
+      - docs/**
 
     nav:
       - README
+      - Concepts: docs/concepts.md
+      - Create a module: docs/create-module.md
 
   - name: Dataset API
     slug: dataset-api

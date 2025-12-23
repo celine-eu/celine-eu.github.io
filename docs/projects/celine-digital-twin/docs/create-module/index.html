@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-utils/docs/governance/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/create-module/">
       
       
-        <link rel="prev" href="../../">
+        <link rel="prev" href="../concepts/">
       
       
-        <link rel="next" href="../schemas/">
+        <link rel="next" href="../../../dataset-api/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Governance - CELINE Project</title>
+        <title>Create a module - CELINE Project</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dataset-governance" class="md-skip">
+        <a href="#create-a-new-dt-module" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Governance
+              Create a module
             
           </span>
         </div>
@@ -226,7 +226,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../pipeline-tutorial" class="md-tabs__link">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -489,6 +489,8 @@
                 
   
   
+    
+  
   
   
     
@@ -504,11 +506,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
@@ -529,7 +531,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -547,7 +549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -575,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../concepts/" class="md-nav__link">
         
   
   
@@ -600,10 +602,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/create-module/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a module
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -619,6 +648,103 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-create-the-module-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Create the module structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-define-input-and-output-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Define input and output models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-implement-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Implement the app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-implement-mappers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Implement mappers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-register-the-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Register the module
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-enable-the-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Enable the module
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -755,8 +881,6 @@
                 
   
   
-    
-  
   
   
     
@@ -772,11 +896,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
           <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
@@ -797,7 +921,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -815,7 +939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -840,37 +964,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Governance
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -886,330 +983,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-governanceyaml" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Is governance.yaml
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#where-the-file-lives" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Where the File Lives
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#file-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        File Structure
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-governanceyaml" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example governance.yaml
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#defaults-section" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Defaults Section
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sources-section" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sources Section
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sources Section">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dataset-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dataset Keys
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pattern Matching
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#governance-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Governance Fields
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Governance Fields">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        license
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        attribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ownership" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ownership
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access_level" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        access_level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access_requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        access_requirements
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#classification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        classification
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tags" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        tags
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#retention_days" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        retention_days
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#documentation_url" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        documentation_url
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#source_system" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        source_system
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-governance-is-applied" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How Governance Is Applied
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#openlineage-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OpenLineage Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#interactive-cli-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive CLI Usage
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Interactive CLI Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#command" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Command
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-interactive-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Non-Interactive Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1222,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schemas/" class="md-nav__link">
+      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -1559,7 +1332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pipeline-tutorial" class="md-nav__link">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -1660,10 +1433,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-governanceyaml" class="md-nav__link">
+  <a href="#1-create-the-module-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Is governance.yaml
+        1. Create the module structure
       
     </span>
   </a>
@@ -1671,10 +1444,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#where-the-file-lives" class="md-nav__link">
+  <a href="#2-define-input-and-output-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Where the File Lives
+        2. Define input and output models
       
     </span>
   </a>
@@ -1682,10 +1455,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-structure" class="md-nav__link">
+  <a href="#3-implement-the-app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File Structure
+        3. Implement the app
       
     </span>
   </a>
@@ -1693,10 +1466,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-governanceyaml" class="md-nav__link">
+  <a href="#4-implement-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example governance.yaml
+        4. Implement mappers
       
     </span>
   </a>
@@ -1704,10 +1477,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#defaults-section" class="md-nav__link">
+  <a href="#5-register-the-module" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Defaults Section
+        5. Register the module
       
     </span>
   </a>
@@ -1715,176 +1488,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sources-section" class="md-nav__link">
+  <a href="#6-enable-the-module" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sources Section
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sources Section">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dataset-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dataset Keys
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pattern Matching
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#governance-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Governance Fields
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Governance Fields">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        license
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        attribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ownership" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ownership
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access_level" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        access_level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#access_requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        access_requirements
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#classification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        classification
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tags" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        tags
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#retention_days" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        retention_days
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#documentation_url" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        documentation_url
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#source_system" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        source_system
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-governance-is-applied" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How Governance Is Applied
+        6. Enable the module
       
     </span>
   </a>
@@ -1892,71 +1499,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#openlineage-integration" class="md-nav__link">
+  <a href="#7-verify" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenLineage Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#interactive-cli-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive CLI Usage
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Interactive CLI Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#command" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Command
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#non-interactive-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Non-Interactive Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
+        7. Verify
       
     </span>
   </a>
@@ -1980,217 +1526,76 @@
 
 
 
-<h1 id="dataset-governance">Dataset Governance</h1>
-<p>This document describes how <strong>dataset governance</strong> is defined, configured, and applied in CELINE pipelines using the <code>governance.yaml</code> file and the CELINE CLI.</p>
-<p>Governance metadata is used to enrich <strong>OpenLineage events</strong>, provide a single source of truth for licensing, attribution, ownership, access intent, and data sensitivity, and to enable future integration with <strong>dataspace and contract-based access models</strong>.</p>
+<h1 id="create-a-new-dt-module">Create a new DT module</h1>
+<p>This guide explains how to create a <strong>new Digital Twin module</strong> from a developer
+perspective.</p>
 <hr />
-<h2 id="what-is-governanceyaml">What Is <code>governance.yaml</code></h2>
-<p><code>governance.yaml</code> is a <strong>declarative configuration file</strong> that defines governance rules for datasets produced or consumed by a pipeline.</p>
-<p>It allows you to specify, per dataset or dataset pattern:</p>
-<ul>
-<li>License</li>
-<li>Attribution (mandatory where required by license)</li>
-<li>Ownership</li>
-<li>Access level (exposure intent)</li>
-<li>Access requirements (preconditions such as contracts or partnerships)</li>
-<li>Classification / sensitivity</li>
-<li>Tags</li>
-<li>Retention policy</li>
-<li>Documentation and source system</li>
-</ul>
-<p>These rules are resolved at runtime and injected into lineage events as <strong>custom OpenLineage dataset facets</strong>.</p>
-<hr />
-<h2 id="where-the-file-lives">Where the File Lives</h2>
-<p>For a pipeline application named <code>&lt;app_name&gt;</code>, the expected location is:</p>
-<pre><code>PIPELINES_ROOT/
-└── apps/
-    └── &lt;app_name&gt;/
-        └── governance.yaml
-</code></pre>
-<p>The file is automatically discovered by CELINE tooling at runtime.</p>
-<p>You can override discovery using:</p>
-<pre><code>GOVERNANCE_CONFIG_PATH=/absolute/path/to/governance.yaml
+<h2 id="1-create-the-module-structure">1. Create the module structure</h2>
+<pre><code>celine/dt/modules/my_module/
+├── app.py
+├── models.py
+├── mappers.py
+└── module.py
 </code></pre>
 <hr />
-<h2 id="file-structure">File Structure</h2>
-<p>A <code>governance.yaml</code> file has two top-level sections:</p>
-<ul>
-<li><code>defaults</code>: applied to all datasets unless overridden</li>
-<li><code>sources</code>: dataset-specific or pattern-based rules</li>
-</ul>
-<hr />
-<h2 id="example-governanceyaml">Example <code>governance.yaml</code></h2>
-<pre><code class="language-yaml">defaults:
-  license: null
-  attribution: null
-  ownership: []
-  access_level: internal
-  access_requirements: partner
-  classification: green
-  tags: []
-  retention_days: 365
-  documentation_url: https://example.com/datasets/docs
-  source_system: &quot;integration-tests&quot;
+<h2 id="2-define-input-and-output-models">2. Define input and output models</h2>
+<p>Use Pydantic models to define the app contract.</p>
+<pre><code class="language-python">class MyInputs(BaseModel):
+    ...
 
-sources:
-  datasets.ds.gold.weather_hourly:
-    license: CC-BY-NC-4.0
-    attribution: &gt;
-      Weather data derived from OpenWeatherMap One Call API 3.0 © OpenWeather Ltd.
-    ownership:
-      - name: Weather Team
-        type: DATA_OWNER
-    access_level: restricted
-    access_requirements: contract
-    classification: green
-    tags: [gold, weather]
+class MyResult(BaseModel):
+    ...
+</code></pre>
+<hr />
+<h2 id="3-implement-the-app">3. Implement the app</h2>
+<pre><code class="language-python">class MyApp:
+    key = &quot;my-app&quot;
+    version = &quot;1.0.0&quot;
 
-  datasets.ds.raw.weather_events:
-    license: proprietary
-    ownership:
-      - name: Internal Platform
-        type: DATA_OWNER
-    access_level: restricted
-    classification: pii
-    tags: [raw, sensitive]
+    async def run(self, inputs: MyInputs, context: RunContext) -&gt; MyResult:
+        ...
 </code></pre>
+<p>The app contains <strong>only domain logic</strong>.</p>
 <hr />
-<h2 id="defaults-section">Defaults Section</h2>
-<p>The <code>defaults</code> block defines baseline governance applied to <strong>all datasets</strong> unless overridden.</p>
-<p>Typical use cases:
-- Global access level
-- Default access requirements
-- Retention policy
-- Shared documentation URL
-- Default classification</p>
-<p>Fields set to <code>null</code> are omitted unless overridden.</p>
-<hr />
-<h2 id="sources-section">Sources Section</h2>
-<p>The <code>sources</code> section defines governance rules for specific datasets or <strong>patterns</strong>.</p>
-<h3 id="dataset-keys">Dataset Keys</h3>
-<p>Keys correspond to <strong>OpenLineage dataset names</strong>, for example:</p>
-<ul>
-<li><code>database.schema.table</code></li>
-<li><code>datasets.ds.gold.weather_hourly</code></li>
-<li><code>singer.tap-openweathermap.forecast_stream</code></li>
-</ul>
-<h3 id="pattern-matching">Pattern Matching</h3>
-<p>Wildcard rules are supported using glob semantics:</p>
-<pre><code class="language-yaml">sources:
-  datasets.ds.*:
-    access_level: internal
+<h2 id="4-implement-mappers">4. Implement mappers</h2>
+<pre><code class="language-python">class MyInputMapper(InputMapper[MyInputs]):
+    def map(self, raw: Mapping) -&gt; MyInputs:
+        ...
 
-  datasets.raw.*:
-    classification: red
+class MyOutputMapper(OutputMapper[MyResult]):
+    def map(self, obj: MyResult) -&gt; dict:
+        ...
 </code></pre>
-<p>Resolution precedence:
-1. Exact match
-2. Longest matching wildcard
-3. Defaults</p>
+<p>Mappers define the <strong>external contract</strong>.</p>
 <hr />
-<h2 id="governance-fields">Governance Fields</h2>
-<h3 id="license"><code>license</code></h3>
-<p>License identifier for the dataset (e.g. <code>CC-BY-NC-4.0</code>, <code>ODbL-1.0</code>, <code>proprietary</code>).</p>
-<h3 id="attribution"><code>attribution</code></h3>
-<p>Mandatory attribution text required by the dataset license.<br />
-This text should be surfaced in catalogs, APIs, or documentation when datasets are exposed.</p>
-<h3 id="ownership"><code>ownership</code></h3>
-<p>List of owners responsible for the dataset.</p>
-<pre><code class="language-yaml">ownership:
-  - name: Data Platform Team
-    type: DATA_OWNER
+<h2 id="5-register-the-module">5. Register the module</h2>
+<pre><code class="language-python">class MyModule:
+    name = &quot;my-module&quot;
+    version = &quot;1.0.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_app(
+            MyApp(),
+            input_mapper=MyInputMapper(),
+            output_mapper=MyOutputMapper(),
+        )
+
+module = MyModule()
 </code></pre>
-<h3 id="access_level"><code>access_level</code></h3>
-<p>Defines the <strong>intended exposure level</strong> of the dataset.</p>
-<p>Allowed values:
-- <code>open</code> — publicly shareable
-- <code>internal</code> — organization-wide access
-- <code>restricted</code> — limited, explicitly authorized access</p>
-<blockquote>
-<p>Access level expresses <strong>intent</strong>, not enforcement.</p>
-</blockquote>
-<h3 id="access_requirements"><code>access_requirements</code></h3>
-<p>Defines <strong>preconditions</strong> that must be satisfied before access can be granted.</p>
-<p>Allowed values:
-- <code>all</code> — no precondition
-- <code>partner</code> — ecosystem or organizational partner
-- <code>contract</code> — explicit legal or data-sharing agreement</p>
-<p>This field is designed to integrate with <strong>dataspace and contract-based models</strong> without binding to IAM or policy engines.</p>
-<h3 id="classification"><code>classification</code></h3>
-<p>Describes the <strong>intrinsic sensitivity</strong> of the data.</p>
-<p>Allowed values:
-- <code>green</code> — non-sensitive
-- <code>yellow</code> — potentially sensitive
-- <code>red</code> — sensitive or regulated
-- <code>pii</code> — personal data</p>
-<p>Classification does <strong>not</strong> grant or deny access; it informs compliance and handling requirements.</p>
-<h3 id="tags"><code>tags</code></h3>
-<p>Free-form labels used for discovery, grouping, or filtering.</p>
-<h3 id="retention_days"><code>retention_days</code></h3>
-<p>Retention period in days.</p>
-<h3 id="documentation_url"><code>documentation_url</code></h3>
-<p>Link to human-readable documentation for the dataset.</p>
-<h3 id="source_system"><code>source_system</code></h3>
-<p>Origin system or domain (e.g. <code>openweathermap</code>, <code>copernicus</code>, <code>dwd</code>).</p>
 <hr />
-<h2 id="how-governance-is-applied">How Governance Is Applied</h2>
-<p>During pipeline execution:</p>
-<ol>
-<li>Dataset lineage is collected</li>
-<li>Dataset names are resolved against <code>governance.yaml</code></li>
-<li>Defaults and overrides are merged</li>
-<li>Governance metadata is emitted as a <strong>custom OpenLineage dataset facet</strong></li>
-</ol>
-<p>This applies to:
-- Inputs
-- Outputs
-- dbt test datasets</p>
-<hr />
-<h2 id="openlineage-integration">OpenLineage Integration</h2>
-<p>Governance metadata is published as a custom <strong>GovernanceDatasetFacet</strong>, including:</p>
-<ul>
-<li>License</li>
-<li>Attribution</li>
-<li>Access level</li>
-<li>Access requirements</li>
-<li>Classification</li>
-<li>Retention</li>
-<li>Source system</li>
-</ul>
-<p>This allows downstream systems (catalogs, dataspaces, policy engines) to reason about datasets consistently.</p>
-<hr />
-<h2 id="interactive-cli-usage">Interactive CLI Usage</h2>
-<p>CELINE provides an interactive CLI to generate governance files.</p>
-<h3 id="command">Command</h3>
-<pre><code class="language-bash">celine-utils governance generate marquez --app &lt;app_name&gt;
+<h2 id="6-enable-the-module">6. Enable the module</h2>
+<p>Add the module to <code>config/modules.yaml</code>:</p>
+<pre><code class="language-yaml">modules:
+  - name: my-module
+    import: celine.dt.modules.my_module.module:module
+    enabled: true
 </code></pre>
-<p>The CLI will:
-1. Discover datasets from Marquez
-2. Prompt for governance metadata per dataset
-3. Allow pattern-based scoping
-4. Write <code>governance.yaml</code> to the pipeline folder</p>
-<h3 id="non-interactive-mode">Non-Interactive Mode</h3>
-<pre><code class="language-bash">celine-utils governance generate marquez --app &lt;app_name&gt; --yes
+<hr />
+<h2 id="7-verify">7. Verify</h2>
+<pre><code class="language-bash">curl http://localhost:8000/apps
+curl http://localhost:8000/apps/my-app/describe
 </code></pre>
-<p>Generates a skeleton file using defaults.</p>
-<hr />
-<h2 id="best-practices">Best Practices</h2>
-<ul>
-<li>Use defaults to minimize repetition</li>
-<li>Prefer wildcard rules for schema-level governance</li>
-<li>Keep dataset names stable</li>
-<li>Version governance files with code</li>
-<li>Treat governance as <strong>declarative metadata</strong>, not enforcement logic</li>
-</ul>
-<hr />
-<h2 id="summary">Summary</h2>
-<p><code>governance.yaml</code> provides a single, declarative mechanism for defining dataset governance in CELINE pipelines.</p>
-<p>It is:
-- Pattern-based
-- License- and attribution-aware
-- Dataspace-ready
-- Integrated with lineage
-- CLI-assisted</p>
+<p>Your module is now part of the Digital Twin runtime.</p>
 
 
 
