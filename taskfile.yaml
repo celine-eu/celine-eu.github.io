@@ -3,7 +3,7 @@ version: "3"
 vars:
   PYTHON: uv run python
   MKDOCS: uv run mkdocs
-  PORT: 8001
+  PORT: 9901
 
 tasks:
   default:

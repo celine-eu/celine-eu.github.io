@@ -40,6 +40,18 @@ repos:
         source: projects/dataset-api/ontologies
         target: ontologies
 
+  - name: Policies
+    slug: celine-policies
+    git: https://github.com/celine-eu/celine-policies.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Policy model: docs/policy_model.md
+
   - name: Utils
     slug: celine-utils
     git: https://github.com/celine-eu/celine-utils.git
