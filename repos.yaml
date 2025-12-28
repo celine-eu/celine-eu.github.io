@@ -33,6 +33,11 @@ repos:
 
     nav:
       - README
+      - Architecture overview: docs/architecture.md
+      - Catalogue Management: docs/catalogue-management.md
+      - CLI operations: docs/cli-operations.md
+      - Governance and security: docs/governance-security.md
+      - Query engine: docs/query-engine.md
       - ontologies
 
     links:
