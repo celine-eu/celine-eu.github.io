@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#create-a-new-dt-module" class="md-skip">
+        <a href="#create-a-digital-twin-module-developer-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -665,6 +665,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#module-conceptual-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Module conceptual model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-create-the-module-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -687,10 +698,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-implement-the-app" class="md-nav__link">
+  <a href="#3-implement-the-app-logic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Implement the app
+        3. Implement the app logic
       
     </span>
   </a>
@@ -698,10 +709,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-implement-mappers" class="md-nav__link">
+  <a href="#4-optional-add-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Implement mappers
+        4. (Optional) Add mappers
       
     </span>
   </a>
@@ -731,10 +742,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-verify" class="md-nav__link">
+  <a href="#7-verify-via-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Verify
+        7. Verify via API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-testing-your-app-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Testing your app (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
       
     </span>
   </a>
@@ -1552,6 +1596,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#module-conceptual-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Module conceptual model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-create-the-module-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1574,10 +1629,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-implement-the-app" class="md-nav__link">
+  <a href="#3-implement-the-app-logic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Implement the app
+        3. Implement the app logic
       
     </span>
   </a>
@@ -1585,10 +1640,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-implement-mappers" class="md-nav__link">
+  <a href="#4-optional-add-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Implement mappers
+        4. (Optional) Add mappers
       
     </span>
   </a>
@@ -1618,10 +1673,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-verify" class="md-nav__link">
+  <a href="#7-verify-via-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Verify
+        7. Verify via API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-testing-your-app-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Testing your app (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next steps
       
     </span>
   </a>
@@ -1645,76 +1733,225 @@
 
 
 
-<h1 id="create-a-new-dt-module">Create a new DT module</h1>
-<p>This guide explains how to create a <strong>new Digital Twin module</strong> from a developer
-perspective.</p>
+<h1 id="create-a-digital-twin-module-developer-guide">Create a Digital Twin Module (Developer Guide)</h1>
+<p>This guide is an <strong>actionable, end‑to‑end introduction</strong> for developers who want to
+add new functionality to the CELINE Digital Twin runtime.</p>
+<p>By the end of this guide, you will have:
+- created a new DT module
+- implemented a runnable DT app
+- exposed it via the API
+- verified it locally</p>
+<p>No prior knowledge of CELINE internals is required.</p>
+<hr />
+<h2 id="module-conceptual-model">Module conceptual model</h2>
+<p>Before writing code, familiarize with these <strong>three rules</strong>:</p>
+<ol>
+<li><strong>A module is a packaging unit</strong></li>
+<li>it groups one or more apps</li>
+<li>
+<p>it has no runtime logic by itself</p>
+</li>
+<li>
+<p><strong>An app is the executable unit</strong></p>
+</li>
+<li>it contains domain logic only</li>
+<li>
+<p>it does NOT know about HTTP, FastAPI, or SQLAlchemy</p>
+</li>
+<li>
+<p><strong>All infrastructure is injected</strong></p>
+</li>
+<li>datasets, state, tokens, services come via <code>RunContext</code></li>
+<li>this keeps apps testable and portable</li>
+</ol>
 <hr />
 <h2 id="1-create-the-module-structure">1. Create the module structure</h2>
-<pre><code>celine/dt/modules/my_module/
-├── app.py
-├── models.py
-├── mappers.py
-└── module.py
+<p>Create a new directory eg. <code>my_module</code>:</p>
+<pre><code>my_module/hello_world/
+├── __init__.py   # empty file for python module lookup
+├── app.py        # domain logic
+├── models.py     # input/output models
+├── mappers.py    # external API contract
+└── module.py     # module registration
 </code></pre>
 <hr />
 <h2 id="2-define-input-and-output-models">2. Define input and output models</h2>
-<p>Use Pydantic models to define the app contract.</p>
-<pre><code class="language-python">class MyInputs(BaseModel):
-    ...
+<p>Use <strong>Pydantic models</strong> to define the public contract of your app.</p>
+<pre><code class="language-python"># models.py
+from pydantic import BaseModel, Field
 
-class MyResult(BaseModel):
-    ...
+
+class HelloWorldConfig(BaseModel):
+    name: str = Field(..., description=&quot;Name to greet&quot;)
+
+
+class HelloWorldResult(BaseModel):
+    message: str
 </code></pre>
+<p>These models:
+- define validation rules
+- generate JSON Schemas automatically
+- are exposed via <code>/apps/&lt;app&gt;/describe</code></p>
 <hr />
-<h2 id="3-implement-the-app">3. Implement the app</h2>
-<pre><code class="language-python">class MyApp:
-    key = &quot;my-app&quot;
+<h2 id="3-implement-the-app-logic">3. Implement the app logic</h2>
+<p>Apps contain <strong>only domain logic</strong>.</p>
+<pre><code class="language-python"># app.py
+from celine.dt.contracts.app import DTApp
+from celine.dt.core.context import RunContext
+
+from .models import HelloWorldConfig, HelloWorldResult
+
+
+class HelloWorldApp(DTApp[HelloWorldConfig, HelloWorldResult]):
+    key = &quot;hello-world&quot;
     version = &quot;1.0.0&quot;
 
-    async def run(self, inputs: MyInputs, context: RunContext) -&gt; MyResult:
-        ...
-</code></pre>
-<p>The app contains <strong>only domain logic</strong>.</p>
-<hr />
-<h2 id="4-implement-mappers">4. Implement mappers</h2>
-<pre><code class="language-python">class MyInputMapper(InputMapper[MyInputs]):
-    def map(self, raw: Mapping) -&gt; MyInputs:
-        ...
+    config_type = HelloWorldConfig
+    result_type = HelloWorldResult
 
-class MyOutputMapper(OutputMapper[MyResult]):
-    def map(self, obj: MyResult) -&gt; dict:
-        ...
+    input_mapper = None
+    output_mapper = None
+
+    async def run(
+        self,
+        config: HelloWorldConfig,
+        context: RunContext,
+    ) -&gt; HelloWorldResult:
+        return HelloWorldResult(
+            message=f&quot;Hello {config.name}!&quot;
+        )
 </code></pre>
-<p>Mappers define the <strong>external contract</strong>.</p>
+<p>Key points:
+- <code>run()</code> is async
+- no HTTP, no database access here
+- everything external must come from <code>context</code></p>
+<hr />
+<h2 id="4-optional-add-mappers">4. (Optional) Add mappers</h2>
+<p>Mappers control how your app appears externally.</p>
+<p>You need them if:
+- you want camelCase output
+- you want to reshape inputs
+- you want strict API compatibility</p>
+<pre><code class="language-python"># mappers.py
+from typing import Mapping
+from celine.dt.contracts.mapper import InputMapper, OutputMapper
+
+from .models import HelloWorldConfig, HelloWorldResult
+
+
+class HelloWorldInputMapper(InputMapper[HelloWorldConfig]):
+    input_type = HelloWorldConfig
+
+    def map(self, raw: Mapping) -&gt; HelloWorldConfig:
+        return HelloWorldConfig.model_validate(raw)
+
+
+class HelloWorldOutputMapper(OutputMapper[HelloWorldResult]):
+    output_type = HelloWorldResult
+
+    def map(self, result: HelloWorldResult) -&gt; dict:
+        return {
+            &quot;message&quot;: result.message
+        }
+</code></pre>
+<p>Then wire them into the app:</p>
+<pre><code class="language-python">input_mapper = HelloWorldInputMapper()
+output_mapper = HelloWorldOutputMapper()
+</code></pre>
 <hr />
 <h2 id="5-register-the-module">5. Register the module</h2>
-<pre><code class="language-python">class MyModule:
-    name = &quot;my-module&quot;
+<p>Modules are responsible for <strong>registering apps</strong>.</p>
+<pre><code class="language-python"># module.py
+from celine.dt.core.registry import DTRegistry
+from .app import HelloWorldApp
+
+
+class HelloWorldModule:
+    name = &quot;hello-world&quot;
     version = &quot;1.0.0&quot;
 
     def register(self, registry: DTRegistry) -&gt; None:
-        registry.register_app(
-            MyApp(),
-            input_mapper=MyInputMapper(),
-            output_mapper=MyOutputMapper(),
-        )
+        registry.register_app(HelloWorldApp())
 
-module = MyModule()
+
+module = HelloWorldModule()
 </code></pre>
+<p>Nothing else should happen in a module.</p>
 <hr />
 <h2 id="6-enable-the-module">6. Enable the module</h2>
-<p>Add the module to <code>config/modules.yaml</code>:</p>
+<p>Add the module to your configuration file:</p>
 <pre><code class="language-yaml">modules:
-  - name: my-module
-    import: celine.dt.modules.my_module.module:module
+  - name: hello-world
+    version: &quot;&gt;=1.0.0&quot;
+    import: celine.dt.modules.hello_world.module:module
     enabled: true
 </code></pre>
+<p>Restart the core DT runtime.</p>
 <hr />
-<h2 id="7-verify">7. Verify</h2>
+<h2 id="7-verify-via-api">7. Verify via API</h2>
+<p>List available apps:</p>
 <pre><code class="language-bash">curl http://localhost:8000/apps
-curl http://localhost:8000/apps/my-app/describe
 </code></pre>
-<p>Your module is now part of the Digital Twin runtime.</p>
+<p>Check your app description:</p>
+<pre><code class="language-bash">curl http://localhost:8000/apps/hello-world/describe
+</code></pre>
+<p>Run your app:</p>
+<pre><code class="language-bash">curl -X POST http://localhost:8000/apps/hello-world/run   -H &quot;Content-Type: application/json&quot;   -d '{ &quot;name&quot;: &quot;CELINE&quot; }'
+</code></pre>
+<p>Expected response:</p>
+<pre><code class="language-json">{
+  &quot;message&quot;: &quot;Hello CELINE!&quot;
+}
+</code></pre>
+<hr />
+<h2 id="8-testing-your-app-recommended">8. Testing your app (recommended)</h2>
+<p>Because apps are pure, testing is trivial:</p>
+<pre><code class="language-python">import asyncio
+from celine.dt.core.runner import DTAppRunner
+from celine.dt.core.registry import DTRegistry
+from celine.dt.core.context import RunContext
+
+from celine.dt.modules.hello_world.app import HelloWorldApp
+
+
+def test_hello_world_app():
+    registry = DTRegistry()
+    registry.register_app(HelloWorldApp())
+
+    runner = DTAppRunner()
+
+    result = asyncio.run(
+        runner.run(
+            registry=registry,
+            app_key=&quot;hello-world&quot;,
+            payload={&quot;name&quot;: &quot;Test&quot;},
+            context=RunContext.create(
+                datasets=None,
+                state=None,
+                token_provider=None,
+            ),
+        )
+    )
+
+    assert result.message == &quot;Hello Test!&quot;
+</code></pre>
+<hr />
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li>putting database logic inside apps</li>
+<li>importing FastAPI inside apps</li>
+<li>hardcoding dataset or environment details</li>
+<li>testing apps via HTTP only</li>
+</ul>
+<p>If you avoid these, your module will stay clean and maintainable.</p>
+<hr />
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li>Explore the <code>ev_charging</code> module for a realistic example</li>
+<li>Add dataset queries via <code>context.datasets.query(sql=...)</code></li>
+<li>Introduce state via <code>context.state</code> if needed</li>
+</ul>
+<p>You are now ready to build real Digital Twin capabilities.</p>
 
 
 

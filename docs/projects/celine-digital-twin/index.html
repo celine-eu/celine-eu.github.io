@@ -686,17 +686,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#ontologyaware-storagepragmatic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ontology‑aware, storage‑pragmatic
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -736,10 +725,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-the-battery-sizing-simulation" class="md-nav__link">
+  <a href="#example-ev-charging-readiness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Run the battery sizing simulation
+        Example: EV Charging Readiness
       
     </span>
   </a>
@@ -1701,17 +1690,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#ontologyaware-storagepragmatic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ontology‑aware, storage‑pragmatic
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1751,10 +1729,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-the-battery-sizing-simulation" class="md-nav__link">
+  <a href="#example-ev-charging-readiness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Run the battery sizing simulation
+        Example: EV Charging Readiness
       
     </span>
   </a>
@@ -1791,11 +1769,10 @@
 
 <h1 id="celine-digital-twin-dt">CELINE Digital Twin (DT)</h1>
 <p>The <strong>CELINE Digital Twin</strong> is a modular, production‑ready runtime for building,
-executing, and exposing <strong>Digital Twin applications</strong> for energy systems such as
-Renewable Energy Communities (RECs), microgrids, and scenario‑based simulations.</p>
+executing, and exposing <strong>Digital Twin applications</strong>.</p>
 <p>This repository provides a <strong>stable Digital Twin core</strong> and a <strong>module‑driven
-extension model</strong> that allows teams to develop, deploy, and evolve multiple DT
-applications independently while sharing a common runtime.</p>
+extension model</strong> that allows teams to develop, deploy, and evolve DT applications
+independently while sharing a common runtime.</p>
 <hr />
 <h2 id="documentation">Documentation</h2>
 <ul>
@@ -1813,10 +1790,8 @@ applications independently while sharing a common runtime.</p>
 <li>runtime orchestration</li>
 <li>domain logic</li>
 <li>data access</li>
-<li>A reference <strong>battery sizing simulation</strong></li>
 </ul>
-<p>This project is a <strong>foundation</strong>, not a turnkey product. It is designed to scale
-in complexity without accumulating architectural debt.</p>
+<p>This project is a <strong>foundation</strong>, not a turnkey product.</p>
 <hr />
 <h2 id="core-capabilities">Core capabilities</h2>
 <h3 id="modular-dt-runtime">Modular DT runtime</h3>
@@ -1831,7 +1806,7 @@ in complexity without accumulating architectural debt.</p>
 <li>Apps can be:</li>
 <li>simulations</li>
 <li>analyses</li>
-<li>adapters to external datasets</li>
+<li>adapters to external systems</li>
 <li>Apps are independently executable and discoverable</li>
 </ul>
 <h3 id="strong-contracts-schemas">Strong contracts &amp; schemas</h3>
@@ -1847,17 +1822,9 @@ in complexity without accumulating architectural debt.</p>
 <li>REST API</li>
 <li>unit tests</li>
 <li>batch jobs</li>
-<li>future workers</li>
-</ul>
-<h3 id="ontologyaware-storagepragmatic">Ontology‑aware, storage‑pragmatic</h3>
-<ul>
-<li>Ontologies define semantic intent</li>
-<li>Relational storage is used internally where needed</li>
-<li>Ontology loading is centralized and configurable</li>
 </ul>
 <hr />
 <h2 id="running-the-dt-runtime">Running the DT runtime</h2>
-<p>Start the runtime in development mode:</p>
 <pre><code class="language-bash">uv run uvicorn celine.dt.main:create_app --reload
 </code></pre>
 <p>Health check:</p>
@@ -1867,37 +1834,29 @@ in complexity without accumulating architectural debt.</p>
 <h2 id="discover-available-apps">Discover available apps</h2>
 <pre><code class="language-bash">curl http://localhost:8000/apps
 </code></pre>
-<p>Example response:</p>
-<pre><code class="language-json">[
-  { &quot;key&quot;: &quot;battery-sizing&quot;, &quot;version&quot;: &quot;2.0.0&quot; }
-]
-</code></pre>
+<p>Apps are registered dynamically at startup.
+A reference module included in this repository is <strong>ev_charging</strong>, which exposes
+a decision‑support Digital Twin app for EV charging readiness.</p>
 <hr />
 <h2 id="inspect-app-contracts">Inspect app contracts</h2>
-<pre><code class="language-bash">curl http://localhost:8000/apps/battery-sizing/describe
+<pre><code class="language-bash">curl http://localhost:8000/apps/&lt;app-key&gt;/describe
 </code></pre>
 <p>This endpoint returns the <strong>input and output JSON Schemas</strong> derived from the app
-mappers and models.</p>
+models.</p>
 <hr />
-<h2 id="run-the-battery-sizing-simulation">Run the battery sizing simulation</h2>
-<pre><code class="language-bash">curl -X POST http://localhost:8000/apps/battery-sizing/run   -H &quot;Content-Type: application/json&quot;   -d '{
-    &quot;demand&quot;: { &quot;values&quot;: [5, 5, 5, 5], &quot;timestep_hours&quot;: 1 },
-    &quot;pv&quot;: { &quot;values&quot;: [0, 10, 10, 0], &quot;timestep_hours&quot;: 1 },
-    &quot;roundtrip_efficiency&quot;: 0.9,
-    &quot;max_capacity_kwh&quot;: 20
+<h2 id="example-ev-charging-readiness">Example: EV Charging Readiness</h2>
+<p>The <code>ev_charging</code> module provides a reference DT app that transforms weather‑driven
+PV forecasts into <strong>operational indicators for EV charging coordination</strong>.</p>
+<pre><code class="language-bash">curl -X POST http://localhost:8000/apps/ev-charging-readiness/run   -H &quot;Content-Type: application/json&quot;   -d '{
+    &quot;community_id&quot;: &quot;demo-community&quot;,
+    &quot;location&quot;: { &quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1 },
+    &quot;window_hours&quot;: 24,
+    &quot;pv_capacity_kw&quot;: 1200,
+    &quot;ev_charging_capacity_kw&quot;: 800
   }'
-</code></pre>
-<p>Example response:</p>
-<pre><code class="language-json">{
-  &quot;@type&quot;: &quot;BatterySizingResult&quot;,
-  &quot;capacityKWh&quot;: 20.0,
-  &quot;gridImportKWh&quot;: 0.0,
-  &quot;selfConsumptionRatio&quot;: 1.0
-}
 </code></pre>
 <hr />
 <h2 id="license">License</h2>
-<p>Copyright &gt;=2025 Spindox Labs</p>
 <p>Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0</p>

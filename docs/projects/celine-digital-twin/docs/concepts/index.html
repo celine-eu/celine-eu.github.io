@@ -681,56 +681,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mappers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mappers
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Mappers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#inputmappert" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        InputMapper[T]
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#outputmappert" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OutputMapper[T]
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#timeseries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        TimeSeries
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#runcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1635,56 +1585,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mappers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mappers
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Mappers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#inputmappert" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        InputMapper[T]
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#outputmappert" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OutputMapper[T]
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#timeseries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        TimeSeries
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#runcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1725,7 +1625,7 @@
 
 <h1 id="concepts">Concepts</h1>
 <p>This document explains the <strong>core architectural concepts</strong> of the CELINE Digital
-Twin runtime and how they interact.</p>
+Twin runtime.</p>
 <hr />
 <h2 id="digital-twin-core">Digital Twin Core</h2>
 <p>The DT core is responsible for:
@@ -1742,12 +1642,6 @@ Twin runtime and how they interact.</p>
 - has a <code>name</code> and <code>version</code>
 - is enabled via configuration
 - registers apps into the registry</p>
-<p>Contract:</p>
-<pre><code class="language-python">class DTModule:
-    name: str
-    version: str
-    def register(self, registry: DTRegistry) -&gt; None
-</code></pre>
 <p>Modules are loaded at startup and validated against configuration constraints.</p>
 <hr />
 <h2 id="registry">Registry</h2>
@@ -1760,54 +1654,23 @@ Twin runtime and how they interact.</p>
 <hr />
 <h2 id="apps">Apps</h2>
 <p>A <strong>DT app</strong> represents a single runnable Digital Twin capability.</p>
-<pre><code class="language-python">class DTApp[I, O]:
-    key: str
-    version: str
-    async def run(self, inputs: I, context: RunContext) -&gt; O
-</code></pre>
 <p>Apps:
 - contain pure domain logic
 - are unaware of HTTP, databases, or frameworks
 - receive all context explicitly</p>
-<hr />
-<h2 id="mappers">Mappers</h2>
-<p>Mappers define the <strong>public contract</strong> of an app.</p>
-<h3 id="inputmappert">InputMapper[T]</h3>
-<ul>
-<li>converts raw payload → typed input model</li>
-<li>defines how external clients interact with the app</li>
-</ul>
-<h3 id="outputmappert">OutputMapper[T]</h3>
-<ul>
-<li>converts domain result → serializable output</li>
-<li>defines the external representation</li>
-</ul>
-<p>Mappers are generic and type‑safe.</p>
-<hr />
-<h2 id="timeseries">TimeSeries</h2>
-<p><code>TimeSeries[T]</code> is a reusable primitive representing ordered values with a fixed
-timestep.</p>
-<pre><code class="language-python">TimeSeries(values=[...], timestep_hours=1.0)
-</code></pre>
-<p>It is used consistently across simulations and KPIs.</p>
+<p>A reference implementation is provided by the <code>ev_charging</code> module.</p>
 <hr />
 <h2 id="runcontext">RunContext</h2>
 <p><code>RunContext</code> carries execution metadata and shared services.</p>
-<p>Fields include:
-- request id
-- timestamp
-- injected services
-- optional transport metadata</p>
 <p>This ensures apps remain testable and transport‑agnostic.</p>
 <hr />
 <h2 id="runner">Runner</h2>
 <p><code>DTAppRunner</code> is the <strong>single execution engine</strong>.</p>
 <p>Execution flow:
 1. resolve app from registry
-2. apply input mapper
+2. apply input mapping
 3. execute app logic
-4. apply output mapper</p>
-<p>All execution paths (API, tests, batch) use the same runner.</p>
+4. apply output mapping</p>
 
 
 
