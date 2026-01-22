@@ -15,6 +15,3 @@ contents:
   - repos.yaml
   - taskfile.yaml
   - .github/workflows
-
-# Optional – defaults to ./sources.txt
-output: sources.txt

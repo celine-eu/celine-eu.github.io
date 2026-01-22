@@ -37,6 +37,22 @@
          <lastmod>2026-01-22</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-ontologies/</loc>
+         <lastmod>2026-01-22</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ontologies/releases/current/</loc>
+         <lastmod>2026-01-22</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ontologies/releases/v0.1/</loc>
+         <lastmod>2026-01-22</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ontologies/releases/v0.2/</loc>
+         <lastmod>2026-01-22</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-pipelines/</loc>
          <lastmod>2026-01-22</lastmod>
     </url>
@@ -102,10 +118,6 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/dataset-api/docs/query-engine/</loc>
-         <lastmod>2026-01-22</lastmod>
-    </url>
-    <url>
-         <loc>https://celine-eu.github.io/projects/dataset-api/ontologies/</loc>
          <lastmod>2026-01-22</lastmod>
     </url>
     <url>

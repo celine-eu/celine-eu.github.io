@@ -14,6 +14,10 @@ CELINE tools and services.
 
 - [dataset-api](./dataset-api/)
 
+## Ontologies
+
+- [celine-ontologies](./celine-ontologies/)
+
 ## Policies
 
 - [celine-policies](./celine-policies/)
