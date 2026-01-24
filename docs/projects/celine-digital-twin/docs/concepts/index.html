@@ -702,6 +702,78 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Values
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#namespacing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespacing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variable-substitution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variable Substitution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency Injection
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1809,6 +1881,78 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Values
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#namespacing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespacing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variable-substitution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variable Substitution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency Injection
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1834,6 +1978,8 @@ Twin runtime.</p>
 <p>The DT core is responsible for:
 - application lifecycle
 - module loading
+- client registration
+- values fetcher management
 - execution orchestration
 - API exposure
 - shared infrastructure concerns</p>
@@ -1844,8 +1990,20 @@ Twin runtime.</p>
 <p>A module:
 - has a <code>name</code> and <code>version</code>
 - is enabled via configuration
-- registers apps into the registry</p>
+- registers apps into the registry
+- can define module-scoped value fetchers</p>
 <p>Modules are loaded at startup and validated against configuration constraints.</p>
+<pre><code class="language-yaml"># config/modules.yaml
+modules:
+  - name: ev-charging
+    version: &quot;&gt;=1.0.0&quot;
+    import: celine.dt.modules.ev_charging.module:module
+    enabled: true
+    values:  # optional module-scoped fetchers
+      solar_forecast:
+        client: dataset_api
+        query: SELECT * FROM solar WHERE location = :loc
+</code></pre>
 <hr />
 <h2 id="registry">Registry</h2>
 <p>The <strong>DTRegistry</strong> is the central in‑memory catalog.</p>
@@ -1866,6 +2024,12 @@ Twin runtime.</p>
 <h2 id="runcontext">RunContext</h2>
 <p><code>RunContext</code> carries execution metadata and shared services.</p>
 <p>This ensures apps remain testable and transport‑agnostic.</p>
+<p>Available in context:
+- <code>datasets</code> - Data client for querying external data
+- <code>state</code> - State store for app state management
+- <code>token_provider</code> - Authentication token provider
+- <code>request_id</code> - Unique identifier for the current request
+- <code>now</code> - Current UTC timestamp</p>
 <hr />
 <h2 id="runner">Runner</h2>
 <p><code>DTAppRunner</code> is the <strong>single execution engine</strong>.</p>
@@ -1874,6 +2038,127 @@ Twin runtime.</p>
 2. apply input mapping
 3. execute app logic
 4. apply output mapping</p>
+<hr />
+<h2 id="clients">Clients</h2>
+<p><strong>Clients</strong> are pluggable data backends configured via <code>config/clients.yaml</code>.</p>
+<p>A client:
+- is dynamically loaded at startup
+- can receive injected services (e.g., token providers)
+- implements a query interface</p>
+<p>The <code>DatasetClient</code> protocol defines the standard interface:</p>
+<pre><code class="language-python">class DatasetClient(ABC):
+    async def query(self, *, sql: str, limit: int, offset: int) -&gt; list[dict]
+    def stream(self, *, sql: str, page_size: int) -&gt; AsyncIterator[list[dict]]
+</code></pre>
+<p>Clients are registered in the <strong>ClientsRegistry</strong> and accessed by name.</p>
+<pre><code class="language-yaml"># config/clients.yaml
+clients:
+  dataset_api:
+    class: celine.dt.core.datasets.dataset_api:DatasetSqlApiClient
+    inject:
+      - token_provider
+    config:
+      base_url: &quot;${DATASET_API_URL}&quot;
+</code></pre>
+<hr />
+<h2 id="values">Values</h2>
+<p><strong>Values</strong> are declarative data fetchers configured via YAML.</p>
+<p>A value fetcher:
+- references a client by name
+- defines a query template with <code>:param</code> placeholders
+- optionally validates inputs against a JSON Schema
+- optionally transforms outputs via a mapper</p>
+<p>Values are exposed via REST API:
+- <code>GET /values</code> - list all fetchers
+- <code>GET /values/{id}?params</code> - fetch with query parameters
+- <code>POST /values/{id}</code> - fetch with JSON body
+- <code>GET /values/{id}/describe</code> - get fetcher metadata</p>
+<pre><code class="language-yaml"># config/values.yaml
+values:
+  weather_forecast:
+    client: dataset_api
+    query: |
+      SELECT * FROM weather_forecasts
+      WHERE location = :location
+    limit: 100
+    payload:
+      type: object
+      required: [location]
+      properties:
+        location:
+          type: string
+</code></pre>
+<h3 id="namespacing">Namespacing</h3>
+<ul>
+<li>Fetchers in <code>config/values.yaml</code> use their ID directly (e.g., <code>weather_forecast</code>)</li>
+<li>Fetchers in module configs are namespaced (e.g., <code>ev_charging.solar_forecast</code>)</li>
+</ul>
+<hr />
+<h2 id="configuration-hierarchy">Configuration Hierarchy</h2>
+<p>The DT runtime loads configuration in this order:</p>
+<ol>
+<li><strong>Clients</strong> (<code>config/clients.yaml</code>)</li>
+<li>Injectable services (token_provider) must be available</li>
+<li>
+<p>Environment variables are substituted</p>
+</li>
+<li>
+<p><strong>Modules</strong> (<code>config/modules.yaml</code>)</p>
+</li>
+<li>Modules are imported and validated</li>
+<li>Apps are registered</li>
+<li>
+<p>Module-scoped values are extracted</p>
+</li>
+<li>
+<p><strong>Values</strong> (<code>config/values.yaml</code> + module values)</p>
+</li>
+<li>Fetchers are parsed</li>
+<li>Client references are resolved</li>
+<li>Output mappers are loaded</li>
+</ol>
+<hr />
+<h2 id="environment-variable-substitution">Environment Variable Substitution</h2>
+<p>Configuration files support environment variable substitution:</p>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>${VAR}</code></td>
+<td>Required - fails if not set</td>
+</tr>
+<tr>
+<td><code>${VAR:-default}</code></td>
+<td>Optional - uses default if not set</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<pre><code class="language-yaml">clients:
+  my_api:
+    class: my.module:Client
+    config:
+      base_url: &quot;${API_URL}&quot;
+      timeout: &quot;${TIMEOUT:-30}&quot;
+</code></pre>
+<hr />
+<h2 id="dependency-injection">Dependency Injection</h2>
+<p>Clients can receive injected services via the <code>inject</code> list:</p>
+<pre><code class="language-yaml">clients:
+  authenticated_api:
+    class: my.module:AuthClient
+    inject:
+      - token_provider  # injected from app state
+    config:
+      base_url: &quot;${API_URL}&quot;
+</code></pre>
+<p>Currently available injectable services:
+- <code>token_provider</code> - OIDC token provider for authenticated requests</p>
 
 
 
