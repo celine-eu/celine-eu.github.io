@@ -1,0 +1,2427 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/brokers/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Event Broker Documentation - CELINE Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#event-broker-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CELINE Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Event Broker Documentation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../celine-dashboards/" class="md-tabs__link">
+          
+  
+  
+  Tools
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Pipelines Tutorial
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../ontologies/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Ontology
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../schema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Governance schemas
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    CELINE Project
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboards
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dashboards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital Twin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Digital Twin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../create-module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataset API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dataset API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Catalogue Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/cli-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/governance-security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance and security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/query-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ontologies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ontologies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-ontologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Policies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-policies/docs/policy_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policy model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance Schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Data Pipelines
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Data Pipelines
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/copernicus" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Copernicus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/dwd" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DWD ICON
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/owm" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Weather Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-infra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ontologies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ontology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure the broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-set-environment-variables-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Set environment variables (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-publish-events-from-an-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Publish events from an app
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#broker-configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Broker Configuration File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#application-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Schemas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event Schemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-event-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base Event Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-charging-readiness-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV Charging Readiness Event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app-execution-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App Execution Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="App Execution Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Started
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Completed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-failed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Failed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topic-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topic Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mqtt-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MQTT Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MQTT Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tls-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qos-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QoS Levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-in-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage in Apps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage in Apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Publishing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-broker-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking Broker Availability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-named-brokers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Named Brokers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#running-mosquitto-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Mosquitto Locally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscribing-to-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscribing to Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publishing-test-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing Test Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-custom-brokers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating Custom Brokers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="event-broker-documentation">Event Broker Documentation</h1>
+<p>This document describes the <strong>event broker</strong> system in the CELINE Digital Twin runtime.</p>
+<p>The broker system enables DT apps to publish computed events to external systems
+(e.g., MQTT brokers, message queues) for real-time integration with downstream consumers.</p>
+<hr />
+<h2 id="overview">Overview</h2>
+<p>The broker infrastructure provides:</p>
+<ul>
+<li><strong>Abstract Broker protocol</strong> for message publishing</li>
+<li><strong>MQTT implementation</strong> for IoT/edge scenarios</li>
+<li><strong>Event schemas</strong> for type-safe event publishing</li>
+<li><strong>Broker service</strong> for high-level operations</li>
+<li><strong>Configuration-driven</strong> broker setup</li>
+</ul>
+<hr />
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="1-configure-the-broker">1. Configure the broker</h3>
+<p>Create or edit <code>config/brokers.yaml</code>:</p>
+<pre><code class="language-yaml">brokers:
+  mqtt_local:
+    class: celine.dt.core.broker.mqtt:MqttBroker
+    enabled: true
+    config:
+      host: localhost
+      port: 1883
+      topic_prefix: &quot;celine/dt/&quot;
+
+default_broker: mqtt_local
+</code></pre>
+<h3 id="2-set-environment-variables-optional">2. Set environment variables (optional)</h3>
+<pre><code class="language-bash">export MQTT_HOST=mosquitto.local
+export MQTT_PORT=1883
+</code></pre>
+<h3 id="3-publish-events-from-an-app">3. Publish events from an app</h3>
+<pre><code class="language-python">from celine.dt.contracts.events import create_ev_charging_event
+
+# In your app's run method:
+event = create_ev_charging_event(
+    community_id=&quot;rec-folgaria&quot;,
+    window_start=start,
+    window_end=end,
+    indicator=&quot;OPTIMAL&quot;,
+    confidence=0.85,
+    # ... other fields
+)
+
+result = await context.publish_event(event)
+if result.success:
+    print(f&quot;Published: {result.message_id}&quot;)
+</code></pre>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│                         DT Runtime                            │
+│  ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐ │
+│  │   DT App    │──▶│  RunContext │──▶│   BrokerService     │ │
+│  └─────────────┘   └─────────────┘   └──────────┬──────────┘ │
+│                                                  │            │
+│                                      ┌───────────┴──────────┐ │
+│                                      │   BrokerRegistry     │ │
+│                                      │  ┌────────────────┐  │ │
+│                                      │  │  MqttBroker    │  │ │
+│                                      │  └────────┬───────┘  │ │
+│                                      └───────────┼──────────┘ │
+└──────────────────────────────────────────────────┼────────────┘
+                                                   │
+                                                   ▼
+                                        ┌──────────────────┐
+                                        │  MQTT Broker     │
+                                        │  (Mosquitto)     │
+                                        └──────────────────┘
+</code></pre>
+<hr />
+<h2 id="configuration">Configuration</h2>
+<h3 id="broker-configuration-file">Broker Configuration File</h3>
+<p>Location: <code>config/brokers.yaml</code></p>
+<pre><code class="language-yaml">brokers:
+  # Broker name (used for reference)
+  mqtt_local:
+    # Import path to broker class
+    class: celine.dt.core.broker.mqtt:MqttBroker
+    # Enable/disable this broker
+    enabled: true
+    # Configuration passed to constructor
+    config:
+      host: &quot;${MQTT_HOST:-localhost}&quot;
+      port: ${MQTT_PORT:-1883}
+      username: &quot;${MQTT_USERNAME:-}&quot;
+      password: &quot;${MQTT_PASSWORD:-}&quot;
+      use_tls: false
+      topic_prefix: &quot;celine/dt/&quot;
+      keepalive: 60
+      clean_session: true
+
+# Default broker when none specified
+default_broker: mqtt_local
+</code></pre>
+<h3 id="environment-variables">Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MQTT_HOST</code></td>
+<td>MQTT broker hostname</td>
+<td><code>localhost</code></td>
+</tr>
+<tr>
+<td><code>MQTT_PORT</code></td>
+<td>MQTT broker port</td>
+<td><code>1883</code></td>
+</tr>
+<tr>
+<td><code>MQTT_USERNAME</code></td>
+<td>Authentication username</td>
+<td>(none)</td>
+</tr>
+<tr>
+<td><code>MQTT_PASSWORD</code></td>
+<td>Authentication password</td>
+<td>(none)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="application-settings">Application Settings</h3>
+<p>In <code>celine/dt/core/config.py</code>:</p>
+<pre><code class="language-python"># Enable/disable broker publishing
+broker_enabled: bool = True
+
+# Publish app execution events
+broker_publish_app_events: bool = True
+
+# Publish computed result events
+broker_publish_computed_events: bool = True
+</code></pre>
+<hr />
+<h2 id="event-schemas">Event Schemas</h2>
+<p>Events follow a common envelope pattern with type-specific payloads.</p>
+<h3 id="base-event-structure">Base Event Structure</h3>
+<pre><code class="language-json">{
+  &quot;@context&quot;: &quot;https://celine-project.eu/contexts/dt-event.jsonld&quot;,
+  &quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;,
+  &quot;id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
+  &quot;source&quot;: {
+    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
+    &quot;app_version&quot;: &quot;1.1.0&quot;,
+    &quot;module&quot;: &quot;ev-charging&quot;,
+    &quot;instance_id&quot;: &quot;dt-instance-1&quot;
+  },
+  &quot;timestamp&quot;: &quot;2025-01-24T10:30:00Z&quot;,
+  &quot;correlation_id&quot;: &quot;req-12345&quot;,
+  &quot;payload&quot;: {
+    // Type-specific payload
+  },
+  &quot;metadata&quot;: {}
+}
+</code></pre>
+<h3 id="ev-charging-readiness-event">EV Charging Readiness Event</h3>
+<p>Type: <code>dt.ev-charging.readiness-computed</code></p>
+<pre><code class="language-json">{
+  &quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;,
+  &quot;payload&quot;: {
+    &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+    &quot;window_start&quot;: &quot;2025-01-24T00:00:00Z&quot;,
+    &quot;window_end&quot;: &quot;2025-01-25T00:00:00Z&quot;,
+    &quot;window_hours&quot;: 24,
+    &quot;expected_pv_kwh&quot;: 5100.0,
+    &quot;ev_charging_capacity_kwh&quot;: 19200.0,
+    &quot;pv_ev_ratio&quot;: 0.266,
+    &quot;indicator&quot;: &quot;SUBOPTIMAL&quot;,
+    &quot;confidence&quot;: 0.78,
+    &quot;drivers&quot;: [
+      &quot;expected PV energy is low relative to EV charging capacity&quot;,
+      &quot;high cloud cover expected during the window&quot;
+    ],
+    &quot;recommendations&quot;: [
+      &quot;Recommend delayed charging or reduced charging power.&quot;,
+      &quot;Prioritize critical charging sessions; consider off-peak tariffs.&quot;
+    ],
+    &quot;mean_clouds_pct&quot;: 65.0,
+    &quot;clouds_std_pct&quot;: 12.5,
+    &quot;solar_energy_kwh_per_m2&quot;: 3.2
+  }
+}
+</code></pre>
+<h3 id="app-execution-events">App Execution Events</h3>
+<h4 id="execution-started">Execution Started</h4>
+<p>Type: <code>dt.app.execution-started</code></p>
+<pre><code class="language-json">{
+  &quot;@type&quot;: &quot;dt.app.execution-started&quot;,
+  &quot;payload&quot;: {
+    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
+    &quot;request_id&quot;: &quot;req-12345&quot;,
+    &quot;config_hash&quot;: &quot;abc123&quot;
+  }
+}
+</code></pre>
+<h4 id="execution-completed">Execution Completed</h4>
+<p>Type: <code>dt.app.execution-completed</code></p>
+<pre><code class="language-json">{
+  &quot;@type&quot;: &quot;dt.app.execution-completed&quot;,
+  &quot;payload&quot;: {
+    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
+    &quot;request_id&quot;: &quot;req-12345&quot;,
+    &quot;duration_ms&quot;: 1234,
+    &quot;result_type&quot;: &quot;EVChargingReadiness&quot;,
+    &quot;result_summary&quot;: {
+      &quot;indicator&quot;: &quot;OPTIMAL&quot;,
+      &quot;confidence&quot;: 0.92
+    }
+  }
+}
+</code></pre>
+<h4 id="execution-failed">Execution Failed</h4>
+<p>Type: <code>dt.app.execution-failed</code></p>
+<pre><code class="language-json">{
+  &quot;@type&quot;: &quot;dt.app.execution-failed&quot;,
+  &quot;payload&quot;: {
+    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
+    &quot;request_id&quot;: &quot;req-12345&quot;,
+    &quot;error_type&quot;: &quot;ValueError&quot;,
+    &quot;error_message&quot;: &quot;Invalid location coordinates&quot;,
+    &quot;severity&quot;: &quot;error&quot;
+  }
+}
+</code></pre>
+<hr />
+<h2 id="topic-conventions">Topic Conventions</h2>
+<p>Events are published to topics following this convention:</p>
+<pre><code>{prefix}/dt/{module}/{event-type}/{entity-id}
+</code></pre>
+<p>Examples:
+- <code>celine/dt/ev-charging/readiness-computed/rec-folgaria</code>
+- <code>celine/dt/app/execution-completed/ev-charging-readiness</code>
+- <code>celine/dt/alert/raised/threshold-breach-001</code></p>
+<hr />
+<h2 id="mqtt-implementation">MQTT Implementation</h2>
+<h3 id="features">Features</h3>
+<ul>
+<li>Automatic reconnection handling</li>
+<li>TLS/SSL support</li>
+<li>QoS level support (0, 1, 2)</li>
+<li>Message retention</li>
+<li>JSON payload serialization</li>
+<li>Topic prefixing</li>
+</ul>
+<h3 id="tls-configuration">TLS Configuration</h3>
+<pre><code class="language-yaml">brokers:
+  mqtt_secure:
+    class: celine.dt.core.broker.mqtt:MqttBroker
+    config:
+      host: secure-broker.example.com
+      port: 8883
+      use_tls: true
+      ca_certs: /etc/ssl/certs/ca-certificates.crt
+      certfile: /path/to/client.crt
+      keyfile: /path/to/client.key
+</code></pre>
+<h3 id="qos-levels">QoS Levels</h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>AT_MOST_ONCE</td>
+<td>Fire and forget</td>
+</tr>
+<tr>
+<td>1</td>
+<td>AT_LEAST_ONCE</td>
+<td>Acknowledged delivery (default)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>EXACTLY_ONCE</td>
+<td>Guaranteed single delivery</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="usage-in-apps">Usage in Apps</h2>
+<h3 id="basic-publishing">Basic Publishing</h3>
+<pre><code class="language-python">from celine.dt.contracts.events import create_ev_charging_event
+from celine.dt.contracts.broker import QoS
+
+class MyApp:
+    async def run(self, config, context):
+        # Compute result
+        result = await self._compute(config)
+
+        # Create event
+        event = create_ev_charging_event(
+            community_id=config.community_id,
+            indicator=result.indicator,
+            # ... other fields
+        )
+
+        # Publish
+        await context.publish_event(event)
+
+        return result
+</code></pre>
+<h3 id="checking-broker-availability">Checking Broker Availability</h3>
+<pre><code class="language-python">if context.has_broker():
+    await context.publish_event(event)
+else:
+    logger.info(&quot;No broker configured, skipping event&quot;)
+</code></pre>
+<h3 id="using-named-brokers">Using Named Brokers</h3>
+<pre><code class="language-python"># Publish to a specific broker
+await context.broker.publish_event(
+    event,
+    broker_name=&quot;mqtt_backup&quot;,
+)
+</code></pre>
+<hr />
+<h2 id="testing">Testing</h2>
+<h3 id="running-mosquitto-locally">Running Mosquitto Locally</h3>
+<p>Using Docker:</p>
+<pre><code class="language-bash">docker run -d \
+  --name mosquitto \
+  -p 1883:1883 \
+  -p 9001:9001 \
+  eclipse-mosquitto
+</code></pre>
+<h3 id="subscribing-to-events">Subscribing to Events</h3>
+<pre><code class="language-bash">mosquitto_sub -h localhost -t &quot;celine/dt/#&quot; -v
+</code></pre>
+<h3 id="publishing-test-events">Publishing Test Events</h3>
+<pre><code class="language-bash">mosquitto_pub -h localhost \
+  -t &quot;celine/dt/ev-charging/readiness-computed/test&quot; \
+  -m '{&quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;, &quot;payload&quot;: {&quot;indicator&quot;: &quot;OPTIMAL&quot;}}'
+</code></pre>
+<hr />
+<h2 id="creating-custom-brokers">Creating Custom Brokers</h2>
+<p>To implement a custom broker (e.g., Kafka, RabbitMQ):</p>
+<pre><code class="language-python">from celine.dt.contracts.broker import BrokerBase, BrokerMessage, PublishResult
+
+class KafkaBroker(BrokerBase):
+    def __init__(self, bootstrap_servers: str, **kwargs):
+        self._servers = bootstrap_servers
+        self._producer = None
+
+    async def connect(self) -&gt; None:
+        # Initialize Kafka producer
+        pass
+
+    async def disconnect(self) -&gt; None:
+        # Close producer
+        pass
+
+    async def publish(self, message: BrokerMessage) -&gt; PublishResult:
+        # Publish to Kafka topic
+        pass
+
+    @property
+    def is_connected(self) -&gt; bool:
+        return self._producer is not None
+</code></pre>
+<p>Register in <code>config/brokers.yaml</code>:</p>
+<pre><code class="language-yaml">brokers:
+  kafka:
+    class: mymodule.kafka:KafkaBroker
+    config:
+      bootstrap_servers: &quot;kafka:9092&quot;
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
