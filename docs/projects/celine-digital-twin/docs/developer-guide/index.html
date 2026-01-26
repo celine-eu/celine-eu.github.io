@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/developer-guide/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>CELINE Pipelines Tutorial - CELINE Project</title>
+        <title>Developer Guide - CELINE Project</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-pipelines-tutorial" class="md-skip">
+        <a href="#developer-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CELINE Pipelines Tutorial
+              Developer Guide
             
           </span>
         </div>
@@ -218,7 +218,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="." class="md-tabs__link">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -528,7 +528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -556,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../concepts/" class="md-nav__link">
         
   
   
@@ -584,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/create-module.md" class="md-nav__link">
+      <a href="../create-module.md" class="md-nav__link">
         
   
   
@@ -1104,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -1132,7 +1132,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../governance/" class="md-nav__link">
+      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -1160,7 +1160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schemas/" class="md-nav__link">
+      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -1491,7 +1491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -1592,10 +1592,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Prerequisites
       
     </span>
   </a>
@@ -1603,55 +1603,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-a-new-pipeline-application" class="md-nav__link">
+  <a href="#part-1-creating-an-app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a New Pipeline Application
+        Part 1: Creating an App
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#canonical-repository-layout" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canonical Repository Layout
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline-docker-image-required" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Baseline Docker Image (Required)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#canonical-dockerfile-per-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canonical Dockerfile (Per App)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Canonical Dockerfile (Per App)">
+    <nav class="md-nav" aria-label="Part 1: Creating an App">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-example" class="md-nav__link">
+  <a href="#step-1-define-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build Example
+        Step 1: Define Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Implement the App
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-register-in-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Register in Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-use-via-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Use via API
       
     </span>
   </a>
@@ -1664,99 +1686,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#environment-configuration" class="md-nav__link">
+  <a href="#part-2-creating-a-component" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment Configuration
+        Part 2: Creating a Component
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#meltano-ingestion-bronze" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Meltano (Ingestion / Bronze)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dbt-staging-silver-gold" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        dbt (Staging / Silver / Gold)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#governance-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Governance Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#python-prefect-flows" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python / Prefect Flows
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-prefect-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Local Prefect Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-prefectyaml-local" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example prefect.yaml (Local)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kubernetes-production-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Kubernetes &amp; Production Deployment
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Kubernetes &amp; Production Deployment">
+    <nav class="md-nav" aria-label="Part 2: Creating a Component">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#local-kubernetes-minikube" class="md-nav__link">
+  <a href="#step-1-define-models_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Local Kubernetes (Minikube)
+        Step 1: Define Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-the-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Implement the Component
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-register-in-module_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Register in Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-use-in-apps-or-simulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Use in Apps or Simulations
       
     </span>
   </a>
@@ -1769,10 +1747,110 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recommended-workflow" class="md-nav__link">
+  <a href="#part-3-creating-a-simulation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended Workflow
+        Part 3: Creating a Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 3: Creating a Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-define-models_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Define Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-the-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Implement the Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-register-in-module_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Register in Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-use-via-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Use via API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-4-using-data-in-apps-and-simulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 4: Using Data in Apps and Simulations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 4: Using Data in Apps and Simulations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-value-fetchers-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Value Fetchers (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-direct-client-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Direct Client Access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-5-publishing-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 5: Publishing Events
       
     </span>
   </a>
@@ -1780,10 +1858,110 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-takeaways" class="md-nav__link">
+  <a href="#part-6-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Takeaways
+        Part 6: Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 6: Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-testing-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit Testing Apps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-testing-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit Testing Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-testing-simulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit Testing Simulations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-components-in-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Components in Apps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workspace-artifacts-in-simulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace Artifacts in Simulations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anti-patterns-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-Patterns to Avoid
       
     </span>
   </a>
@@ -1791,10 +1969,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#need-help" class="md-nav__link">
+  <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Need help?
+        Next Steps
       
     </span>
   </a>
@@ -1818,308 +1996,598 @@
 
 
 
-<h1 id="celine-pipelines-tutorial">CELINE Pipelines Tutorial</h1>
-<p>This document provides a <strong>complete, end-to-end guide</strong> to setting up, running, and deploying a <strong>CELINE pipeline application</strong>.
-It consolidates all prior sections into a <strong>single reference file</strong>.</p>
-<h2 id="overview">Overview</h2>
-<p>A CELINE pipeline is a <strong>self-contained application</strong> that combines:</p>
+<h1 id="developer-guide">Developer Guide</h1>
+<p>This guide shows you how to build <strong>Apps</strong>, <strong>Components</strong>, and <strong>Simulations</strong> for the CELINE Digital Twin. It's organized as a linear tutorial—work through it from start to finish.</p>
+<hr />
+<h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Meltano (ingestion / bronze)</li>
-<li>dbt (staging, silver, gold)</li>
-<li>Optional Python / Prefect flows</li>
-<li>Governance configuration</li>
-<li>OpenLineage emission (optional)</li>
-<li>Container-first execution</li>
+<li>Python 3.11+</li>
+<li>Understanding of <a href="../concepts/">Concepts</a></li>
+<li>Familiarity with Pydantic models</li>
 </ul>
-<p>Pipelines are designed to run <strong>identically</strong> in:
-- Local development
-- CI
-- Kubernetes</p>
-<h2 id="creating-a-new-pipeline-application">Creating a New Pipeline Application</h2>
-<p>CELINE provides a CLI command to <strong>scaffold a complete pipeline application</strong> with sane defaults.</p>
-<p>From the root of your pipelines repository:</p>
-<pre><code class="language-bash">celine-utils pipeline init app demo_app
+<hr />
+<h2 id="part-1-creating-an-app">Part 1: Creating an App</h2>
+<p>Apps are external-facing operations exposed via <code>/apps</code> API.</p>
+<h3 id="step-1-define-models">Step 1: Define Models</h3>
+<p>Create Pydantic models for input and output:</p>
+<pre><code class="language-python"># my_module/models.py
+from pydantic import BaseModel, Field
+
+class GreetingConfig(BaseModel):
+    &quot;&quot;&quot;Input configuration for the greeting app.&quot;&quot;&quot;
+    name: str = Field(..., description=&quot;Name to greet&quot;)
+    formal: bool = Field(default=False, description=&quot;Use formal greeting&quot;)
+
+class GreetingResult(BaseModel):
+    &quot;&quot;&quot;Output from the greeting app.&quot;&quot;&quot;
+    message: str
+    timestamp: str
 </code></pre>
-<p>This command creates a fully functional example pipeline with:</p>
-<ul>
-<li>Meltano project</li>
-<li>dbt project structure</li>
-<li>Example Prefect-compatible flow</li>
-<li>Governance configuration</li>
-<li><code>.env</code> file</li>
-<li>README</li>
-</ul>
-<p>You can safely use the generated structure as-is and evolve it incrementally.</p>
-<h2 id="canonical-repository-layout">Canonical Repository Layout</h2>
-<p>After initialization, your repository will look like:</p>
-<pre><code>pipelines/
-└── apps/
-    └── demo_app/
-        ├── meltano/
-        ├── dbt/
-        ├── flows/
-        ├── governance.yaml
-        ├── .env
-        └── README.md
+<h3 id="step-2-implement-the-app">Step 2: Implement the App</h3>
+<p>Apps implement the <code>DTApp</code> protocol:</p>
+<pre><code class="language-python"># my_module/apps/greeting.py
+from datetime import datetime
+from celine.dt.contracts.app import DTApp
+from celine.dt.core.context import RunContext
+
+from ..models import GreetingConfig, GreetingResult
+
+class GreetingApp(DTApp[GreetingConfig, GreetingResult]):
+    &quot;&quot;&quot;A simple greeting app.&quot;&quot;&quot;
+
+    key = &quot;my-module.greeting&quot;
+    version = &quot;1.0.0&quot;
+
+    config_type = GreetingConfig
+    result_type = GreetingResult
+
+    input_mapper = None   # Optional: transform API input
+    output_mapper = None  # Optional: transform API output
+
+    async def run(
+        self,
+        config: GreetingConfig,
+        context: RunContext,
+    ) -&gt; GreetingResult:
+        # Domain logic only - no HTTP, no database imports
+        if config.formal:
+            message = f&quot;Good day, {config.name}.&quot;
+        else:
+            message = f&quot;Hello, {config.name}!&quot;
+
+        return GreetingResult(
+            message=message,
+            timestamp=context.now.isoformat(),
+        )
 </code></pre>
-<p>Each folder under <code>apps/</code> represents a <strong>deployable pipeline application</strong>.</p>
-<h2 id="baseline-docker-image-required">Baseline Docker Image (Required)</h2>
-<p>All CELINE pipelines <strong>must</strong> be built on top of the official pipeline image:</p>
-<pre><code>ghcr.io/celine-eu/pipeline
+<h3 id="step-3-register-in-module">Step 3: Register in Module</h3>
+<pre><code class="language-python"># my_module/module.py
+from celine.dt.core.registry import DTRegistry
+from .apps.greeting import GreetingApp
+
+class MyModule:
+    name = &quot;my-module&quot;
+    version = &quot;1.0.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_app(GreetingApp())
+
+module = MyModule()
 </code></pre>
-<p>This image already contains:
-- Python + uv
-- <code>celine-utils</code>
-- Meltano
-- dbt
-- Prefect
-- OpenLineage client</p>
-<h2 id="canonical-dockerfile-per-app">Canonical Dockerfile (Per App)</h2>
-<p>Example Dockerfile for the <code>demo_app</code> pipeline:</p>
-<pre><code class="language-dockerfile">ARG BASE_TAG=latest
-FROM ghcr.io/celine-eu/pipeline:${BASE_TAG}
-
-ARG APP_NAME
-
-ENV APP_NAME=${APP_NAME}
-
-# Enable / disable OpenLineage support
-ENV OPENLINEAGE_ENABLED=false
-ENV OPENLINEAGE_URL=http://marquez-api:5001
-ENV OPENLINEAGE_NAMESPACE=${APP_NAME}
-
-ENV PIPELINES_ROOT=${PIPELINES_ROOT:-/pipelines}
-ENV BASE_DIR=&quot;${PIPELINES_ROOT}/apps&quot;
-ENV APP_PATH=&quot;${BASE_DIR}/${APP_NAME}&quot;
-
-ENV MELTANO_PROJECT_ROOT=&quot;${APP_PATH}/meltano&quot;
-ENV DBT_PROJECT_DIR=&quot;${APP_PATH}/dbt&quot;
-ENV DBT_PROFILES_DIR=&quot;${DBT_PROJECT_DIR}&quot;
-
-WORKDIR /pipelines
-
-COPY ./apps/${APP_NAME} /pipelines/apps/${APP_NAME}
-
-RUN uv sync
-
-RUN if [ -f &quot;${APP_PATH}/requirements.txt&quot; ]; then       uv add --requirements &quot;${APP_PATH}/requirements.txt&quot;;     fi
-
-RUN if [ -d &quot;${MELTANO_PROJECT_ROOT}&quot; ]; then       cd &quot;${MELTANO_PROJECT_ROOT}&quot; &amp;&amp;       rm -rf .meltano &amp;&amp;       MELTANO_PROJECT_ROOT=$(pwd) meltano install ;     fi
-
-RUN if [ -d &quot;${DBT_PROJECT_DIR}&quot; ]; then       cd &quot;${DBT_PROJECT_DIR}&quot; &amp;&amp;       rm -rf target dbt_packages .dbt &amp;&amp;       DBT_PROFILES_DIR=$(pwd) dbt deps ;     fi
-
-WORKDIR ${APP_PATH}
+<h3 id="step-4-configure">Step 4: Configure</h3>
+<pre><code class="language-yaml"># config/modules.yaml
+modules:
+  - name: my-module
+    version: &quot;&gt;=1.0.0&quot;
+    import: celine.dt.modules.my_module.module:module
+    enabled: true
 </code></pre>
-<h3 id="build-example">Build Example</h3>
-<pre><code class="language-bash">docker build   --build-arg APP_NAME=demo_app   -t demo-app-pipeline:latest   .
-</code></pre>
-<h2 id="environment-configuration">Environment Configuration</h2>
-<p>CELINE uses <strong>environment-driven configuration</strong>.</p>
-<p>Minimal <code>.env</code>:</p>
-<pre><code class="language-env">APP_NAME=demo_app
+<h3 id="step-5-test">Step 5: Test</h3>
+<pre><code class="language-python"># tests/test_greeting.py
+import pytest
+from celine.dt.core.registry import DTRegistry
+from celine.dt.core.runner import DTAppRunner
+from celine.dt.core.context import RunContext
 
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=datasets
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+from celine.dt.modules.my_module.apps.greeting import GreetingApp
 
-OPENLINEAGE_URL=http://marquez-api:5000
-</code></pre>
-<p>Resolution order:
-- Environment variables
-- <code>.env</code> files
-- Defaults</p>
-<h2 id="meltano-ingestion-bronze">Meltano (Ingestion / Bronze)</h2>
-<p>Configure ingestion in <code>meltano/meltano.yml</code>.</p>
-<p>Example job:</p>
-<pre><code class="language-yaml">jobs:
-  - name: import
-    tasks:
-      - tap-my-source target-postgres
-</code></pre>
-<p>Run manually:</p>
-<pre><code class="language-bash">celine-utils pipeline run meltano &quot;run import&quot;
-</code></pre>
-<p>CELINE automatically:
-- Executes Meltano
-- Discovers datasets
-- Emits lineage events (if enabled)
-- Applies governance metadata</p>
-<h2 id="dbt-staging-silver-gold">dbt (Staging / Silver / Gold)</h2>
-<p>CELINE follows a medallion-style convention:</p>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Command</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Staging</td>
-<td><code>celine-utils pipeline run dbt staging</code></td>
-</tr>
-<tr>
-<td>Silver</td>
-<td><code>celine-utils pipeline run dbt silver</code></td>
-</tr>
-<tr>
-<td>Gold</td>
-<td><code>celine-utils pipeline run dbt gold</code></td>
-</tr>
-<tr>
-<td>Tests</td>
-<td><code>celine-utils pipeline run dbt test</code></td>
-</tr>
-</tbody>
-</table>
-<p>During execution, CELINE:</p>
-<ul>
-<li>Collects schema metadata</li>
-<li>Captures dbt test results</li>
-<li>Emits dataset-level lineage</li>
-</ul>
-<h2 id="governance-configuration">Governance Configuration</h2>
-<p>Each pipeline includes a <code>governance.yaml</code>.</p>
-<p>Example:</p>
-<pre><code class="language-yaml">defaults:
-  access_level: internal
-  classification: green
-  retention_days: 365
+@pytest.mark.asyncio
+async def test_greeting_informal():
+    registry = DTRegistry()
+    registry.register_app(GreetingApp())
 
-sources:
-  datasets.ds.gold_*:
-    license: CC0-1.0
-    ownership:
-      - name: data-team
-        type: DATA_OWNER
-    tags: [gold]
+    runner = DTAppRunner()
+    context = RunContext.create(datasets=None, state=None, token_provider=None)
+
+    result = await runner.run(
+        registry=registry,
+        app_key=&quot;my-module.greeting&quot;,
+        payload={&quot;name&quot;: &quot;World&quot;},
+        context=context,
+    )
+
+    assert result[&quot;message&quot;] == &quot;Hello, World!&quot;
 </code></pre>
-<p>Governance is:</p>
-<ul>
-<li>Pattern-based</li>
-<li>Automatically resolved</li>
-<li>Emitted as a custom OpenLineage facet</li>
-</ul>
-<p>Generate interactively:</p>
-<pre><code class="language-bash">celine-utils governance generate marquez --app demo_app
+<h3 id="step-6-use-via-api">Step 6: Use via API</h3>
+<pre><code class="language-bash"># List apps
+curl http://localhost:8000/apps
+
+# Describe app
+curl http://localhost:8000/apps/my-module.greeting/describe
+
+# Run app
+curl -X POST http://localhost:8000/apps/my-module.greeting/run \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;name&quot;: &quot;CELINE&quot;, &quot;formal&quot;: true}'
 </code></pre>
-<p><strong>Note</strong> Since governance are openlineage facets, disabling openlineage using <code>OPENLINEAGE_ENABLED=false</code> will exclude the governance tracking capabilities.</p>
-<h2 id="python-prefect-flows">Python / Prefect Flows</h2>
-<p>Example <code>flows/pipeline.py</code>:</p>
-<pre><code class="language-python">from prefect import flow
-from celine.utils.pipelines.pipeline import (
-    meltano_run_import,
-    dbt_run_staging,
-    dbt_run_silver,
-    dbt_run_gold,
+<hr />
+<h2 id="part-2-creating-a-component">Part 2: Creating a Component</h2>
+<p>Components are pure, internal computation units.</p>
+<h3 id="step-1-define-models_1">Step 1: Define Models</h3>
+<pre><code class="language-python"># my_module/models.py
+from pydantic import BaseModel
+
+class EnergyBalanceInput(BaseModel):
+    &quot;&quot;&quot;Input for energy balance calculation.&quot;&quot;&quot;
+    generation_kwh: list[float]
+    consumption_kwh: list[float]
+
+class EnergyBalanceOutput(BaseModel):
+    &quot;&quot;&quot;Output from energy balance calculation.&quot;&quot;&quot;
+    self_consumption_ratio: float
+    self_sufficiency_ratio: float
+    grid_import_kwh: float
+    grid_export_kwh: float
+</code></pre>
+<h3 id="step-2-implement-the-component">Step 2: Implement the Component</h3>
+<p>Components implement the <code>DTComponent</code> protocol:</p>
+<pre><code class="language-python"># my_module/components/energy_balance.py
+from celine.dt.contracts.component import DTComponent
+from ..models import EnergyBalanceInput, EnergyBalanceOutput
+
+class EnergyBalanceComponent(DTComponent[EnergyBalanceInput, EnergyBalanceOutput]):
+    &quot;&quot;&quot;Pure energy balance calculation.&quot;&quot;&quot;
+
+    key = &quot;my-module.energy-balance&quot;
+    version = &quot;1.0.0&quot;
+
+    input_type = EnergyBalanceInput
+    output_type = EnergyBalanceOutput
+
+    async def compute(
+        self,
+        input: EnergyBalanceInput,
+        context,  # RunContext - available but optional for pure components
+    ) -&gt; EnergyBalanceOutput:
+        # Pure computation - no side effects
+        total_gen = sum(input.generation_kwh)
+        total_cons = sum(input.consumption_kwh)
+
+        # Simple model: self-consumed = min(gen, cons) at each timestep
+        self_consumed = sum(
+            min(g, c) for g, c in zip(input.generation_kwh, input.consumption_kwh)
+        )
+
+        grid_import = total_cons - self_consumed
+        grid_export = total_gen - self_consumed
+
+        return EnergyBalanceOutput(
+            self_consumption_ratio=self_consumed / total_gen if total_gen &gt; 0 else 0,
+            self_sufficiency_ratio=self_consumed / total_cons if total_cons &gt; 0 else 0,
+            grid_import_kwh=grid_import,
+            grid_export_kwh=grid_export,
+        )
+</code></pre>
+<h3 id="step-3-register-in-module_1">Step 3: Register in Module</h3>
+<pre><code class="language-python"># my_module/module.py
+from celine.dt.core.registry import DTRegistry
+from .apps.greeting import GreetingApp
+from .components.energy_balance import EnergyBalanceComponent
+
+class MyModule:
+    name = &quot;my-module&quot;
+    version = &quot;1.0.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_app(GreetingApp())
+        registry.register_component(EnergyBalanceComponent())
+
+module = MyModule()
+</code></pre>
+<h3 id="step-4-use-in-apps-or-simulations">Step 4: Use in Apps or Simulations</h3>
+<pre><code class="language-python"># Inside an app or simulation
+component = context.get_component(&quot;my-module.energy-balance&quot;)
+result = await component.compute(
+    EnergyBalanceInput(generation_kwh=[...], consumption_kwh=[...]),
+    context,
 )
+</code></pre>
+<hr />
+<h2 id="part-3-creating-a-simulation">Part 3: Creating a Simulation</h2>
+<p>Simulations enable what-if exploration with a two-phase execution model.</p>
+<h3 id="step-1-define-models_2">Step 1: Define Models</h3>
+<p>Four models are required:</p>
+<pre><code class="language-python"># my_module/models.py
+from datetime import datetime
+from pydantic import BaseModel, Field
 
-@flow
-def medallion_flow():
-    meltano_run_import()
-    dbt_run_staging()
-    dbt_run_silver()
-    dbt_run_gold()
-</code></pre>
-<h2 id="local-prefect-setup">Local Prefect Setup</h2>
-<p>Start a local Prefect server:</p>
-<pre><code class="language-bash">prefect server start
-</code></pre>
-<p>Set API URL:</p>
-<pre><code class="language-bash">export PREFECT_API_URL=http://127.0.0.1:4200/api
-</code></pre>
-<h2 id="example-prefectyaml-local">Example <code>prefect.yaml</code> (Local)</h2>
-<pre><code class="language-yaml">name: demo-app
-deployments:
-  - name: demo-app-flow
-    description: &quot;Demo app medallion pipeline&quot;
-    entrypoint: flows/pipeline.py:medallion_flow
+# 1. Scenario Configuration - what context to build
+class RECScenarioConfig(BaseModel):
+    &quot;&quot;&quot;Configuration for building a REC planning scenario.&quot;&quot;&quot;
+    community_id: str = Field(..., description=&quot;REC identifier&quot;)
+    reference_start: datetime
+    reference_end: datetime
+    resolution: str = Field(default=&quot;1h&quot;)
 
-    schedule:
-      cron: &quot;0 * * * *&quot;
+# 2. Scenario - the built, immutable context
+class RECScenario(BaseModel):
+    &quot;&quot;&quot;Built scenario with cached data and baseline metrics.&quot;&quot;&quot;
+    scenario_id: str = &quot;&quot;
+    community_id: str
+    reference_start: datetime
+    reference_end: datetime
+    baseline_consumption_kwh: float
+    baseline_generation_kwh: float
+    baseline_self_consumption_ratio: float
 
-    work_pool:
-      name: local-process
-      job_variables:
-        env:
-          APP_NAME: demo_app
-          PIPELINES_ROOT: /pipelines
-          POSTGRES_HOST: localhost
-          POSTGRES_DB: datasets
+# 3. Parameters - what-if variables
+class RECParameters(BaseModel):
+    &quot;&quot;&quot;Parameters for what-if exploration.&quot;&quot;&quot;
+    pv_kwp: float = Field(default=0.0, ge=0.0, description=&quot;Additional PV capacity&quot;)
+    battery_kwh: float = Field(default=0.0, ge=0.0, description=&quot;Battery capacity&quot;)
+    electricity_price: float = Field(default=0.25, ge=0.0)
+
+# 4. Result - simulation output
+class RECResult(BaseModel):
+    &quot;&quot;&quot;Result of a REC planning simulation.&quot;&quot;&quot;
+    self_consumption_ratio: float
+    self_sufficiency_ratio: float
+    npv_eur: float
+    payback_years: float | None
 </code></pre>
-<p>Register the deployment:</p>
-<pre><code class="language-bash">prefect deploy --prefect-file prefect.yaml
+<h3 id="step-2-implement-the-simulation">Step 2: Implement the Simulation</h3>
+<p>Simulations implement the <code>DTSimulation</code> protocol:</p>
+<pre><code class="language-python"># my_module/simulations/rec_planning.py
+from celine.dt.contracts.simulation import DTSimulation
+from ..models import RECScenarioConfig, RECScenario, RECParameters, RECResult
+
+class RECPlanningSimulation(DTSimulation[RECScenarioConfig, RECScenario, RECParameters, RECResult]):
+    &quot;&quot;&quot;REC planning what-if simulation.&quot;&quot;&quot;
+
+    key = &quot;my-module.rec-planning&quot;
+    version = &quot;1.0.0&quot;
+
+    scenario_config_type = RECScenarioConfig
+    scenario_type = RECScenario
+    parameters_type = RECParameters
+    result_type = RECResult
+
+    async def build_scenario(
+        self,
+        config: RECScenarioConfig,
+        workspace,  # FileWorkspace for storing artifacts
+        context,    # RunContext for data fetching
+    ) -&gt; RECScenario:
+        &quot;&quot;&quot;
+        Build scenario: EXPENSIVE operation.
+
+        - Fetch historical data
+        - Compute baseline metrics
+        - Store intermediate artifacts
+        &quot;&quot;&quot;
+        # Fetch consumption data via values
+        consumption_data = await context.values.fetch(
+            &quot;consumption_timeseries&quot;,
+            {
+                &quot;community_id&quot;: config.community_id,
+                &quot;start&quot;: config.reference_start.isoformat(),
+                &quot;end&quot;: config.reference_end.isoformat(),
+            }
+        )
+
+        # Fetch generation data
+        generation_data = await context.values.fetch(
+            &quot;generation_timeseries&quot;,
+            {&quot;community_id&quot;: config.community_id, ...}
+        )
+
+        # Compute baseline metrics
+        total_consumption = sum(r[&quot;kwh&quot;] for r in consumption_data)
+        total_generation = sum(r[&quot;kwh&quot;] for r in generation_data)
+        self_consumed = min(total_consumption, total_generation)
+
+        # Store artifacts in workspace (for later runs)
+        await workspace.write_json(&quot;consumption.json&quot;, consumption_data)
+        await workspace.write_json(&quot;generation.json&quot;, generation_data)
+
+        return RECScenario(
+            community_id=config.community_id,
+            reference_start=config.reference_start,
+            reference_end=config.reference_end,
+            baseline_consumption_kwh=total_consumption,
+            baseline_generation_kwh=total_generation,
+            baseline_self_consumption_ratio=self_consumed / total_generation if total_generation &gt; 0 else 0,
+        )
+
+    async def simulate(
+        self,
+        scenario: RECScenario,
+        parameters: RECParameters,
+        context,
+    ) -&gt; RECResult:
+        &quot;&quot;&quot;
+        Run simulation: FAST operation.
+
+        - Load cached scenario data
+        - Apply parameters
+        - Compute results
+        &quot;&quot;&quot;
+        # Apply PV addition
+        added_generation = parameters.pv_kwp * 1000  # Simplified
+        total_generation = scenario.baseline_generation_kwh + added_generation
+
+        # Compute new ratios
+        self_consumed = min(scenario.baseline_consumption_kwh, total_generation)
+        self_consumption_ratio = self_consumed / total_generation if total_generation &gt; 0 else 0
+        self_sufficiency_ratio = self_consumed / scenario.baseline_consumption_kwh
+
+        # Simple economics
+        investment = parameters.pv_kwp * 1200 + parameters.battery_kwh * 500
+        annual_savings = (self_consumed - scenario.baseline_self_consumption_ratio * scenario.baseline_generation_kwh) * parameters.electricity_price
+
+        npv = annual_savings * 20 - investment  # Simplified 20-year NPV
+        payback = investment / annual_savings if annual_savings &gt; 0 else None
+
+        return RECResult(
+            self_consumption_ratio=self_consumption_ratio,
+            self_sufficiency_ratio=self_sufficiency_ratio,
+            npv_eur=npv,
+            payback_years=payback,
+        )
+
+    def get_default_parameters(self) -&gt; RECParameters:
+        &quot;&quot;&quot;Return default parameters for baseline comparison.&quot;&quot;&quot;
+        return RECParameters()
 </code></pre>
-<p>Run it:</p>
-<pre><code class="language-bash">prefect deployment run demo-app/demo-app-flow
+<h3 id="step-3-register-in-module_2">Step 3: Register in Module</h3>
+<pre><code class="language-python"># my_module/module.py
+from celine.dt.core.registry import DTRegistry
+from .simulations.rec_planning import RECPlanningSimulation
+
+class MyModule:
+    name = &quot;my-module&quot;
+    version = &quot;1.0.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_simulation(RECPlanningSimulation())
+
+module = MyModule()
 </code></pre>
-<h2 id="kubernetes-production-deployment">Kubernetes &amp; Production Deployment</h2>
-<p>In Kubernetes, Prefect deployments are <strong>registered once</strong> and executed later by workers.</p>
-<p>CELINE provides a reference infrastructure repository at https://github.com/celine-eu/infra </p>
-<p>It includes:</p>
+<h3 id="step-4-use-via-api">Step 4: Use via API</h3>
+<pre><code class="language-bash"># 1. Build scenario (expensive, cached)
+curl -X POST http://localhost:8000/simulations/my-module.rec-planning/scenarios \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;config&quot;: {
+      &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+      &quot;reference_start&quot;: &quot;2024-01-01T00:00:00Z&quot;,
+      &quot;reference_end&quot;: &quot;2024-12-31T23:59:59Z&quot;
+    },
+    &quot;ttl_hours&quot;: 24
+  }'
+# Returns: {&quot;scenario_id&quot;: &quot;abc123&quot;, ...}
+
+# 2. Run simulation (fast, parameterized)
+curl -X POST http://localhost:8000/simulations/my-module.rec-planning/runs \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;scenario_id&quot;: &quot;abc123&quot;,
+    &quot;parameters&quot;: {&quot;pv_kwp&quot;: 100, &quot;battery_kwh&quot;: 50}
+  }'
+
+# 3. Run parameter sweep
+curl -X POST http://localhost:8000/simulations/my-module.rec-planning/sweep \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;scenario_id&quot;: &quot;abc123&quot;,
+    &quot;parameter_sets&quot;: [
+      {&quot;pv_kwp&quot;: 50},
+      {&quot;pv_kwp&quot;: 100},
+      {&quot;pv_kwp&quot;: 150}
+    ],
+    &quot;include_baseline&quot;: true
+  }'
+</code></pre>
+<hr />
+<h2 id="part-4-using-data-in-apps-and-simulations">Part 4: Using Data in Apps and Simulations</h2>
+<h3 id="option-1-value-fetchers-recommended">Option 1: Value Fetchers (Recommended)</h3>
+<p>Configure declarative fetchers:</p>
+<pre><code class="language-yaml"># config/values.yaml
+values:
+  consumption_timeseries:
+    client: dataset_api
+    query: |
+      SELECT timestamp, kwh FROM consumption
+      WHERE community_id = :community_id
+        AND timestamp &gt;= :start
+        AND timestamp &lt; :end
+    payload:
+      type: object
+      required: [community_id, start, end]
+      properties:
+        community_id: { type: string }
+        start: { type: string }
+        end: { type: string }
+</code></pre>
+<p>Use in code:</p>
+<pre><code class="language-python">data = await context.values.fetch(
+    &quot;consumption_timeseries&quot;,
+    {&quot;community_id&quot;: &quot;rec-folgaria&quot;, &quot;start&quot;: &quot;2024-01-01&quot;, &quot;end&quot;: &quot;2024-12-31&quot;}
+)
+</code></pre>
+<h3 id="option-2-direct-client-access">Option 2: Direct Client Access</h3>
+<p>For complex queries:</p>
+<pre><code class="language-python">client = context.datasets
+rows = await client.query(
+    sql=&quot;SELECT * FROM consumption WHERE ...&quot;,
+    limit=1000,
+)
+</code></pre>
+<hr />
+<h2 id="part-5-publishing-events">Part 5: Publishing Events</h2>
+<p>Apps can publish events to brokers:</p>
+<pre><code class="language-python">from celine.dt.contracts.events import create_custom_event
+
+class MyApp(DTApp[...]):
+    async def run(self, config, context):
+        # Compute result
+        result = await self._compute(config)
+
+        # Publish event
+        if context.has_broker():
+            event = create_custom_event(
+                event_type=&quot;my-module.result-computed&quot;,
+                payload={&quot;value&quot;: result.value},
+                source_app_key=self.key,
+            )
+            await context.publish_event(event)
+
+        return result
+</code></pre>
+<hr />
+<h2 id="part-6-testing">Part 6: Testing</h2>
+<h3 id="unit-testing-apps">Unit Testing Apps</h3>
+<pre><code class="language-python">@pytest.mark.asyncio
+async def test_my_app():
+    registry = DTRegistry()
+    registry.register_app(MyApp())
+
+    runner = DTAppRunner()
+    context = RunContext.create(datasets=None, state=None, token_provider=None)
+
+    result = await runner.run(
+        registry=registry,
+        app_key=&quot;my-module.my-app&quot;,
+        payload={&quot;input&quot;: &quot;value&quot;},
+        context=context,
+    )
+
+    assert result[&quot;output&quot;] == &quot;expected&quot;
+</code></pre>
+<h3 id="unit-testing-components">Unit Testing Components</h3>
+<pre><code class="language-python">@pytest.mark.asyncio
+async def test_energy_balance():
+    component = EnergyBalanceComponent()
+
+    result = await component.compute(
+        EnergyBalanceInput(
+            generation_kwh=[100, 200, 150],
+            consumption_kwh=[80, 250, 100],
+        ),
+        context=None,  # Not needed for pure components
+    )
+
+    assert result.self_sufficiency_ratio &gt; 0
+</code></pre>
+<h3 id="unit-testing-simulations">Unit Testing Simulations</h3>
+<pre><code class="language-python">@pytest.mark.asyncio
+async def test_rec_planning_simulation(tmp_path):
+    from celine.dt.core.simulation.workspace import FileWorkspace
+
+    simulation = RECPlanningSimulation()
+    workspace = FileWorkspace(&quot;test&quot;, tmp_path)
+    mock_context = MagicMock()
+
+    # Test build_scenario
+    config = RECScenarioConfig(
+        community_id=&quot;test&quot;,
+        reference_start=datetime(2024, 1, 1),
+        reference_end=datetime(2024, 12, 31),
+    )
+    scenario = await simulation.build_scenario(config, workspace, mock_context)
+
+    # Test simulate
+    parameters = RECParameters(pv_kwp=100)
+    result = await simulation.simulate(scenario, parameters, mock_context)
+
+    assert result.self_consumption_ratio &gt;= 0
+</code></pre>
+<hr />
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="using-components-in-apps">Using Components in Apps</h3>
+<pre><code class="language-python">class MyApp(DTApp[...]):
+    async def run(self, config, context):
+        # Get component from registry
+        energy_balance = context.get_component(&quot;energy-balance&quot;)
+
+        # Use component
+        balance = await energy_balance.compute(
+            EnergyBalanceInput(...),
+            context,
+        )
+
+        return MyResult(ratio=balance.self_consumption_ratio)
+</code></pre>
+<h3 id="workspace-artifacts-in-simulations">Workspace Artifacts in Simulations</h3>
+<pre><code class="language-python">async def build_scenario(self, config, workspace, context):
+    # Store time series as Parquet
+    await workspace.write_parquet(&quot;consumption.parquet&quot;, df)
+
+    # Store metadata as JSON
+    await workspace.write_json(&quot;metadata.json&quot;, {&quot;version&quot;: &quot;1.0&quot;})
+
+    # List artifacts
+    files = await workspace.list_files()
+
+async def simulate(self, scenario, parameters, context):
+    # Read from workspace (attached to context)
+    df = await context.workspace.read_parquet(&quot;consumption.parquet&quot;)
+</code></pre>
+<h3 id="error-handling">Error Handling</h3>
+<pre><code class="language-python">class MyApp(DTApp[...]):
+    async def run(self, config, context):
+        try:
+            data = await context.values.fetch(&quot;my-data&quot;, {...})
+        except ValueError as e:
+            # Validation errors become 400 responses
+            raise ValueError(f&quot;Invalid input: {e}&quot;)
+        except RuntimeError as e:
+            # Runtime errors become 500 responses
+            raise RuntimeError(f&quot;Computation failed: {e}&quot;)
+</code></pre>
+<hr />
+<h2 id="anti-patterns-to-avoid">Anti-Patterns to Avoid</h2>
+<p>❌ <strong>Don't import infrastructure in domain code</strong></p>
+<pre><code class="language-python"># BAD
+from fastapi import Request
+from sqlalchemy import create_engine
+</code></pre>
+<p>❌ <strong>Don't hardcode data access</strong></p>
+<pre><code class="language-python"># BAD
+import requests
+data = requests.get(&quot;https://api.example.com/data&quot;)
+</code></pre>
+<p>❌ <strong>Don't use global state</strong></p>
+<pre><code class="language-python"># BAD
+_cache = {}  # Module-level state
+</code></pre>
+<p>❌ <strong>Don't test only via HTTP</strong></p>
+<pre><code class="language-python"># BAD - integration test as only test
+def test_app():
+    response = client.post(&quot;/apps/my-app/run&quot;, json={...})
+</code></pre>
+<p>✅ <strong>Do use context for everything</strong></p>
+<pre><code class="language-python"># GOOD
+data = await context.values.fetch(&quot;my-data&quot;, params)
+await context.publish_event(event)
+</code></pre>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
 <ul>
-<li>Prefect Server</li>
-<li>Prefect Workers</li>
-<li>Marquez / OpenLineage</li>
-<li>PostgreSQL</li>
-<li>Keycloak</li>
-<li>Helm charts</li>
-<li>Minikube-based local setup</li>
-<li>Other CELINE specific services, that can be omitted customizing the helmfiles</li>
+<li><a href="../simulations/">Simulations</a> - Deep dive into simulation features</li>
+<li><a href="../values/">Values API</a> - Configure data fetchers</li>
+<li><a href="../brokers/">Brokers</a> - Set up event publishing</li>
 </ul>
-<h3 id="local-kubernetes-minikube">Local Kubernetes (Minikube)</h3>
-<pre><code class="language-bash">minikube start
-kubectl create namespace celine
-</code></pre>
-<p>Follow the infra repository README to deploy the full stack.</p>
-<h2 id="recommended-workflow">Recommended Workflow</h2>
-<table>
-<thead>
-<tr>
-<th>Stage</th>
-<th>Tool</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Local development</td>
-<td>Prefect local server</td>
-</tr>
-<tr>
-<td>Image build</td>
-<td><code>ghcr.io/celine-eu/pipeline</code></td>
-</tr>
-<tr>
-<td>Flow authoring</td>
-<td><code>flows/*.py</code></td>
-</tr>
-<tr>
-<td>Deployment config</td>
-<td><code>prefect.yaml</code></td>
-</tr>
-<tr>
-<td>Local execution</td>
-<td><code>local-process</code> work pool</td>
-</tr>
-<tr>
-<td>Production</td>
-<td>CELINE infra Helm charts</td>
-</tr>
-</tbody>
-</table>
-<h2 id="key-takeaways">Key Takeaways</h2>
-<ul>
-<li>Use <code>celine-utils pipeline init</code> to bootstrap pipelines</li>
-<li>One Docker image per pipeline app</li>
-<li>Always use <code>ghcr.io/celine-eu/pipeline</code></li>
-<li>Governance is declarative and automatic</li>
-<li>Prefect deployments are configuration, not code</li>
-<li>Use CELINE infra for production</li>
-</ul>
-<h2 id="need-help">Need help?</h2>
-<p>Open an issue or submit a pull request to propose improvements. Commercial support is also available.</p>
 
 
 
