@@ -1865,27 +1865,16 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#wiring-mappers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wiring Mappers
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#complete-example" class="md-nav__link">
+  <a href="#publishing-events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Complete Example
+        Publishing Events
       
     </span>
   </a>
@@ -2229,8 +2218,8 @@ class DTApp(Protocol[C, O]):
 <pre><code class="language-python">from pydantic import BaseModel, Field
 from datetime import datetime
 
-class EVChargingConfig(BaseModel):
-    &quot;&quot;&quot;Configuration for EV charging readiness assessment.&quot;&quot;&quot;
+class MyAppConfig(BaseModel):
+    &quot;&quot;&quot;Configuration for my app.&quot;&quot;&quot;
 
     community_id: str = Field(
         ...,  # Required
@@ -2248,44 +2237,32 @@ class EVChargingConfig(BaseModel):
         le=168,
         description=&quot;Forecast window in hours&quot;,
     )
-    pv_capacity_kw: float = Field(
-        ...,
-        gt=0,
-        description=&quot;Total PV capacity in kW&quot;,
-    )
-    ev_charging_capacity_kw: float = Field(
-        ...,
-        gt=0,
-        description=&quot;Total EV charging capacity in kW&quot;,
-    )
 
-class EVChargingResult(BaseModel):
-    &quot;&quot;&quot;Result of EV charging readiness assessment.&quot;&quot;&quot;
+class MyAppResult(BaseModel):
+    &quot;&quot;&quot;Result of my app.&quot;&quot;&quot;
 
     indicator: str = Field(
-        description=&quot;Readiness indicator: OPTIMAL, SUBOPTIMAL, or CRITICAL&quot;
+        description=&quot;Status indicator&quot;
     )
     confidence: float = Field(
         ge=0.0,
         le=1.0,
         description=&quot;Confidence score&quot;,
     )
-    expected_pv_kwh: float
-    pv_ev_ratio: float
     recommendations: list[str]
     window_start: datetime
     window_end: datetime
 </code></pre>
 <h3 id="schema-exposure">Schema Exposure</h3>
 <p>Schemas are automatically exposed via API:</p>
-<pre><code class="language-bash">curl http://localhost:8000/apps/ev-charging-readiness/describe
+<pre><code class="language-bash">curl http://localhost:8000/apps/my-app/describe
 </code></pre>
 <pre><code class="language-json">{
-  &quot;key&quot;: &quot;ev-charging-readiness&quot;,
-  &quot;version&quot;: &quot;1.1.0&quot;,
+  &quot;key&quot;: &quot;my-app&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
   &quot;config_schema&quot;: {
     &quot;type&quot;: &quot;object&quot;,
-    &quot;required&quot;: [&quot;community_id&quot;, &quot;location&quot;, &quot;pv_capacity_kw&quot;, &quot;ev_charging_capacity_kw&quot;],
+    &quot;required&quot;: [&quot;community_id&quot;, &quot;location&quot;],
     &quot;properties&quot;: {
       &quot;community_id&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;...&quot;},
       &quot;window_hours&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 24, &quot;minimum&quot;: 1, &quot;maximum&quot;: 168}
@@ -2294,7 +2271,7 @@ class EVChargingResult(BaseModel):
   &quot;result_schema&quot;: {
     &quot;type&quot;: &quot;object&quot;,
     &quot;properties&quot;: {
-      &quot;indicator&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]},
+      &quot;indicator&quot;: {&quot;type&quot;: &quot;string&quot;},
       &quot;confidence&quot;: {&quot;type&quot;: &quot;number&quot;, &quot;minimum&quot;: 0, &quot;maximum&quot;: 1}
     }
   }
@@ -2321,7 +2298,7 @@ class EVChargingResult(BaseModel):
     state = await context.state.get(f&quot;app-state:{config.community_id}&quot;)
     await context.state.set(f&quot;app-state:{config.community_id}&quot;, new_state)
 
-    # Event publishing
+    # Event publishing (see Brokers documentation)
     if context.has_broker():
         await context.publish_event(my_event)
 
@@ -2410,190 +2387,111 @@ class EVChargingResult(BaseModel):
 <p>Transform incoming API payload before validation:</p>
 <pre><code class="language-python">from celine.dt.contracts.mapper import InputMapper
 
-class CamelCaseInputMapper(InputMapper[MyConfig]):
-    &quot;&quot;&quot;Convert camelCase API input to snake_case config.&quot;&quot;&quot;
-
-    input_type = MyConfig
-
-    def map(self, raw: dict) -&gt; MyConfig:
-        # Transform keys
-        transformed = {
+class MyInputMapper(InputMapper[MyConfig]):
+    def map(self, raw: dict) -&gt; dict:
+        # Transform external format to internal
+        return {
             &quot;community_id&quot;: raw.get(&quot;communityId&quot;),
-            &quot;window_hours&quot;: raw.get(&quot;windowHours&quot;, 24),
-            &quot;pv_capacity_kw&quot;: raw.get(&quot;pvCapacityKw&quot;),
+            &quot;location&quot;: {
+                &quot;lat&quot;: raw.get(&quot;latitude&quot;),
+                &quot;lon&quot;: raw.get(&quot;longitude&quot;),
+            },
+            &quot;window_hours&quot;: raw.get(&quot;hours&quot;, 24),
         }
-        return MyConfig.model_validate(transformed)
 </code></pre>
 <h3 id="output-mapper">Output Mapper</h3>
-<p>Transform result before sending to API:</p>
+<p>Transform result before returning to caller:</p>
 <pre><code class="language-python">from celine.dt.contracts.mapper import OutputMapper
 
-class CamelCaseOutputMapper(OutputMapper[MyResult]):
-    &quot;&quot;&quot;Convert snake_case result to camelCase API output.&quot;&quot;&quot;
-
-    output_type = MyResult
-
+class MyOutputMapper(OutputMapper[MyResult]):
     def map(self, result: MyResult) -&gt; dict:
+        # Transform internal format to external
         return {
-            &quot;indicator&quot;: result.indicator,
-            &quot;confidenceScore&quot;: result.confidence,
-            &quot;expectedPvKwh&quot;: result.expected_pv_kwh,
-            &quot;recommendations&quot;: result.recommendations,
+            &quot;status&quot;: result.indicator,
+            &quot;score&quot;: result.confidence,
+            &quot;actions&quot;: result.recommendations,
         }
 </code></pre>
-<h3 id="wiring-mappers">Wiring Mappers</h3>
-<pre><code class="language-python">class MyApp(DTApp[MyConfig, MyResult]):
-    key = &quot;my-app&quot;
+<hr />
+<h2 id="publishing-events">Publishing Events</h2>
+<p>Apps can publish domain-specific events via the broker. <strong>Each module defines its own events</strong> in a dedicated <code>events.py</code> file.</p>
+<pre><code class="language-python"># my_module/events.py
+from datetime import datetime
+from pydantic import BaseModel, Field
+from celine.dt.contracts.events import DTEvent, EventSource
+
+class MyEventPayload(BaseModel):
+    &quot;&quot;&quot;Payload for my module's events.&quot;&quot;&quot;
+    community_id: str
+    indicator: str
+    confidence: float
+    computed_at: datetime
+
+class MyModuleEventTypes:
+    &quot;&quot;&quot;Event type constants for my module.&quot;&quot;&quot;
+    RESULT_COMPUTED = &quot;dt.my-module.result-computed&quot;
+
+def create_result_event(
+    *,
+    community_id: str,
+    indicator: str,
+    confidence: float,
+    app_version: str = &quot;1.0.0&quot;,
+) -&gt; DTEvent[MyEventPayload]:
+    &quot;&quot;&quot;Factory function to create a result computed event.&quot;&quot;&quot;
+    return DTEvent[MyEventPayload](
+        event_type=MyModuleEventTypes.RESULT_COMPUTED,
+        source=EventSource(
+            app_key=&quot;my-module.my-app&quot;,
+            app_version=app_version,
+            module=&quot;my-module&quot;,
+        ),
+        payload=MyEventPayload(
+            community_id=community_id,
+            indicator=indicator,
+            confidence=confidence,
+            computed_at=datetime.utcnow(),
+        ),
+    )
+</code></pre>
+<p>Then use in your app:</p>
+<pre><code class="language-python"># my_module/apps/my_app.py
+from celine.dt.contracts.app import DTApp
+from celine.dt.core.context import RunContext
+
+# Import from YOUR module's events, not from contracts
+from my_module.events import create_result_event
+from my_module.models import MyConfig, MyResult
+
+class MyApp(DTApp[MyConfig, MyResult]):
+    key = &quot;my-module.my-app&quot;
     version = &quot;1.0.0&quot;
 
     config_type = MyConfig
     result_type = MyResult
 
-    input_mapper = CamelCaseInputMapper()
-    output_mapper = CamelCaseOutputMapper()
-
-    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-        # config is already transformed by input_mapper
-        # result will be transformed by output_mapper
-        ...
-</code></pre>
-<hr />
-<h2 id="complete-example">Complete Example</h2>
-<pre><code class="language-python"># my_module/models.py
-from pydantic import BaseModel, Field
-from datetime import datetime
-
-class EVChargingConfig(BaseModel):
-    community_id: str
-    location: dict
-    window_hours: int = Field(default=24, ge=1, le=168)
-    pv_capacity_kw: float = Field(gt=0)
-    ev_charging_capacity_kw: float = Field(gt=0)
-
-class EVChargingResult(BaseModel):
-    indicator: str
-    confidence: float
-    expected_pv_kwh: float
-    pv_ev_ratio: float
-    recommendations: list[str]
-    window_start: datetime
-    window_end: datetime
-</code></pre>
-<pre><code class="language-python"># my_module/apps/ev_charging.py
-from datetime import timedelta
-from celine.dt.contracts.app import DTApp
-from celine.dt.contracts.events import create_ev_charging_event
-from celine.dt.core.context import RunContext
-
-from ..models import EVChargingConfig, EVChargingResult
-
-class EVChargingReadinessApp(DTApp[EVChargingConfig, EVChargingResult]):
-    key = &quot;ev-charging-readiness&quot;
-    version = &quot;1.1.0&quot;
-
-    config_type = EVChargingConfig
-    result_type = EVChargingResult
-
     input_mapper = None
     output_mapper = None
 
-    async def run(
-        self,
-        config: EVChargingConfig,
-        context: RunContext,
-    ) -&gt; EVChargingResult:
-        # 1. Fetch weather forecast
-        weather = await context.values.fetch(&quot;weather_forecast&quot;, {
-            &quot;lat&quot;: config.location[&quot;lat&quot;],
-            &quot;lon&quot;: config.location[&quot;lon&quot;],
-            &quot;hours&quot;: config.window_hours,
-        })
+    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
+        # Compute result
+        result = await self._compute(config, context)
 
-        # 2. Compute PV generation estimate
-        expected_pv_kwh = self._estimate_pv_generation(
-            weather=weather,
-            capacity_kw=config.pv_capacity_kw,
-            hours=config.window_hours,
-        )
-
-        # 3. Compute ratio and indicator
-        ev_demand_kwh = config.ev_charging_capacity_kw * config.window_hours
-        pv_ev_ratio = expected_pv_kwh / ev_demand_kwh if ev_demand_kwh &gt; 0 else 0
-
-        indicator, confidence = self._compute_indicator(pv_ev_ratio, weather)
-        recommendations = self._generate_recommendations(indicator, pv_ev_ratio)
-
-        # 4. Build result
-        window_start = context.now
-        window_end = context.now + timedelta(hours=config.window_hours)
-
-        result = EVChargingResult(
-            indicator=indicator,
-            confidence=confidence,
-            expected_pv_kwh=expected_pv_kwh,
-            pv_ev_ratio=pv_ev_ratio,
-            recommendations=recommendations,
-            window_start=window_start,
-            window_end=window_end,
-        )
-
-        # 5. Publish event (optional)
+        # Publish event if broker is available
         if context.has_broker():
-            event = create_ev_charging_event(
+            event = create_result_event(
                 community_id=config.community_id,
-                window_start=window_start,
-                window_end=window_end,
-                indicator=indicator,
-                confidence=confidence,
-                expected_pv_kwh=expected_pv_kwh,
+                indicator=result.indicator,
+                confidence=result.confidence,
+                app_version=self.version,
             )
             await context.publish_event(event)
 
         return result
-
-    def _estimate_pv_generation(self, weather, capacity_kw, hours) -&gt; float:
-        # Simplified estimation based on cloud cover
-        avg_clouds = sum(w[&quot;clouds_pct&quot;] for w in weather) / len(weather)
-        efficiency = 1 - (avg_clouds / 100) * 0.7
-        peak_sun_hours = hours * 0.4  # Rough estimate
-        return capacity_kw * peak_sun_hours * efficiency
-
-    def _compute_indicator(self, ratio, weather) -&gt; tuple[str, float]:
-        if ratio &gt;= 0.8:
-            return &quot;OPTIMAL&quot;, 0.9
-        elif ratio &gt;= 0.4:
-            return &quot;SUBOPTIMAL&quot;, 0.75
-        else:
-            return &quot;CRITICAL&quot;, 0.85
-
-    def _generate_recommendations(self, indicator, ratio) -&gt; list[str]:
-        if indicator == &quot;OPTIMAL&quot;:
-            return [&quot;Excellent conditions for EV charging.&quot;]
-        elif indicator == &quot;SUBOPTIMAL&quot;:
-            return [
-                &quot;Consider delayed charging during peak sun hours.&quot;,
-                &quot;Prioritize critical charging sessions.&quot;,
-            ]
-        else:
-            return [
-                &quot;Minimize charging if possible.&quot;,
-                &quot;Use off-peak grid tariffs.&quot;,
-                &quot;Defer non-essential charging.&quot;,
-            ]
 </code></pre>
-<pre><code class="language-python"># my_module/module.py
-from celine.dt.core.registry import DTRegistry
-from .apps.ev_charging import EVChargingReadinessApp
-
-class EVChargingModule:
-    name = &quot;ev-charging&quot;
-    version = &quot;1.1.0&quot;
-
-    def register(self, registry: DTRegistry) -&gt; None:
-        registry.register_app(EVChargingReadinessApp())
-
-module = EVChargingModule()
-</code></pre>
+<blockquote>
+<p><strong>Important</strong>: Domain-specific events belong in your module's <code>events.py</code>, not in <code>celine.dt.contracts.events</code>. The contracts module only contains base event types and generic app lifecycle events.</p>
+</blockquote>
 <hr />
 <h2 id="registration">Registration</h2>
 <h3 id="via-module">Via Module</h3>
@@ -2619,8 +2517,8 @@ module = EVChargingModule()
 <p>Response:</p>
 <pre><code class="language-json">[
   {
-    &quot;key&quot;: &quot;ev-charging-readiness&quot;,
-    &quot;version&quot;: &quot;1.1.0&quot;,
+    &quot;key&quot;: &quot;my-module.my-app&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
     &quot;config_schema&quot;: { ... },
     &quot;result_schema&quot;: { ... }
   }
@@ -2631,8 +2529,8 @@ module = EVChargingModule()
 </code></pre>
 <p>Response:</p>
 <pre><code class="language-json">{
-  &quot;key&quot;: &quot;ev-charging-readiness&quot;,
-  &quot;version&quot;: &quot;1.1.0&quot;,
+  &quot;key&quot;: &quot;my-module.my-app&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
   &quot;defaults&quot;: {},
   &quot;config_schema&quot;: { ... },
   &quot;result_schema&quot;: { ... }
@@ -2644,18 +2542,14 @@ Content-Type: application/json
 
 {
   &quot;community_id&quot;: &quot;rec-folgaria&quot;,
-  &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-  &quot;pv_capacity_kw&quot;: 1200,
-  &quot;ev_charging_capacity_kw&quot;: 800
+  &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1}
 }
 </code></pre>
 <p>Response:</p>
 <pre><code class="language-json">{
   &quot;indicator&quot;: &quot;OPTIMAL&quot;,
   &quot;confidence&quot;: 0.9,
-  &quot;expected_pv_kwh&quot;: 5100.0,
-  &quot;pv_ev_ratio&quot;: 0.27,
-  &quot;recommendations&quot;: [&quot;Excellent conditions for EV charging.&quot;],
+  &quot;recommendations&quot;: [&quot;Continue normal operations.&quot;],
   &quot;window_start&quot;: &quot;2024-01-15T10:00:00Z&quot;,
   &quot;window_end&quot;: &quot;2024-01-16T10:00:00Z&quot;
 }
@@ -2667,12 +2561,12 @@ Content-Type: application/json
 from unittest.mock import MagicMock, AsyncMock
 from datetime import datetime, timezone
 
-from my_module.apps.ev_charging import EVChargingReadinessApp
-from my_module.models import EVChargingConfig
+from my_module.apps.my_app import MyApp
+from my_module.models import MyConfig
 
 @pytest.fixture
 def app():
-    return EVChargingReadinessApp()
+    return MyApp()
 
 @pytest.fixture
 def mock_context():
@@ -2691,31 +2585,25 @@ def mock_context():
     return context
 
 @pytest.mark.asyncio
-async def test_ev_charging_optimal(app, mock_context):
-    config = EVChargingConfig(
+async def test_app_returns_result(app, mock_context):
+    config = MyConfig(
         community_id=&quot;test-rec&quot;,
         location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-        window_hours=24,
-        pv_capacity_kw=1200,
-        ev_charging_capacity_kw=100,  # Low demand = optimal
     )
 
     result = await app.run(config, mock_context)
 
-    assert result.indicator == &quot;OPTIMAL&quot;
-    assert result.confidence &gt;= 0.8
-    assert result.expected_pv_kwh &gt; 0
+    assert result.indicator in [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]
+    assert 0 &lt;= result.confidence &lt;= 1
 
 @pytest.mark.asyncio
-async def test_ev_charging_publishes_event(app, mock_context):
+async def test_app_publishes_event(app, mock_context):
     mock_context.has_broker.return_value = True
     mock_context.publish_event = AsyncMock()
 
-    config = EVChargingConfig(
+    config = MyConfig(
         community_id=&quot;test-rec&quot;,
         location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-        pv_capacity_kw=1200,
-        ev_charging_capacity_kw=800,
     )
 
     await app.run(config, mock_context)
@@ -2726,24 +2614,21 @@ async def test_ev_charging_publishes_event(app, mock_context):
 <pre><code class="language-python">from fastapi.testclient import TestClient
 from celine.dt.main import create_app
 
-def test_ev_charging_api():
+def test_app_api():
     app = create_app()
     client = TestClient(app)
 
     response = client.post(
-        &quot;/apps/ev-charging-readiness/run&quot;,
+        &quot;/apps/my-module.my-app/run&quot;,
         json={
             &quot;community_id&quot;: &quot;test-rec&quot;,
             &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-            &quot;pv_capacity_kw&quot;: 1200,
-            &quot;ev_charging_capacity_kw&quot;: 800,
         },
     )
 
     assert response.status_code == 200
     data = response.json()
     assert &quot;indicator&quot; in data
-    assert data[&quot;indicator&quot;] in [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]
 </code></pre>
 <hr />
 <h2 id="best-practices">Best Practices</h2>
@@ -2755,6 +2640,7 @@ def test_ev_charging_api():
 <li>Publish events for observability</li>
 <li>Validate business rules in <code>run()</code></li>
 <li>Return rich, typed results</li>
+<li>Define module-specific events in your module's <code>events.py</code></li>
 </ul>
 <h3 id="dont">Don't</h3>
 <ul>
@@ -2764,6 +2650,7 @@ def test_ev_charging_api():
 <li>Perform heavy computation in <code>run()</code> (use components)</li>
 <li>Hardcode configuration values</li>
 <li>Swallow exceptions silently</li>
+<li>Put domain-specific events in <code>celine.dt.contracts.events</code></li>
 </ul>
 <hr />
 <h2 id="error-handling">Error Handling</h2>
@@ -2791,7 +2678,7 @@ def test_ev_charging_api():
 <li><a href="../developer-guide/#part-2-creating-a-component">Components</a> - Build reusable computation units</li>
 <li><a href="../simulations/">Simulations</a> - Create what-if explorations</li>
 <li><a href="../values/">Values API</a> - Configure data fetchers</li>
-<li><a href="../brokers/">Brokers</a> - Set up event publishing</li>
+<li><a href="../brokers/">Brokers</a> - Set up event publishing and subscription</li>
 </ul>
 
 
