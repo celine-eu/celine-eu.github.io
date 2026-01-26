@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/brokers/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/apps/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Event Broker Documentation - CELINE Project</title>
+        <title>Apps - CELINE Project</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#event-broker-documentation" class="md-skip">
+        <a href="#apps" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Event Broker Documentation
+              Apps
             
           </span>
         </div>
@@ -1715,44 +1715,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#the-dtapp-contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        The DTApp Contract
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Quick Start">
+    <nav class="md-nav" aria-label="The DTApp Contract">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-configure-the-broker" class="md-nav__link">
+  <a href="#protocol-definition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Configure the broker
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-set-environment-variables-optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Set environment variables (optional)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-publish-events-from-an-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Publish events from an app
+        Protocol Definition
       
     </span>
   </a>
@@ -1765,10 +1743,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#execution-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Execution Flow
       
     </span>
   </a>
@@ -1776,22 +1754,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#input-and-output-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
+        Input and Output Models
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration">
+    <nav class="md-nav" aria-label="Input and Output Models">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#broker-configuration-file" class="md-nav__link">
+  <a href="#defining-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Broker Configuration File
+        Defining Models
       
     </span>
   </a>
@@ -1799,21 +1777,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
+  <a href="#schema-exposure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment Variables
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#application-settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Application Settings
+        Schema Exposure
       
     </span>
   </a>
@@ -1826,22 +1793,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#event-schemas" class="md-nav__link">
+  <a href="#runcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Event Schemas
+        RunContext
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Event Schemas">
+    <nav class="md-nav" aria-label="RunContext">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#base-event-structure" class="md-nav__link">
+  <a href="#available-context-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Base Event Structure
+        Available Context Properties
       
     </span>
   </a>
@@ -1849,121 +1816,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ev-charging-readiness-event" class="md-nav__link">
+  <a href="#available-context-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        EV Charging Readiness Event
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#app-execution-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        App Execution Events
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="App Execution Events">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#execution-started" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Execution Started
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#execution-completed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Execution Completed
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#execution-failed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Execution Failed
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topic-conventions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Topic Conventions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mqtt-implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MQTT Implementation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="MQTT Implementation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tls-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        TLS Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#qos-levels" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        QoS Levels
+        Available Context Methods
       
     </span>
   </a>
@@ -1976,22 +1832,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage-in-apps" class="md-nav__link">
+  <a href="#mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage in Apps
+        Mappers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage in Apps">
+    <nav class="md-nav" aria-label="Mappers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-publishing" class="md-nav__link">
+  <a href="#input-mapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Publishing
+        Input Mapper
       
     </span>
   </a>
@@ -1999,10 +1855,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checking-broker-availability" class="md-nav__link">
+  <a href="#output-mapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checking Broker Availability
+        Output Mapper
       
     </span>
   </a>
@@ -2010,10 +1866,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-named-brokers" class="md-nav__link">
+  <a href="#wiring-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Named Brokers
+        Wiring Mappers
       
     </span>
   </a>
@@ -2026,22 +1882,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
+  <a href="#complete-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing
+        Complete Example
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Testing">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#running-mosquitto-locally" class="md-nav__link">
+  <a href="#via-module" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running Mosquitto Locally
+        Via Module
       
     </span>
   </a>
@@ -2049,21 +1916,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#subscribing-to-events" class="md-nav__link">
+  <a href="#with-defaults" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Subscribing to Events
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#publishing-test-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publishing Test Events
+        With Defaults
       
     </span>
   </a>
@@ -2076,10 +1932,149 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-custom-brokers" class="md-nav__link">
+  <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating Custom Brokers
+        API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        List Apps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Describe App
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run App
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Apps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-test-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit Test (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
       
     </span>
   </a>
@@ -2103,383 +2098,701 @@
 
 
 
-<h1 id="event-broker-documentation">Event Broker Documentation</h1>
-<p>This document describes the <strong>event broker</strong> system in the CELINE Digital Twin runtime.</p>
-<p>The broker system enables DT apps to publish computed events to external systems
-(e.g., MQTT brokers, message queues) for real-time integration with downstream consumers.</p>
+<h1 id="apps">Apps</h1>
+<p>This document covers <strong>DTApp</strong> in depth—the contract, execution model, mappers, and best practices for building Digital Twin applications.</p>
 <hr />
 <h2 id="overview">Overview</h2>
-<p>The broker infrastructure provides:</p>
-<ul>
-<li><strong>Abstract Broker protocol</strong> for message publishing</li>
-<li><strong>MQTT implementation</strong> for IoT/edge scenarios</li>
-<li><strong>Event schemas</strong> for type-safe event publishing</li>
-<li><strong>Broker service</strong> for high-level operations</li>
-<li><strong>Configuration-driven</strong> broker setup</li>
-</ul>
-<hr />
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="1-configure-the-broker">1. Configure the broker</h3>
-<p>Create or edit <code>config/brokers.yaml</code>:</p>
-<pre><code class="language-yaml">brokers:
-  mqtt_local:
-    class: celine.dt.core.broker.mqtt:MqttBroker
-    enabled: true
-    config:
-      host: localhost
-      port: 1883
-      topic_prefix: &quot;celine/dt/&quot;
-
-default_broker: mqtt_local
-</code></pre>
-<h3 id="2-set-environment-variables-optional">2. Set environment variables (optional)</h3>
-<pre><code class="language-bash">export MQTT_HOST=mosquitto.local
-export MQTT_PORT=1883
-</code></pre>
-<h3 id="3-publish-events-from-an-app">3. Publish events from an app</h3>
-<pre><code class="language-python">from celine.dt.contracts.events import create_ev_charging_event
-
-# In your app's run method:
-event = create_ev_charging_event(
-    community_id=&quot;rec-folgaria&quot;,
-    window_start=start,
-    window_end=end,
-    indicator=&quot;OPTIMAL&quot;,
-    confidence=0.85,
-    # ... other fields
-)
-
-result = await context.publish_event(event)
-if result.success:
-    print(f&quot;Published: {result.message_id}&quot;)
-</code></pre>
-<hr />
-<h2 id="architecture">Architecture</h2>
-<pre><code>┌──────────────────────────────────────────────────────────────┐
-│                         DT Runtime                            │
-│  ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐ │
-│  │   DT App    │──▶│  RunContext │──▶│   BrokerService     │ │
-│  └─────────────┘   └─────────────┘   └──────────┬──────────┘ │
-│                                                  │            │
-│                                      ┌───────────┴──────────┐ │
-│                                      │   BrokerRegistry     │ │
-│                                      │  ┌────────────────┐  │ │
-│                                      │  │  MqttBroker    │  │ │
-│                                      │  └────────┬───────┘  │ │
-│                                      └───────────┼──────────┘ │
-└──────────────────────────────────────────────────┼────────────┘
-                                                   │
-                                                   ▼
-                                        ┌──────────────────┐
-                                        │  MQTT Broker     │
-                                        │  (Mosquitto)     │
-                                        └──────────────────┘
-</code></pre>
-<hr />
-<h2 id="configuration">Configuration</h2>
-<h3 id="broker-configuration-file">Broker Configuration File</h3>
-<p>Location: <code>config/brokers.yaml</code></p>
-<pre><code class="language-yaml">brokers:
-  # Broker name (used for reference)
-  mqtt_local:
-    # Import path to broker class
-    class: celine.dt.core.broker.mqtt:MqttBroker
-    # Enable/disable this broker
-    enabled: true
-    # Configuration passed to constructor
-    config:
-      host: &quot;${MQTT_HOST:-localhost}&quot;
-      port: ${MQTT_PORT:-1883}
-      username: &quot;${MQTT_USERNAME:-}&quot;
-      password: &quot;${MQTT_PASSWORD:-}&quot;
-      use_tls: false
-      topic_prefix: &quot;celine/dt/&quot;
-      keepalive: 60
-      clean_session: true
-
-# Default broker when none specified
-default_broker: mqtt_local
-</code></pre>
-<h3 id="environment-variables">Environment Variables</h3>
+<p>An <strong>App</strong> is an external-facing, self-contained operation exposed via the <code>/apps</code> API. Apps orchestrate components, fetch data, publish events, and return results.</p>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
+<th>Characteristic</th>
 <th>Description</th>
-<th>Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>MQTT_HOST</code></td>
-<td>MQTT broker hostname</td>
-<td><code>localhost</code></td>
+<td><strong>Exposure</strong></td>
+<td>REST API at <code>/apps/{key}/run</code></td>
 </tr>
 <tr>
-<td><code>MQTT_PORT</code></td>
-<td>MQTT broker port</td>
-<td><code>1883</code></td>
+<td><strong>Side Effects</strong></td>
+<td>Allowed (events, state, external calls)</td>
 </tr>
 <tr>
-<td><code>MQTT_USERNAME</code></td>
-<td>Authentication username</td>
-<td>(none)</td>
+<td><strong>Execution</strong></td>
+<td>One-shot, request-scoped</td>
 </tr>
 <tr>
-<td><code>MQTT_PASSWORD</code></td>
-<td>Authentication password</td>
-<td>(none)</td>
+<td><strong>Dependencies</strong></td>
+<td>Injected via <code>RunContext</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="application-settings">Application Settings</h3>
-<p>In <code>celine/dt/core/config.py</code>:</p>
-<pre><code class="language-python"># Enable/disable broker publishing
-broker_enabled: bool = True
+<hr />
+<h2 id="the-dtapp-contract">The DTApp Contract</h2>
+<p>Apps implement the <code>DTApp</code> protocol:</p>
+<pre><code class="language-python">from typing import ClassVar, Type
+from pydantic import BaseModel
+from celine.dt.contracts.app import DTApp
+from celine.dt.contracts.mapper import InputMapper, OutputMapper
+from celine.dt.core.context import RunContext
 
-# Publish app execution events
-broker_publish_app_events: bool = True
+class MyConfig(BaseModel):
+    &quot;&quot;&quot;Input configuration for the app.&quot;&quot;&quot;
+    param: str
 
-# Publish computed result events
-broker_publish_computed_events: bool = True
+class MyResult(BaseModel):
+    &quot;&quot;&quot;Output from the app.&quot;&quot;&quot;
+    value: str
+
+class MyApp(DTApp[MyConfig, MyResult]):
+    # Required class attributes
+    key: ClassVar[str] = &quot;my-module.my-app&quot;
+    version: ClassVar[str] = &quot;1.0.0&quot;
+
+    # Required type references
+    config_type: Type[MyConfig] = MyConfig
+    result_type: Type[MyResult] = MyResult
+
+    # Optional mappers (can be None)
+    input_mapper: InputMapper[MyConfig] | None = None
+    output_mapper: OutputMapper[MyResult] | None = None
+
+    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
+        &quot;&quot;&quot;Execute the app logic.&quot;&quot;&quot;
+        return MyResult(value=f&quot;Processed: {config.param}&quot;)
+</code></pre>
+<h3 id="protocol-definition">Protocol Definition</h3>
+<pre><code class="language-python">@runtime_checkable
+class DTApp(Protocol[C, O]):
+    &quot;&quot;&quot;Digital Twin App contract.&quot;&quot;&quot;
+
+    key: ClassVar[str]           # Unique identifier
+    version: ClassVar[str]       # Semantic version
+
+    config_type: Type[C]         # Pydantic model for input
+    result_type: Type[O]         # Pydantic model for output
+
+    input_mapper: InputMapper[C] | None    # Transform API input
+    output_mapper: OutputMapper[O] | None  # Transform API output
+
+    async def run(self, config: C, context: RunContext) -&gt; O:
+        &quot;&quot;&quot;Execute the app.&quot;&quot;&quot;
+        ...
 </code></pre>
 <hr />
-<h2 id="event-schemas">Event Schemas</h2>
-<p>Events follow a common envelope pattern with type-specific payloads.</p>
-<h3 id="base-event-structure">Base Event Structure</h3>
+<h2 id="execution-flow">Execution Flow</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                           App Execution Flow                                 │
+│                                                                              │
+│   HTTP Request                                                              │
+│   POST /apps/my-app/run                                                     │
+│   {&quot;param&quot;: &quot;value&quot;}                                                        │
+│         │                                                                    │
+│         ▼                                                                    │
+│   ┌─────────────────┐                                                       │
+│   │  Input Mapper   │ ◄── Optional: transform API payload                   │
+│   │  (if defined)   │                                                       │
+│   └────────┬────────┘                                                       │
+│            │                                                                 │
+│            ▼                                                                 │
+│   ┌─────────────────┐                                                       │
+│   │    Validate     │ ◄── Pydantic validation against config_type          │
+│   │  config_type    │                                                       │
+│   └────────┬────────┘                                                       │
+│            │                                                                 │
+│            ▼                                                                 │
+│   ┌─────────────────┐     ┌─────────────────┐                              │
+│   │    app.run()    │────▶│   RunContext    │                              │
+│   │                 │     │ - values        │                              │
+│   │  Domain Logic   │     │ - state         │                              │
+│   │                 │     │ - broker        │                              │
+│   └────────┬────────┘     │ - request_id    │                              │
+│            │              └─────────────────┘                              │
+│            ▼                                                                 │
+│   ┌─────────────────┐                                                       │
+│   │  Output Mapper  │ ◄── Optional: transform result                       │
+│   │  (if defined)   │                                                       │
+│   └────────┬────────┘                                                       │
+│            │                                                                 │
+│            ▼                                                                 │
+│   HTTP Response                                                             │
+│   {&quot;value&quot;: &quot;Processed: value&quot;}                                             │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="input-and-output-models">Input and Output Models</h2>
+<h3 id="defining-models">Defining Models</h3>
+<p>Use Pydantic models with Field descriptors:</p>
+<pre><code class="language-python">from pydantic import BaseModel, Field
+from datetime import datetime
+
+class EVChargingConfig(BaseModel):
+    &quot;&quot;&quot;Configuration for EV charging readiness assessment.&quot;&quot;&quot;
+
+    community_id: str = Field(
+        ...,  # Required
+        description=&quot;Renewable Energy Community identifier&quot;,
+        examples=[&quot;rec-folgaria&quot;],
+    )
+    location: dict = Field(
+        ...,
+        description=&quot;Geographic coordinates&quot;,
+        examples=[{&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1}],
+    )
+    window_hours: int = Field(
+        default=24,
+        ge=1,
+        le=168,
+        description=&quot;Forecast window in hours&quot;,
+    )
+    pv_capacity_kw: float = Field(
+        ...,
+        gt=0,
+        description=&quot;Total PV capacity in kW&quot;,
+    )
+    ev_charging_capacity_kw: float = Field(
+        ...,
+        gt=0,
+        description=&quot;Total EV charging capacity in kW&quot;,
+    )
+
+class EVChargingResult(BaseModel):
+    &quot;&quot;&quot;Result of EV charging readiness assessment.&quot;&quot;&quot;
+
+    indicator: str = Field(
+        description=&quot;Readiness indicator: OPTIMAL, SUBOPTIMAL, or CRITICAL&quot;
+    )
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+        description=&quot;Confidence score&quot;,
+    )
+    expected_pv_kwh: float
+    pv_ev_ratio: float
+    recommendations: list[str]
+    window_start: datetime
+    window_end: datetime
+</code></pre>
+<h3 id="schema-exposure">Schema Exposure</h3>
+<p>Schemas are automatically exposed via API:</p>
+<pre><code class="language-bash">curl http://localhost:8000/apps/ev-charging-readiness/describe
+</code></pre>
 <pre><code class="language-json">{
-  &quot;@context&quot;: &quot;https://celine-project.eu/contexts/dt-event.jsonld&quot;,
-  &quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;,
-  &quot;id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
-  &quot;source&quot;: {
-    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
-    &quot;app_version&quot;: &quot;1.1.0&quot;,
-    &quot;module&quot;: &quot;ev-charging&quot;,
-    &quot;instance_id&quot;: &quot;dt-instance-1&quot;
+  &quot;key&quot;: &quot;ev-charging-readiness&quot;,
+  &quot;version&quot;: &quot;1.1.0&quot;,
+  &quot;config_schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;required&quot;: [&quot;community_id&quot;, &quot;location&quot;, &quot;pv_capacity_kw&quot;, &quot;ev_charging_capacity_kw&quot;],
+    &quot;properties&quot;: {
+      &quot;community_id&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;...&quot;},
+      &quot;window_hours&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 24, &quot;minimum&quot;: 1, &quot;maximum&quot;: 168}
+    }
   },
-  &quot;timestamp&quot;: &quot;2025-01-24T10:30:00Z&quot;,
-  &quot;correlation_id&quot;: &quot;req-12345&quot;,
-  &quot;payload&quot;: {
-    // Type-specific payload
-  },
-  &quot;metadata&quot;: {}
-}
-</code></pre>
-<h3 id="ev-charging-readiness-event">EV Charging Readiness Event</h3>
-<p>Type: <code>dt.ev-charging.readiness-computed</code></p>
-<pre><code class="language-json">{
-  &quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;,
-  &quot;payload&quot;: {
-    &quot;community_id&quot;: &quot;rec-folgaria&quot;,
-    &quot;window_start&quot;: &quot;2025-01-24T00:00:00Z&quot;,
-    &quot;window_end&quot;: &quot;2025-01-25T00:00:00Z&quot;,
-    &quot;window_hours&quot;: 24,
-    &quot;expected_pv_kwh&quot;: 5100.0,
-    &quot;ev_charging_capacity_kwh&quot;: 19200.0,
-    &quot;pv_ev_ratio&quot;: 0.266,
-    &quot;indicator&quot;: &quot;SUBOPTIMAL&quot;,
-    &quot;confidence&quot;: 0.78,
-    &quot;drivers&quot;: [
-      &quot;expected PV energy is low relative to EV charging capacity&quot;,
-      &quot;high cloud cover expected during the window&quot;
-    ],
-    &quot;recommendations&quot;: [
-      &quot;Recommend delayed charging or reduced charging power.&quot;,
-      &quot;Prioritize critical charging sessions; consider off-peak tariffs.&quot;
-    ],
-    &quot;mean_clouds_pct&quot;: 65.0,
-    &quot;clouds_std_pct&quot;: 12.5,
-    &quot;solar_energy_kwh_per_m2&quot;: 3.2
-  }
-}
-</code></pre>
-<h3 id="app-execution-events">App Execution Events</h3>
-<h4 id="execution-started">Execution Started</h4>
-<p>Type: <code>dt.app.execution-started</code></p>
-<pre><code class="language-json">{
-  &quot;@type&quot;: &quot;dt.app.execution-started&quot;,
-  &quot;payload&quot;: {
-    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
-    &quot;request_id&quot;: &quot;req-12345&quot;,
-    &quot;config_hash&quot;: &quot;abc123&quot;
-  }
-}
-</code></pre>
-<h4 id="execution-completed">Execution Completed</h4>
-<p>Type: <code>dt.app.execution-completed</code></p>
-<pre><code class="language-json">{
-  &quot;@type&quot;: &quot;dt.app.execution-completed&quot;,
-  &quot;payload&quot;: {
-    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
-    &quot;request_id&quot;: &quot;req-12345&quot;,
-    &quot;duration_ms&quot;: 1234,
-    &quot;result_type&quot;: &quot;EVChargingReadiness&quot;,
-    &quot;result_summary&quot;: {
-      &quot;indicator&quot;: &quot;OPTIMAL&quot;,
-      &quot;confidence&quot;: 0.92
+  &quot;result_schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;indicator&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]},
+      &quot;confidence&quot;: {&quot;type&quot;: &quot;number&quot;, &quot;minimum&quot;: 0, &quot;maximum&quot;: 1}
     }
   }
 }
 </code></pre>
-<h4 id="execution-failed">Execution Failed</h4>
-<p>Type: <code>dt.app.execution-failed</code></p>
-<pre><code class="language-json">{
-  &quot;@type&quot;: &quot;dt.app.execution-failed&quot;,
-  &quot;payload&quot;: {
-    &quot;app_key&quot;: &quot;ev-charging-readiness&quot;,
-    &quot;request_id&quot;: &quot;req-12345&quot;,
-    &quot;error_type&quot;: &quot;ValueError&quot;,
-    &quot;error_message&quot;: &quot;Invalid location coordinates&quot;,
-    &quot;severity&quot;: &quot;error&quot;
-  }
-}
-</code></pre>
 <hr />
-<h2 id="topic-conventions">Topic Conventions</h2>
-<p>Events are published to topics following this convention:</p>
-<pre><code>{prefix}/dt/{module}/{event-type}/{entity-id}
+<h2 id="runcontext">RunContext</h2>
+<p>Apps receive all dependencies via <code>RunContext</code>:</p>
+<pre><code class="language-python">async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
+    # Data fetching via values
+    weather = await context.values.fetch(&quot;weather_forecast&quot;, {
+        &quot;location&quot;: config.location,
+        &quot;hours&quot;: config.window_hours,
+    })
+
+    # Direct dataset queries
+    historical = await context.datasets.query(
+        sql=&quot;SELECT * FROM consumption WHERE community_id = :id&quot;,
+        params={&quot;id&quot;: config.community_id},
+        limit=1000,
+    )
+
+    # State management
+    state = await context.state.get(f&quot;app-state:{config.community_id}&quot;)
+    await context.state.set(f&quot;app-state:{config.community_id}&quot;, new_state)
+
+    # Event publishing
+    if context.has_broker():
+        await context.publish_event(my_event)
+
+    # Request metadata
+    request_id = context.request_id
+    current_time = context.now
+
+    # Component access
+    calculator = context.get_component(&quot;energy-balance&quot;)
+    balance = await calculator.compute(input_data, context)
 </code></pre>
-<p>Examples:
-- <code>celine/dt/ev-charging/readiness-computed/rec-folgaria</code>
-- <code>celine/dt/app/execution-completed/ev-charging-readiness</code>
-- <code>celine/dt/alert/raised/threshold-breach-001</code></p>
-<hr />
-<h2 id="mqtt-implementation">MQTT Implementation</h2>
-<h3 id="features">Features</h3>
-<ul>
-<li>Automatic reconnection handling</li>
-<li>TLS/SSL support</li>
-<li>QoS level support (0, 1, 2)</li>
-<li>Message retention</li>
-<li>JSON payload serialization</li>
-<li>Topic prefixing</li>
-</ul>
-<h3 id="tls-configuration">TLS Configuration</h3>
-<pre><code class="language-yaml">brokers:
-  mqtt_secure:
-    class: celine.dt.core.broker.mqtt:MqttBroker
-    config:
-      host: secure-broker.example.com
-      port: 8883
-      use_tls: true
-      ca_certs: /etc/ssl/certs/ca-certificates.crt
-      certfile: /path/to/client.crt
-      keyfile: /path/to/client.key
-</code></pre>
-<h3 id="qos-levels">QoS Levels</h3>
+<h3 id="available-context-properties">Available Context Properties</h3>
 <table>
 <thead>
 <tr>
-<th>Level</th>
-<th>Name</th>
+<th>Property</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>AT_MOST_ONCE</td>
-<td>Fire and forget</td>
+<td><code>values</code></td>
+<td><code>ValuesService</code></td>
+<td>Declarative data fetchers</td>
 </tr>
 <tr>
-<td>1</td>
-<td>AT_LEAST_ONCE</td>
-<td>Acknowledged delivery (default)</td>
+<td><code>datasets</code></td>
+<td><code>DatasetClient</code></td>
+<td>Direct SQL queries</td>
 </tr>
 <tr>
-<td>2</td>
-<td>EXACTLY_ONCE</td>
-<td>Guaranteed single delivery</td>
+<td><code>state</code></td>
+<td><code>StateStore</code></td>
+<td>Key-value state storage</td>
+</tr>
+<tr>
+<td><code>broker</code></td>
+<td><code>BrokerService</code></td>
+<td>Event publishing</td>
+</tr>
+<tr>
+<td><code>token_provider</code></td>
+<td><code>TokenProvider</code></td>
+<td>Authentication tokens</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td><code>str</code></td>
+<td>Unique request identifier</td>
+</tr>
+<tr>
+<td><code>now</code></td>
+<td><code>datetime</code></td>
+<td>Current UTC timestamp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="available-context-methods">Available Context Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_component(key)</code></td>
+<td>Get registered component</td>
+</tr>
+<tr>
+<td><code>has_broker()</code></td>
+<td>Check if broker is available</td>
+</tr>
+<tr>
+<td><code>publish_event(event)</code></td>
+<td>Publish event to broker</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="usage-in-apps">Usage in Apps</h2>
-<h3 id="basic-publishing">Basic Publishing</h3>
-<pre><code class="language-python">from celine.dt.contracts.events import create_ev_charging_event
-from celine.dt.contracts.broker import QoS
+<h2 id="mappers">Mappers</h2>
+<p>Mappers transform data between API format and internal format.</p>
+<h3 id="input-mapper">Input Mapper</h3>
+<p>Transform incoming API payload before validation:</p>
+<pre><code class="language-python">from celine.dt.contracts.mapper import InputMapper
 
-class MyApp:
-    async def run(self, config, context):
-        # Compute result
-        result = await self._compute(config)
+class CamelCaseInputMapper(InputMapper[MyConfig]):
+    &quot;&quot;&quot;Convert camelCase API input to snake_case config.&quot;&quot;&quot;
 
-        # Create event
-        event = create_ev_charging_event(
-            community_id=config.community_id,
-            indicator=result.indicator,
-            # ... other fields
+    input_type = MyConfig
+
+    def map(self, raw: dict) -&gt; MyConfig:
+        # Transform keys
+        transformed = {
+            &quot;community_id&quot;: raw.get(&quot;communityId&quot;),
+            &quot;window_hours&quot;: raw.get(&quot;windowHours&quot;, 24),
+            &quot;pv_capacity_kw&quot;: raw.get(&quot;pvCapacityKw&quot;),
+        }
+        return MyConfig.model_validate(transformed)
+</code></pre>
+<h3 id="output-mapper">Output Mapper</h3>
+<p>Transform result before sending to API:</p>
+<pre><code class="language-python">from celine.dt.contracts.mapper import OutputMapper
+
+class CamelCaseOutputMapper(OutputMapper[MyResult]):
+    &quot;&quot;&quot;Convert snake_case result to camelCase API output.&quot;&quot;&quot;
+
+    output_type = MyResult
+
+    def map(self, result: MyResult) -&gt; dict:
+        return {
+            &quot;indicator&quot;: result.indicator,
+            &quot;confidenceScore&quot;: result.confidence,
+            &quot;expectedPvKwh&quot;: result.expected_pv_kwh,
+            &quot;recommendations&quot;: result.recommendations,
+        }
+</code></pre>
+<h3 id="wiring-mappers">Wiring Mappers</h3>
+<pre><code class="language-python">class MyApp(DTApp[MyConfig, MyResult]):
+    key = &quot;my-app&quot;
+    version = &quot;1.0.0&quot;
+
+    config_type = MyConfig
+    result_type = MyResult
+
+    input_mapper = CamelCaseInputMapper()
+    output_mapper = CamelCaseOutputMapper()
+
+    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
+        # config is already transformed by input_mapper
+        # result will be transformed by output_mapper
+        ...
+</code></pre>
+<hr />
+<h2 id="complete-example">Complete Example</h2>
+<pre><code class="language-python"># my_module/models.py
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+class EVChargingConfig(BaseModel):
+    community_id: str
+    location: dict
+    window_hours: int = Field(default=24, ge=1, le=168)
+    pv_capacity_kw: float = Field(gt=0)
+    ev_charging_capacity_kw: float = Field(gt=0)
+
+class EVChargingResult(BaseModel):
+    indicator: str
+    confidence: float
+    expected_pv_kwh: float
+    pv_ev_ratio: float
+    recommendations: list[str]
+    window_start: datetime
+    window_end: datetime
+</code></pre>
+<pre><code class="language-python"># my_module/apps/ev_charging.py
+from datetime import timedelta
+from celine.dt.contracts.app import DTApp
+from celine.dt.contracts.events import create_ev_charging_event
+from celine.dt.core.context import RunContext
+
+from ..models import EVChargingConfig, EVChargingResult
+
+class EVChargingReadinessApp(DTApp[EVChargingConfig, EVChargingResult]):
+    key = &quot;ev-charging-readiness&quot;
+    version = &quot;1.1.0&quot;
+
+    config_type = EVChargingConfig
+    result_type = EVChargingResult
+
+    input_mapper = None
+    output_mapper = None
+
+    async def run(
+        self,
+        config: EVChargingConfig,
+        context: RunContext,
+    ) -&gt; EVChargingResult:
+        # 1. Fetch weather forecast
+        weather = await context.values.fetch(&quot;weather_forecast&quot;, {
+            &quot;lat&quot;: config.location[&quot;lat&quot;],
+            &quot;lon&quot;: config.location[&quot;lon&quot;],
+            &quot;hours&quot;: config.window_hours,
+        })
+
+        # 2. Compute PV generation estimate
+        expected_pv_kwh = self._estimate_pv_generation(
+            weather=weather,
+            capacity_kw=config.pv_capacity_kw,
+            hours=config.window_hours,
         )
 
-        # Publish
-        await context.publish_event(event)
+        # 3. Compute ratio and indicator
+        ev_demand_kwh = config.ev_charging_capacity_kw * config.window_hours
+        pv_ev_ratio = expected_pv_kwh / ev_demand_kwh if ev_demand_kwh &gt; 0 else 0
+
+        indicator, confidence = self._compute_indicator(pv_ev_ratio, weather)
+        recommendations = self._generate_recommendations(indicator, pv_ev_ratio)
+
+        # 4. Build result
+        window_start = context.now
+        window_end = context.now + timedelta(hours=config.window_hours)
+
+        result = EVChargingResult(
+            indicator=indicator,
+            confidence=confidence,
+            expected_pv_kwh=expected_pv_kwh,
+            pv_ev_ratio=pv_ev_ratio,
+            recommendations=recommendations,
+            window_start=window_start,
+            window_end=window_end,
+        )
+
+        # 5. Publish event (optional)
+        if context.has_broker():
+            event = create_ev_charging_event(
+                community_id=config.community_id,
+                window_start=window_start,
+                window_end=window_end,
+                indicator=indicator,
+                confidence=confidence,
+                expected_pv_kwh=expected_pv_kwh,
+            )
+            await context.publish_event(event)
 
         return result
+
+    def _estimate_pv_generation(self, weather, capacity_kw, hours) -&gt; float:
+        # Simplified estimation based on cloud cover
+        avg_clouds = sum(w[&quot;clouds_pct&quot;] for w in weather) / len(weather)
+        efficiency = 1 - (avg_clouds / 100) * 0.7
+        peak_sun_hours = hours * 0.4  # Rough estimate
+        return capacity_kw * peak_sun_hours * efficiency
+
+    def _compute_indicator(self, ratio, weather) -&gt; tuple[str, float]:
+        if ratio &gt;= 0.8:
+            return &quot;OPTIMAL&quot;, 0.9
+        elif ratio &gt;= 0.4:
+            return &quot;SUBOPTIMAL&quot;, 0.75
+        else:
+            return &quot;CRITICAL&quot;, 0.85
+
+    def _generate_recommendations(self, indicator, ratio) -&gt; list[str]:
+        if indicator == &quot;OPTIMAL&quot;:
+            return [&quot;Excellent conditions for EV charging.&quot;]
+        elif indicator == &quot;SUBOPTIMAL&quot;:
+            return [
+                &quot;Consider delayed charging during peak sun hours.&quot;,
+                &quot;Prioritize critical charging sessions.&quot;,
+            ]
+        else:
+            return [
+                &quot;Minimize charging if possible.&quot;,
+                &quot;Use off-peak grid tariffs.&quot;,
+                &quot;Defer non-essential charging.&quot;,
+            ]
 </code></pre>
-<h3 id="checking-broker-availability">Checking Broker Availability</h3>
-<pre><code class="language-python">if context.has_broker():
-    await context.publish_event(event)
-else:
-    logger.info(&quot;No broker configured, skipping event&quot;)
+<pre><code class="language-python"># my_module/module.py
+from celine.dt.core.registry import DTRegistry
+from .apps.ev_charging import EVChargingReadinessApp
+
+class EVChargingModule:
+    name = &quot;ev-charging&quot;
+    version = &quot;1.1.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_app(EVChargingReadinessApp())
+
+module = EVChargingModule()
 </code></pre>
-<h3 id="using-named-brokers">Using Named Brokers</h3>
-<pre><code class="language-python"># Publish to a specific broker
-await context.broker.publish_event(
-    event,
-    broker_name=&quot;mqtt_backup&quot;,
+<hr />
+<h2 id="registration">Registration</h2>
+<h3 id="via-module">Via Module</h3>
+<pre><code class="language-python">class MyModule:
+    name = &quot;my-module&quot;
+    version = &quot;1.0.0&quot;
+
+    def register(self, registry: DTRegistry) -&gt; None:
+        registry.register_app(MyApp())
+        registry.register_app(AnotherApp())
+</code></pre>
+<h3 id="with-defaults">With Defaults</h3>
+<pre><code class="language-python">registry.register_app(
+    MyApp(),
+    defaults={&quot;window_hours&quot;: 48},  # Default config values
 )
 </code></pre>
 <hr />
-<h2 id="testing">Testing</h2>
-<h3 id="running-mosquitto-locally">Running Mosquitto Locally</h3>
-<p>Using Docker:</p>
-<pre><code class="language-bash">docker run -d \
-  --name mosquitto \
-  -p 1883:1883 \
-  -p 9001:9001 \
-  eclipse-mosquitto
+<h2 id="api-reference">API Reference</h2>
+<h3 id="list-apps">List Apps</h3>
+<pre><code class="language-http">GET /apps
 </code></pre>
-<h3 id="subscribing-to-events">Subscribing to Events</h3>
-<pre><code class="language-bash">mosquitto_sub -h localhost -t &quot;celine/dt/#&quot; -v
+<p>Response:</p>
+<pre><code class="language-json">[
+  {
+    &quot;key&quot;: &quot;ev-charging-readiness&quot;,
+    &quot;version&quot;: &quot;1.1.0&quot;,
+    &quot;config_schema&quot;: { ... },
+    &quot;result_schema&quot;: { ... }
+  }
+]
 </code></pre>
-<h3 id="publishing-test-events">Publishing Test Events</h3>
-<pre><code class="language-bash">mosquitto_pub -h localhost \
-  -t &quot;celine/dt/ev-charging/readiness-computed/test&quot; \
-  -m '{&quot;@type&quot;: &quot;dt.ev-charging.readiness-computed&quot;, &quot;payload&quot;: {&quot;indicator&quot;: &quot;OPTIMAL&quot;}}'
+<h3 id="describe-app">Describe App</h3>
+<pre><code class="language-http">GET /apps/{key}/describe
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  &quot;key&quot;: &quot;ev-charging-readiness&quot;,
+  &quot;version&quot;: &quot;1.1.0&quot;,
+  &quot;defaults&quot;: {},
+  &quot;config_schema&quot;: { ... },
+  &quot;result_schema&quot;: { ... }
+}
+</code></pre>
+<h3 id="run-app">Run App</h3>
+<pre><code class="language-http">POST /apps/{key}/run
+Content-Type: application/json
+
+{
+  &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+  &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
+  &quot;pv_capacity_kw&quot;: 1200,
+  &quot;ev_charging_capacity_kw&quot;: 800
+}
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  &quot;indicator&quot;: &quot;OPTIMAL&quot;,
+  &quot;confidence&quot;: 0.9,
+  &quot;expected_pv_kwh&quot;: 5100.0,
+  &quot;pv_ev_ratio&quot;: 0.27,
+  &quot;recommendations&quot;: [&quot;Excellent conditions for EV charging.&quot;],
+  &quot;window_start&quot;: &quot;2024-01-15T10:00:00Z&quot;,
+  &quot;window_end&quot;: &quot;2024-01-16T10:00:00Z&quot;
+}
 </code></pre>
 <hr />
-<h2 id="creating-custom-brokers">Creating Custom Brokers</h2>
-<p>To implement a custom broker (e.g., Kafka, RabbitMQ):</p>
-<pre><code class="language-python">from celine.dt.contracts.broker import BrokerBase, BrokerMessage, PublishResult
+<h2 id="testing-apps">Testing Apps</h2>
+<h3 id="unit-test-recommended">Unit Test (Recommended)</h3>
+<pre><code class="language-python">import pytest
+from unittest.mock import MagicMock, AsyncMock
+from datetime import datetime, timezone
 
-class KafkaBroker(BrokerBase):
-    def __init__(self, bootstrap_servers: str, **kwargs):
-        self._servers = bootstrap_servers
-        self._producer = None
+from my_module.apps.ev_charging import EVChargingReadinessApp
+from my_module.models import EVChargingConfig
 
-    async def connect(self) -&gt; None:
-        # Initialize Kafka producer
-        pass
+@pytest.fixture
+def app():
+    return EVChargingReadinessApp()
 
-    async def disconnect(self) -&gt; None:
-        # Close producer
-        pass
+@pytest.fixture
+def mock_context():
+    context = MagicMock()
+    context.now = datetime(2024, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+    context.request_id = &quot;test-request-123&quot;
+    context.has_broker.return_value = False
 
-    async def publish(self, message: BrokerMessage) -&gt; PublishResult:
-        # Publish to Kafka topic
-        pass
+    # Mock values service
+    context.values = AsyncMock()
+    context.values.fetch.return_value = [
+        {&quot;clouds_pct&quot;: 20, &quot;temp&quot;: 15},
+        {&quot;clouds_pct&quot;: 30, &quot;temp&quot;: 18},
+    ]
 
-    @property
-    def is_connected(self) -&gt; bool:
-        return self._producer is not None
+    return context
+
+@pytest.mark.asyncio
+async def test_ev_charging_optimal(app, mock_context):
+    config = EVChargingConfig(
+        community_id=&quot;test-rec&quot;,
+        location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
+        window_hours=24,
+        pv_capacity_kw=1200,
+        ev_charging_capacity_kw=100,  # Low demand = optimal
+    )
+
+    result = await app.run(config, mock_context)
+
+    assert result.indicator == &quot;OPTIMAL&quot;
+    assert result.confidence &gt;= 0.8
+    assert result.expected_pv_kwh &gt; 0
+
+@pytest.mark.asyncio
+async def test_ev_charging_publishes_event(app, mock_context):
+    mock_context.has_broker.return_value = True
+    mock_context.publish_event = AsyncMock()
+
+    config = EVChargingConfig(
+        community_id=&quot;test-rec&quot;,
+        location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
+        pv_capacity_kw=1200,
+        ev_charging_capacity_kw=800,
+    )
+
+    await app.run(config, mock_context)
+
+    mock_context.publish_event.assert_called_once()
 </code></pre>
-<p>Register in <code>config/brokers.yaml</code>:</p>
-<pre><code class="language-yaml">brokers:
-  kafka:
-    class: mymodule.kafka:KafkaBroker
-    config:
-      bootstrap_servers: &quot;kafka:9092&quot;
+<h3 id="integration-test">Integration Test</h3>
+<pre><code class="language-python">from fastapi.testclient import TestClient
+from celine.dt.main import create_app
+
+def test_ev_charging_api():
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.post(
+        &quot;/apps/ev-charging-readiness/run&quot;,
+        json={
+            &quot;community_id&quot;: &quot;test-rec&quot;,
+            &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
+            &quot;pv_capacity_kw&quot;: 1200,
+            &quot;ev_charging_capacity_kw&quot;: 800,
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert &quot;indicator&quot; in data
+    assert data[&quot;indicator&quot;] in [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]
 </code></pre>
+<hr />
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="do">Do</h3>
+<ul>
+<li>Keep <code>run()</code> focused on orchestration</li>
+<li>Use components for complex calculations</li>
+<li>Fetch data via <code>context.values</code> or <code>context.datasets</code></li>
+<li>Publish events for observability</li>
+<li>Validate business rules in <code>run()</code></li>
+<li>Return rich, typed results</li>
+</ul>
+<h3 id="dont">Don't</h3>
+<ul>
+<li>Import HTTP/database libraries in app code</li>
+<li>Access environment variables directly</li>
+<li>Use global state</li>
+<li>Perform heavy computation in <code>run()</code> (use components)</li>
+<li>Hardcode configuration values</li>
+<li>Swallow exceptions silently</li>
+</ul>
+<hr />
+<h2 id="error-handling">Error Handling</h2>
+<pre><code class="language-python">async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
+    # Validation errors → 400 Bad Request
+    if config.value &lt; 0:
+        raise ValueError(&quot;Value must be non-negative&quot;)
+
+    # Not found → 404
+    data = await context.values.fetch(&quot;my-data&quot;, {&quot;id&quot;: config.id})
+    if not data:
+        raise KeyError(f&quot;Data not found for id: {config.id}&quot;)
+
+    # Internal errors → 500 Internal Server Error
+    try:
+        result = await self._compute(data)
+    except Exception as e:
+        raise RuntimeError(f&quot;Computation failed: {e}&quot;) from e
+
+    return result
+</code></pre>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="../developer-guide/#part-2-creating-a-component">Components</a> - Build reusable computation units</li>
+<li><a href="../simulations/">Simulations</a> - Create what-if explorations</li>
+<li><a href="../values/">Values API</a> - Configure data fetchers</li>
+<li><a href="../brokers/">Brokers</a> - Set up event publishing</li>
+</ul>
 
 
 

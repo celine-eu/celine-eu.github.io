@@ -20,7 +20,11 @@ repos:
     nav:
       - README
       - Concepts: docs/concepts.md
-      - Create a module: docs/create-module.md
+      - Retrieving data: docs/values.md
+      - Simulations: docs/simulations.md
+      - Clients: docs/clients.md
+      - Subscriptions: docs/subscriptions.md
+      - Developer Guide: docs/developer-guide.md
 
   - name: Dataset API
     slug: dataset-api
@@ -105,10 +109,10 @@ repos:
 
     nav:
       - README
-      - Copernicus: apps/copernicus
-      - DWD ICON: apps/dwd
-      - Open Street Map: apps/osm
-      - Open Weather Map: apps/owm
+      - Copernicus: apps/copernicus/index.md
+      - DWD ICON: apps/dwd/index.md
+      - Open Street Map: apps/osm/index.md
+      - Open Weather Map: apps/owm/index.md
 
   - name: Infrastructure
     slug: celine-infra
