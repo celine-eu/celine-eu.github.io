@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/apps/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-policies/docs/architecture/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Apps - CELINE Project</title>
+        <title>Architecture - CELINE Project</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#apps" class="md-skip">
+        <a href="#architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Apps
+              Architecture
             
           </span>
         </div>
@@ -528,7 +528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../celine-digital-twin/" class="md-nav__link">
         
   
   
@@ -556,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
         
   
   
@@ -584,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../values/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/values/" class="md-nav__link">
         
   
   
@@ -612,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../simulations/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
         
   
   
@@ -640,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/clients/" class="md-nav__link">
         
   
   
@@ -668,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subscriptions/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
         
   
   
@@ -696,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../developer-guide/" class="md-nav__link">
+      <a href="../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
         
   
   
@@ -1100,7 +1100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -1128,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/policy_model.md" class="md-nav__link">
+      <a href="../policy_model.md" class="md-nav__link">
         
   
   
@@ -1704,10 +1704,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#system-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        System Overview
       
     </span>
   </a>
@@ -1715,22 +1715,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-dtapp-contract" class="md-nav__link">
+  <a href="#authorization-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The DTApp Contract
+        Authorization Model
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The DTApp Contract">
+    <nav class="md-nav" aria-label="Authorization Model">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#protocol-definition" class="md-nav__link">
+  <a href="#the-dual-check-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Protocol Definition
+        The Dual-Check Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subject-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subject Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resource Types
       
     </span>
   </a>
@@ -1743,33 +1776,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#execution-flow" class="md-nav__link">
+  <a href="#policy-engine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execution Flow
+        Policy Engine
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#input-and-output-models" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input and Output Models
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Input and Output Models">
+    <nav class="md-nav" aria-label="Policy Engine">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#defining-models" class="md-nav__link">
+  <a href="#why-opa" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Defining Models
+        Why OPA?
       
     </span>
   </a>
@@ -1777,10 +1799,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#schema-exposure" class="md-nav__link">
+  <a href="#embedded-vs-sidecar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Schema Exposure
+        Embedded vs. Sidecar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Packages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-input-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Input Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-output-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Output Structure
       
     </span>
   </a>
@@ -1793,22 +1848,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#runcontext" class="md-nav__link">
+  <a href="#request-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RunContext
+        Request Flow
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="RunContext">
+    <nav class="md-nav" aria-label="Request Flow">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#available-context-properties" class="md-nav__link">
+  <a href="#1-jwt-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Context Properties
+        1. JWT Validation
       
     </span>
   </a>
@@ -1816,10 +1871,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#available-context-methods" class="md-nav__link">
+  <a href="#2-subject-extraction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Context Methods
+        2. Subject Extraction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-policy-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Policy Evaluation
       
     </span>
   </a>
@@ -1832,22 +1898,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mappers" class="md-nav__link">
+  <a href="#caching-strategy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mappers
+        Caching Strategy
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Mappers">
+    <nav class="md-nav" aria-label="Caching Strategy">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#input-mapper" class="md-nav__link">
+  <a href="#decision-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Input Mapper
+        Decision Cache
       
     </span>
   </a>
@@ -1855,10 +1921,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#output-mapper" class="md-nav__link">
+  <a href="#jwks-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Output Mapper
+        JWKS Cache
       
     </span>
   </a>
@@ -1871,10 +1937,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#publishing-events" class="md-nav__link">
+  <a href="#audit-logging" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publishing Events
+        Audit Logging
       
     </span>
   </a>
@@ -1882,22 +1948,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#registration" class="md-nav__link">
+  <a href="#security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registration
+        Security Considerations
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Registration">
+    <nav class="md-nav" aria-label="Security Considerations">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#via-module" class="md-nav__link">
+  <a href="#zero-trust-compliance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Via Module
+        Zero Trust Compliance
       
     </span>
   </a>
@@ -1905,10 +1971,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#with-defaults" class="md-nav__link">
+  <a href="#token-security" class="md-nav__link">
     <span class="md-ellipsis">
       
-        With Defaults
+        Token Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendations-for-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendations for Production
       
     </span>
   </a>
@@ -1921,22 +1998,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-reference" class="md-nav__link">
+  <a href="#performance-characteristics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        API Reference
+        Performance Characteristics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Reference">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Future Considerations">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#list-apps" class="md-nav__link">
+  <a href="#scaling-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        List Apps
+        Scaling Options
       
     </span>
   </a>
@@ -1944,21 +2032,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe-app" class="md-nav__link">
+  <a href="#potential-enhancements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Describe App
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run App
+        Potential Enhancements
       
     </span>
   </a>
@@ -1967,106 +2044,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-apps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing Apps
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing Apps">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#unit-test-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Unit Test (Recommended)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#integration-test" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Integration Test
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best Practices">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#do" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Do
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dont" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Don't
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error Handling
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
-      
-    </span>
-  </a>
   
 </li>
       
@@ -2087,598 +2064,485 @@
 
 
 
-<h1 id="apps">Apps</h1>
-<p>This document covers <strong>DTApp</strong> in depth—the contract, execution model, mappers, and best practices for building Digital Twin applications.</p>
-<hr />
-<h2 id="overview">Overview</h2>
-<p>An <strong>App</strong> is an external-facing, self-contained operation exposed via the <code>/apps</code> API. Apps orchestrate components, fetch data, publish events, and return results.</p>
+<h1 id="architecture">Architecture</h1>
+<p>This document describes the authorization model, system architecture, and design decisions of the CELINE Policy Service.</p>
+<h2 id="system-overview">System Overview</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────┐
+│                         CELINE Platform                                  │
+│                                                                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
+│  │ digital-twin│  │  pipelines  │  │ rec-registry│  │   nudging   │    │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘    │
+│         │                │                │                │            │
+│         └────────────────┴────────────────┴────────────────┘            │
+│                                   │                                      │
+│                                   ▼                                      │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │                      Policy Service                                │  │
+│  │                                                                    │  │
+│  │   ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐    │  │
+│  │   │ JWT Validate│──▶│  Subject    │──▶│   OPA Engine        │    │  │
+│  │   │ (JWKS cache)│   │  Extract    │   │   (regorus)         │    │  │
+│  │   └─────────────┘   └─────────────┘   └──────────┬──────────┘    │  │
+│  │                                                   │               │  │
+│  │   ┌─────────────┐   ┌─────────────┐              │               │  │
+│  │   │ Audit Log   │◀──│  Decision   │◀─────────────┘               │  │
+│  │   │ (structured)│   │  Cache      │                              │  │
+│  │   └─────────────┘   └─────────────┘                              │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                                   │                                      │
+│                                   ▼                                      │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │                       Keycloak (IdP)                               │  │
+│  │   Users, Groups, Service Accounts, OAuth Clients, Scopes          │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="authorization-model">Authorization Model</h2>
+<h3 id="the-dual-check-model">The Dual-Check Model</h3>
+<p>The CELINE authorization model enforces <strong>two independent checks</strong> that must both pass:</p>
+<pre><code>                    ┌─────────────────────────────────────┐
+                    │          Authorization              │
+                    │                                     │
+                    │   ┌───────────┐   ┌───────────┐    │
+                    │   │   User    │   │  Client   │    │
+                    │   │  Groups   │   │  Scopes   │    │
+                    │   │ (roles)   │   │  (OAuth)  │    │
+                    │   └─────┬─────┘   └─────┬─────┘    │
+                    │         │               │          │
+                    │         └───────┬───────┘          │
+                    │                 │                  │
+                    │                 ▼                  │
+                    │         ┌───────────────┐         │
+                    │         │  INTERSECTION │         │
+                    │         │   (both must  │         │
+                    │         │    pass)      │         │
+                    │         └───────────────┘         │
+                    └─────────────────────────────────────┘
+</code></pre>
+<p><strong>Why this model?</strong></p>
+<ol>
+<li><strong>User Groups</strong> define what a human user is allowed to do (based on their role)</li>
+<li><strong>Client Scopes</strong> define what the requesting application is allowed to do</li>
+</ol>
+<p>The intersection prevents privilege escalation: even if a user is an admin, a low-privilege client (like a public dashboard) cannot access admin-only resources.</p>
+<h3 id="subject-types">Subject Types</h3>
 <table>
 <thead>
 <tr>
-<th>Characteristic</th>
+<th>Type</th>
+<th>Identification</th>
+<th>Authorization Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>User</strong></td>
+<td>JWT <code>sub</code> claim</td>
+<td>Group hierarchy + Client scopes</td>
+</tr>
+<tr>
+<td><strong>Service</strong></td>
+<td>JWT <code>client_id</code> claim (no <code>sub</code>)</td>
+<td>Client scopes only</td>
+</tr>
+<tr>
+<td><strong>Anonymous</strong></td>
+<td>No JWT provided</td>
+<td>Limited to open resources</td>
+</tr>
+</tbody>
+</table>
+<h3 id="group-hierarchy">Group Hierarchy</h3>
+<p>Users are assigned to groups in Keycloak. Groups have a hierarchy:</p>
+<pre><code>admins    (level 4) ─── Full platform access
+    │
+managers  (level 3) ─── Operational access, simulations
+    │
+editors   (level 2) ─── Write access to non-restricted resources
+    │
+viewers   (level 1) ─── Read-only access to internal resources
+    │
+(none)    (level 0) ─── Anonymous / no group membership
+</code></pre>
+<p>Higher levels inherit all permissions of lower levels.</p>
+<h3 id="resource-types">Resource Types</h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Policy Package</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Exposure</strong></td>
-<td>REST API at <code>/apps/{key}/run</code></td>
+<td><code>dataset</code></td>
+<td><code>celine.dataset.access</code></td>
+<td>Data access control with row-level filtering</td>
 </tr>
 <tr>
-<td><strong>Side Effects</strong></td>
-<td>Allowed (events, state, external calls)</td>
+<td><code>pipeline</code></td>
+<td><code>celine.pipeline.state</code></td>
+<td>Pipeline state machine transitions</td>
 </tr>
 <tr>
-<td><strong>Execution</strong></td>
-<td>One-shot, request-scoped</td>
+<td><code>dt</code></td>
+<td><code>celine.dt.access</code></td>
+<td>Digital twin API access</td>
 </tr>
 <tr>
-<td><strong>Dependencies</strong></td>
-<td>Injected via <code>RunContext</code></td>
+<td><code>topic</code></td>
+<td><code>celine.mqtt.acl</code></td>
+<td>MQTT topic publish/subscribe</td>
+</tr>
+<tr>
+<td><code>userdata</code></td>
+<td><code>celine.userdata.access</code></td>
+<td>User-owned resources</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="the-dtapp-contract">The DTApp Contract</h2>
-<p>Apps implement the <code>DTApp</code> protocol:</p>
-<pre><code class="language-python">from typing import ClassVar, Type
-from pydantic import BaseModel
-from celine.dt.contracts.app import DTApp
-from celine.dt.contracts.mapper import InputMapper, OutputMapper
-from celine.dt.core.context import RunContext
-
-class MyConfig(BaseModel):
-    &quot;&quot;&quot;Input configuration for the app.&quot;&quot;&quot;
-    param: str
-
-class MyResult(BaseModel):
-    &quot;&quot;&quot;Output from the app.&quot;&quot;&quot;
-    value: str
-
-class MyApp(DTApp[MyConfig, MyResult]):
-    # Required class attributes
-    key: ClassVar[str] = &quot;my-module.my-app&quot;
-    version: ClassVar[str] = &quot;1.0.0&quot;
-
-    # Required type references
-    config_type: Type[MyConfig] = MyConfig
-    result_type: Type[MyResult] = MyResult
-
-    # Optional mappers (can be None)
-    input_mapper: InputMapper[MyConfig] | None = None
-    output_mapper: OutputMapper[MyResult] | None = None
-
-    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-        &quot;&quot;&quot;Execute the app logic.&quot;&quot;&quot;
-        return MyResult(value=f&quot;Processed: {config.param}&quot;)
+<h2 id="policy-engine">Policy Engine</h2>
+<h3 id="why-opa">Why OPA?</h3>
+<p><a href="https://www.openpolicyagent.org/">Open Policy Agent</a> provides:</p>
+<ul>
+<li><strong>Declarative policies</strong> — Rules expressed in Rego, not code</li>
+<li><strong>Testable</strong> — Policies can be unit tested with <code>opa test</code></li>
+<li><strong>Decoupled</strong> — Policy changes don't require service redeployment</li>
+<li><strong>Industry standard</strong> — CNCF graduated project, widely adopted</li>
+</ul>
+<h3 id="embedded-vs-sidecar">Embedded vs. Sidecar</h3>
+<p>The policy service uses <strong>embedded OPA</strong> (via regorus, a Rust implementation):</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Latency</th>
+<th>Deployment</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Embedded</strong> (current)</td>
+<td>~0.1-0.5ms</td>
+<td>Single service</td>
+<td>Centralized, moderate scale</td>
+</tr>
+<tr>
+<td><strong>Sidecar per service</strong></td>
+<td>~0.1ms</td>
+<td>Container per service</td>
+<td>High throughput, low latency</td>
+</tr>
+<tr>
+<td><strong>Remote OPA</strong></td>
+<td>~1-5ms</td>
+<td>Separate deployment</td>
+<td>Shared policies, simple services</td>
+</tr>
+</tbody>
+</table>
+<p>For high-throughput services, the architecture can evolve to sidecars that pull policy bundles from this central service.</p>
+<h3 id="policy-packages">Policy Packages</h3>
+<pre><code>policies/celine/
+├── common/
+│   ├── subject.rego      # is_user, is_service, has_scope(), in_group()
+│   └── access_levels.rego # level_value(), is_open(), etc.
+├── dataset/
+│   ├── access.rego       # allow, reason, filters
+│   ├── row_filter.rego   # Row-level security filters
+│   └── access_test.rego  # Policy unit tests
+├── pipeline/
+│   └── state.rego        # State machine validation
+├── dt/
+│   └── access.rego       # Digital twin access
+├── mqtt/
+│   └── acl.rego          # Topic ACLs
+└── userdata/
+    └── access.rego       # User data ownership
 </code></pre>
-<h3 id="protocol-definition">Protocol Definition</h3>
-<pre><code class="language-python">@runtime_checkable
-class DTApp(Protocol[C, O]):
-    &quot;&quot;&quot;Digital Twin App contract.&quot;&quot;&quot;
-
-    key: ClassVar[str]           # Unique identifier
-    version: ClassVar[str]       # Semantic version
-
-    config_type: Type[C]         # Pydantic model for input
-    result_type: Type[O]         # Pydantic model for output
-
-    input_mapper: InputMapper[C] | None    # Transform API input
-    output_mapper: OutputMapper[O] | None  # Transform API output
-
-    async def run(self, config: C, context: RunContext) -&gt; O:
-        &quot;&quot;&quot;Execute the app.&quot;&quot;&quot;
-        ...
-</code></pre>
-<hr />
-<h2 id="execution-flow">Execution Flow</h2>
-<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
-│                           App Execution Flow                                 │
-│                                                                              │
-│   HTTP Request                                                              │
-│   POST /apps/my-app/run                                                     │
-│   {&quot;param&quot;: &quot;value&quot;}                                                        │
-│         │                                                                    │
-│         ▼                                                                    │
-│   ┌─────────────────┐                                                       │
-│   │  Input Mapper   │ ◄── Optional: transform API payload                   │
-│   │  (if defined)   │                                                       │
-│   └────────┬────────┘                                                       │
-│            │                                                                 │
-│            ▼                                                                 │
-│   ┌─────────────────┐                                                       │
-│   │    Validate     │ ◄── Pydantic validation against config_type          │
-│   │  config_type    │                                                       │
-│   └────────┬────────┘                                                       │
-│            │                                                                 │
-│            ▼                                                                 │
-│   ┌─────────────────┐     ┌─────────────────┐                              │
-│   │    app.run()    │────▶│   RunContext    │                              │
-│   │                 │     │ - values        │                              │
-│   │  Domain Logic   │     │ - state         │                              │
-│   │                 │     │ - broker        │                              │
-│   └────────┬────────┘     │ - request_id    │                              │
-│            │              └─────────────────┘                              │
-│            ▼                                                                 │
-│   ┌─────────────────┐                                                       │
-│   │  Output Mapper  │ ◄── Optional: transform result                       │
-│   │  (if defined)   │                                                       │
-│   └────────┬────────┘                                                       │
-│            │                                                                 │
-│            ▼                                                                 │
-│   HTTP Response                                                             │
-│   {&quot;value&quot;: &quot;Processed: value&quot;}                                             │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-</code></pre>
-<hr />
-<h2 id="input-and-output-models">Input and Output Models</h2>
-<h3 id="defining-models">Defining Models</h3>
-<p>Use Pydantic models with Field descriptors:</p>
-<pre><code class="language-python">from pydantic import BaseModel, Field
-from datetime import datetime
-
-class MyAppConfig(BaseModel):
-    &quot;&quot;&quot;Configuration for my app.&quot;&quot;&quot;
-
-    community_id: str = Field(
-        ...,  # Required
-        description=&quot;Renewable Energy Community identifier&quot;,
-        examples=[&quot;rec-folgaria&quot;],
-    )
-    location: dict = Field(
-        ...,
-        description=&quot;Geographic coordinates&quot;,
-        examples=[{&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1}],
-    )
-    window_hours: int = Field(
-        default=24,
-        ge=1,
-        le=168,
-        description=&quot;Forecast window in hours&quot;,
-    )
-
-class MyAppResult(BaseModel):
-    &quot;&quot;&quot;Result of my app.&quot;&quot;&quot;
-
-    indicator: str = Field(
-        description=&quot;Status indicator&quot;
-    )
-    confidence: float = Field(
-        ge=0.0,
-        le=1.0,
-        description=&quot;Confidence score&quot;,
-    )
-    recommendations: list[str]
-    window_start: datetime
-    window_end: datetime
-</code></pre>
-<h3 id="schema-exposure">Schema Exposure</h3>
-<p>Schemas are automatically exposed via API:</p>
-<pre><code class="language-bash">curl http://localhost:8000/apps/my-app/describe
-</code></pre>
+<h3 id="policy-input-structure">Policy Input Structure</h3>
+<p>All policies receive a standardized input:</p>
 <pre><code class="language-json">{
-  &quot;key&quot;: &quot;my-app&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;config_schema&quot;: {
-    &quot;type&quot;: &quot;object&quot;,
-    &quot;required&quot;: [&quot;community_id&quot;, &quot;location&quot;],
-    &quot;properties&quot;: {
-      &quot;community_id&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;...&quot;},
-      &quot;window_hours&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 24, &quot;minimum&quot;: 1, &quot;maximum&quot;: 168}
+  &quot;subject&quot;: {
+    &quot;id&quot;: &quot;user-123&quot;,
+    &quot;type&quot;: &quot;user&quot;,
+    &quot;groups&quot;: [&quot;viewers&quot;, &quot;editors&quot;],
+    &quot;scopes&quot;: [&quot;dataset.query&quot;, &quot;dt.read&quot;],
+    &quot;claims&quot;: { /* raw JWT claims */ }
+  },
+  &quot;resource&quot;: {
+    &quot;type&quot;: &quot;dataset&quot;,
+    &quot;id&quot;: &quot;ds-456&quot;,
+    &quot;attributes&quot;: {
+      &quot;access_level&quot;: &quot;internal&quot;
     }
   },
-  &quot;result_schema&quot;: {
-    &quot;type&quot;: &quot;object&quot;,
-    &quot;properties&quot;: {
-      &quot;indicator&quot;: {&quot;type&quot;: &quot;string&quot;},
-      &quot;confidence&quot;: {&quot;type&quot;: &quot;number&quot;, &quot;minimum&quot;: 0, &quot;maximum&quot;: 1}
-    }
+  &quot;action&quot;: {
+    &quot;name&quot;: &quot;read&quot;,
+    &quot;context&quot;: {}
+  },
+  &quot;environment&quot;: {
+    &quot;request_id&quot;: &quot;req-789&quot;,
+    &quot;timestamp&quot;: 1706745600
   }
 }
 </code></pre>
-<hr />
-<h2 id="runcontext">RunContext</h2>
-<p>Apps receive all dependencies via <code>RunContext</code>:</p>
-<pre><code class="language-python">async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-    # Data fetching via values
-    weather = await context.values.fetch(&quot;weather_forecast&quot;, {
-        &quot;location&quot;: config.location,
-        &quot;hours&quot;: config.window_hours,
-    })
-
-    # Direct dataset queries
-    historical = await context.datasets.query(
-        sql=&quot;SELECT * FROM consumption WHERE community_id = :id&quot;,
-        params={&quot;id&quot;: config.community_id},
-        limit=1000,
-    )
-
-    # State management
-    state = await context.state.get(f&quot;app-state:{config.community_id}&quot;)
-    await context.state.set(f&quot;app-state:{config.community_id}&quot;, new_state)
-
-    # Event publishing (see Brokers documentation)
-    if context.has_broker():
-        await context.publish_event(my_event)
-
-    # Request metadata
-    request_id = context.request_id
-    current_time = context.now
-
-    # Component access
-    calculator = context.get_component(&quot;energy-balance&quot;)
-    balance = await calculator.compute(input_data, context)
+<h3 id="policy-output-structure">Policy Output Structure</h3>
+<pre><code class="language-json">{
+  &quot;allow&quot;: true,
+  &quot;reason&quot;: &quot;user has viewer access and client has dataset.query scope&quot;,
+  &quot;filters&quot;: [
+    {&quot;field&quot;: &quot;organization_id&quot;, &quot;operator&quot;: &quot;eq&quot;, &quot;value&quot;: &quot;org-123&quot;}
+  ]
+}
 </code></pre>
-<h3 id="available-context-properties">Available Context Properties</h3>
+<h2 id="request-flow">Request Flow</h2>
+<h3 id="1-jwt-validation">1. JWT Validation</h3>
+<pre><code>Incoming Request
+       │
+       ▼
+┌─────────────────┐
+│ Extract Bearer  │
+│ token from      │
+│ Authorization   │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐     ┌─────────────────┐
+│ Fetch JWKS      │◀───▶│ JWKS Cache      │
+│ (if needed)     │     │ (1 hour TTL)    │
+└────────┬────────┘     └─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Validate JWT    │
+│ - signature     │
+│ - expiry        │
+│ - issuer        │
+└────────┬────────┘
+         │
+         ▼
+   Valid Claims
+</code></pre>
+<h3 id="2-subject-extraction">2. Subject Extraction</h3>
+<pre><code class="language-python"># Simplified logic
+def extract_subject(claims: dict) -&gt; Subject:
+    # Service account detection
+    if &quot;client_id&quot; in claims and &quot;sub&quot; not in claims:
+        return Subject(
+            type=&quot;service&quot;,
+            id=claims[&quot;client_id&quot;],
+            scopes=claims.get(&quot;scope&quot;, &quot;&quot;).split(),
+        )
+
+    # User detection
+    return Subject(
+        type=&quot;user&quot;,
+        id=claims[&quot;sub&quot;],
+        groups=extract_groups(claims),  # From realm_access.roles + groups
+        scopes=claims.get(&quot;scope&quot;, &quot;&quot;).split(),
+    )
+</code></pre>
+<h3 id="3-policy-evaluation">3. Policy Evaluation</h3>
+<pre><code>Subject + Resource + Action
+           │
+           ▼
+┌──────────────────────┐
+│ Check Decision Cache │
+└──────────┬───────────┘
+           │
+     ┌─────┴─────┐
+     │  Cache    │
+     │  Hit?     │
+     └─────┬─────┘
+       No  │  Yes
+           │    └──────▶ Return Cached Decision
+           ▼
+┌──────────────────────┐
+│ Build Policy Input   │
+│ (JSON document)      │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ OPA Evaluate         │
+│ &quot;data.celine.{type}&quot; │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Cache Decision       │
+│ (LRU + TTL)          │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Audit Log            │
+│ (structured JSON)    │
+└──────────┬───────────┘
+           │
+           ▼
+      Return Decision
+</code></pre>
+<h2 id="caching-strategy">Caching Strategy</h2>
+<h3 id="decision-cache">Decision Cache</h3>
+<p>Identical requests return cached decisions:</p>
 <table>
 <thead>
 <tr>
-<th>Property</th>
-<th>Type</th>
+<th>Setting</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>values</code></td>
-<td><code>ValuesService</code></td>
-<td>Declarative data fetchers</td>
+<td><code>DECISION_CACHE_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Enable/disable caching</td>
 </tr>
 <tr>
-<td><code>datasets</code></td>
-<td><code>DatasetClient</code></td>
-<td>Direct SQL queries</td>
+<td><code>DECISION_CACHE_TTL_SECONDS</code></td>
+<td><code>300</code></td>
+<td>Time-to-live for cached decisions</td>
 </tr>
 <tr>
-<td><code>state</code></td>
-<td><code>StateStore</code></td>
-<td>Key-value state storage</td>
-</tr>
-<tr>
-<td><code>broker</code></td>
-<td><code>BrokerService</code></td>
-<td>Event publishing</td>
-</tr>
-<tr>
-<td><code>token_provider</code></td>
-<td><code>TokenProvider</code></td>
-<td>Authentication tokens</td>
-</tr>
-<tr>
-<td><code>request_id</code></td>
-<td><code>str</code></td>
-<td>Unique request identifier</td>
-</tr>
-<tr>
-<td><code>now</code></td>
-<td><code>datetime</code></td>
-<td>Current UTC timestamp</td>
+<td><code>DECISION_CACHE_MAXSIZE</code></td>
+<td><code>10000</code></td>
+<td>Maximum cache entries</td>
 </tr>
 </tbody>
 </table>
-<h3 id="available-context-methods">Available Context Methods</h3>
+<p>Cache key: <code>hash(policy_package + policy_input)</code></p>
+<h3 id="jwks-cache">JWKS Cache</h3>
+<p>Public keys are cached to avoid fetching on every request:</p>
 <table>
 <thead>
 <tr>
-<th>Method</th>
+<th>Setting</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>get_component(key)</code></td>
-<td>Get registered component</td>
-</tr>
-<tr>
-<td><code>has_broker()</code></td>
-<td>Check if broker is available</td>
-</tr>
-<tr>
-<td><code>publish_event(event)</code></td>
-<td>Publish event to broker</td>
+<td><code>JWKS_CACHE_TTL_SECONDS</code></td>
+<td><code>3600</code></td>
+<td>Key cache TTL</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="mappers">Mappers</h2>
-<p>Mappers transform data between API format and internal format.</p>
-<h3 id="input-mapper">Input Mapper</h3>
-<p>Transform incoming API payload before validation:</p>
-<pre><code class="language-python">from celine.dt.contracts.mapper import InputMapper
-
-class MyInputMapper(InputMapper[MyConfig]):
-    def map(self, raw: dict) -&gt; dict:
-        # Transform external format to internal
-        return {
-            &quot;community_id&quot;: raw.get(&quot;communityId&quot;),
-            &quot;location&quot;: {
-                &quot;lat&quot;: raw.get(&quot;latitude&quot;),
-                &quot;lon&quot;: raw.get(&quot;longitude&quot;),
-            },
-            &quot;window_hours&quot;: raw.get(&quot;hours&quot;, 24),
-        }
-</code></pre>
-<h3 id="output-mapper">Output Mapper</h3>
-<p>Transform result before returning to caller:</p>
-<pre><code class="language-python">from celine.dt.contracts.mapper import OutputMapper
-
-class MyOutputMapper(OutputMapper[MyResult]):
-    def map(self, result: MyResult) -&gt; dict:
-        # Transform internal format to external
-        return {
-            &quot;status&quot;: result.indicator,
-            &quot;score&quot;: result.confidence,
-            &quot;actions&quot;: result.recommendations,
-        }
-</code></pre>
-<hr />
-<h2 id="publishing-events">Publishing Events</h2>
-<p>Apps can publish domain-specific events via the broker. <strong>Each module defines its own events</strong> in a dedicated <code>events.py</code> file.</p>
-<pre><code class="language-python"># my_module/events.py
-from datetime import datetime
-from pydantic import BaseModel, Field
-from celine.dt.contracts.events import DTEvent, EventSource
-
-class MyEventPayload(BaseModel):
-    &quot;&quot;&quot;Payload for my module's events.&quot;&quot;&quot;
-    community_id: str
-    indicator: str
-    confidence: float
-    computed_at: datetime
-
-class MyModuleEventTypes:
-    &quot;&quot;&quot;Event type constants for my module.&quot;&quot;&quot;
-    RESULT_COMPUTED = &quot;dt.my-module.result-computed&quot;
-
-def create_result_event(
-    *,
-    community_id: str,
-    indicator: str,
-    confidence: float,
-    app_version: str = &quot;1.0.0&quot;,
-) -&gt; DTEvent[MyEventPayload]:
-    &quot;&quot;&quot;Factory function to create a result computed event.&quot;&quot;&quot;
-    return DTEvent[MyEventPayload](
-        event_type=MyModuleEventTypes.RESULT_COMPUTED,
-        source=EventSource(
-            app_key=&quot;my-module.my-app&quot;,
-            app_version=app_version,
-            module=&quot;my-module&quot;,
-        ),
-        payload=MyEventPayload(
-            community_id=community_id,
-            indicator=indicator,
-            confidence=confidence,
-            computed_at=datetime.utcnow(),
-        ),
-    )
-</code></pre>
-<p>Then use in your app:</p>
-<pre><code class="language-python"># my_module/apps/my_app.py
-from celine.dt.contracts.app import DTApp
-from celine.dt.core.context import RunContext
-
-# Import from YOUR module's events, not from contracts
-from my_module.events import create_result_event
-from my_module.models import MyConfig, MyResult
-
-class MyApp(DTApp[MyConfig, MyResult]):
-    key = &quot;my-module.my-app&quot;
-    version = &quot;1.0.0&quot;
-
-    config_type = MyConfig
-    result_type = MyResult
-
-    input_mapper = None
-    output_mapper = None
-
-    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-        # Compute result
-        result = await self._compute(config, context)
-
-        # Publish event if broker is available
-        if context.has_broker():
-            event = create_result_event(
-                community_id=config.community_id,
-                indicator=result.indicator,
-                confidence=result.confidence,
-                app_version=self.version,
-            )
-            await context.publish_event(event)
-
-        return result
-</code></pre>
-<blockquote>
-<p><strong>Important</strong>: Domain-specific events belong in your module's <code>events.py</code>, not in <code>celine.dt.contracts.events</code>. The contracts module only contains base event types and generic app lifecycle events.</p>
-</blockquote>
-<hr />
-<h2 id="registration">Registration</h2>
-<h3 id="via-module">Via Module</h3>
-<pre><code class="language-python">class MyModule:
-    name = &quot;my-module&quot;
-    version = &quot;1.0.0&quot;
-
-    def register(self, registry: DTRegistry) -&gt; None:
-        registry.register_app(MyApp())
-        registry.register_app(AnotherApp())
-</code></pre>
-<h3 id="with-defaults">With Defaults</h3>
-<pre><code class="language-python">registry.register_app(
-    MyApp(),
-    defaults={&quot;window_hours&quot;: 48},  # Default config values
-)
-</code></pre>
-<hr />
-<h2 id="api-reference">API Reference</h2>
-<h3 id="list-apps">List Apps</h3>
-<pre><code class="language-http">GET /apps
-</code></pre>
-<p>Response:</p>
-<pre><code class="language-json">[
-  {
-    &quot;key&quot;: &quot;my-module.my-app&quot;,
-    &quot;version&quot;: &quot;1.0.0&quot;,
-    &quot;config_schema&quot;: { ... },
-    &quot;result_schema&quot;: { ... }
-  }
-]
-</code></pre>
-<h3 id="describe-app">Describe App</h3>
-<pre><code class="language-http">GET /apps/{key}/describe
-</code></pre>
-<p>Response:</p>
+<p>Automatic refresh on:
+- TTL expiry
+- Unknown key ID (kid) in token</p>
+<h2 id="audit-logging">Audit Logging</h2>
+<p>All decisions are logged with structured JSON:</p>
 <pre><code class="language-json">{
-  &quot;key&quot;: &quot;my-module.my-app&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;defaults&quot;: {},
-  &quot;config_schema&quot;: { ... },
-  &quot;result_schema&quot;: { ... }
+  &quot;timestamp&quot;: &quot;2024-01-31T12:00:00Z&quot;,
+  &quot;event&quot;: &quot;policy_decision&quot;,
+  &quot;request_id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
+  &quot;allowed&quot;: true,
+  &quot;policy&quot;: &quot;celine.dataset.access&quot;,
+  &quot;subject_id&quot;: &quot;user-123&quot;,
+  &quot;subject_type&quot;: &quot;user&quot;,
+  &quot;resource_type&quot;: &quot;dataset&quot;,
+  &quot;resource_id&quot;: &quot;ds-456&quot;,
+  &quot;action&quot;: &quot;read&quot;,
+  &quot;source_service&quot;: &quot;digital-twin&quot;,
+  &quot;latency_ms&quot;: 0.42,
+  &quot;cached&quot;: false
 }
 </code></pre>
-<h3 id="run-app">Run App</h3>
-<pre><code class="language-http">POST /apps/{key}/run
-Content-Type: application/json
-
-{
-  &quot;community_id&quot;: &quot;rec-folgaria&quot;,
-  &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1}
-}
-</code></pre>
-<p>Response:</p>
-<pre><code class="language-json">{
-  &quot;indicator&quot;: &quot;OPTIMAL&quot;,
-  &quot;confidence&quot;: 0.9,
-  &quot;recommendations&quot;: [&quot;Continue normal operations.&quot;],
-  &quot;window_start&quot;: &quot;2024-01-15T10:00:00Z&quot;,
-  &quot;window_end&quot;: &quot;2024-01-16T10:00:00Z&quot;
-}
-</code></pre>
-<hr />
-<h2 id="testing-apps">Testing Apps</h2>
-<h3 id="unit-test-recommended">Unit Test (Recommended)</h3>
-<pre><code class="language-python">import pytest
-from unittest.mock import MagicMock, AsyncMock
-from datetime import datetime, timezone
-
-from my_module.apps.my_app import MyApp
-from my_module.models import MyConfig
-
-@pytest.fixture
-def app():
-    return MyApp()
-
-@pytest.fixture
-def mock_context():
-    context = MagicMock()
-    context.now = datetime(2024, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
-    context.request_id = &quot;test-request-123&quot;
-    context.has_broker.return_value = False
-
-    # Mock values service
-    context.values = AsyncMock()
-    context.values.fetch.return_value = [
-        {&quot;clouds_pct&quot;: 20, &quot;temp&quot;: 15},
-        {&quot;clouds_pct&quot;: 30, &quot;temp&quot;: 18},
-    ]
-
-    return context
-
-@pytest.mark.asyncio
-async def test_app_returns_result(app, mock_context):
-    config = MyConfig(
-        community_id=&quot;test-rec&quot;,
-        location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-    )
-
-    result = await app.run(config, mock_context)
-
-    assert result.indicator in [&quot;OPTIMAL&quot;, &quot;SUBOPTIMAL&quot;, &quot;CRITICAL&quot;]
-    assert 0 &lt;= result.confidence &lt;= 1
-
-@pytest.mark.asyncio
-async def test_app_publishes_event(app, mock_context):
-    mock_context.has_broker.return_value = True
-    mock_context.publish_event = AsyncMock()
-
-    config = MyConfig(
-        community_id=&quot;test-rec&quot;,
-        location={&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-    )
-
-    await app.run(config, mock_context)
-
-    mock_context.publish_event.assert_called_once()
-</code></pre>
-<h3 id="integration-test">Integration Test</h3>
-<pre><code class="language-python">from fastapi.testclient import TestClient
-from celine.dt.main import create_app
-
-def test_app_api():
-    app = create_app()
-    client = TestClient(app)
-
-    response = client.post(
-        &quot;/apps/my-module.my-app/run&quot;,
-        json={
-            &quot;community_id&quot;: &quot;test-rec&quot;,
-            &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1},
-        },
-    )
-
-    assert response.status_code == 200
-    data = response.json()
-    assert &quot;indicator&quot; in data
-</code></pre>
-<hr />
-<h2 id="best-practices">Best Practices</h2>
-<h3 id="do">Do</h3>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="zero-trust-compliance">Zero Trust Compliance</h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Never trust, always verify</td>
+<td>Every request requires valid JWT</td>
+</tr>
+<tr>
+<td>Least privilege</td>
+<td>Scopes limit what each client can do</td>
+</tr>
+<tr>
+<td>Assume breach</td>
+<td>Service-to-service requires auth</td>
+</tr>
+<tr>
+<td>Defense in depth</td>
+<td>User groups + Client scopes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="token-security">Token Security</h3>
 <ul>
-<li>Keep <code>run()</code> focused on orchestration</li>
-<li>Use components for complex calculations</li>
-<li>Fetch data via <code>context.values</code> or <code>context.datasets</code></li>
-<li>Publish events for observability</li>
-<li>Validate business rules in <code>run()</code></li>
-<li>Return rich, typed results</li>
-<li>Define module-specific events in your module's <code>events.py</code></li>
+<li>JWTs validated with RS256 signatures</li>
+<li>Issuer (<code>iss</code>) claim verified against Keycloak</li>
+<li>Expiry (<code>exp</code>) enforced</li>
+<li>No token storage — stateless validation</li>
 </ul>
-<h3 id="dont">Don't</h3>
+<h3 id="recommendations-for-production">Recommendations for Production</h3>
+<ol>
+<li><strong>mTLS</strong> between services and policy service</li>
+<li><strong>Network segmentation</strong> — policy service not publicly accessible</li>
+<li><strong>Audit log forwarding</strong> to SIEM</li>
+<li><strong>Rate limiting</strong> on policy endpoints</li>
+<li><strong>Secret rotation</strong> for OAuth clients</li>
+</ol>
+<h2 id="performance-characteristics">Performance Characteristics</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Typical Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Policy evaluation</td>
+<td>0.1 - 0.5 ms</td>
+</tr>
+<tr>
+<td>JWT validation (cached JWKS)</td>
+<td>0.5 - 1 ms</td>
+</tr>
+<tr>
+<td>Full request (uncached)</td>
+<td>2 - 5 ms</td>
+</tr>
+<tr>
+<td>Full request (cached)</td>
+<td>&lt; 1 ms</td>
+</tr>
+<tr>
+<td>Throughput</td>
+<td>5,000+ req/sec (single instance)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="future-considerations">Future Considerations</h2>
+<h3 id="scaling-options">Scaling Options</h3>
+<ol>
+<li><strong>Horizontal scaling</strong> — Multiple policy service instances behind load balancer</li>
+<li><strong>OPA sidecars</strong> — Deploy OPA alongside high-throughput services</li>
+<li><strong>Policy bundles</strong> — Central service serves bundles to distributed OPA instances</li>
+</ol>
+<h3 id="potential-enhancements">Potential Enhancements</h3>
 <ul>
-<li>Import HTTP/database libraries in app code</li>
-<li>Access environment variables directly</li>
-<li>Use global state</li>
-<li>Perform heavy computation in <code>run()</code> (use components)</li>
-<li>Hardcode configuration values</li>
-<li>Swallow exceptions silently</li>
-<li>Put domain-specific events in <code>celine.dt.contracts.events</code></li>
-</ul>
-<hr />
-<h2 id="error-handling">Error Handling</h2>
-<pre><code class="language-python">async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-    # Validation errors → 400 Bad Request
-    if config.value &lt; 0:
-        raise ValueError(&quot;Value must be non-negative&quot;)
-
-    # Not found → 404
-    data = await context.values.fetch(&quot;my-data&quot;, {&quot;id&quot;: config.id})
-    if not data:
-        raise KeyError(f&quot;Data not found for id: {config.id}&quot;)
-
-    # Internal errors → 500 Internal Server Error
-    try:
-        result = await self._compute(data)
-    except Exception as e:
-        raise RuntimeError(f&quot;Computation failed: {e}&quot;) from e
-
-    return result
-</code></pre>
-<hr />
-<h2 id="next-steps">Next Steps</h2>
-<ul>
-<li><a href="../developer-guide/#part-2-creating-a-component">Components</a> - Build reusable computation units</li>
-<li><a href="../simulations/">Simulations</a> - Create what-if explorations</li>
-<li><a href="../values/">Values API</a> - Configure data fetchers</li>
-<li><a href="../brokers/">Brokers</a> - Set up event publishing and subscription</li>
+<li>GraphQL authorization integration</li>
+<li>Relationship-based access control (ReBAC) for complex hierarchies</li>
+<li>Policy versioning and rollback</li>
+<li>A/B testing for policy changes</li>
 </ul>
 
 

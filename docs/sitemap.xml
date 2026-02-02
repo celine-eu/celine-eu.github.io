@@ -101,7 +101,31 @@
          <lastmod>2026-02-02</lastmod>
     </url>
     <url>
-         <loc>https://celine-eu.github.io/projects/celine-policies/docs/policy_model/</loc>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/api-reference/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/architecture/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/celine-policy-architecture-guide/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/deployment/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/getting-started/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/mqtt-integration/</loc>
+         <lastmod>2026-02-02</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/scopes-and-permissions/</loc>
          <lastmod>2026-02-02</lastmod>
     </url>
     <url>

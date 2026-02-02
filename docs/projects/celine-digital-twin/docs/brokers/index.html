@@ -1128,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/policy_model/" class="md-nav__link">
+      <a href="../../../celine-policies/docs/policy_model.md" class="md-nav__link">
         
   
   
@@ -2438,7 +2438,7 @@ default_broker: mqtt_local
 </code></pre>
 <h3 id="2-jwt-via-tokenprovider">2. JWT via TokenProvider</h3>
 <p>For OIDC/OAuth2 authentication, pass a <code>TokenProvider</code> to the broker:</p>
-<pre><code class="language-python">from celine.dt.core.auth.oidc import OidcClientCredentialsProvider
+<pre><code class="language-python">from celine.sdk.auth.oidc import OidcClientCredentialsProvider
 from celine.dt.core.broker import MqttBroker, MqttConfig
 
 # Create token provider
@@ -2609,7 +2609,7 @@ class ReceivedMessage:
 <p>Token providers enable OAuth2/OIDC authentication for brokers and other services.</p>
 <h3 id="tokenprovider-protocol">TokenProvider Protocol</h3>
 <pre><code class="language-python">from abc import ABC, abstractmethod
-from celine.dt.core.auth.models import AccessToken
+from celine.sdk.auth.models import AccessToken
 
 class TokenProvider(ABC):
     @abstractmethod
@@ -2622,7 +2622,7 @@ class TokenProvider(ABC):
 </code></pre>
 <h3 id="built-in-oidcclientcredentialsprovider">Built-in: OidcClientCredentialsProvider</h3>
 <p>For service-to-service authentication using OAuth2 client credentials flow:</p>
-<pre><code class="language-python">from celine.dt.core.auth.oidc import OidcClientCredentialsProvider
+<pre><code class="language-python">from celine.sdk.auth.oidc import OidcClientCredentialsProvider
 
 provider = OidcClientCredentialsProvider(
     base_url=&quot;https://keycloak.example.com/realms/celine&quot;,
@@ -2662,8 +2662,8 @@ print(f&quot;Expires at: {token.expires_at}&quot;)
 </tbody>
 </table>
 <h3 id="custom-token-provider">Custom Token Provider</h3>
-<pre><code class="language-python">from celine.dt.core.auth.provider import TokenProvider
-from celine.dt.core.auth.models import AccessToken
+<pre><code class="language-python">from celine.sdk.auth.provider import TokenProvider
+from celine.sdk.auth.models import AccessToken
 
 class MyTokenProvider(TokenProvider):
     def __init__(self, api_key: str):
