@@ -74,7 +74,12 @@ repos:
 
     nav:
       - README
-      - Policy model: docs/policy_model.md
+      - Getting Started: docs/getting-started.md
+      - Architecture: docs/architecture.md
+      - Scopes and permissions: docs/scopes-and-permissions.md
+      - MQTT integration: docs/mqtt-integration.md
+      - API reference: docs/api-reference.md
+      - Deployment: docs/deployment.md
 
   - name: Utils
     slug: celine-utils

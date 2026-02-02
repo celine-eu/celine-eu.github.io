@@ -1,110 +1,125 @@
-# CELINE OPA Policies
+# CELINE Policy Service
 
-Centralized Open Policy Agent (OPA) authorization policies for the CELINE platform.
+Centralized authorization service for the CELINE platform using embedded OPA (Open Policy Agent).
 
-This repository contains **authorization logic only**.
-Authentication, token validation, and request normalization are handled by the calling services.
+The policy service provides a unified authorization layer for all CELINE platform services, enforcing consistent access control across datasets, pipelines, digital twins, MQTT messaging, and user data.
 
----
+## Key Features
 
-## Scope
+- **Unified Authorization** — Single service handles all authorization decisions
+- **Policy as Code** — Rego policies are versioned, testable, and auditable
+- **Zero Trust Model** — Every request is validated regardless of origin
+- **Dual Authorization** — User permissions intersected with client scopes
+- **MQTT Integration** — Native support for mosquitto-go-auth
+- **Audit Logging** — All decisions logged for compliance and debugging
 
-- Dataset access authorization
-- Shared policy logic across services
-- Explicit, auditable access decisions
-
-Out of scope:
-- Authentication
-- Identity provisioning
-- Token issuance (Keycloak, etc.)
-
----
-
-## Policy model (high level)
-
-Dataset access is governed by **two orthogonal dimensions**:
-
-### 1. Dataset access level
-
-| Level | Meaning |
-|------|--------|
-| `open` | Publicly accessible |
-| `internal` | Limited to trusted operators |
-| `restricted` | Highly sensitive, admin-level access only |
-
-### 2. Subject access model
-
-Access is evaluated differently depending on **how the caller authenticates**:
-
-- **Human users** → role-based
-- **Service clients** → scope-based
-
-See [docs/policy_model.md](docs/policy_model.md) for full details.
-
----
-
-## OPA input contract
-
-```json
-{
-  "dataset": {
-    "id": "dataset_id",
-    "access_level": "open | internal | restricted"
-  },
-  "subject": {
-    "id": "principal-id",
-    "roles": ["manager", "operator", "admin"],
-    "groups": [],
-    "scopes": ["dataset.query", "dataset.admin"]
-  }
-}
-```
-
-Notes:
-- `subject` may be `null` for anonymous access
-- `roles` apply to human users
-- `scopes` apply to service clients
-
----
-
-## Quick start
+## Quick Start
 
 ```bash
-task opa:run
-```
+# Start the service stack
+docker compose up -d
 
-```bash
-curl -X POST http://localhost:8181/v1/data/celine/dataset/access/allow \
+# Verify health
+curl http://localhost:8009/health
+
+# Check authorization (requires JWT)
+curl -X POST http://localhost:8009/authorize \
+  -H "Authorization: Bearer <your-jwt>" \
   -H "Content-Type: application/json" \
   -d '{
-    "input": {
-      "dataset": {
-        "access_level": "internal"
-      },
-      "subject": {
-        "id": "dt-forecast-engine",
-        "scopes": ["dataset.query"],
-        "roles": [],
-        "groups": []
-      }
-    }
+    "resource": {"type": "dataset", "id": "ds-123", "attributes": {"access_level": "internal"}},
+    "action": {"name": "read"}
   }'
 ```
 
----
+## Documentation
 
-## Run tests
+| Document | Description |
+|----------|-------------|
+| [Getting Started](docs/getting-started.md) | Developer quickstart guide |
+| [Architecture](docs/architecture.md) | Authorization model and system design |
+| [API Reference](docs/api-reference.md) | Complete endpoint documentation |
+| [Scopes & Permissions](docs/scopes-and-permissions.md) | OAuth scopes and access control |
+| [MQTT Integration](docs/mqtt-integration.md) | Topic patterns and broker setup |
+| [Deployment](docs/deployment.md) | Configuration and production deployment |
 
-```bash
-task test
+## Platform Services
+
+The policy service authorizes requests for the following CELINE services:
+
+| Service | Description | Key Scopes |
+|---------|-------------|------------|
+| **digital-twin** | Digital twin state and simulation | `dt.read`, `dt.write`, `dt.simulate` |
+| **pipelines** | Data pipeline orchestration | `pipeline.execute`, `dataset.admin` |
+| **rec-registry** | REC certificate registry | `dataset.query`, `dataset.admin` |
+| **nudging** | User engagement and notifications | `dt.read`, `userdata.read` |
+
+## Authorization Model Overview
+
+```
+┌──────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   Client     │────▶│  Policy Service  │────▶│  OPA (regorus)  │
+│  (with JWT)  │     │                  │     │                 │
+└──────────────┘     └──────────────────┘     └─────────────────┘
+                              │
+                     ┌────────┴────────┐
+                     ▼                 ▼
+              ┌────────────┐    ┌────────────┐
+              │ User Groups│    │Client Scope│
+              │  (roles)   │    │ (OAuth)    │
+              └────────────┘    └────────────┘
+                     │                 │
+                     └────────┬────────┘
+                              ▼
+                     ┌────────────────┐
+                     │   Decision:    │
+                     │ groups ∩ scope │
+                     └────────────────┘
 ```
 
----
+Authorization requires **both**:
+1. **User** must have sufficient group level (admins > managers > editors > viewers)
+2. **Client** must have the required OAuth scope
 
-## Philosophy
+This dual-check prevents privilege escalation via low-trust clients.
 
-- Policies are pure logic
-- OAuth/OIDC-aligned
-- Fail-closed by default
-- Strong test coverage
-- Versioned and auditable
+## Project Structure
+
+```
+celine-policies/
+├── src/celine/policies/    # Python service code
+│   ├── api/                # Policy API layer
+│   ├── auth/               # JWT validation, subject extraction
+│   ├── engine/             # OPA engine wrapper
+│   ├── routes/             # FastAPI endpoints
+│   └── models/             # Pydantic models
+├── policies/               # Rego policy files
+│   └── celine/
+│       ├── common/         # Shared helpers
+│       ├── dataset/        # Dataset access policies
+│       ├── pipeline/       # Pipeline state machine
+│       ├── dt/             # Digital twin policies
+│       ├── mqtt/           # MQTT ACL policies
+│       └── userdata/       # User data access
+├── docs/                   # Documentation
+├── tests/                  # Python and Rego tests
+└── config/                 # Keycloak, mosquitto configs
+```
+
+## Development
+
+```bash
+# Install dependencies
+uv sync
+
+# Run tests
+pytest
+opa test policies/ -v
+
+# Start development server
+uv run uvicorn celine.policies.main:create_app --reload --port 8009
+```
+
+## License
+
+Internal use only — CELINE Platform
