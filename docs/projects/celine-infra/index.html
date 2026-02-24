@@ -2314,17 +2314,17 @@ Infrastructure is applied using Helmfile-driven workflows.</p>
 </li>
 <li>
 <p><code>helm</code><br />
-  https://helm.sh/docs/intro/install/</p>
+  https://helm.sh/docs/intro/install/  version v3</p>
 </li>
 <li>
 <p><code>helm-diff</code> (required by Helmfile)<br />
 <code>bash
-  helm plugin install https://github.com/databus23/helm-diff</code></p>
+  helm plugin install https://github.com/databus23/helm-diff --version v3.9.14</code></p>
 </li>
 <li>
 <p><code>helm-secrets</code> (required by Helmfile)<br />
 <code>bash
-  helm plugin install https://github.com/jkroepke/helm-secrets --version v4.7.4</code></p>
+  helm plugin install https://github.com/jkroepke/helm-secrets --version v4.7.5</code></p>
 </li>
 <li>
 <p><code>helmfile</code><br />
@@ -2349,7 +2349,7 @@ Infrastructure is applied using Helmfile-driven workflows.</p>
 <p>CELINE services rely on <strong>Ingress host-based routing</strong>.</p>
 <p>For local development, services are exposed under <code>*.celine.local</code>.</p>
 <p>Add the following entry to <code>/etc/hosts</code>:</p>
-<pre><code class="language-text">192.168.49.2 dashboard.celine.local s3.celine.local keycloak.celine.local mqtt.celine.local sso.celine.local prefect.celine.local superset.celine.local s3.celine.local
+<pre><code class="language-text">192.168.49.2 dashboard.celine.local s3.celine.local keycloak.celine.local marquez.celine.local mqtt.celine.local sso.celine.local prefect.celine.local superset.celine.local
 </code></pre>
 <p>Notes:
 - Replace <code>192.168.49.2</code> with the output of <code>minikube ip</code> if different
