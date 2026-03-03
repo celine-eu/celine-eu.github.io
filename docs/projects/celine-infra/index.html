@@ -1843,10 +1843,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-dns-configuration-celinelocal" class="md-nav__link">
+  <a href="#local-dns-configuration-celinetest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Local DNS Configuration (*.celine.local)
+        Local DNS Configuration (*.celine.test)
       
     </span>
   </a>
@@ -2134,10 +2134,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-dns-configuration-celinelocal" class="md-nav__link">
+  <a href="#local-dns-configuration-celinetest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Local DNS Configuration (*.celine.local)
+        Local DNS Configuration (*.celine.test)
       
     </span>
   </a>
@@ -2348,17 +2348,17 @@ Infrastructure is applied using Helmfile-driven workflows.</p>
 <pre><code class="language-bash">kubectl config use-context minikube
 </code></pre>
 <hr />
-<h2 id="local-dns-configuration-celinelocal">Local DNS Configuration (<code>*.celine.local</code>)</h2>
+<h2 id="local-dns-configuration-celinetest">Local DNS Configuration (<code>*.celine.test</code>)</h2>
 <p>CELINE services rely on <strong>Ingress host-based routing</strong>.</p>
-<p>For local development, services are exposed under <code>*.celine.local</code>.</p>
+<p>For local development, services are exposed under <code>*.celine.test</code> where <code>*.test</code> is resolved by minikube</p>
 <p>Add the following entry to <code>/etc/hosts</code>:</p>
-<pre><code class="language-text">192.168.49.2 dashboard.celine.local s3.celine.local keycloak.celine.local marquez.celine.local mqtt.celine.local sso.celine.local prefect.celine.local superset.celine.local
+<pre><code class="language-text">192.168.49.2 api.celine.test webapp.celine.test assistant.celine.test dashboard.celine.test s3.celine.test keycloak.celine.test marquez.celine.test mqtt.celine.test sso.celine.test prefect.celine.test superset.celine.test
 </code></pre>
 <p>Notes:
 - Replace <code>192.168.49.2</code> with the output of <code>minikube ip</code> if different
 - Hostnames must match ingress definitions
 - OAuth redirect URIs depend on these domains</p>
-<p>Using <code>localhost</code> will not work.</p>
+<p>Plain <code>localhost</code> will not work due to OIDC issuer mismatch.</p>
 <hr />
 <h2 id="secrets-management-sops">Secrets Management (SOPS)</h2>
 <p>All secrets are stored <strong>encrypted at rest</strong>.</p>
