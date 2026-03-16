@@ -629,6 +629,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#local-development" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2263,6 +2274,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#local-development" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2407,18 +2429,37 @@
 - <strong>Support for browser users and service / CLI tokens</strong></p>
 <hr />
 <h2 id="architecture">Architecture</h2>
-<p>High‑level flow:</p>
-<pre><code>Browser / CLI
-    |
-    v
-Caddy (reverse proxy)
-    |
-    +--&gt; oauth2-proxy ----&gt; Keycloak (OIDC)
-    |
-    +--&gt; Superset
-    |
-    +--&gt; Jupyter
-</code></pre>
+<p>All services are fronted by Caddy, which delegates authentication to oauth2-proxy. oauth2-proxy validates sessions against Keycloak (OIDC). Authenticated requests are forwarded by Caddy to Superset or Jupyter, which each enforce authorization locally.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caddy</td>
+<td>Reverse proxy, TLS termination, forward_auth to oauth2-proxy</td>
+</tr>
+<tr>
+<td>oauth2-proxy</td>
+<td>OIDC authentication gateway, injects identity headers</td>
+</tr>
+<tr>
+<td>Keycloak</td>
+<td>Identity provider, group and role management</td>
+</tr>
+<tr>
+<td>Superset</td>
+<td>Analytics dashboards, custom SecurityManager</td>
+</tr>
+<tr>
+<td>Jupyter</td>
+<td>Notebook execution, JWT-based authorizer</td>
+</tr>
+</tbody>
+</table>
 <p>Authentication and authorization flow:</p>
 <ol>
 <li>User accesses a protected service (Superset or Jupyter).</li>
@@ -2510,6 +2551,34 @@ Caddy (reverse proxy)
 <p>It is exposed through a dedicated SSO endpoint:</p>
 <pre><code>http://sso.celine.localhost
 </code></pre>
+<hr />
+<h2 id="documentation">Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-dashboards/docs/architecture.md">Architecture</a></td>
+<td>Service flow, auth chain, identity propagation</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-dashboards/docs/authentication.md">Authentication</a></td>
+<td>Keycloak realm, oauth2-proxy setup, JWT validation, cookie sharing</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-dashboards/docs/services.md">Services</a></td>
+<td>Superset SecurityManager, Jupyter JWT authorizer, Caddy config</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-dashboards/docs/development.md">Development</a></td>
+<td>task ensure-env, docker compose, service URLs, extensibility</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="local-development">Local Development</h2>
 <h3 id="prerequisites">Prerequisites</h3>
