@@ -2798,29 +2798,30 @@
 <li><strong>User must have sufficient group level</strong> (for user tokens)</li>
 <li><strong>Client must have the required scope</strong> (for all tokens)</li>
 </ol>
-<pre><code>┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   User Token                    Service Token               │
-│   ══════════                    ═════════════               │
-│                                                             │
-│   ┌─────────────┐               ┌─────────────┐            │
-│   │ User Groups │               │   Scopes    │            │
-│   │  (roles)    │               │   only      │            │
-│   └──────┬──────┘               └──────┬──────┘            │
-│          │                             │                    │
-│          ▼                             │                    │
-│   ┌─────────────┐                      │                    │
-│   │Client Scopes│                      │                    │
-│   └──────┬──────┘                      │                    │
-│          │                             │                    │
-│          ▼                             ▼                    │
-│   ┌─────────────────────────────────────────┐              │
-│   │              Authorization              │              │
-│   │         (intersection of both)          │              │
-│   └─────────────────────────────────────────┘              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>Token Type</th>
+<th>Check 1</th>
+<th>Check 2</th>
+<th>Authorization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User token</td>
+<td>User group level sufficient?</td>
+<td>Client scopes include required scope?</td>
+<td>Both must pass (intersection)</td>
+</tr>
+<tr>
+<td>Service token</td>
+<td>N/A (no user groups)</td>
+<td>Client scopes include required scope?</td>
+<td>Scope check only</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="user-groups-roles">User Groups (Roles)</h2>
 <p>Users are assigned to groups in Keycloak. Groups form a hierarchy:</p>

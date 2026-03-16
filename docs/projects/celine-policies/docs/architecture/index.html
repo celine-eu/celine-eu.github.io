@@ -1498,45 +1498,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zero-trust-compliance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Zero Trust Compliance
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#token-security" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Token Security
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#recommendations-for-production" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Recommendations for Production
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -1547,45 +1508,6 @@
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Considerations
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Future Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scaling-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Scaling Options
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#potential-enhancements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Potential Enhancements
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2526,45 +2448,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zero-trust-compliance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Zero Trust Compliance
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#token-security" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Token Security
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#recommendations-for-production" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Recommendations for Production
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2575,45 +2458,6 @@
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Considerations
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Future Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scaling-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Scaling Options
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#potential-enhancements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Potential Enhancements
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2637,63 +2481,35 @@
 <h1 id="architecture">Architecture</h1>
 <p>This document describes the authorization model, system architecture, and design decisions of the CELINE Policy Service.</p>
 <h2 id="system-overview">System Overview</h2>
-<pre><code>┌─────────────────────────────────────────────────────────────────────────┐
-│                         CELINE Platform                                  │
-│                                                                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│  │ digital-twin│  │  pipelines  │  │ rec-registry│  │   nudging   │    │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘    │
-│         │                │                │                │            │
-│         └────────────────┴────────────────┴────────────────┘            │
-│                                   │                                      │
-│                                   ▼                                      │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                      Policy Service                                │  │
-│  │                                                                    │  │
-│  │   ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐    │  │
-│  │   │ JWT Validate│──▶│  Subject    │──▶│   OPA Engine        │    │  │
-│  │   │ (JWKS cache)│   │  Extract    │   │   (regorus)         │    │  │
-│  │   └─────────────┘   └─────────────┘   └──────────┬──────────┘    │  │
-│  │                                                   │               │  │
-│  │   ┌─────────────┐   ┌─────────────┐              │               │  │
-│  │   │ Audit Log   │◀──│  Decision   │◀─────────────┘               │  │
-│  │   │ (structured)│   │  Cache      │                              │  │
-│  │   └─────────────┘   └─────────────┘                              │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-│                                   │                                      │
-│                                   ▼                                      │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                       Keycloak (IdP)                               │  │
-│  │   Users, Groups, Service Accounts, OAuth Clients, Scopes          │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
-</code></pre>
+<p>The CELINE platform services (digital-twin, pipelines, rec-registry, nudging) delegate all authorization decisions to the Policy Service. The Policy Service validates the JWT, extracts the subject, evaluates Rego policies in an embedded OPA engine, and returns an allow/deny decision with optional row-level filters. Keycloak is the identity provider that issues the JWTs.</p>
 <h2 id="authorization-model">Authorization Model</h2>
 <h3 id="the-dual-check-model">The Dual-Check Model</h3>
 <p>The CELINE authorization model enforces <strong>two independent checks</strong> that must both pass:</p>
-<pre><code>                    ┌─────────────────────────────────────┐
-                    │          Authorization              │
-                    │                                     │
-                    │   ┌───────────┐   ┌───────────┐    │
-                    │   │   User    │   │  Client   │    │
-                    │   │  Groups   │   │  Scopes   │    │
-                    │   │ (roles)   │   │  (OAuth)  │    │
-                    │   └─────┬─────┘   └─────┬─────┘    │
-                    │         │               │          │
-                    │         └───────┬───────┘          │
-                    │                 │                  │
-                    │                 ▼                  │
-                    │         ┌───────────────┐         │
-                    │         │  INTERSECTION │         │
-                    │         │   (both must  │         │
-                    │         │    pass)      │         │
-                    │         └───────────────┘         │
-                    └─────────────────────────────────────┘
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User groups</td>
+<td>JWT <code>groups</code> or <code>realm_access.roles</code> claim</td>
+<td>Role hierarchy: admins &gt; managers &gt; editors &gt; viewers</td>
+</tr>
+<tr>
+<td>Client scopes</td>
+<td>JWT <code>scope</code> claim</td>
+<td>OAuth scopes granted to the calling service client</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Why this model?</strong></p>
 <ol>
-<li><strong>User Groups</strong> define what a human user is allowed to do (based on their role)</li>
-<li><strong>Client Scopes</strong> define what the requesting application is allowed to do</li>
+<li><strong>User Groups</strong> define what a human user is allowed to do based on their role.</li>
+<li><strong>Client Scopes</strong> define what the requesting application is allowed to do.</li>
 </ol>
 <p>The intersection prevents privilege escalation: even if a user is an admin, a low-privilege client (like a public dashboard) cannot access admin-only resources.</p>
 <h3 id="subject-types">Subject Types</h3>
@@ -2707,34 +2523,60 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>User</strong></td>
-<td>JWT <code>sub</code> claim</td>
+<td>User</td>
+<td>JWT <code>sub</code> claim present</td>
 <td>Group hierarchy + Client scopes</td>
 </tr>
 <tr>
-<td><strong>Service</strong></td>
-<td>JWT <code>client_id</code> claim (no <code>sub</code>)</td>
+<td>Service</td>
+<td>JWT <code>client_id</code> claim, no <code>sub</code></td>
 <td>Client scopes only</td>
 </tr>
 <tr>
-<td><strong>Anonymous</strong></td>
+<td>Anonymous</td>
 <td>No JWT provided</td>
 <td>Limited to open resources</td>
 </tr>
 </tbody>
 </table>
 <h3 id="group-hierarchy">Group Hierarchy</h3>
-<p>Users are assigned to groups in Keycloak. Groups have a hierarchy:</p>
-<pre><code>admins    (level 4) ─── Full platform access
-    │
-managers  (level 3) ─── Operational access, simulations
-    │
-editors   (level 2) ─── Write access to non-restricted resources
-    │
-viewers   (level 1) ─── Read-only access to internal resources
-    │
-(none)    (level 0) ─── Anonymous / no group membership
-</code></pre>
+<p>Users are assigned to groups in Keycloak. Groups have a hierarchy with level inheritance:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Level</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>admins</td>
+<td>4</td>
+<td>Full platform access</td>
+</tr>
+<tr>
+<td>managers</td>
+<td>3</td>
+<td>Operational access, simulations</td>
+</tr>
+<tr>
+<td>editors</td>
+<td>2</td>
+<td>Write access to non-restricted resources</td>
+</tr>
+<tr>
+<td>viewers</td>
+<td>1</td>
+<td>Read-only access to internal resources</td>
+</tr>
+<tr>
+<td>(none)</td>
+<td>0</td>
+<td>Anonymous / no group membership</td>
+</tr>
+</tbody>
+</table>
 <p>Higher levels inherit all permissions of lower levels.</p>
 <h3 id="resource-types">Resource Types</h3>
 <table>
@@ -2775,13 +2617,7 @@ viewers   (level 1) ─── Read-only access to internal resources
 </table>
 <h2 id="policy-engine">Policy Engine</h2>
 <h3 id="why-opa">Why OPA?</h3>
-<p><a href="https://www.openpolicyagent.org/">Open Policy Agent</a> provides:</p>
-<ul>
-<li><strong>Declarative policies</strong> — Rules expressed in Rego, not code</li>
-<li><strong>Testable</strong> — Policies can be unit tested with <code>opa test</code></li>
-<li><strong>Decoupled</strong> — Policy changes don't require service redeployment</li>
-<li><strong>Industry standard</strong> — CNCF graduated project, widely adopted</li>
-</ul>
+<p><a href="https://www.openpolicyagent.org/">Open Policy Agent</a> provides declarative, testable, decoupled policies in Rego. It is a CNCF graduated project widely adopted for authorization use cases.</p>
 <h3 id="embedded-vs-sidecar">Embedded vs. Sidecar</h3>
 <p>The policy service uses <strong>embedded OPA</strong> (via regorus, a Rust implementation):</p>
 <table>
@@ -2795,19 +2631,19 @@ viewers   (level 1) ─── Read-only access to internal resources
 </thead>
 <tbody>
 <tr>
-<td><strong>Embedded</strong> (current)</td>
+<td>Embedded (current)</td>
 <td>~0.1-0.5ms</td>
 <td>Single service</td>
 <td>Centralized, moderate scale</td>
 </tr>
 <tr>
-<td><strong>Sidecar per service</strong></td>
+<td>Sidecar per service</td>
 <td>~0.1ms</td>
 <td>Container per service</td>
 <td>High throughput, low latency</td>
 </tr>
 <tr>
-<td><strong>Remote OPA</strong></td>
+<td>Remote OPA</td>
 <td>~1-5ms</td>
 <td>Separate deployment</td>
 <td>Shared policies, simple services</td>
@@ -2834,14 +2670,14 @@ viewers   (level 1) ─── Read-only access to internal resources
     └── access.rego       # User data ownership
 </code></pre>
 <h3 id="policy-input-structure">Policy Input Structure</h3>
-<p>All policies receive a standardized input:</p>
+<p>All policies receive a standardized input document:</p>
 <pre><code class="language-json">{
   &quot;subject&quot;: {
     &quot;id&quot;: &quot;user-123&quot;,
     &quot;type&quot;: &quot;user&quot;,
     &quot;groups&quot;: [&quot;viewers&quot;, &quot;editors&quot;],
     &quot;scopes&quot;: [&quot;dataset.query&quot;, &quot;dt.read&quot;],
-    &quot;claims&quot;: { /* raw JWT claims */ }
+    &quot;claims&quot;: {}
   },
   &quot;resource&quot;: {
     &quot;type&quot;: &quot;dataset&quot;,
@@ -2871,95 +2707,38 @@ viewers   (level 1) ─── Read-only access to internal resources
 </code></pre>
 <h2 id="request-flow">Request Flow</h2>
 <h3 id="1-jwt-validation">1. JWT Validation</h3>
-<pre><code>Incoming Request
-       │
-       ▼
-┌─────────────────┐
-│ Extract Bearer  │
-│ token from      │
-│ Authorization   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐     ┌─────────────────┐
-│ Fetch JWKS      │◀───▶│ JWKS Cache      │
-│ (if needed)     │     │ (1 hour TTL)    │
-└────────┬────────┘     └─────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Validate JWT    │
-│ - signature     │
-│ - expiry        │
-│ - issuer        │
-└────────┬────────┘
-         │
-         ▼
-   Valid Claims
-</code></pre>
+<ol>
+<li>Extract the Bearer token from the <code>Authorization</code> header.</li>
+<li>Look up the signing key from the JWKS cache (fetch from Keycloak if expired or unknown kid).</li>
+<li>Validate JWT signature (RS256), expiry (<code>exp</code>), and issuer (<code>iss</code>).</li>
+<li>Return validated claims or reject with 401.</li>
+</ol>
 <h3 id="2-subject-extraction">2. Subject Extraction</h3>
 <pre><code class="language-python"># Simplified logic
 def extract_subject(claims: dict) -&gt; Subject:
-    # Service account detection
     if &quot;client_id&quot; in claims and &quot;sub&quot; not in claims:
         return Subject(
             type=&quot;service&quot;,
             id=claims[&quot;client_id&quot;],
             scopes=claims.get(&quot;scope&quot;, &quot;&quot;).split(),
         )
-
-    # User detection
     return Subject(
         type=&quot;user&quot;,
         id=claims[&quot;sub&quot;],
-        groups=extract_groups(claims),  # From realm_access.roles + groups
+        groups=extract_groups(claims),
         scopes=claims.get(&quot;scope&quot;, &quot;&quot;).split(),
     )
 </code></pre>
 <h3 id="3-policy-evaluation">3. Policy Evaluation</h3>
-<pre><code>Subject + Resource + Action
-           │
-           ▼
-┌──────────────────────┐
-│ Check Decision Cache │
-└──────────┬───────────┘
-           │
-     ┌─────┴─────┐
-     │  Cache    │
-     │  Hit?     │
-     └─────┬─────┘
-       No  │  Yes
-           │    └──────▶ Return Cached Decision
-           ▼
-┌──────────────────────┐
-│ Build Policy Input   │
-│ (JSON document)      │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ OPA Evaluate         │
-│ &quot;data.celine.{type}&quot; │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Cache Decision       │
-│ (LRU + TTL)          │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Audit Log            │
-│ (structured JSON)    │
-└──────────┬───────────┘
-           │
-           ▼
-      Return Decision
-</code></pre>
+<ol>
+<li>Check the LRU decision cache using a hash of (policy_package + policy_input).</li>
+<li>On cache miss: build the policy input document and evaluate with OPA (regorus).</li>
+<li>Cache the decision with TTL.</li>
+<li>Write a structured audit log entry.</li>
+<li>Return the decision to the caller.</li>
+</ol>
 <h2 id="caching-strategy">Caching Strategy</h2>
 <h3 id="decision-cache">Decision Cache</h3>
-<p>Identical requests return cached decisions:</p>
 <table>
 <thead>
 <tr>
@@ -2988,7 +2767,6 @@ def extract_subject(claims: dict) -&gt; Subject:
 </table>
 <p>Cache key: <code>hash(policy_package + policy_input)</code></p>
 <h3 id="jwks-cache">JWKS Cache</h3>
-<p>Public keys are cached to avoid fetching on every request:</p>
 <table>
 <thead>
 <tr>
@@ -3005,9 +2783,7 @@ def extract_subject(claims: dict) -&gt; Subject:
 </tr>
 </tbody>
 </table>
-<p>Automatic refresh on:
-- TTL expiry
-- Unknown key ID (kid) in token</p>
+<p>The JWKS is automatically refreshed on TTL expiry or when an unknown key ID (<code>kid</code>) appears in a token.</p>
 <h2 id="audit-logging">Audit Logging</h2>
 <p>All decisions are logged with structured JSON:</p>
 <pre><code class="language-json">{
@@ -3027,7 +2803,6 @@ def extract_subject(claims: dict) -&gt; Subject:
 }
 </code></pre>
 <h2 id="security-considerations">Security Considerations</h2>
-<h3 id="zero-trust-compliance">Zero Trust Compliance</h3>
 <table>
 <thead>
 <tr>
@@ -3038,7 +2813,7 @@ def extract_subject(claims: dict) -&gt; Subject:
 <tbody>
 <tr>
 <td>Never trust, always verify</td>
-<td>Every request requires valid JWT</td>
+<td>Every request requires a valid JWT</td>
 </tr>
 <tr>
 <td>Least privilege</td>
@@ -3050,25 +2825,11 @@ def extract_subject(claims: dict) -&gt; Subject:
 </tr>
 <tr>
 <td>Defense in depth</td>
-<td>User groups + Client scopes</td>
+<td>User groups AND client scopes both required</td>
 </tr>
 </tbody>
 </table>
-<h3 id="token-security">Token Security</h3>
-<ul>
-<li>JWTs validated with RS256 signatures</li>
-<li>Issuer (<code>iss</code>) claim verified against Keycloak</li>
-<li>Expiry (<code>exp</code>) enforced</li>
-<li>No token storage — stateless validation</li>
-</ul>
-<h3 id="recommendations-for-production">Recommendations for Production</h3>
-<ol>
-<li><strong>mTLS</strong> between services and policy service</li>
-<li><strong>Network segmentation</strong> — policy service not publicly accessible</li>
-<li><strong>Audit log forwarding</strong> to SIEM</li>
-<li><strong>Rate limiting</strong> on policy endpoints</li>
-<li><strong>Secret rotation</strong> for OAuth clients</li>
-</ol>
+<p><strong>Token security:</strong> JWTs validated with RS256 signatures. Issuer (<code>iss</code>) verified against Keycloak. Expiry (<code>exp</code>) enforced. No token storage — stateless validation.</p>
 <h2 id="performance-characteristics">Performance Characteristics</h2>
 <table>
 <thead>
@@ -3080,15 +2841,15 @@ def extract_subject(claims: dict) -&gt; Subject:
 <tbody>
 <tr>
 <td>Policy evaluation</td>
-<td>0.1 - 0.5 ms</td>
+<td>0.1 – 0.5 ms</td>
 </tr>
 <tr>
 <td>JWT validation (cached JWKS)</td>
-<td>0.5 - 1 ms</td>
+<td>0.5 – 1 ms</td>
 </tr>
 <tr>
 <td>Full request (uncached)</td>
-<td>2 - 5 ms</td>
+<td>2 – 5 ms</td>
 </tr>
 <tr>
 <td>Full request (cached)</td>
@@ -3100,20 +2861,6 @@ def extract_subject(claims: dict) -&gt; Subject:
 </tr>
 </tbody>
 </table>
-<h2 id="future-considerations">Future Considerations</h2>
-<h3 id="scaling-options">Scaling Options</h3>
-<ol>
-<li><strong>Horizontal scaling</strong> — Multiple policy service instances behind load balancer</li>
-<li><strong>OPA sidecars</strong> — Deploy OPA alongside high-throughput services</li>
-<li><strong>Policy bundles</strong> — Central service serves bundles to distributed OPA instances</li>
-</ol>
-<h3 id="potential-enhancements">Potential Enhancements</h3>
-<ul>
-<li>GraphQL authorization integration</li>
-<li>Relationship-based access control (ReBAC) for complex hierarchies</li>
-<li>Policy versioning and rollback</li>
-<li>A/B testing for policy changes</li>
-</ul>
 
 
 

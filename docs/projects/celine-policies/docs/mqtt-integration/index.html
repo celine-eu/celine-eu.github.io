@@ -2672,13 +2672,7 @@
 <p>This document covers MQTT authorization, topic patterns, and broker configuration for the CELINE platform.</p>
 <h2 id="overview">Overview</h2>
 <p>The policy service provides MQTT authorization via HTTP backend endpoints compatible with <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a>.</p>
-<pre><code>┌─────────────┐        ┌─────────────┐        ┌─────────────────┐
-│ MQTT Client │───────▶│  Mosquitto  │───────▶│ Policy Service  │
-│  (+ JWT)    │        │   Broker    │  HTTP  │  /mqtt/user     │
-└─────────────┘        └─────────────┘        │  /mqtt/acl      │
-                                              │  /mqtt/superuser│
-                                              └─────────────────┘
-</code></pre>
+<p>The MQTT client connects to Mosquitto with a JWT. Mosquitto calls the Policy Service via HTTP (mosquitto-go-auth backend) on <code>/mqtt/user</code>, <code>/mqtt/acl</code>, and <code>/mqtt/superuser</code> to validate credentials and check topic permissions.</p>
 <h2 id="authentication-flow">Authentication Flow</h2>
 <ol>
 <li>Client connects to Mosquitto with JWT as password (or in Authorization header)</li>

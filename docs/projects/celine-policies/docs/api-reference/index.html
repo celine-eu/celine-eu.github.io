@@ -2995,14 +2995,47 @@
 }
 </code></pre>
 <p><strong>Valid Transitions:</strong></p>
-<pre><code>pending ──▶ started ──▶ running ──▶ completed
-   │           │           │
-   │           │           └──▶ failed
-   │           │
-   │           └──▶ cancelled
-   │
-   └──▶ cancelled
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pending</code></td>
+<td><code>started</code></td>
+<td>Pipeline begins execution</td>
+</tr>
+<tr>
+<td><code>pending</code></td>
+<td><code>cancelled</code></td>
+<td>Pipeline cancelled before start</td>
+</tr>
+<tr>
+<td><code>started</code></td>
+<td><code>running</code></td>
+<td>Execution proceeds</td>
+</tr>
+<tr>
+<td><code>started</code></td>
+<td><code>cancelled</code></td>
+<td>Pipeline cancelled after start</td>
+</tr>
+<tr>
+<td><code>running</code></td>
+<td><code>completed</code></td>
+<td>Successful completion</td>
+</tr>
+<tr>
+<td><code>running</code></td>
+<td><code>failed</code></td>
+<td>Execution error</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="digital-twin-endpoints">Digital Twin Endpoints</h2>
 <h3 id="post-dtaccess">POST /dt/access</h3>

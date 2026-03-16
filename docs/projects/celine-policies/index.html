@@ -2160,27 +2160,27 @@ curl -X POST http://localhost:8009/authorize \
 </thead>
 <tbody>
 <tr>
-<td><a href="docs/getting-started/">Getting Started</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/getting-started.md">Getting Started</a></td>
 <td>Developer quickstart guide</td>
 </tr>
 <tr>
-<td><a href="docs/architecture/">Architecture</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/architecture.md">Architecture</a></td>
 <td>Authorization model and system design</td>
 </tr>
 <tr>
-<td><a href="docs/api-reference/">API Reference</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/api-reference.md">API Reference</a></td>
 <td>Complete endpoint documentation</td>
 </tr>
 <tr>
-<td><a href="docs/scopes-and-permissions/">Scopes &amp; Permissions</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/scopes-and-permissions.md">Scopes &amp; Permissions</a></td>
 <td>OAuth scopes and access control</td>
 </tr>
 <tr>
-<td><a href="docs/mqtt-integration/">MQTT Integration</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/mqtt-integration.md">MQTT Integration</a></td>
 <td>Topic patterns and broker setup</td>
 </tr>
 <tr>
-<td><a href="docs/deployment/">Deployment</a></td>
+<td><a href="https://celine-eu.github.io/projects/celine-policies/docs/deployment.md">Deployment</a></td>
 <td>Configuration and production deployment</td>
 </tr>
 </tbody>
@@ -2219,25 +2219,29 @@ curl -X POST http://localhost:8009/authorize \
 </tbody>
 </table>
 <h2 id="authorization-model-overview">Authorization Model Overview</h2>
-<pre><code>┌──────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Client     │────▶│  Policy Service  │────▶│  OPA (regorus)  │
-│  (with JWT)  │     │                  │     │                 │
-└──────────────┘     └──────────────────┘     └─────────────────┘
-                              │
-                     ┌────────┴────────┐
-                     ▼                 ▼
-              ┌────────────┐    ┌────────────┐
-              │ User Groups│    │Client Scope│
-              │  (roles)   │    │ (OAuth)    │
-              └────────────┘    └────────────┘
-                     │                 │
-                     └────────┬────────┘
-                              ▼
-                     ┌────────────────┐
-                     │   Decision:    │
-                     │ groups ∩ scope │
-                     └────────────────┘
-</code></pre>
+<p>Each authorization request passes through the Policy Service to OPA (regorus). OPA evaluates two independent checks and intersects the results:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User groups</td>
+<td>JWT <code>groups</code> claim</td>
+<td>Role hierarchy: admins &gt; managers &gt; editors &gt; viewers</td>
+</tr>
+<tr>
+<td>Client scopes</td>
+<td>JWT <code>scope</code> claim</td>
+<td>OAuth scopes granted to the calling service client</td>
+</tr>
+</tbody>
+</table>
+<p>Both checks must pass. A high-trust user calling through a low-trust client is denied. A high-trust client acting on behalf of a low-privilege user is also denied.</p>
 <p>Authorization requires <strong>both</strong>:
 1. <strong>User</strong> must have sufficient group level (admins &gt; managers &gt; editors &gt; viewers)
 2. <strong>Client</strong> must have the required OAuth scope</p>
