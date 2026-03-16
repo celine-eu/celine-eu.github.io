@@ -2519,34 +2519,33 @@ await dt.unsubscribe(sub_id)
 </code></pre>
 <hr />
 <h2 id="architecture">Architecture</h2>
-<pre><code>┌─────────────────────────────────────────────────────────────────┐
-│                         DT Runtime                               │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                  SubscriptionService                        │ │
-│  │  ┌─────────────────┐    ┌─────────────────────────────────┐│ │
-│  │  │SubscriptionReg. │    │     EventDispatcher             ││ │
-│  │  │                 │    │  - Concurrent handler dispatch  ││ │
-│  │  │ - Topic patterns│◄───│  - Error isolation              ││ │
-│  │  │ - Handlers      │    │  - Metrics                      ││ │
-│  │  └─────────────────┘    └─────────────────────────────────┘│ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                              ▲                                   │
-│                              │                                   │
-│  ┌───────────────────────────┴────────────────────────────────┐ │
-│  │                    MqttSubscriber                           │ │
-│  │  - JWT token refresh                                        │ │
-│  │  - Automatic reconnection                                   │ │
-│  │  - Topic management                                         │ │
-│  └─────────────────────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │   MQTT Broker    │
-                    │   (Mosquitto)    │
-                    └──────────────────┘
-</code></pre>
+<p>The subscription subsystem connects MQTT events to domain handlers:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MqttSubscriber</code></td>
+<td>Connects to Mosquitto, manages JWT token refresh and reconnection</td>
+</tr>
+<tr>
+<td><code>SubscriptionService</code></td>
+<td>Coordinates the registry and dispatcher</td>
+</tr>
+<tr>
+<td><code>SubscriptionRegistry</code></td>
+<td>Stores topic patterns and their associated handlers</td>
+</tr>
+<tr>
+<td><code>EventDispatcher</code></td>
+<td>Dispatches events concurrently to matching handlers with error isolation and metrics</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="configuration">Configuration</h2>
 <h3 id="application-settings">Application Settings</h3>

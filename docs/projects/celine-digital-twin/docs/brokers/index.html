@@ -2385,29 +2385,37 @@ async def main():
 </code></pre>
 <hr />
 <h2 id="architecture">Architecture</h2>
-<p>The broker provides a unified interface for both publishing and subscribing:</p>
-<pre><code>┌─────────────────────────────────────────────────────────────────┐
-│                         DT Runtime                               │
-│                                                                  │
-│  ┌─────────────┐        ┌─────────────────────────────────────┐ │
-│  │   DT App    │───────▶│           MqttBroker                │ │
-│  └─────────────┘        │                                     │ │
-│                         │  ┌─────────────┐  ┌──────────────┐  │ │
-│  ┌─────────────┐        │  │  publish()  │  │ subscribe()  │  │ │
-│  │  Handlers   │◀───────│  └─────────────┘  └──────────────┘  │ │
-│  └─────────────┘        │                                     │ │
-│                         │  • Token refresh (auto)             │ │
-│                         │  • Reconnection (auto)              │ │
-│                         │  • TLS support                      │ │
-│                         └──────────────┬──────────────────────┘ │
-└────────────────────────────────────────┼────────────────────────┘
-                                         │
-                                         ▼
-                              ┌──────────────────┐
-                              │  MQTT Broker     │
-                              │  (Mosquitto)     │
-                              └──────────────────┘
-</code></pre>
+<p>The broker provides a unified interface for both publishing and subscribing. DT Apps call <code>publish()</code> to emit events and register handlers for <code>subscribe()</code> callbacks. The <code>MqttBroker</code> manages the connection to Mosquitto with automatic token refresh and reconnection.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>publish()</code></td>
+<td>Emit a message to a topic</td>
+</tr>
+<tr>
+<td><code>subscribe()</code></td>
+<td>Register a callback handler for a topic pattern</td>
+</tr>
+<tr>
+<td>Token refresh</td>
+<td>Access token refreshed automatically before expiry</td>
+</tr>
+<tr>
+<td>Reconnection</td>
+<td>Automatic reconnect on connection loss</td>
+</tr>
+<tr>
+<td>TLS support</td>
+<td>Configurable TLS for production deployments</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="configuration">Configuration</h2>
 <h3 id="broker-configuration-file">Broker Configuration File</h3>

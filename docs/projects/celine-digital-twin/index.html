@@ -703,6 +703,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2151,6 +2162,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2205,37 +2227,55 @@
 <p>The DT runtime is organized around <strong>domains</strong> — self-contained verticals
 that bundle values, simulations, broker subscriptions, and custom routes
 into a cohesive, entity-scoped API surface.</p>
-<pre><code>┌─────────────────────────────────────────────────┐
-│  FastAPI Application                            │
-│                                                 │
-│  /health  /domains                              │
-│                                                 │
-│  ┌─────────────────────────────────────────┐    │
-│  │ /communities/{community_id}/...         │    │
-│  │   /values/consumption_timeseries        │    │
-│  │   /values/gse_incentive_rates           │    │
-│  │   /simulations/rec-planning/describe    │    │
-│  │   /energy-balance                       │    │
-│  │   /summary                              │    │
-│  └─────────────────────────────────────────┘    │
-│                                                 │
-│  ┌─────────────────────────────────────────┐    │
-│  │ /participants/{participant_id}/...      │    │
-│  │   /values/meter_readings               │    │
-│  │   /values/assets                       │    │
-│  │   /profile                             │    │
-│  │   /flexibility                         │    │
-│  └─────────────────────────────────────────┘    │
-│                                                 │
-│  ┌──────────────────────────┐                   │
-│  │ Shared Infrastructure    │                   │
-│  │  ClientsRegistry         │                   │
-│  │  BrokerService           │                   │
-│  │  ValuesService           │                   │
-│  │  SimulationRegistry      │                   │
-│  └──────────────────────────┘                   │
-└─────────────────────────────────────────────────┘
-</code></pre>
+<p>The FastAPI application exposes global routes (<code>/health</code>, <code>/domains</code>) and per-domain route groups. Each domain generates its own URL prefix at startup. Current domain route groups:</p>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Route Prefix</th>
+<th>Example Endpoints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Energy Community</td>
+<td><code>/communities/{community_id}</code></td>
+<td><code>/values/consumption_timeseries</code>, <code>/values/gse_incentive_rates</code>, <code>/simulations/rec-planning/describe</code>, <code>/energy-balance</code>, <code>/summary</code></td>
+</tr>
+<tr>
+<td>Participant</td>
+<td><code>/participants/{participant_id}</code></td>
+<td><code>/values/meter_readings</code>, <code>/values/assets</code>, <code>/profile</code>, <code>/flexibility</code></td>
+</tr>
+</tbody>
+</table>
+<p>All domains share common infrastructure:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ClientsRegistry</code></td>
+<td>Manages data client instances (Dataset API, external services)</td>
+</tr>
+<tr>
+<td><code>BrokerService</code></td>
+<td>MQTT connection and publish/subscribe</td>
+</tr>
+<tr>
+<td><code>ValuesService</code></td>
+<td>Value fetcher registry and execution</td>
+</tr>
+<tr>
+<td><code>SimulationRegistry</code></td>
+<td>Simulation scenario registry</td>
+</tr>
+</tbody>
+</table>
 <h2 id="key-concepts">Key Concepts</h2>
 <h3 id="dtdomain">DTDomain</h3>
 <p>The central abstraction. A domain defines:</p>
@@ -2248,11 +2288,25 @@ into a cohesive, entity-scoped API surface.</p>
 <li><strong>Entity resolution</strong>: Optional validation/enrichment callback</li>
 </ul>
 <h3 id="multi-instance-domains">Multi-Instance Domains</h3>
-<p>Same domain type, different implementations:</p>
-<pre><code>EnergyCommunityDomain (base)
-├── ITEnergyCommunityDomain  – Italian REC rules, GSE incentives
-└── DEEnergyCommunityDomain  – German BEG rules, Marktstammdaten
-</code></pre>
+<p>Same domain type, different implementations. <code>EnergyCommunityDomain</code> is the shared base:</p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ITEnergyCommunityDomain</code></td>
+<td>Italian REC rules, GSE incentives</td>
+</tr>
+<tr>
+<td><code>DEEnergyCommunityDomain</code></td>
+<td>German BEG rules, Marktstammdaten</td>
+</tr>
+</tbody>
+</table>
 <h3 id="jinja2-query-templates">Jinja2 Query Templates</h3>
 <p>Value fetcher queries use two-phase rendering:</p>
 <ol>
@@ -2349,6 +2403,49 @@ tests/
 ├── test_template.py
 └── test_values.py
 </code></pre>
+<h2 id="documentation">Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/concepts.md">Concepts</a></td>
+<td>Three artifact types (Apps/Components/Simulations), two-phase simulation model, registry</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/developer-guide.md">Developer Guide</a></td>
+<td>Tutorial for building apps, components, and simulations</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/apps.md">Apps</a></td>
+<td>DTApp contract, execution flow, input/output models, RunContext, event publishing</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/values.md">Values</a></td>
+<td>Value fetchers, Jinja2 query templates, data fetching subsystem</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/simulations.md">Simulations</a></td>
+<td>Scenario definitions, what-if models, simulation registry</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/subscriptions.md">Subscriptions</a></td>
+<td>Reactive broker event handlers, subscription specs</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/brokers.md">Brokers</a></td>
+<td>MQTT broker configuration, authentication, publishing/subscribing</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/clients.md">Clients</a></td>
+<td>Client configuration, dependency injection, environment substitution</td>
+</tr>
+</tbody>
+</table>
 <h2 id="running">Running</h2>
 <pre><code class="language-bash">pip install -e &quot;.[dev]&quot;
 uvicorn celine.dt.main:create_app --factory --reload

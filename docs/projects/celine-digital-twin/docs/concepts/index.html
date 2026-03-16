@@ -2371,23 +2371,36 @@
 <hr />
 <h2 id="the-three-artifact-types">The Three Artifact Types</h2>
 <p>The Digital Twin runtime is built around three artifact types, each serving a distinct purpose:</p>
-<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                              │
-│    ┌───────────────┐    ┌───────────────┐    ┌───────────────────────┐     │
-│    │     Apps      │    │  Components   │    │     Simulations       │     │
-│    │               │    │               │    │                       │     │
-│    │  Orchestrate  │    │    Compute    │    │      Explore          │     │
-│    │  operations   │    │    (pure)     │    │      what-if          │     │
-│    │               │    │               │    │                       │     │
-│    │  /apps API    │    │  (internal)   │    │  /simulations API     │     │
-│    └───────────────┘    └───────────────┘    └───────────────────────┘     │
-│                                                                              │
-│    External-facing       Internal            External-facing               │
-│    Side effects OK       No side effects     Two-phase execution           │
-│    One-shot execution    Stateless           Scenario + Parameters         │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>API</th>
+<th>Side Effects</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Apps</strong></td>
+<td><code>/apps/{key}/run</code></td>
+<td>Allowed</td>
+<td>Orchestrate operations, one-shot execution</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td>Internal only</td>
+<td>None</td>
+<td>Pure computation, stateless, composable</td>
+</tr>
+<tr>
+<td><strong>Simulations</strong></td>
+<td><code>/simulations/{key}/...</code></td>
+<td>None</td>
+<td>Two-phase what-if exploration</td>
+</tr>
+</tbody>
+</table>
 <h3 id="apps">Apps</h3>
 <p>An <strong>App</strong> is a self-contained, externally-callable operation.</p>
 <p>Key characteristics:
@@ -2415,38 +2428,31 @@
 <hr />
 <h2 id="the-two-phase-simulation-model">The Two-Phase Simulation Model</h2>
 <p>Simulations separate expensive setup from fast exploration:</p>
-<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                              │
-│   Phase 1: Build Scenario                 Phase 2: Run Simulations         │
-│   (expensive, cacheable)                  (fast, parameterized)            │
-│                                                                              │
-│   ┌─────────────────────────┐             ┌─────────────────────────┐      │
-│   │ Scenario Configuration  │             │      Parameters         │      │
-│   │ - community_id          │             │ - pv_kwp: 100           │      │
-│   │ - reference_period      │             │ - battery_kwh: 50       │      │
-│   │ - resolution            │             │ - discount_rate: 0.05   │      │
-│   └───────────┬─────────────┘             └───────────┬─────────────┘      │
-│               │                                       │                     │
-│               ▼                                       ▼                     │
-│   ┌─────────────────────────┐             ┌─────────────────────────┐      │
-│   │   build_scenario()      │             │      simulate()         │      │
-│   │                         │             │                         │      │
-│   │ - Fetch historical data │             │ - Load cached scenario  │      │
-│   │ - Compute baseline      │             │ - Apply parameters      │      │
-│   │ - Store artifacts       │             │ - Compute results       │      │
-│   │ - ~seconds to minutes   │             │ - ~milliseconds         │      │
-│   └───────────┬─────────────┘             └───────────┬─────────────┘      │
-│               │                                       │                     │
-│               ▼                                       ▼                     │
-│   ┌─────────────────────────┐             ┌─────────────────────────┐      │
-│   │       Scenario          │────────────▶│        Result           │      │
-│   │ - scenario_id           │   reused    │ - self_consumption: 0.8 │      │
-│   │ - baseline_metrics      │   many      │ - npv: €12,000          │      │
-│   │ - cached_data refs      │   times     │ - payback_years: 7.2    │      │
-│   └─────────────────────────┘             └─────────────────────────┘      │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-</code></pre>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Function</th>
+<th>Duration</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1 — Build Scenario</td>
+<td><code>build_scenario()</code></td>
+<td>seconds to minutes</td>
+<td>Fetch historical data, compute baseline, store cached artifacts</td>
+</tr>
+<tr>
+<td>Phase 2 — Run Simulations</td>
+<td><code>simulate()</code></td>
+<td>milliseconds</td>
+<td>Load cached scenario, apply parameters, compute results</td>
+</tr>
+</tbody>
+</table>
+<p>The scenario is built once and reused many times across parameter variations. Example scenario config: <code>community_id</code>, <code>reference_period</code>, <code>resolution</code>. Example simulation parameters: <code>pv_kwp: 100</code>, <code>battery_kwh: 50</code>, <code>discount_rate: 0.05</code>. Example results: <code>self_consumption: 0.8</code>, <code>npv: €12,000</code>, <code>payback_years: 7.2</code>.</p>
 <p>This enables:
 - <strong>Parameter sweeps</strong>: Test 100 configurations against one scenario
 - <strong>Sensitivity analysis</strong>: See how results change with each parameter
