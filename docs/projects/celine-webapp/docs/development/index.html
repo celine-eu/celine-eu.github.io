@@ -1272,21 +1272,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#frontend-setup" class="md-nav__link">
+  <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Frontend Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-proxy-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Local Proxy Configuration
+        Frontend
       
     </span>
   </a>
@@ -3549,21 +3538,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#frontend-setup" class="md-nav__link">
+  <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Frontend Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-proxy-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Local Proxy Configuration
+        Frontend
       
     </span>
   </a>
@@ -3624,7 +3602,6 @@
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
 <li>Python ≥ 3.11 and <code>uv</code></li>
-<li>Node.js ≥ 20 and <code>pnpm</code></li>
 <li>A running PostgreSQL instance</li>
 </ul>
 <h2 id="environment-variables">Environment Variables</h2>
@@ -3675,23 +3652,8 @@ uv run alembic upgrade head
 uv run -m celine.webapp.main
 # Listens on http://localhost:8000
 </code></pre>
-<h2 id="frontend-setup">Frontend Setup</h2>
-<pre><code class="language-bash">cd frontend
-pnpm install
-pnpm dev
-# Listens on http://localhost:5173
-</code></pre>
-<h2 id="local-proxy-configuration">Local Proxy Configuration</h2>
-<p>For local development, the frontend at <code>localhost:5173</code> needs to proxy <code>/api</code> requests to the BFF at <code>localhost:8000</code>. Configure Vite:</p>
-<pre><code class="language-javascript">// frontend/vite.config.js
-export default {
-  server: {
-    proxy: {
-      '/api': 'http://localhost:8000',
-    }
-  }
-}
-</code></pre>
+<h2 id="frontend">Frontend</h2>
+<p>The participant frontend is in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>. See that repository for frontend setup instructions.</p>
 <h2 id="jwt-simulation">JWT Simulation</h2>
 <p>In local dev, the BFF reads <code>X-Auth-Request-Access-Token</code>. Simulate this header using a curl or Postman request:</p>
 <pre><code class="language-bash">curl http://localhost:8000/api/me \
@@ -3707,9 +3669,6 @@ uv run alembic revision --autogenerate -m &quot;add preference column&quot;
 </code></pre>
 <h2 id="running-tests">Running Tests</h2>
 <pre><code class="language-bash">uv run pytest -q
-</code></pre>
-<p>Frontend tests:</p>
-<pre><code class="language-bash">cd frontend &amp;&amp; pnpm test
 </code></pre>
 
 

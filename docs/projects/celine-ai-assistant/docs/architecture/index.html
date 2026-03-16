@@ -568,6 +568,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#service-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3505,6 +3516,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#service-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3625,6 +3647,13 @@
 </tr>
 </tbody>
 </table>
+<h2 id="frontend">Frontend</h2>
+<p>This repository is a pure API backend. The chat UI is maintained separately in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a>:</p>
+<ul>
+<li><code>packages/assistant-ui</code> — <code>@celine-eu/assistant-ui</code> Svelte component library (ChatCore, AssistantWidget, etc.)</li>
+<li><code>apps/assistant</code> — standalone full-page assistant app</li>
+</ul>
+<p>The frontend communicates with this API at <code>apiBaseUrl</code>. When deployed inside the participant webapp, requests are proxied through the <code>celine-webapp</code> BFF.</p>
 <h2 id="service-dependencies">Service Dependencies</h2>
 <table>
 <thead>

@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-webapp" class="md-skip">
+        <a href="#celine-participant-webapp-api" class="md-skip">
           Skip to content
         </a>
       
@@ -3554,8 +3554,9 @@
 
 
 
-<h1 id="celine-webapp">celine-webapp</h1>
-<p>REC participant webapp — SvelteKit 2 / Svelte 5 frontend with a FastAPI Backend-for-Frontend (BFF). Deployed same-origin behind oauth2_proxy.</p>
+<h1 id="celine-participant-webapp-api">CELINE Participant Webapp API</h1>
+<p>FastAPI Backend-for-Frontend (BFF) for the CELINE REC participant webapp. Deployed same-origin behind oauth2_proxy.</p>
+<p>The participant frontend (SvelteKit) is maintained separately in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> (<code>apps/webapp</code>).</p>
 <h2 id="architecture">Architecture</h2>
 <p>The webapp uses the BFF pattern:
 - The frontend (SvelteKit) communicates exclusively with the BFF at <code>/api/*</code>
@@ -3563,17 +3564,12 @@
 - The BFF proxies authenticated requests to backend services (Digital Twin, nudging-tool)
 - No cross-origin requests from the browser</p>
 <h2 id="quick-start">Quick Start</h2>
-<p><strong>Backend (BFF):</strong></p>
-<pre><code class="language-bash">uv run -m celine.webapp.main
+<pre><code class="language-bash">uv sync
+uv run alembic upgrade head
+uv run -m celine.webapp.main
 # Listens on http://localhost:8000
 </code></pre>
-<p><strong>Frontend:</strong></p>
-<pre><code class="language-bash">cd frontend
-pnpm install
-pnpm dev
-# Listens on http://localhost:5173
-</code></pre>
-<p>For local development, proxy <code>/api</code> to the backend via Vite config or a local reverse proxy.</p>
+<p>For the participant frontend, see <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>.</p>
 <h2 id="features">Features</h2>
 <table>
 <thead>
