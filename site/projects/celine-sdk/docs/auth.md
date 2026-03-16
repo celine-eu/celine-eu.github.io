@@ -58,7 +58,7 @@ class AccessToken:
 
 ## Configuration
 
-Auth settings come from `OidcSettings` (see [settings.md](https://celine-eu.github.io/projects/celine-sdk/docs/settings.md)):
+Auth settings come from `OidcSettings` (see [settings.md](https://celine-eu.github.io/projects/celine-sdk/docs/settings)):
 
 | Variable | Description |
 |---|---|

@@ -152,10 +152,10 @@ http://sso.celine.localhost
 
 | Document | Description |
 |---|---|
-| [Architecture](https://celine-eu.github.io/projects/celine-dashboards/docs/architecture.md) | Service flow, auth chain, identity propagation |
-| [Authentication](https://celine-eu.github.io/projects/celine-dashboards/docs/authentication.md) | Keycloak realm, oauth2-proxy setup, JWT validation, cookie sharing |
-| [Services](https://celine-eu.github.io/projects/celine-dashboards/docs/services.md) | Superset SecurityManager, Jupyter JWT authorizer, Caddy config |
-| [Development](https://celine-eu.github.io/projects/celine-dashboards/docs/development.md) | task ensure-env, docker compose, service URLs, extensibility |
+| [Architecture](https://celine-eu.github.io/projects/celine-dashboards/docs/architecture) | Service flow, auth chain, identity propagation |
+| [Authentication](https://celine-eu.github.io/projects/celine-dashboards/docs/authentication) | Keycloak realm, oauth2-proxy setup, JWT validation, cookie sharing |
+| [Services](https://celine-eu.github.io/projects/celine-dashboards/docs/services) | Superset SecurityManager, Jupyter JWT authorizer, Caddy config |
+| [Development](https://celine-eu.github.io/projects/celine-dashboards/docs/development) | task ensure-env, docker compose, service URLs, extensibility |
 
 ---
 

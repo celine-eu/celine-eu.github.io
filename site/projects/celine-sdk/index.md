@@ -51,10 +51,10 @@ services:
 
 | Document | Description |
 |---|---|
-| [Auth](https://celine-eu.github.io/projects/celine-sdk/docs/auth.md) | OIDC token provider, JWT parsing, AccessToken model |
-| [Broker](https://celine-eu.github.io/projects/celine-sdk/docs/broker.md) | MQTT client, auto-reconnect, JWT auth, subscription handling |
-| [Settings](https://celine-eu.github.io/projects/celine-sdk/docs/settings.md) | OidcSettings, MqttSettings, PoliciesSettings, env var config |
-| [Spec Management](https://celine-eu.github.io/projects/celine-sdk/docs/spec-management.md) | services.yaml format, spec fetch, versioning, client generation |
+| [Auth](https://celine-eu.github.io/projects/celine-sdk/docs/auth) | OIDC token provider, JWT parsing, AccessToken model |
+| [Broker](https://celine-eu.github.io/projects/celine-sdk/docs/broker) | MQTT client, auto-reconnect, JWT auth, subscription handling |
+| [Settings](https://celine-eu.github.io/projects/celine-sdk/docs/settings) | OidcSettings, MqttSettings, PoliciesSettings, env var config |
+| [Spec Management](https://celine-eu.github.io/projects/celine-sdk/docs/spec-management) | services.yaml format, spec fetch, versioning, client generation |
 
 ## License
 
