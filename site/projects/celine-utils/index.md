@@ -2,7 +2,7 @@
 
 **CELINE Utils** is a collection of shared utilities, libraries, and command-line tools that form the technical backbone of the **CELINE data platform**.
 
-It provides reusable building blocks for data pipelines, governance, lineage, metadata management, and platform integrations. The repository is designed to be embedded into CELINE applications and executed within orchestrated environments using Meltano, dbt, Prefect, and OpenLineage.
+It provides reusable building blocks for data pipelines, governance, lineage, metadata management, and platform integrations. The repository is designed to be embedded into CELINE applications and executed within orchestrated environments using Meltano, dbt, Prefect, and OpenLineage
 
 ---
 
@@ -47,7 +47,7 @@ CELINE Utils provides a structured execution layer for:
 
 The `PipelineRunner` coordinates execution, logging, error handling, and lineage emission in a consistent way across tools.
 
-See the [pipeline tutorial](docs/pipeline-tutorial.md) to discover how to setup and deploy a new pipeline.
+See the [pipeline tutorial](https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial.md) to discover how to setup and deploy a new pipeline.
 
 ---
 
@@ -121,6 +121,15 @@ Configuration is environment-driven using `pydantic-settings`:
 - Container-friendly defaults
 
 ---
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [Pipeline Tutorial](https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial.md) | Complete end-to-end pipeline setup guide |
+| [Governance](https://celine-eu.github.io/projects/celine-utils/docs/governance.md) | governance.yaml format, access levels, pattern matching |
+| [Schemas](https://celine-eu.github.io/projects/celine-utils/docs/schemas.md) | JSON Schema definitions for custom OpenLineage facets |
+| [CLI](https://celine-eu.github.io/projects/celine-utils/docs/cli.md) | Full CLI reference: governance generate, pipeline init, pipeline run |
 
 ## Installation
 

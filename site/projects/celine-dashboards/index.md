@@ -24,20 +24,15 @@ Key goals:
 
 ## Architecture
 
-High‑level flow:
+All services are fronted by Caddy, which delegates authentication to oauth2-proxy. oauth2-proxy validates sessions against Keycloak (OIDC). Authenticated requests are forwarded by Caddy to Superset or Jupyter, which each enforce authorization locally.
 
-```
-Browser / CLI
-    |
-    v
-Caddy (reverse proxy)
-    |
-    +--> oauth2-proxy ----> Keycloak (OIDC)
-    |
-    +--> Superset
-    |
-    +--> Jupyter
-```
+| Component | Role |
+|---|---|
+| Caddy | Reverse proxy, TLS termination, forward_auth to oauth2-proxy |
+| oauth2-proxy | OIDC authentication gateway, injects identity headers |
+| Keycloak | Identity provider, group and role management |
+| Superset | Analytics dashboards, custom SecurityManager |
+| Jupyter | Notebook execution, JWT-based authorizer |
 
 Authentication and authorization flow:
 
@@ -150,6 +145,17 @@ It is exposed through a dedicated SSO endpoint:
 ```
 http://sso.celine.localhost
 ```
+
+---
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [Architecture](https://celine-eu.github.io/projects/celine-dashboards/docs/architecture.md) | Service flow, auth chain, identity propagation |
+| [Authentication](https://celine-eu.github.io/projects/celine-dashboards/docs/authentication.md) | Keycloak realm, oauth2-proxy setup, JWT validation, cookie sharing |
+| [Services](https://celine-eu.github.io/projects/celine-dashboards/docs/services.md) | Superset SecurityManager, Jupyter JWT authorizer, Caddy config |
+| [Development](https://celine-eu.github.io/projects/celine-dashboards/docs/development.md) | task ensure-env, docker compose, service URLs, extensibility |
 
 ---
 

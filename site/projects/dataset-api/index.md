@@ -4,6 +4,7 @@
 The Dataset API provides a **secure, lineage-aware, metadata-rich interface** to heterogeneous datasets (PostgreSQL, object storage, filesystem).  
 It exposes a **DCAT-AP 3.0.0–compatible catalogue**, a **governed SQL query interface**, and **OpenLineage-integrated provenance**, designed to support Digital Twins and analytical applications.
 
+
 This README gives a **high-level orientation**.  
 Detailed concepts and workflows are documented in `docs/*.md` (see links below).
 
@@ -76,11 +77,11 @@ Main commands:
 
 Additional documentation available
 
-- [Architecture overview](docs/architecture.md)
-- [Catalogue Management](docs/catalogue-management.md)
-- [CLI operations](docs/cli-operations.md)
-- [Governance and security](docs/governance-security.md)
-- [Query engine](docs/query-engine.md)
+- [Architecture overview](https://celine-eu.github.io/projects/dataset-api/docs/architecture.md)
+- [Catalogue Management](https://celine-eu.github.io/projects/dataset-api/docs/catalogue-management.md)
+- [CLI operations](https://celine-eu.github.io/projects/dataset-api/docs/cli-operations.md)
+- [Governance and security](https://celine-eu.github.io/projects/dataset-api/docs/governance-security.md)
+- [Query engine](https://celine-eu.github.io/projects/dataset-api/docs/query-engine.md)
 
 ---
 

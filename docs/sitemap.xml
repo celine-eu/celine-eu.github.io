@@ -17,7 +17,43 @@
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/api-reference/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/architecture/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/configuration/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-dashboards/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-dashboards/docs/architecture/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-dashboards/docs/authentication/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-dashboards/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-dashboards/docs/services/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
@@ -54,6 +90,26 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/celine-digital-twin/docs/values/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/docs/apps/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/docs/packages/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/docs/theming/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
@@ -101,6 +157,18 @@
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-pipelines/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-pipelines/docs/pipeline-overview/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-pipelines/docs/pipelines-reference/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-policies/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
@@ -129,6 +197,26 @@
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/docs/auth/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/docs/broker/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/docs/settings/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/docs/spec-management/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-utils/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
@@ -146,6 +234,26 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/celine-utils/docs/schemas/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-webapp/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-webapp/docs/api-reference/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-webapp/docs/architecture/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-webapp/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-webapp/docs/features/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
@@ -170,6 +278,46 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/dataset-api/docs/query-engine/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/nudging-tool/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/nudging-tool/docs/api-reference/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/nudging-tool/docs/architecture/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/nudging-tool/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/nudging-tool/docs/engine/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/rec-registry/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/rec-registry/docs/api-reference/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/rec-registry/docs/data-model/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/rec-registry/docs/development/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/rec-registry/docs/import-export/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>

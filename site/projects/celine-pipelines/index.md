@@ -11,8 +11,16 @@ Each pipeline is a **self-contained, reproducible application** that ingests, tr
 
 This repository is part of the **CELINE EU project**.
 
-🌍 Project website: https://celineproject.eu  
-🛠 Open-source tools & docs: https://celine-eu.github.io/
+Project website: https://celineproject.eu
+Open-source tools & docs: https://celine-eu.github.io/
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [Pipeline Overview](https://celine-eu.github.io/projects/celine-pipelines/docs/pipeline-overview.md) | Standard pipeline anatomy, data layers, governance.yaml |
+| [Pipelines Reference](https://celine-eu.github.io/projects/celine-pipelines/docs/pipelines-reference.md) | Per-pipeline reference: om, dwd, owm, copernicus, osm |
+| [Development](https://celine-eu.github.io/projects/celine-pipelines/docs/development.md) | Prerequisites, task setup, running pipelines, releasing |
 
 ---
 
@@ -43,6 +51,7 @@ celine-pipelines/
 ├── apps/
 │   ├── copernicus/     # Copernicus Climate & Atmosphere pipelines
 │   ├── dwd/            # DWD ICON-D2 weather model
+│   ├── om/             # Open-Meteo weather pipeline (forecast + historical + ML features)
 │   ├── osm/            # OpenStreetMap ingestion & curation
 │   └── owm/            # OpenWeatherMap pipelines
 │
@@ -81,8 +90,8 @@ Governance rules (license, access level, attribution, retention) are declared **
 
 To create and integrate a new pipeline, follow the official tutorial:
 
-👉 **Pipeline integration tutorial**  
-https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial/
+Pipeline integration tutorial:
+https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial.md
 
 The tutorial covers:
 - creating a new pipeline skeleton
@@ -177,3 +186,54 @@ This work is part of the **CELINE project**, funded under the European Union fra
 - Deutscher Wetterdienst (DWD)
 - OpenStreetMap contributors
 - OpenWeather Ltd.
+
+
+---
+
+## OM pipeline (Open-Meteo)
+
+The Open-Meteo pipeline fetches hourly weather data (forecast + historical archive),
+transforms it through staging and silver layers (4 natural weather variables),
+then computes 29 ML features in a gold layer for energy consumption forecasting.
+
+### Pipeline layers
+
+| Layer | Description |
+|-------|-------------|
+| **RAW** | Verbatim API data (`raw.om_weather`) |
+| **STAGING** | Type-cast and deduplicated records (`ds_dev_staging.stg_om_weather`) |
+| **SILVER** | 4 natural weather variables: `shortwave_radiation`, `cloud_cover`, `temperature_2m`, `precipitation` (`ds_dev_silver.om_weather_hourly`) |
+| **GOLD** | 29 ML features: temporal/Fourier encodings, rolling stats, thermal dynamics, interaction features (`ds_dev_gold.om_weather_features`) |
+
+### Run in Docker
+
+```bash
+# Forecast mode (daily use)
+docker compose up datasets-db -d
+docker compose build pipeline-om
+docker compose run --rm pipeline-om python3 -c "
+from flows.pipeline import om_flow
+om_flow(config={'mode': 'forecast'})
+"
+```
+
+```bash
+# Historical backfill
+docker compose run --rm pipeline-om python3 -c "
+from flows.pipeline import om_flow
+om_flow(config={'mode': 'historical', 'start_date': '2024-12-01'})
+"
+```
+
+```bash
+# Both historical + forecast
+docker compose run --rm pipeline-om python3 -c "
+from flows.pipeline import om_flow
+om_flow(config={'mode': 'both', 'start_date': '2024-12-01'})
+"
+```
+
+Or start as a scheduled service (daily at 06:00):
+```bash
+docker compose up pipeline-om -d
+```

@@ -1,13 +1,108 @@
 repos:
+  - name: AI Assistant
+    slug: celine-ai-assistant
+    git: https://github.com/celine-eu/celine-ai-assistant.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Architecture: docs/architecture.md
+      - Configuration: docs/configuration.md
+      - API Reference: docs/api-reference.md
+      - Development: docs/development.md
+
+  - name: SDK
+    slug: celine-sdk
+    git: https://github.com/celine-eu/celine-sdk.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Auth: docs/auth.md
+      - Broker: docs/broker.md
+      - Settings: docs/settings.md
+      - Spec Management: docs/spec-management.md
+
+  - name: REC Registry
+    slug: rec-registry
+    git: https://github.com/celine-eu/rec-registry.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Data Model: docs/data-model.md
+      - API Reference: docs/api-reference.md
+      - Import and Export: docs/import-export.md
+      - Development: docs/development.md
+
+  - name: Webapp
+    slug: celine-webapp
+    git: https://github.com/celine-eu/celine-webapp.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Architecture: docs/architecture.md
+      - API Reference: docs/api-reference.md
+      - Features: docs/features.md
+      - Development: docs/development.md
+
+  - name: Nudging Tool
+    slug: nudging-tool
+    git: https://github.com/celine-eu/nudging-tool.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Architecture: docs/architecture.md
+      - Engine: docs/engine.md
+      - API Reference: docs/api-reference.md
+      - Development: docs/development.md
+
   - name: Dashboards
     slug: celine-dashboards
     git: https://github.com/celine-eu/celine-dashboards.git
 
     paths:
       - README.md
+      - docs/**
 
     nav:
       - README
+      - Architecture: docs/architecture.md
+      - Authentication: docs/authentication.md
+      - Services: docs/services.md
+      - Development: docs/development.md
+
+  - name: Frontend
+    slug: celine-frontend
+    git: https://github.com/celine-eu/celine-frontend.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Packages: docs/packages.md
+      - Apps: docs/apps.md
+      - Theming: docs/theming.md
+      - Development: docs/development.md
 
   - name: Digital Twin
     slug: celine-digital-twin
@@ -24,6 +119,7 @@ repos:
       - Simulations: docs/simulations.md
       - Clients: docs/clients.md
       - Subscriptions: docs/subscriptions.md
+      - Brokers: docs/brokers.md
       - Developer Guide: docs/developer-guide.md
 
   - name: Dataset API
@@ -36,7 +132,7 @@ repos:
 
     nav:
       - README
-      - Architecture overview: docs/architecture.md
+      - Architecture: docs/architecture.md
       - Catalogue Management: docs/catalogue-management.md
       - CLI operations: docs/cli-operations.md
       - Governance and security: docs/governance-security.md
@@ -45,23 +141,6 @@ repos:
     links:
       - name: ontologies
         source: projects/dataset-api/ontologies
-        target: ontologies
-
-  - name: Ontologies
-    slug: celine-ontologies
-    git: https://github.com/celine-eu/ontologies.git
-
-    paths:
-      - README.md
-      - docs/**
-      - releases/**
-
-    nav:
-      - README
-
-    links:
-      - name: ontologies
-        source: projects/celine-ontologies/releases/current
         target: ontologies
 
   - name: Policies
@@ -92,8 +171,10 @@ repos:
 
     nav:
       - README
-      - docs/governance.md
+      - Pipeline Tutorial: docs/pipeline-tutorial.md
+      - Governance: docs/governance.md
       - Governance Schemas: docs/schemas.md
+      - CLI: docs/cli.md
 
     links:
       - name: schema
@@ -110,14 +191,35 @@ repos:
 
     paths:
       - README.md
+      - docs/**
       - apps/*/README.md
 
     nav:
       - README
+      - Pipeline Overview: docs/pipeline-overview.md
+      - Pipelines Reference: docs/pipelines-reference.md
+      - Development: docs/development.md
       - Copernicus: apps/copernicus/index.md
       - DWD ICON: apps/dwd/index.md
       - Open Street Map: apps/osm/index.md
       - Open Weather Map: apps/owm/index.md
+
+  - name: Ontologies
+    slug: celine-ontologies
+    git: https://github.com/celine-eu/ontologies.git
+
+    paths:
+      - README.md
+      - docs/**
+      - releases/**
+
+    nav:
+      - README
+
+    links:
+      - name: ontologies
+        source: projects/celine-ontologies/releases/current
+        target: ontologies
 
   - name: Infrastructure
     slug: celine-infra
