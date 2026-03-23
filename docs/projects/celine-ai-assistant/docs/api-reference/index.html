@@ -4008,7 +4008,13 @@
 <h3 id="post-adminreload"><code>POST /admin/reload</code></h3>
 <p>Reload the LlamaIndex index from the current Qdrant state without restarting the service.</p>
 <h3 id="post-admintraining-materialssync"><code>POST /admin/training-materials/sync</code></h3>
-<p>Fetch the latest <code>celine-training-materials</code> changes, check out the requested commit/ref in the mounted submodule checkout, and ingest newly changed Markdown files. Requires admin group membership.</p>
+<p>Clone or refresh <code>celine-training-materials</code> inside the API container, check out the requested ref, and ingest Markdown files.</p>
+<p><strong>Request body:</strong></p>
+<pre><code class="language-json">{
+  &quot;target_ref&quot;: &quot;origin/main&quot;
+}
+</code></pre>
+<p><code>target_ref</code> is optional. If omitted, the service uses <code>TRAINING_MATERIALS_REF</code>.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

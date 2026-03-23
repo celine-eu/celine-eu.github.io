@@ -551,6 +551,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-materials-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Materials Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3516,6 +3527,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-materials-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Materials Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3562,6 +3584,7 @@
 <li>Streaming chat via Server-Sent Events (SSE)</li>
 <li>Conversation history persisted in PostgreSQL</li>
 <li>File upload with automatic RAG ingestion into Qdrant</li>
+<li>Automatic sync of <code>celine-training-materials</code> from a Git repository</li>
 <li>JWT authentication (JWKS-based verification)</li>
 <li>Vision support for image attachments</li>
 <li>Admin endpoints for re-indexing and reloading</li>
@@ -3618,8 +3641,31 @@ curl -X POST http://localhost:8000/chat \
 <td>Embedding model</td>
 <td><code>text-embedding-3-small</code></td>
 </tr>
+<tr>
+<td><code>TRAINING_MATERIALS_PATH</code></td>
+<td>Local checkout path for training materials</td>
+<td><code>/app/training-materials</code> in container deployments</td>
+</tr>
+<tr>
+<td><code>TRAINING_MATERIALS_REPO_URL</code></td>
+<td>Git URL used by the API container to clone/pull training materials</td>
+<td>empty</td>
+</tr>
+<tr>
+<td><code>TRAINING_MATERIALS_REF</code></td>
+<td>Ref checked out before ingest</td>
+<td><code>origin/main</code></td>
+</tr>
 </tbody>
 </table>
+<h2 id="training-materials-sync">Training Materials Sync</h2>
+<p>The API can manage the <code>celine-training-materials</code> repository directly inside the container.</p>
+<ul>
+<li>If <code>TRAINING_MATERIALS_REPO_URL</code> is set, the container clones the repo into <code>TRAINING_MATERIALS_PATH</code> if missing.</li>
+<li>On startup, it fetches <code>origin</code>, checks out <code>TRAINING_MATERIALS_REF</code>, and ingests Markdown files.</li>
+<li>Admins can force a new sync through <code>POST /admin/training-materials/sync</code>.</li>
+</ul>
+<p>For Kubernetes, prefer an authenticated HTTPS URL, for example via a token-backed secret injected into <code>TRAINING_MATERIALS_REPO_URL</code>.</p>
 <p>The assistant preloads internal knowledge from the local checkout of <code>celine-training-materials</code>, mounted in the container via the parent workspace at <code>/workspace/repositories/celine-training-materials</code>. It indexes all Markdown files found there. This is intended for docs that should influence answers without being shown as visible sources in the chat UI.</p>
 <h2 id="documentation">Documentation</h2>
 <table>
