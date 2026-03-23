@@ -2986,10 +2986,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dwd-deutscher-wetterdienst-icon-d2" class="md-nav__link">
+  <a href="#om-wind-open-meteo-wind-trentino-grid" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dwd — Deutscher Wetterdienst (ICON-D2)
+        om-wind — Open-Meteo Wind (Trentino Grid)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dwd-deutscher-wetterdienst-icon-d2-paused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dwd — Deutscher Wetterdienst (ICON-D2) [PAUSED]
       
     </span>
   </a>
@@ -3494,10 +3505,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dwd-deutscher-wetterdienst-icon-d2" class="md-nav__link">
+  <a href="#om-wind-open-meteo-wind-trentino-grid" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dwd — Deutscher Wetterdienst (ICON-D2)
+        om-wind — Open-Meteo Wind (Trentino Grid)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dwd-deutscher-wetterdienst-icon-d2-paused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dwd — Deutscher Wetterdienst (ICON-D2) [PAUSED]
       
     </span>
   </a>
@@ -3594,8 +3616,60 @@
 - <code>both</code> — historical backfill followed by forecast</p>
 <p><strong>Scheduling:</strong> Daily at 06:00 UTC when running as a service.</p>
 <hr />
-<h2 id="dwd-deutscher-wetterdienst-icon-d2">dwd — Deutscher Wetterdienst (ICON-D2)</h2>
+<h2 id="om-wind-open-meteo-wind-trentino-grid">om-wind — Open-Meteo Wind (Trentino Grid)</h2>
+<p>Fetches hourly wind speed, gusts, and direction from the Open-Meteo API for a
+4.4 km grid covering the Trentino region (~798 points). Uses the ICON-D2 model
+(2.2 km native resolution) as backend. Replaces the DWD ICON-D2 wind pipeline.</p>
+<p>This is a <strong>separate Prefect flow</strong> (<code>om-wind-flow</code>) within the same <code>om</code> app,
+with its own config (<code>config_wind.yaml</code>) and dbt models under
+<code>models/{staging,silver,gold}/wind/</code> tagged <code>wind</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Dataset</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAW</td>
+<td><code>raw.om_weather_wind</code></td>
+<td>798 grid points x 48h forecast, 3 wind variables (m/s)</td>
+</tr>
+<tr>
+<td>STAGING</td>
+<td><code>ds_dev_staging.stg_om_wind</code></td>
+<td>Type-cast view: <code>wind_speed_ms</code>, <code>wind_gusts_ms</code>, <code>wind_direction_deg</code></td>
+</tr>
+<tr>
+<td>SILVER</td>
+<td><code>ds_dev_silver.om_wind_hourly</code></td>
+<td>Deduplicated by <code>(datetime, lat, lon)</code>, keeps latest extraction</td>
+</tr>
+<tr>
+<td>GOLD</td>
+<td><code>ds_dev_gold.om_wind_gusts</code></td>
+<td>Daily max/avg wind per grid point, gust excess, PostGIS point, alert tiers</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Grid:</strong> 4.4 km resolution (0.04 deg), bounding box lat 45.70-46.50, lon 10.40-11.90
+<strong>API method:</strong> POST (avoids GET URL length limits and per-location rate limiting)
+<strong>Gust thresholds:</strong> WARNING &gt;= 7.62 m/s, ALERT &gt;= 12.46 m/s (gust excess)
+<strong>Scheduling:</strong> Every 4 hours (<code>0 0,4,8,12,16,20 * * *</code>)
+<strong>No API key required.</strong> Free tier, ~6 calls/day.</p>
+<p><strong>Downstream consumers:</strong>
+- <code>demo3/pipelines</code> gold model <code>grid_wind_risks</code> (spatial join with power grid shapefiles)
+- <code>demo3/pipelines</code> gold model <code>grid_wind_risks_linee</code> (spatial join with medium-voltage lines)</p>
+<hr />
+<h2 id="dwd-deutscher-wetterdienst-icon-d2-paused">dwd — Deutscher Wetterdienst (ICON-D2) [PAUSED]</h2>
 <p>Ingests gridded weather model output from DWD's ICON-D2 high-resolution regional model for Germany and surrounding areas.</p>
+<blockquote>
+<p><strong>Status: PAUSED.</strong> Wind functionality replaced by <code>om-wind</code> pipeline (Open-Meteo API,
+same ICON-D2 model backend). DWD pipeline had 8% success rate and 12+ GB DB footprint.
+The <code>om-wind</code> pipeline achieves the same coverage with ~90 MB/day and 99.9% reliability.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
