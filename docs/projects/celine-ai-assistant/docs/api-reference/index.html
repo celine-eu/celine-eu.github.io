@@ -813,6 +813,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-admintraining-materialssync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/training-materials/sync
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3884,6 +3895,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-admintraining-materialssync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/training-materials/sync
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3985,6 +4007,8 @@
 <p>Re-index an existing attachment by ID. Useful after model changes.</p>
 <h3 id="post-adminreload"><code>POST /admin/reload</code></h3>
 <p>Reload the LlamaIndex index from the current Qdrant state without restarting the service.</p>
+<h3 id="post-admintraining-materialssync"><code>POST /admin/training-materials/sync</code></h3>
+<p>Fetch the latest <code>celine-training-materials</code> changes, check out the requested commit/ref in the mounted submodule checkout, and ingest newly changed Markdown files. Requires admin group membership.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

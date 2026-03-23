@@ -3565,6 +3565,7 @@
 <li>JWT authentication (JWKS-based verification)</li>
 <li>Vision support for image attachments</li>
 <li>Admin endpoints for re-indexing and reloading</li>
+<li>Internal knowledge ingestion from Markdown files in the documentation repository</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash"># Start all services (Qdrant, PostgreSQL, API)
@@ -3619,6 +3620,7 @@ curl -X POST http://localhost:8000/chat \
 </tr>
 </tbody>
 </table>
+<p>The assistant preloads internal knowledge from the local checkout of <code>celine-training-materials</code>, mounted in the container via the parent workspace at <code>/workspace/repositories/celine-training-materials</code>. It indexes all Markdown files found there. This is intended for docs that should influence answers without being shown as visible sources in the chat UI.</p>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
