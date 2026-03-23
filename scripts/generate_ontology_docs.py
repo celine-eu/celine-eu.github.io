@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterable, Tuple
 
-from rdflib import Graph, RDF, RDFS, OWL, URIRef
+from rdflib import Graph, RDF, RDFS, OWL, SKOS, URIRef
 
 
 CLASS_TYPES = {OWL.Class, RDFS.Class}
@@ -30,6 +30,12 @@ def get_label(g: Graph, uri: URIRef) -> str | None:
 
 def get_comment(g: Graph, uri: URIRef) -> str | None:
     for o in g.objects(uri, RDFS.comment):
+        return str(o)
+    return None
+
+
+def get_example(g: Graph, uri: URIRef) -> str | None:
+    for o in g.objects(uri, SKOS.example):
         return str(o)
     return None
 

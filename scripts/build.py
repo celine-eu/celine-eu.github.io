@@ -17,9 +17,6 @@ CONFIG_FILE = ROOT / "repos.yaml"
 MKDOCS_TEMPLATE = ROOT / "mkdocs.tpl.yml"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
-CELINE_TTL = SITE_DIR / "ontologies" / "celine.ttl"
-CELINE_DOCS = SITE_DIR / "ontologies" / "celine"
-
 # ---------------------------------------------------------------------------
 # Utilities
 # ---------------------------------------------------------------------------
@@ -166,6 +163,28 @@ def materialize_links(repos: list[dict]) -> None:
                 shutil.rmtree(target)
 
             shutil.copytree(source, target)
+
+            # Widoco output: use readme.md as landing page with a link to the HTML docs
+            if (target / "index-en.html").exists():
+                readme = target / "readme.md"
+                if readme.exists():
+                    content = readme.read_text(encoding="utf-8")
+                    widoco_link = "\n[Full ontology documentation →](index-en.html)\n"
+                    # Insert after the first paragraph break (after the heading block)
+                    idx = content.find("\n\n")
+                    if idx != -1:
+                        content = content[:idx] + widoco_link + content[idx:]
+                    else:
+                        content += widoco_link
+                    (target / "index.md").write_text(content, encoding="utf-8")
+                    readme.unlink()
+                else:
+                    (target / "index.md").write_text(
+                        '[Full ontology documentation →](index-en.html)\n'
+                    )
+            # Other links: promote readme.md → index.md (copy_paths convention)
+            elif (target / "readme.md").exists() and not (target / "index.md").exists():
+                (target / "readme.md").rename(target / "index.md")
 
             list_cfg = link.get("list")
             if list_cfg:
@@ -315,19 +334,6 @@ def _title_from_path(path: str) -> str:
     return stem.replace("-", " ").replace("_", " ").title()
 
 
-def generate_ontology_docs(ttl: Path, output_dir: Path, namespace: str) -> None:
-    run(
-        [
-            "python",
-            "scripts/generate_ontology_docs.py",
-            str(ttl),
-            str(output_dir),
-            namespace,
-        ],
-        cwd=ROOT,
-    )
-
-
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -353,14 +359,6 @@ def main() -> None:
 
     generate_tools_index(repos)
     materialize_links(repos)
-
-    if CELINE_TTL.exists():
-        generate_ontology_docs(
-            ttl=CELINE_TTL,
-            output_dir=CELINE_DOCS,
-            namespace="https://celine-eu.github.io/ontologies/celine#",
-        )
-
     generate_mkdocs_yml(repos)
     build_site()
 

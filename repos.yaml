@@ -210,7 +210,7 @@ repos:
 
     paths:
       - README.md
-      - docs/**
+      - specs/**
       - releases/**
 
     nav:
