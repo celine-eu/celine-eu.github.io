@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-ontology-v03" class="md-skip">
+        <a href="#celine-ontology-v04" class="md-skip">
           Skip to content
         </a>
       
@@ -3316,10 +3316,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#changes-from-v02" class="md-nav__link">
+  <a href="#changes-from-v03" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changes from v0.2
+        Changes from v0.3
       
     </span>
   </a>
@@ -3331,6 +3331,17 @@
     <span class="md-ellipsis">
       
         Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexibility-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility data flow
       
     </span>
   </a>
@@ -3410,10 +3421,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#changes-from-v02" class="md-nav__link">
+  <a href="#changes-from-v03" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changes from v0.2
+        Changes from v0.3
       
     </span>
   </a>
@@ -3425,6 +3436,17 @@
     <span class="md-ellipsis">
       
         Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexibility-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility data flow
       
     </span>
   </a>
@@ -3459,21 +3481,26 @@
 
 
 
-<h1 id="celine-ontology-v03">CELINE Ontology v0.3</h1>
+<h1 id="celine-ontology-v04">CELINE Ontology v0.4</h1>
 <p><a href="index-en.html">Full ontology documentation →</a></p>
 <p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code>
 <strong>IRI</strong>: <code>https://w3id.org/celine-eu</code>
-<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.3</code></p>
-<p>Consolidation release. Same conceptual model as v0.2, focused on publication quality: streamlined IRI, stable import refs, documentation annotations, and proper ontology metadata.</p>
-<h2 id="changes-from-v02">Changes from v0.2</h2>
+<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.4</code></p>
+<p>Adds REC flexibility commitment and settlement modelling on top of the v0.3 orchestration layer.</p>
+<h2 id="changes-from-v03">Changes from v0.3</h2>
 <ul>
-<li><strong>IRI simplified</strong>: <code>https://w3id.org/celine-eu/ontology#</code> → <code>https://w3id.org/celine-eu#</code> (removes the <code>/ontology</code> subpath)</li>
-<li><strong>Stable import refs</strong>: GitHub <code>refs/heads/</code> replaced with pinned commit SHAs</li>
-<li><code>w3c/sdw</code> → <code>dee1bdd3c3</code></li>
-<li><code>BeeGroup-cimne/biggontology</code> → <code>776e245668</code></li>
-<li><strong><code>skos:example</code></strong> added to every class with a realistic Turtle snippet</li>
-<li><strong><code>rdfs:isDefinedBy</code></strong> added to every class and property, pointing to <code>&lt;https://w3id.org/celine-eu&gt;</code></li>
-<li><strong>Ontology metadata</strong> added: <code>owl:versionIRI</code>, <code>owl:priorVersion</code>, <code>owl:versionInfo</code>, <code>dct:created</code>, <code>vann:preferredNamespacePrefix</code>, <code>vann:preferredNamespaceUri</code></li>
+<li><strong>New class layer: Flexibility Commitment</strong> — models a member's pledge to provide flexibility
+  on one or more of their PODs, including mode (Automated / Voluntary) and direction (FlexDown / FlexUp)</li>
+<li><strong>New class: FlexibilityCredit</strong> — kWh-denominated credit awarded upon fulfillment, grounded
+  in SOSA observations for auditability</li>
+<li><strong>New class layer: Settlement</strong> — <code>SettlementRun</code>, <code>CostItem</code>, and <code>RedistributionResult</code> model
+  the full redistribution cycle: credit aggregation → monetary conversion → cost deduction → net payout per member</li>
+<li><strong>Three SKOS vocabularies</strong> — <code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code> with
+  built-in concepts (<code>Automated</code>, <code>Voluntary</code>, <code>FlexDown</code>, <code>FlexUp</code>, <code>AdminCost</code>, <code>Fee</code>, <code>Debt</code>)</li>
+<li><strong>SHACL shapes</strong> added for all five new classes</li>
+<li><strong>JSON-LD context</strong> and <strong>JSON Schema</strong> extended with all new terms</li>
+<li>No new <code>owl:imports</code> — new classes connect to existing PECO (<code>peco:Energy_community_member</code>,
+  <code>peco:Electric_POD</code>) and SOSA (<code>sosa:Observation</code>) terms already in scope</li>
 </ul>
 <h2 id="classes">Classes</h2>
 <table>
@@ -3486,7 +3513,7 @@
 <tbody>
 <tr>
 <td><code>celine:CommunityContext</code></td>
-<td>Binds a PECO Energy Community with assets, datasets and simulations</td>
+<td>Binds a PECO Energy Community with assets, datasets, simulations and commitments</td>
 </tr>
 <tr>
 <td><code>celine:Scenario</code></td>
@@ -3508,8 +3535,50 @@
 <td><code>celine:KPIEvaluation</code></td>
 <td>Evaluation of a BIGG KPI in a Scenario or SimulationRun</td>
 </tr>
+<tr>
+<td><code>celine:FlexibilityCommitment</code></td>
+<td>A member's pledge to deliver flexibility on one or more PODs</td>
+</tr>
+<tr>
+<td><code>celine:FlexibilityCredit</code></td>
+<td>kWh credit earned by fulfilling a FlexibilityCommitment</td>
+</tr>
+<tr>
+<td><code>celine:SettlementRun</code></td>
+<td>Redistribution calculation for a settlement period</td>
+</tr>
+<tr>
+<td><code>celine:CostItem</code></td>
+<td>Named cost voice within a SettlementRun (fee, admin cost, debt)</td>
+</tr>
+<tr>
+<td><code>celine:RedistributionResult</code></td>
+<td>Per-member settlement outcome (credit balance, gross, deductions, net)</td>
+</tr>
 </tbody>
 </table>
+<h2 id="flexibility-data-flow">Flexibility data flow</h2>
+<pre><code>peco:Energy_community_member
+  │
+  ├─ committedBy ←── FlexibilityCommitment ──► onPOD ──► peco:Electric_POD
+  │                        │ hasCommitmentMode: Automated | Voluntary
+  │                        │ hasFlexibilityDirection: FlexDown | FlexUp
+  │                        │ targetFlexibility: xsd:decimal (kWh)
+  │                        │ hasTimeInterval: time:Interval
+  │                        │
+  │                        └─ generatesCredit ──► FlexibilityCredit
+  │                                                    │ creditAmount: xsd:decimal (kWh)
+  │                                                    └─ evidencedBy ──► sosa:Observation
+  │
+  └─ resultFor ←── RedistributionResult ◄── hasRedistributionResult ──┐
+                        │ creditBalance  (kWh)                         │
+                        │ grossAmount    (currency)              SettlementRun
+                        │ costDeduction  (currency)                    │ conversionRate (€/kWh)
+                        └─ netAmount     (currency)                    │ currency (ISO 4217)
+                                                                       └─ hasCostItem ──► CostItem
+                                                                                              │ hasCostType: AdminCost | Fee | Debt
+                                                                                              └─ costAmount (currency)
+</code></pre>
 <h2 id="imports">Imports</h2>
 <ul>
 <li>PECO (<code>https://purl.org/peco/peco-core</code>)</li>
