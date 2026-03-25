@@ -3349,6 +3349,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#flexibility-envelope-and-constraint-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility envelope and constraint data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#imports" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3454,6 +3465,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#flexibility-envelope-and-constraint-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility envelope and constraint data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#imports" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3495,12 +3517,18 @@
   in SOSA observations for auditability</li>
 <li><strong>New class layer: Settlement</strong> — <code>SettlementRun</code>, <code>CostItem</code>, and <code>RedistributionResult</code> model
   the full redistribution cycle: credit aggregation → monetary conversion → cost deduction → net payout per member</li>
-<li><strong>Three SKOS vocabularies</strong> — <code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code> with
-  built-in concepts (<code>Automated</code>, <code>Voluntary</code>, <code>FlexDown</code>, <code>FlexUp</code>, <code>AdminCost</code>, <code>Fee</code>, <code>Debt</code>)</li>
-<li><strong>SHACL shapes</strong> added for all five new classes</li>
+<li><strong>New class: FlexibilityEnvelope</strong> — declared capability of a POD (max up/down power, available
+  energy, availability windows); aligned with <code>saref4ener:PowerProfile</code> already in scope</li>
+<li><strong>New class: FlexibilityConstraint</strong> — operational constraints on flexibility activation
+  (notice period, min/max duration, recovery time, max activations per day)</li>
+<li><strong>Four SKOS vocabularies</strong> — <code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code>, <code>ConstraintType</code>
+  with built-in concepts (<code>Automated</code>, <code>Voluntary</code>, <code>FlexDown</code>, <code>FlexUp</code>, <code>AdminCost</code>, <code>Fee</code>, <code>Debt</code>,
+  <code>DurationConstraint</code>, <code>NoticeConstraint</code>, <code>RecoveryConstraint</code>, <code>FrequencyConstraint</code>)</li>
+<li><strong>SHACL shapes</strong> added for all new classes; existing <code>CommunityContextShape</code> and
+  <code>FlexibilityCommitmentShape</code> extended with <code>hasEnvelope</code> and <code>withinEnvelope</code></li>
 <li><strong>JSON-LD context</strong> and <strong>JSON Schema</strong> extended with all new terms</li>
-<li>No new <code>owl:imports</code> — new classes connect to existing PECO (<code>peco:Energy_community_member</code>,
-  <code>peco:Electric_POD</code>) and SOSA (<code>sosa:Observation</code>) terms already in scope</li>
+<li>No new <code>owl:imports</code> — new classes connect to existing PECO (<code>peco:Electric_POD</code>) and
+  <code>time:Interval</code> terms already in scope; envelope semantics aligned via <code>rdfs:seeAlso</code> to SAREF4ENER</li>
 </ul>
 <h2 id="classes">Classes</h2>
 <table>
@@ -3555,6 +3583,14 @@
 <td><code>celine:RedistributionResult</code></td>
 <td>Per-member settlement outcome (credit balance, gross, deductions, net)</td>
 </tr>
+<tr>
+<td><code>celine:FlexibilityEnvelope</code></td>
+<td>Declared capability of a POD (max power up/down, available energy, availability windows)</td>
+</tr>
+<tr>
+<td><code>celine:FlexibilityConstraint</code></td>
+<td>Operational constraints on flexibility activation (notice, duration, recovery, frequency)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="flexibility-data-flow">Flexibility data flow</h2>
@@ -3578,6 +3614,28 @@
                                                                        └─ hasCostItem ──► CostItem
                                                                                               │ hasCostType: AdminCost | Fee | Debt
                                                                                               └─ costAmount (currency)
+</code></pre>
+<h2 id="flexibility-envelope-and-constraint-data-flow">Flexibility envelope and constraint data flow</h2>
+<pre><code>peco:Electric_POD ──► hasEnvelope (via CommunityContext)
+                           │
+                    FlexibilityEnvelope  (≈ saref4ener:PowerProfile)
+                           │ maxFlexUp      (kW)
+                           │ maxFlexDown    (kW)
+                           │ availableEnergy (kWh)
+                           │ hasAvailabilityWindow ──► time:Interval
+                           └─ hasConstraint ──► FlexibilityConstraint
+                                                    │ hasConstraintType: DurationConstraint
+                                                    │                  | NoticeConstraint
+                                                    │                  | RecoveryConstraint
+                                                    │                  | FrequencyConstraint
+                                                    │ minNotificationTime   (xsd:duration)
+                                                    │ minActivationDuration (xsd:duration)
+                                                    │ maxActivationDuration (xsd:duration)
+                                                    │ minRecoveryTime       (xsd:duration)
+                                                    └─ maxActivationsPerDay (xsd:integer)
+
+FlexibilityCommitment ──► withinEnvelope ──► FlexibilityEnvelope
+  (commitment amounts must not exceed envelope maxFlexUp/maxFlexDown bounds)
 </code></pre>
 <h2 id="imports">Imports</h2>
 <ul>
