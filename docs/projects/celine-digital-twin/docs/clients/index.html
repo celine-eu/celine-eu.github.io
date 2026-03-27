@@ -2217,6 +2217,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#nudging-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nudging Client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3821,6 +3832,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#nudging-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nudging Client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3908,7 +3930,8 @@ to access external data sources.</p>
 - Are dynamically loaded at startup
 - Can receive injected services (e.g., token providers)
 - Are registered in the <code>ClientsRegistry</code>
-- Are accessible by name from value fetchers</p>
+- Are accessible by name from value fetchers
+- Are accessible from domain and event handlers through the registry</p>
 <hr />
 <h2 id="configuration-file">Configuration File</h2>
 <p>Create or edit <code>config/clients.yaml</code>:</p>
@@ -4117,6 +4140,29 @@ client = request.app.state.dataset_api
 # Or via registry
 client = request.app.state.clients_registry.get(&quot;dataset_api&quot;)
 </code></pre>
+<hr />
+<h2 id="nudging-client">Nudging Client</h2>
+<p>The Digital Twin uses a dedicated client to forward enriched events to the
+<code>nudging-tool</code>.</p>
+<p>Current configuration in <code>config/clients.yaml</code>:</p>
+<pre><code class="language-yaml">nudging_admin_client:
+  class: celine.sdk.nudging.client:NudgingAdminClient
+  scope: &quot;nudging.ingest&quot;
+  config:
+    base_url: &quot;${NUDGING_URL:-http://host.docker.internal:8016}&quot;
+    timeout: 5.0
+</code></pre>
+<p>Typical runtime usage from a participant nudging handler:</p>
+<pre><code class="language-python">nudging_admin_client: NudgingAdminClient = ctx.infra.clients_registry.get(
+    &quot;nudging_admin_client&quot;
+)
+await nudging_admin_client.ingest_event(DigitalTwinEvent.from_dict(payload))
+</code></pre>
+<p>Current Digital Twin use cases include:</p>
+<ul>
+<li>meter transmission anomaly notifications</li>
+<li>flexibility opportunity notifications derived from REC forecast windows</li>
+</ul>
 <hr />
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="missing-environment-variable">Missing environment variable</h3>
