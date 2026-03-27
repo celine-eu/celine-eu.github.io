@@ -3666,7 +3666,7 @@ curl -X POST http://localhost:8000/chat \
 <li>Admins can force a new sync through <code>POST /admin/training-materials/sync</code>.</li>
 </ul>
 <p>For Kubernetes, prefer an authenticated HTTPS URL, for example via a token-backed secret injected into <code>TRAINING_MATERIALS_REPO_URL</code>.</p>
-<p>The assistant preloads internal knowledge from the local checkout of <code>celine-training-materials</code>, mounted in the container via the parent workspace at <code>/workspace/repositories/celine-training-materials</code>. It indexes all Markdown files found there. This is intended for docs that should influence answers without being shown as visible sources in the chat UI.</p>
+<p>The assistant preloads internal knowledge from the local checkout of <code>celine-training-materials</code> mounted at <code>TRAINING_MATERIALS_PATH</code>. It indexes all Markdown files found there. This is intended for docs that should influence answers without being shown as visible sources in the chat UI.</p>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>

@@ -3629,7 +3629,7 @@
 <td><code>TRAINING_MATERIALS_PATH</code></td>
 <td><code>str</code></td>
 <td><code>/workspace/repositories/celine-training-materials</code></td>
-<td>Local checkout path used for Markdown ingestion</td>
+<td>Local checkout path used for Markdown ingestion and git sync</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_REPO_URL</code></td>
@@ -3648,6 +3648,12 @@
 <td><code>bool</code></td>
 <td><code>true</code></td>
 <td>If true, clone/fetch/checkout the training repo on startup before ingestion</td>
+</tr>
+<tr>
+<td><code>MANIFEST_PATH</code></td>
+<td><code>str</code></td>
+<td><code>/app/data/manifest.json</code></td>
+<td>Writable manifest file used to track ingested training materials and site docs</td>
 </tr>
 </tbody>
 </table>
