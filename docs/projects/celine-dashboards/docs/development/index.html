@@ -3690,7 +3690,7 @@ docker compose build jupyter
 <li>Implement authorization logic using the JWT claims (groups, scopes).</li>
 </ol>
 <h2 id="extending-group-to-role-mappings">Extending Group-to-Role Mappings</h2>
-<p>Edit <code>packages/celine-superset/celine_superset/auth/roles.py</code> to modify Superset role mappings, then rebuild the Superset image.</p>
+<p>Edit <code>src/celine/superset/auth/groups.py</code> to modify Superset role mappings, then rebuild the Superset image.</p>
 <p>For Jupyter, edit <code>config/jupyter/jupyter_server_config.py</code> to update <code>allowed_groups</code>.</p>
 <h2 id="ci-and-image-publishing">CI and Image Publishing</h2>
 <p>Docker images are built and published automatically via GitHub Actions when source or configuration files change. Image versions are controlled by <code>version.txt</code> (Superset) and <code>version.jupyter.txt</code> (Jupyter).</p>

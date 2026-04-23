@@ -3670,7 +3670,7 @@
 <h2 id="superset">Superset</h2>
 <h3 id="authentication">Authentication</h3>
 <p>Superset uses <code>AUTH_REMOTE_USER</code> mode. Login and logout are fully delegated to oauth2-proxy — Superset never handles credentials directly.</p>
-<p>The custom <code>OAuth2ProxySecurityManager</code> (in <code>packages/celine-superset/</code>) extends Superset's <code>RemoteUserSecurityManager</code>:</p>
+<p>The custom <code>OAuth2ProxySecurityManager</code> (in <code>src/celine/superset/</code>) extends Superset's <code>RemoteUserSecurityManager</code>:</p>
 <ul>
 <li>Reads the <code>X-Auth-Request-Access-Token</code> header on each request</li>
 <li>Validates the JWT signature against the Keycloak JWKS endpoint</li>
@@ -3679,7 +3679,7 @@
 <li>Synchronizes Superset roles on every login based on current group membership</li>
 </ul>
 <h3 id="group-to-role-mapping">Group-to-Role Mapping</h3>
-<p>Keycloak groups are mapped to Superset roles in <code>packages/celine-superset/celine_superset/auth/roles.py</code>:</p>
+<p>Keycloak groups are mapped to Superset roles in <code>src/celine/superset/auth/groups.py</code>:</p>
 <pre><code class="language-python">GROUP_TO_SUPERSET_ROLE = {
     &quot;admins&quot;: &quot;Admin&quot;,
     &quot;managers&quot;: &quot;Alpha&quot;,
@@ -3696,7 +3696,7 @@ ghcr.io/celine-eu/superset:latest
 <hr />
 <h2 id="jupyter">Jupyter</h2>
 <h3 id="authentication_1">Authentication</h3>
-<p>Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in <code>packages/jupyter_jwt_auth/</code>.</p>
+<p>Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in <code>src/celine/jupyter/</code>.</p>
 <p>The authorizer:
 - Reads the <code>Authorization: Bearer &lt;token&gt;</code> header (injected by oauth2-proxy via Caddy)
 - Validates the JWT signature against Keycloak JWKS

@@ -3979,9 +3979,12 @@
 │   ├── superset/           # Superset configuration and env files
 │   └── jupyter/            # Jupyter server configuration
 │
-├── packages/
-│   ├── celine-superset/    # Custom Superset authentication extension
-│   └── jupyter_jwt_auth/   # JWT-based Jupyter authorizer
+├── src/celine/
+│   ├── superset/           # celine.superset — Superset SSO plugin
+│   │   └── cli/            # celine.superset.cli — Superset management CLI
+│   └── jupyter/            # celine.jupyter — Jupyter JWT authorizer
+├── tests/                  # Mirrors src/ layout
+├── pyproject.toml          # Single package `celine-dashboards` with [superset] / [cli] / [jupyter] extras
 │
 ├── Dockerfile              # Superset image
 ├── Dockerfile.jupyter      # Jupyter image
@@ -4004,7 +4007,7 @@
 <li>maps Keycloak groups to Superset roles</li>
 </ul>
 <p>Group‑to‑role mapping is defined in:</p>
-<pre><code>packages/celine-superset/celine_superset/auth/roles.py
+<pre><code>src/celine/superset/auth/groups.py
 </code></pre>
 <p>Example:</p>
 <pre><code class="language-python">GROUP_TO_SUPERSET_ROLE = {
