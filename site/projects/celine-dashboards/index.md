@@ -58,9 +58,12 @@ Authentication and authorization flow:
 │   ├── superset/           # Superset configuration and env files
 │   └── jupyter/            # Jupyter server configuration
 │
-├── packages/
-│   ├── celine-superset/    # Custom Superset authentication extension
-│   └── jupyter_jwt_auth/   # JWT-based Jupyter authorizer
+├── src/celine/
+│   ├── superset/           # celine.superset — Superset SSO plugin
+│   │   └── cli/            # celine.superset.cli — Superset management CLI
+│   └── jupyter/            # celine.jupyter — Jupyter JWT authorizer
+├── tests/                  # Mirrors src/ layout
+├── pyproject.toml          # Single package `celine-dashboards` with [superset] / [cli] / [jupyter] extras
 │
 ├── Dockerfile              # Superset image
 ├── Dockerfile.jupyter      # Jupyter image
@@ -88,7 +91,7 @@ Authentication and authorization flow:
 Group‑to‑role mapping is defined in:
 
 ```
-packages/celine-superset/celine_superset/auth/roles.py
+src/celine/superset/auth/groups.py
 ```
 
 Example:

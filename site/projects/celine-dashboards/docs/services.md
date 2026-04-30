@@ -6,7 +6,7 @@
 
 Superset uses `AUTH_REMOTE_USER` mode. Login and logout are fully delegated to oauth2-proxy — Superset never handles credentials directly.
 
-The custom `OAuth2ProxySecurityManager` (in `packages/celine-superset/`) extends Superset's `RemoteUserSecurityManager`:
+The custom `OAuth2ProxySecurityManager` (in `src/celine/superset/`) extends Superset's `RemoteUserSecurityManager`:
 
 - Reads the `X-Auth-Request-Access-Token` header on each request
 - Validates the JWT signature against the Keycloak JWKS endpoint
@@ -16,7 +16,7 @@ The custom `OAuth2ProxySecurityManager` (in `packages/celine-superset/`) extends
 
 ### Group-to-Role Mapping
 
-Keycloak groups are mapped to Superset roles in `packages/celine-superset/celine_superset/auth/roles.py`:
+Keycloak groups are mapped to Superset roles in `src/celine/superset/auth/groups.py`:
 
 ```python
 GROUP_TO_SUPERSET_ROLE = {
@@ -44,7 +44,7 @@ Version is defined in `version.txt`.
 
 ### Authentication
 
-Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in `packages/jupyter_jwt_auth/`.
+Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in `src/celine/jupyter/`.
 
 The authorizer:
 - Reads the `Authorization: Bearer <token>` header (injected by oauth2-proxy via Caddy)

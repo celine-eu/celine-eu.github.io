@@ -63,7 +63,7 @@ To add a new service behind the SSO boundary:
 
 ## Extending Group-to-Role Mappings
 
-Edit `packages/celine-superset/celine_superset/auth/roles.py` to modify Superset role mappings, then rebuild the Superset image.
+Edit `src/celine/superset/auth/groups.py` to modify Superset role mappings, then rebuild the Superset image.
 
 For Jupyter, edit `config/jupyter/jupyter_server_config.py` to update `allowed_groups`.
 

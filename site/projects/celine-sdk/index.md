@@ -1,4 +1,4 @@
-# CELINE SDK
+# CELINE SDK 
 
 Shared SDK for the CELINE platform. Provides OIDC authentication, MQTT broker abstraction, Pydantic settings, and OpenAPI spec management with generated typed clients.
 

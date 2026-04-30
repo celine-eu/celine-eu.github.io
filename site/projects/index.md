@@ -54,6 +54,18 @@ CELINE tools and services.
 
 - [celine-ontologies](./celine-ontologies/)
 
+## Grid
+
+- [celine-grid](./celine-grid/)
+
+## ROI Calculator
+
+- [celine-roi](./celine-roi/)
+
+## Flexibility API
+
+- [flexibility-api](./flexibility-api/)
+
 ## Infrastructure
 
 - [celine-infra](./celine-infra/)

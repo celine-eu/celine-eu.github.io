@@ -221,6 +221,42 @@ repos:
         source: projects/celine-ontologies/releases/current
         target: ontologies
 
+  - name: Grid
+    slug: celine-grid
+    git: https://github.com/celine-eu/celine-grid.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - Architecture: docs/architecture.md
+
+  - name: ROI Calculator
+    slug: celine-roi
+    git: https://github.com/celine-eu/celine-roi.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+      - User Guide: docs/user-guide.md
+      - Variables Reference: docs/variables-reference.md
+
+  - name: Flexibility API
+    slug: flexibility-api
+    git: https://github.com/celine-eu/flexibility-api.git
+
+    paths:
+      - README.md
+      - docs/**
+
+    nav:
+      - README
+
   - name: Infrastructure
     slug: celine-infra
     git: https://github.com/celine-eu/infra.git
