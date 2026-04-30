@@ -182,7 +182,7 @@ repos:
         target: schema
         list:
           recursive: false
-          extensions: [.json]
+          extensions: [ .json ]
           sort: alpha
 
   - name: Open Data Pipelines
@@ -199,10 +199,14 @@ repos:
       - Pipeline Overview: docs/pipeline-overview.md
       - Pipelines Reference: docs/pipelines-reference.md
       - Development: docs/development.md
-      - Copernicus: apps/copernicus/index.md
-      - DWD ICON: apps/dwd/index.md
+      - Open Meteo: apps/om/index.md
       - Open Street Map: apps/osm/index.md
       - Open Weather Map: apps/owm/index.md
+      - Copernicus: apps/copernicus/index.md
+      - DWD ICON: apps/dwd/index.md
+      - MeteoTrentino: apps/mt/index.md
+      - CELINE REC registry: apps/rec_registry/index.md
+      - CELINE Flexibility Commitments: apps/rec_flexibility_commitments/index.md
 
   - name: Ontologies
     slug: celine-ontologies
