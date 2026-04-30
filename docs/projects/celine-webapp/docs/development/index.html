@@ -1272,6 +1272,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#taskfile-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taskfile Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1294,6 +1305,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database-migrations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1309,6 +1331,17 @@
     <span class="md-ellipsis">
       
         Running Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Layout
       
     </span>
   </a>
@@ -3895,6 +3928,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#taskfile-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taskfile Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3910,6 +3954,17 @@
     <span class="md-ellipsis">
       
         JWT Simulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
       
     </span>
   </a>
@@ -3938,6 +3993,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3958,74 +4024,163 @@
 <h1 id="development">Development</h1>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Python ≥ 3.11 and <code>uv</code></li>
-<li>A running PostgreSQL instance</li>
+<li>Python &gt;= 3.12 and <code>uv</code></li>
+<li><code>task</code> (go-task)</li>
+<li>PostgreSQL at <code>localhost:15432</code> (credentials <code>postgres:securepassword123</code>)</li>
 </ul>
 <h2 id="environment-variables">Environment Variables</h2>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
+<th>Default</th>
 <th>Description</th>
-<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>DATABASE_URL</code></td>
+<td><code>postgresql+asyncpg://...host.docker.internal:15432/celine_webapp</code></td>
 <td>PostgreSQL async URL</td>
-<td><code>postgresql+asyncpg://postgres:postgres@localhost:5432/webapp</code></td>
 </tr>
 <tr>
-<td><code>DIGITAL_TWIN_URL</code></td>
+<td><code>DATABASE_ECHO</code></td>
+<td><code>false</code></td>
+<td>Log SQL statements</td>
+</tr>
+<tr>
+<td><code>DIGITAL_TWIN_API_URL</code></td>
+<td><code>http://host.docker.internal:8002</code></td>
 <td>Digital Twin service URL</td>
-<td><code>http://localhost:8001</code></td>
 </tr>
 <tr>
-<td><code>NUDGING_URL</code></td>
-<td>Nudging-tool service URL</td>
-<td><code>http://localhost:8002</code></td>
+<td><code>NUDGING_API_URL</code></td>
+<td><code>http://host.docker.internal:8016</code></td>
+<td>nudging-tool service URL</td>
 </tr>
 <tr>
-<td><code>ASSISTANT_URL</code></td>
-<td>AI assistant service URL</td>
-<td><code>http://localhost:8003</code></td>
+<td><code>FLEXIBILITY_API_URL</code></td>
+<td><code>http://host.docker.internal:8017</code></td>
+<td>flexibility-api service URL</td>
 </tr>
 <tr>
-<td><code>VAPID_PUBLIC_KEY</code></td>
-<td>VAPID public key for web push</td>
-<td>required</td>
+<td><code>REC_REGISTRY_URL</code></td>
+<td><code>http://host.docker.internal:8004</code></td>
+<td>rec-registry service URL</td>
+</tr>
+<tr>
+<td><code>SMART_METER_API_URL</code></td>
+<td>—</td>
+<td>Optional smart meter API URL</td>
+</tr>
+<tr>
+<td><code>NUDGING_INGEST_SCOPE</code></td>
+<td><code>nudging.ingest</code></td>
+<td>OAuth2 scope for nudging ingest calls</td>
+</tr>
+<tr>
+<td><code>POLICY_VERSION</code></td>
+<td><code>2024-01-01</code></td>
+<td>Current terms version string</td>
+</tr>
+<tr>
+<td><code>JWT_HEADER_NAME</code></td>
+<td><code>x-auth-request-access-token</code></td>
+<td>Header carrying the bearer token</td>
+</tr>
+<tr>
+<td><code>CORS_ORIGINS</code></td>
+<td><code>["http://localhost:5173"]</code></td>
+<td>Allowed CORS origins</td>
+</tr>
+<tr>
+<td><code>OIDC__*</code></td>
+<td>(from celine-sdk defaults)</td>
+<td>OIDC settings</td>
 </tr>
 </tbody>
 </table>
 <h2 id="backend-setup">Backend Setup</h2>
-<pre><code class="language-bash"># Install dependencies
-uv sync
-
-# Apply database migrations
+<pre><code class="language-bash">uv sync
 uv run alembic upgrade head
-
-# Start the BFF
-uv run -m celine.webapp.main
-# Listens on http://localhost:8000
+task run
+# Listens on http://localhost:8014
 </code></pre>
+<h2 id="taskfile-commands">Taskfile Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task run</code></td>
+<td>Start dev server on port 8014</td>
+</tr>
+<tr>
+<td><code>task debug</code></td>
+<td>Start with debugger</td>
+</tr>
+<tr>
+<td><code>task alembic:upgrade</code></td>
+<td>Apply all pending migrations</td>
+</tr>
+<tr>
+<td><code>task alembic:create</code></td>
+<td>Create new Alembic migration</td>
+</tr>
+<tr>
+<td><code>task release</code></td>
+<td>Run semantic-release</td>
+</tr>
+</tbody>
+</table>
 <h2 id="frontend">Frontend</h2>
 <p>The participant frontend is in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>. See that repository for frontend setup instructions.</p>
 <h2 id="jwt-simulation">JWT Simulation</h2>
-<p>In local dev, the BFF reads <code>X-Auth-Request-Access-Token</code>. Simulate this header using a curl or Postman request:</p>
-<pre><code class="language-bash">curl http://localhost:8000/api/me \
+<p>In local dev, the BFF reads <code>X-Auth-Request-Access-Token</code>. Simulate this header using curl:</p>
+<pre><code class="language-bash">curl http://localhost:8014/api/me \
   -H &quot;X-Auth-Request-Access-Token: &lt;your-jwt&gt;&quot;
 </code></pre>
-<p>Generate a test token using Keycloak or create a static token for dev purposes.</p>
+<h2 id="cli">CLI</h2>
+<pre><code class="language-bash">celine-webapp-export-feedback   # Export user feedback data
+</code></pre>
 <h2 id="database-migrations">Database Migrations</h2>
-<pre><code class="language-bash"># Apply all migrations
-uv run alembic upgrade head
-
-# Create a new migration
+<pre><code class="language-bash">uv run alembic upgrade head
 uv run alembic revision --autogenerate -m &quot;add preference column&quot;
 </code></pre>
 <h2 id="running-tests">Running Tests</h2>
 <pre><code class="language-bash">uv run pytest -q
+</code></pre>
+<h2 id="project-layout">Project Layout</h2>
+<pre><code>src/celine/webapp/
+  main.py                # FastAPI app factory
+  settings.py            # Pydantic settings
+  routes.py              # Router registration
+  cli.py                 # CLI (celine-webapp-export-feedback)
+  api/
+    user.py              # /api/me, /api/terms/accept
+    overview.py          # /api/overview
+    weather.py           # /api/weather
+    forecast.py          # /api/forecast
+    community.py         # /api/community
+    suggestions.py       # /api/suggestions, /api/commitments
+    gamification.py      # /api/gamification
+    co2_settings.py      # /api/settings/co2
+    settings_routes.py   # /api/settings
+    notifications.py     # /api/notifications, webpush
+    feedback.py          # /api/feedback
+    meta.py              # /health
+    deps.py              # FastAPI dependencies
+    schemas.py           # Pydantic schemas
+  db/
+    models.py            # SQLAlchemy ORM models
+    session.py           # Async session management
+    user_settings.py     # User settings helpers
+policies/                # OPA .rego policy files
+alembic/                 # Database migrations
 </code></pre>
 
 

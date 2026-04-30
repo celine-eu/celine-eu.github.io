@@ -3937,9 +3937,9 @@
 <h2 id="rag-pipeline">RAG Pipeline</h2>
 <p>The assistant processes user queries through a Retrieval-Augmented Generation pipeline:</p>
 <ol>
-<li><strong>Upload</strong> — files are uploaded via <code>POST /upload</code>, parsed, and chunked</li>
+<li><strong>Upload</strong> — files are uploaded via <code>POST /upload</code>, parsed, and chunked. Images are captioned via the vision model.</li>
 <li><strong>Index</strong> — chunks are embedded and stored in Qdrant as vector documents</li>
-<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the OpenAI prompt</li>
+<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the OpenAI prompt, along with dashboard context and page-aware context</li>
 <li><strong>Stream</strong> — the response is streamed back to the client via SSE</li>
 </ol>
 <h2 id="component-overview">Component Overview</h2>
@@ -3955,7 +3955,7 @@
 <tr>
 <td>FastAPI application</td>
 <td><code>main.py</code></td>
-<td>HTTP server, route registration, lifespan hooks</td>
+<td>HTTP server (<code>create_app</code> factory), route registration, lifespan hooks</td>
 </tr>
 <tr>
 <td>RAG pipeline</td>
@@ -3970,7 +3970,7 @@
 <tr>
 <td>Auth</td>
 <td><code>auth.py</code></td>
-<td>JWKS-based JWT verification, identity extraction</td>
+<td>JWT verification via trusted headers or JWKS</td>
 </tr>
 <tr>
 <td>History</td>
@@ -3990,7 +3990,27 @@
 <tr>
 <td>Vision</td>
 <td><code>openai_vision.py</code></td>
-<td>Image attachment support in chat messages</td>
+<td>Image captioning via OpenAI vision model</td>
+</tr>
+<tr>
+<td>Dashboard context</td>
+<td><code>dashboard_context.py</code></td>
+<td>Enriches prompts with user data from Digital Twin</td>
+</tr>
+<tr>
+<td>Training materials</td>
+<td><code>training_materials.py</code></td>
+<td>Indexes Markdown training materials into Qdrant</td>
+</tr>
+<tr>
+<td>Training materials sync</td>
+<td><code>training_materials_sync.py</code></td>
+<td>Git clone/pull for training materials repo</td>
+</tr>
+<tr>
+<td>Site docs</td>
+<td><code>site_docs.py</code></td>
+<td>Indexes documentation site content</td>
 </tr>
 <tr>
 <td>Qdrant setup</td>
@@ -4007,10 +4027,9 @@
 <h2 id="frontend">Frontend</h2>
 <p>This repository is a pure API backend. The chat UI is maintained separately in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a>:</p>
 <ul>
-<li><code>packages/assistant-ui</code> — <code>@celine-eu/assistant-ui</code> Svelte component library (ChatCore, AssistantWidget, etc.)</li>
 <li><code>apps/assistant</code> — standalone full-page assistant app</li>
 </ul>
-<p>The frontend communicates with this API at <code>apiBaseUrl</code>. When deployed inside the participant webapp, requests are proxied through the <code>celine-webapp</code> BFF.</p>
+<p>The frontend communicates with this API at <code>apiBaseUrl</code>.</p>
 <h2 id="service-dependencies">Service Dependencies</h2>
 <table>
 <thead>
@@ -4022,7 +4041,7 @@
 <tbody>
 <tr>
 <td><strong>OpenAI</strong></td>
-<td>Chat completions and text embeddings</td>
+<td>Chat completions, text embeddings, and vision (image captioning)</td>
 </tr>
 <tr>
 <td><strong>Qdrant</strong></td>
@@ -4030,31 +4049,31 @@
 </tr>
 <tr>
 <td><strong>PostgreSQL</strong></td>
-<td>Conversation history and attachment metadata</td>
+<td>Conversation history, attachment metadata</td>
 </tr>
 <tr>
-<td><strong>S3 / object storage</strong></td>
-<td>Raw file storage for uploads</td>
+<td><strong>Digital Twin</strong></td>
+<td>Dashboard context enrichment (optional)</td>
 </tr>
 <tr>
-<td><strong>Keycloak / JWKS endpoint</strong></td>
-<td>JWT public key discovery for auth</td>
+<td><strong>Keycloak / oauth2_proxy</strong></td>
+<td>JWT authentication</td>
 </tr>
 </tbody>
 </table>
 <h2 id="data-flow">Data Flow</h2>
 <p>Upload path:</p>
-<pre><code>POST /upload → parse file → split into chunks → embed (OpenAI) → upsert (Qdrant) → store metadata (PostgreSQL)
+<pre><code>POST /upload -&gt; parse file -&gt; (if image: caption via vision model) -&gt; split into chunks -&gt; embed (OpenAI) -&gt; upsert (Qdrant) -&gt; store metadata (PostgreSQL)
 </code></pre>
 <p>Chat path:</p>
-<pre><code>POST /chat → verify JWT → load history → retrieve context (Qdrant) → build prompt → stream (OpenAI SSE)
+<pre><code>POST /chat -&gt; verify JWT -&gt; load history -&gt; load authorized attachments -&gt; retrieve context (Qdrant) -&gt; enrich with dashboard context -&gt; build prompt -&gt; stream (OpenAI SSE)
 </code></pre>
 <h2 id="database-models">Database Models</h2>
-<p>Conversations and messages are stored in PostgreSQL using SQLAlchemy async models. Alembic handles schema migrations. The <code>db/models.py</code> module defines:</p>
+<p>PostgreSQL (async via SQLAlchemy + asyncpg). Alembic handles migrations. Models:</p>
 <ul>
 <li><code>Conversation</code> — linked to a user identity from the JWT subject claim</li>
 <li><code>Message</code> — role (<code>user</code>/<code>assistant</code>), content, timestamp, optional attachment refs</li>
-<li><code>Attachment</code> — file metadata: name, MIME type, Qdrant collection reference</li>
+<li><code>Attachment</code> — file metadata: name, MIME type, Qdrant collection reference, scope (user/system)</li>
 </ul>
 
 

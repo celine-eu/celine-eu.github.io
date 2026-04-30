@@ -4115,10 +4115,14 @@
 <h3 id="governed-query-api">Governed query API</h3>
 <p>SQL <code>SELECT</code> queries over exposed datasets with strict validation, server-side pagination, hard row caps, and row-level filters.</p>
 <ul>
-<li><code>POST /query</code> — accepts <code>{"sql": "SELECT ...", "limit": 50, "offset": 0}</code></li>
-<li>Validates SQL (SELECT-only, table allowlist)</li>
+<li><code>POST /query</code> — accepts <code>{"sql": "SELECT ...", "limit": 50, "offset": 0, "skip_count": false}</code></li>
+<li>Validates SQL (SELECT-only, table allowlist, function allowlist)</li>
+<li>Supports spatial PostGIS functions: <code>ST_Intersects</code>, <code>ST_Within</code>, <code>ST_Contains</code>, <code>ST_Transform</code>, <code>ST_Distance</code>, <code>ST_SetSRID</code>, <code>ST_GeomFromGeoJSON</code>, <code>ST_Point</code>, <code>ST_XMin/YMin/XMax/YMax</code>, <code>ST_Extent</code></li>
+<li>Supports <code>IN</code> clauses with tuples, string/numeric/date functions, aggregates</li>
 <li>Enforces <code>LIMIT</code>/<code>OFFSET</code> server-side</li>
-<li>Applies row-level filter plans from governance handlers (OPA, HTTP allow-list, direct user match)</li>
+<li>Configurable query timeout via <code>QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000ms)</li>
+<li><code>skip_count: true</code> skips the <code>COUNT(*)</code> query to avoid full table scans</li>
+<li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>http_in_list</code>, <code>table_pointer</code>)</li>
 </ul>
 <h3 id="edr-gated-query-path-dataspace-integration">EDR-gated query path (dataspace integration)</h3>
 <p>When queries arrive through the EDC data plane (via an Endpoint Data Reference), the API detects the EDR context via the <code>Edc-Contract-Agreement-Id</code> header and switches to a dataspace-specific enforcement path.</p>
@@ -4126,12 +4130,14 @@
 <pre><code class="language-env">EDR_ENABLED=true
 CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 </code></pre>
-<p>EDR query flow:
-1. Detects <code>Edc-Contract-Agreement-Id</code> and <code>Edc-Bpn</code> headers
-2. Calls <code>ds-connector GET /internal/agreements/{id}/status</code> — checks the agreement is active
-3. If the dataset has a <code>user_filter_column</code>, calls <code>ds-connector GET /internal/consent/check</code> — retrieves the list of subject IDs the consumer has consent for
-4. Injects an SQL <code>IN (subject_ids)</code> predicate or a deny plan into the row filter pipeline
-5. Skips the Keycloak/OPA path entirely — the EDC data plane already validated the EDR JWT</p>
+<p>EDR query flow:</p>
+<ol>
+<li>Detects <code>Edc-Contract-Agreement-Id</code> and <code>Edc-Bpn</code> headers</li>
+<li>Calls <code>ds-connector GET /internal/agreements/{id}/status</code> — checks the agreement is active</li>
+<li>If the dataset has a <code>user_filter_column</code>, calls <code>ds-connector GET /internal/consent/check</code> — retrieves the list of subject IDs the consumer has consent for</li>
+<li>Injects an SQL <code>IN (subject_ids)</code> predicate or a deny plan into the row filter pipeline</li>
+<li>Skips the Keycloak/OPA path entirely — the EDC data plane already validated the EDR JWT</li>
+</ol>
 <p>This path requires no JWT re-validation by dataset-api since the EDC data plane validates the bearer token before proxying.</p>
 <h3 id="governance-and-disclosure-model">Governance and disclosure model</h3>
 <p>Access levels:
@@ -4139,7 +4145,13 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 - <code>internal</code> — JWT required; <code>ds:accessScope eq "dataspaces.query"</code> constraint in ODRL
 - <code>restricted</code> — JWT + contract required; <code>ds:contractRequired eq "true"</code> in ODRL
 - <code>secret</code> — not exposed in catalogue or EDC</p>
-<p>Row-level filtering via the pluggable governance handler registry. When <code>user_filter_column</code> is set and <code>consent_required: true</code>, the consent handler injects an <code>IN (subject_ids)</code> predicate.</p>
+<p>Row-level filtering via the pluggable governance handler registry. Four built-in handlers are supported:
+- <code>direct_user_match</code> — filter by user column
+- <code>rec_registry</code> — lookup via REC registry
+- <code>http_in_list</code> — HTTP-based allow list
+- <code>table_pointer</code> — table-based lookup</p>
+<p>Users in the <code>admins</code> group bypass row filters entirely. Service accounts bypass the <code>rec_registry</code> filter.</p>
+<p>Governance overrides are supported via <code>governance.&lt;app_name&gt;.yaml</code> files merged with the base <code>governance.yaml</code>.</p>
 <h3 id="lineage-and-provenance">Lineage and provenance</h3>
 <ul>
 <li>OpenLineage ingestion via Marquez</li>
@@ -4159,7 +4171,7 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 <li><code>GET /catalogue/{id}</code> — single dataset</li>
 <li><code>POST /catalogue/search</code> — filtered search</li>
 <li><code>POST /query</code> — governed SQL query; EDR-gated when <code>EDR_ENABLED=true</code></li>
-<li><code>GET /admin/catalogue</code> — catalogue import (CLI-only)</li>
+<li><code>POST /admin/catalogue</code> — catalogue import</li>
 <li><code>GET /health</code></li>
 </ul>
 <hr />
@@ -4170,9 +4182,9 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 <p>Main commands:
 - <code>export openlineage</code> — extract lineage from Marquez
 - <code>export governance</code> — export governance rules to dataset entries
+- <code>export postgres</code> — generate catalogue YAML from PostgreSQL schema introspection
 - <code>import catalogue</code> — validate and import dataset catalogue
-- <code>validate catalogue</code> — schema validation only
-- <code>ontology</code> — ontology fetch, analysis, tree generation</p>
+- <code>row-filter add|remove|list</code> — manage row filters in exported YAML files</p>
 <p>The <code>export governance</code> command reads <code>governance.yaml</code> files and propagates <code>dcat:</code> and <code>dataspace:</code> blocks to <code>DatasetEntry</code> records. The <code>expose: true</code> field on a source entry controls whether the dataset is visible in the catalogue and registered in EDC.</p>
 <hr />
 <h2 id="governanceyaml-integration">governance.yaml integration</h2>
@@ -4204,7 +4216,7 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 <hr />
 <h2 id="development-and-contribution">Development and contribution</h2>
 <ul>
-<li>Python ≥ 3.11</li>
+<li>Python &gt;= 3.12</li>
 <li>Async SQLAlchemy</li>
 <li>Pydantic v2</li>
 <li>FastAPI + httpx</li>

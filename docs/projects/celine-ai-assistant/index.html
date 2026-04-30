@@ -551,10 +551,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#training-materials-sync" class="md-nav__link">
+  <a href="#api-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Training Materials Sync
+        API Overview
       
     </span>
   </a>
@@ -3884,10 +3884,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#training-materials-sync" class="md-nav__link">
+  <a href="#api-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Training Materials Sync
+        API Overview
       
     </span>
   </a>
@@ -3934,96 +3934,182 @@
 
 
 <h1 id="celine-ai-assistant">CELINE AI Assistant</h1>
-<p>FastAPI API backend for the CELINE AI assistant. Implements a RAG (Retrieval-Augmented Generation) pipeline using LlamaIndex, Qdrant, and OpenAI. Provides streaming chat, conversation history, file-based RAG ingestion, and JWT authentication.</p>
-<p>The chat UI is part of <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> (<code>apps/assistant</code> and <code>@celine-eu/assistant-ui</code>).</p>
+<p>FastAPI backend for the CELINE AI assistant. Implements a RAG (Retrieval-Augmented Generation) pipeline using LlamaIndex, Qdrant, and OpenAI. Provides streaming chat, conversation history, file uploads with vision support, and JWT authentication.</p>
+<p>The chat UI is part of <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> (<code>apps/assistant</code>).</p>
 <h2 id="features">Features</h2>
 <ul>
 <li>Streaming chat via Server-Sent Events (SSE)</li>
 <li>Conversation history persisted in PostgreSQL</li>
 <li>File upload with automatic RAG ingestion into Qdrant</li>
+<li>Vision support for image attachments (captioning via OpenAI vision model)</li>
+<li>Dashboard context enrichment from Digital Twin API</li>
 <li>Automatic sync of <code>celine-training-materials</code> from a Git repository</li>
-<li>JWT authentication (JWKS-based verification)</li>
-<li>Vision support for image attachments</li>
-<li>Admin endpoints for re-indexing and reloading</li>
-<li>Internal knowledge ingestion from Markdown files in the documentation repository</li>
+<li>Page-aware context and attachment scoping</li>
+<li>JWT authentication (trusted headers from oauth2_proxy or JWKS verification)</li>
+<li>Admin endpoints for system uploads and training materials sync</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
-<pre><code class="language-bash"># Start all services (Qdrant, PostgreSQL, API)
-docker compose up -d
-
-# Send a chat message
-curl -X POST http://localhost:8000/chat \
-  -H &quot;Authorization: Bearer &lt;jwt&gt;&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d '{&quot;message&quot;: &quot;What is a renewable energy community?&quot;}' \
-  --no-buffer
+<pre><code class="language-bash">uv sync
+uv run alembic upgrade head
+task run
+# Listens on http://localhost:8012
 </code></pre>
 <h2 id="configuration">Configuration</h2>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
-<th>Description</th>
 <th>Default</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>OPENAI_API_KEY</code></td>
-<td>OpenAI API key</td>
-<td>required</td>
+<td>—</td>
+<td>OpenAI API key (required)</td>
+</tr>
+<tr>
+<td><code>OPENAI_CHAT_MODEL</code></td>
+<td><code>gpt-4o-mini</code></td>
+<td>Chat completion model</td>
+</tr>
+<tr>
+<td><code>OPENAI_EMBED_MODEL</code></td>
+<td><code>text-embedding-3-small</code></td>
+<td>Embedding model</td>
+</tr>
+<tr>
+<td><code>OPENAI_VISION_MODEL</code></td>
+<td><code>gpt-4o-mini</code></td>
+<td>Vision model for image captioning</td>
 </tr>
 <tr>
 <td><code>QDRANT_URL</code></td>
+<td><code>http://host.docker.internal:6333</code></td>
 <td>Qdrant vector DB URL</td>
-<td><code>http://localhost:6333</code></td>
+</tr>
+<tr>
+<td><code>QDRANT_API_KEY</code></td>
+<td>—</td>
+<td>Optional Qdrant API key</td>
+</tr>
+<tr>
+<td><code>QDRANT_COLLECTION</code></td>
+<td><code>celine_docs</code></td>
+<td>Qdrant collection name</td>
 </tr>
 <tr>
 <td><code>DATABASE_URL</code></td>
+<td><code>postgresql+asyncpg://...host.docker.internal:15432/ai_assistant</code></td>
 <td>PostgreSQL async URL</td>
-<td>required</td>
 </tr>
 <tr>
-<td><code>JWKS_URL</code></td>
-<td>JWKS endpoint for JWT verification</td>
-<td>required</td>
+<td><code>OAUTH2_TRUST_HEADERS</code></td>
+<td><code>true</code></td>
+<td>Trust headers from oauth2_proxy</td>
 </tr>
 <tr>
-<td><code>OPENAI_MODEL</code></td>
-<td>Chat model</td>
-<td><code>gpt-4o</code></td>
+<td><code>OAUTH2_JWKS_URL</code></td>
+<td>—</td>
+<td>JWKS endpoint (auto-discovered if not set)</td>
 </tr>
 <tr>
-<td><code>EMBED_MODEL</code></td>
-<td>Embedding model</td>
-<td><code>text-embedding-3-small</code></td>
+<td><code>OAUTH2_ISSUER</code></td>
+<td>—</td>
+<td>OAuth2 issuer URL</td>
+</tr>
+<tr>
+<td><code>OAUTH2_AUDIENCE</code></td>
+<td><code>oauth2_proxy</code></td>
+<td>Expected JWT audience</td>
+</tr>
+<tr>
+<td><code>ADMIN_GROUP</code></td>
+<td><code>admins</code></td>
+<td>Group name for admin access</td>
+</tr>
+<tr>
+<td><code>DIGITAL_TWIN_API_URL</code></td>
+<td>—</td>
+<td>Digital Twin API for dashboard context</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_PATH</code></td>
-<td>Local checkout path for training materials</td>
-<td><code>/app/training-materials</code> in container deployments</td>
+<td><code>/workspace/repositories/celine-training-materials</code></td>
+<td>Local path for training materials</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_REPO_URL</code></td>
-<td>Git URL used by the API container to clone/pull training materials</td>
-<td>empty</td>
+<td>—</td>
+<td>Git URL for auto-cloning training materials</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_REF</code></td>
-<td>Ref checked out before ingest</td>
 <td><code>origin/main</code></td>
+<td>Git ref for training materials</td>
+</tr>
+<tr>
+<td><code>TRAINING_MATERIALS_SYNC_ON_START</code></td>
+<td><code>true</code></td>
+<td>Auto-sync training materials on startup</td>
+</tr>
+<tr>
+<td><code>UPLOADS_URI</code></td>
+<td><code>file://./data/uploads</code></td>
+<td>Upload storage URI</td>
+</tr>
+<tr>
+<td><code>MAX_UPLOAD_MB</code></td>
+<td><code>25</code></td>
+<td>Max upload size in MB</td>
+</tr>
+<tr>
+<td><code>INGEST_ENABLE</code></td>
+<td><code>true</code></td>
+<td>Enable RAG ingestion</td>
 </tr>
 </tbody>
 </table>
-<h2 id="training-materials-sync">Training Materials Sync</h2>
-<p>The API can manage the <code>celine-training-materials</code> repository directly inside the container.</p>
-<ul>
-<li>If <code>TRAINING_MATERIALS_REPO_URL</code> is set, the container clones the repo into <code>TRAINING_MATERIALS_PATH</code> if missing.</li>
-<li>On startup, it fetches <code>origin</code>, checks out <code>TRAINING_MATERIALS_REF</code>, and ingests Markdown files.</li>
-<li>Admins can force a new sync through <code>POST /admin/training-materials/sync</code>.</li>
-</ul>
-<p>For Kubernetes, prefer an authenticated HTTPS URL, for example via a token-backed secret injected into <code>TRAINING_MATERIALS_REPO_URL</code>.</p>
-<p>The assistant preloads internal knowledge from the local checkout of <code>celine-training-materials</code> mounted at <code>TRAINING_MATERIALS_PATH</code>. It indexes all Markdown files found there. This is intended for docs that should influence answers without being shown as visible sources in the chat UI.</p>
+<h2 id="api-overview">API Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Endpoints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>chat</strong></td>
+<td><code>POST /chat</code> (SSE streaming)</td>
+</tr>
+<tr>
+<td><strong>conversations</strong></td>
+<td><code>GET /conversations</code>, <code>GET /conversations/{id}/messages</code>, <code>DELETE /conversations/{id}</code></td>
+</tr>
+<tr>
+<td><strong>attachments</strong></td>
+<td><code>GET /attachments</code>, <code>GET /attachments/{id}/raw</code>, <code>DELETE /attachments/{id}</code></td>
+</tr>
+<tr>
+<td><strong>uploads</strong></td>
+<td><code>POST /upload</code> (user), <code>POST /admin/uploads</code> (system)</td>
+</tr>
+<tr>
+<td><strong>admin</strong></td>
+<td><code>POST /admin/training-materials/sync</code></td>
+</tr>
+<tr>
+<td><strong>user</strong></td>
+<td><code>GET /user</code></td>
+</tr>
+<tr>
+<td><strong>ops</strong></td>
+<td><code>GET /health</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
@@ -4034,20 +4120,20 @@ curl -X POST http://localhost:8000/chat \
 </thead>
 <tbody>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/architecture">Architecture</a></td>
+<td><a href="docs/architecture/">Architecture</a></td>
 <td>RAG pipeline, component overview, service dependencies</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/configuration">Configuration</a></td>
+<td><a href="docs/configuration/">Configuration</a></td>
 <td>All environment variables with types and defaults</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/api-reference">API Reference</a></td>
+<td><a href="docs/api-reference/">API Reference</a></td>
 <td>All endpoints: chat, upload, attachments, conversations, admin</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/development">Development</a></td>
-<td>Local setup, migrations, running tests</td>
+<td><a href="docs/development/">Development</a></td>
+<td>Local setup, migrations, taskfile commands</td>
 </tr>
 </tbody>
 </table>

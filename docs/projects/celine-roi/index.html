@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-roi" class="md-skip">
+        <a href="#celine-roi-calculator" class="md-skip">
           Skip to content
         </a>
       
@@ -3365,6 +3365,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3381,6 +3399,91 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3741,6 +3844,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3756,8 +3933,122 @@
 
 
 
-<h1 id="celine-roi">celine-roi</h1>
-<p>Financial decision engine for Italian PV systems.</p>
+<h1 id="celine-roi-calculator">CELINE ROI Calculator</h1>
+<p>Financial decision engine for Italian PV systems. Computes ROI projections, energy production estimates, CER incentives, CAPEX estimates, and financial analysis for photovoltaic installations. Persists scenario results for later retrieval.</p>
+<p>The UI lives in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/roi</code>.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>PV energy production estimation via PVGIS and Trentino Solar APIs</li>
+<li>Italian CER (Comunita Energetica Rinnovabile) incentive calculation</li>
+<li>Financial analysis: NPV, IRR, payback period over configurable horizons</li>
+<li>CAPEX estimation with panel specifications and cost curves</li>
+<li>Scenario comparison across multiple configurations</li>
+<li>Estimate persistence (save, list, retrieve)</li>
+<li>Input validation with detailed error reporting</li>
+<li>IRPEF tax deduction modeling</li>
+<li>Battery and heat pump integration support</li>
+<li>Alembic-managed database migrations</li>
+</ul>
+<h2 id="api">API</h2>
+<p>All endpoints are under <code>/api/v1</code>. Interactive docs at <code>/docs</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/api/v1/production</code></td>
+<td>POST</td>
+<td>Estimate PV energy production</td>
+</tr>
+<tr>
+<td><code>/api/v1/energy</code></td>
+<td>POST</td>
+<td>Compute energy balance with consumption</td>
+</tr>
+<tr>
+<td><code>/api/v1/incentives</code></td>
+<td>POST</td>
+<td>Calculate CER incentives</td>
+</tr>
+<tr>
+<td><code>/api/v1/finance</code></td>
+<td>POST</td>
+<td>Financial analysis (NPV, IRR, payback)</td>
+</tr>
+<tr>
+<td><code>/api/v1/capex-estimate</code></td>
+<td>POST</td>
+<td>Estimate CAPEX from panel specs</td>
+</tr>
+<tr>
+<td><code>/api/v1/validate</code></td>
+<td>POST</td>
+<td>Validate input parameters</td>
+</tr>
+<tr>
+<td><code>/api/v1/scenario</code></td>
+<td>POST</td>
+<td>Run full scenario (production + energy + incentives + finance)</td>
+</tr>
+<tr>
+<td><code>/api/v1/compare</code></td>
+<td>POST</td>
+<td>Compare multiple scenarios side by side</td>
+</tr>
+<tr>
+<td><code>/api/v1/estimates</code></td>
+<td>GET</td>
+<td>List saved estimates</td>
+</tr>
+<tr>
+<td><code>/api/v1/estimates/{id}</code></td>
+<td>GET</td>
+<td>Retrieve a saved estimate</td>
+</tr>
+<tr>
+<td><code>/health</code></td>
+<td>GET</td>
+<td>Health check</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quick-start">Quick Start</h2>
+<pre><code class="language-bash">uv sync
+uv run alembic upgrade head
+uv run uvicorn celine.roi.api.app:create_app --factory --reload --port 8013
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>Configuration is loaded from YAML files under the config directory and can be overridden via API request parameters. Key config files:
+- <code>config.yaml</code> — main configuration (tariffs, rates, horizons)
+- <code>incentives.yaml</code> — CER incentive rates and IRPEF deduction parameters
+- <code>panel_specs.yaml</code> — panel specifications and CAPEX cost curves
+- <code>load_profiles/</code> — hourly load profiles by consumer type</p>
+<h2 id="documentation">Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/user-guide/">User Guide</a></td>
+<td>How to use the ROI calculator, input parameters, output format</td>
+</tr>
+<tr>
+<td><a href="docs/variables-reference/">Variables Reference</a></td>
+<td>All configuration variables, overrides, and formulas</td>
+</tr>
+</tbody>
+</table>
+<h2 id="license">License</h2>
+<p>Apache 2.0 — Copyright © 2025 Spindox Labs</p>
 
 
 

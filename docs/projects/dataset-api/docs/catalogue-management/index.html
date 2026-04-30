@@ -4112,11 +4112,13 @@ sources:
 <h2 id="cleanup-of-stale-entries">Cleanup of Stale Entries</h2>
 <p>A robust import process includes a cleanup phase.</p>
 <p><strong>Goal:</strong> remove catalogue entries whose physical tables no longer exist.</p>
-<p>Recommended algorithm:
-1. list catalogue entries
-2. for each, check existence (reflection / information_schema)
-3. if missing, delete entry unless protected
-4. support skip-list for datasets just imported or explicitly pinned</p>
+<p>Recommended algorithm:</p>
+<ol>
+<li>list catalogue entries</li>
+<li>for each, check existence (reflection / information_schema)</li>
+<li>if missing, delete entry unless protected</li>
+<li>support skip-list for datasets just imported or explicitly pinned</li>
+</ol>
 <p>This addresses real-world drift when pipelines drop or rename tables.</p>
 <hr />
 <h2 id="dcat-exposure-rules">DCAT Exposure Rules</h2>

@@ -1160,6 +1160,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3873,6 +3884,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3918,13 +3940,13 @@
 <p>The webapp uses the BFF pattern:
 - The frontend (SvelteKit) communicates exclusively with the BFF at <code>/api/*</code>
 - The BFF reads the JWT from the <code>X-Auth-Request-Access-Token</code> header injected by oauth2_proxy
-- The BFF proxies authenticated requests to backend services (Digital Twin, nudging-tool)
+- The BFF proxies authenticated requests to backend services (Digital Twin, nudging-tool, flexibility-api, rec-registry)
 - No cross-origin requests from the browser</p>
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash">uv sync
 uv run alembic upgrade head
-uv run -m celine.webapp.main
-# Listens on http://localhost:8000
+task run
+# Listens on http://localhost:8014
 </code></pre>
 <p>For the participant frontend, see <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>.</p>
 <h2 id="features">Features</h2>
@@ -3938,30 +3960,61 @@ uv run -m celine.webapp.main
 <tbody>
 <tr>
 <td>Overview</td>
-<td>Energy consumption and production summary</td>
+<td>Energy consumption and production summary from Digital Twin</td>
+</tr>
+<tr>
+<td>Weather</td>
+<td>Current weather conditions for the user's community</td>
+</tr>
+<tr>
+<td>Forecast</td>
+<td>Energy production/consumption forecast from Digital Twin</td>
+</tr>
+<tr>
+<td>Suggestions</td>
+<td>Flexibility window suggestions with accept/reject/remind actions</td>
+</tr>
+<tr>
+<td>Commitments</td>
+<td>Active commitment tracking and cancellation</td>
+</tr>
+<tr>
+<td>Gamification</td>
+<td>Points, badges, and commitment history from flexibility-api</td>
+</tr>
+<tr>
+<td>CO2</td>
+<td>Carbon emission factors and settings</td>
+</tr>
+<tr>
+<td>Community</td>
+<td>Community metadata from rec-registry</td>
 </tr>
 <tr>
 <td>Notifications</td>
-<td>User notification list and preferences</td>
-</tr>
-<tr>
-<td>Settings</td>
-<td>Account settings, terms acceptance</td>
+<td>User notification list, read/unread, enable/disable</td>
 </tr>
 <tr>
 <td>Web Push</td>
-<td>VAPID-based push notification subscription</td>
+<td>VAPID-based push notification subscription via nudging-tool</td>
 </tr>
 <tr>
-<td>Digital Twin</td>
-<td>Real-time energy data via DT integration</td>
+<td>Settings</td>
+<td>Account settings (language, units), terms acceptance</td>
 </tr>
 <tr>
-<td>Assistant</td>
-<td>Embedded AI assistant (proxied to celine-ai-assistant)</td>
+<td>Feedback</td>
+<td>User feedback submission</td>
+</tr>
+<tr>
+<td>Health</td>
+<td>Service health check</td>
 </tr>
 </tbody>
 </table>
+<h2 id="cli">CLI</h2>
+<pre><code class="language-bash">celine-webapp-export-feedback   # Export user feedback data
+</code></pre>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
@@ -3972,20 +4025,20 @@ uv run -m celine.webapp.main
 </thead>
 <tbody>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-webapp/docs/architecture">Architecture</a></td>
+<td><a href="docs/architecture/">Architecture</a></td>
 <td>BFF pattern, JWT flow, service dependencies, deployment model</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-webapp/docs/api-reference">API Reference</a></td>
-<td>All BFF endpoints: user, overview, notifications, settings</td>
+<td><a href="docs/api-reference/">API Reference</a></td>
+<td>All BFF endpoints with paths and query params</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-webapp/docs/features">Features</a></td>
-<td>Terms acceptance, web push, digital twin integration</td>
+<td><a href="docs/features/">Features</a></td>
+<td>Feature details: suggestions, gamification, CO2, feedback</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/celine-webapp/docs/development">Development</a></td>
-<td>Local dev proxy setup, env vars, running tests</td>
+<td><a href="docs/development/">Development</a></td>
+<td>Local dev setup, env vars, taskfile commands</td>
 </tr>
 </tbody>
 </table>

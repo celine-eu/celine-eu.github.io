@@ -4143,7 +4143,7 @@
 <li>License and access level (<code>open</code>, <code>internal</code>, <code>restricted</code>, <code>secret</code>)</li>
 <li>Data classification (<code>pii</code>, <code>green</code>, <code>yellow</code>, <code>red</code>) and retention</li>
 <li>Tags, documentation links, and source system</li>
-<li><code>user_filter_column</code> — the column used for per-subject consent-based row filtering</li>
+<li><code>row_filters</code> — list of filter specs (<code>[{handler, args}]</code>) for per-subject consent-based row filtering</li>
 <li><code>expose: true</code> — controls whether the dataset appears in the DCAT catalogue and is registered as an EDC asset</li>
 </ul>
 <p>Extended blocks for DCAT-AP 3.0 and dataspace integration:</p>
@@ -4167,17 +4167,17 @@
 <p>Structured execution layer for:</p>
 <ul>
 <li>Meltano ingestion pipelines</li>
-<li>dbt transformations and tests</li>
-<li>Prefect-based Python flows</li>
+<li>dbt transformations, tests, and seeds (<code>dbt_seed</code> wrapper)</li>
+<li>Prefect-based Python flows (Prefect 3.x)</li>
 </ul>
-<p>The <code>PipelineRunner</code> coordinates execution, logging, error handling, and lineage emission consistently across tools.</p>
+<p>The <code>PipelineRunner</code> coordinates execution, logging, error handling, and lineage emission consistently across tools. Pipeline run environment variables can be injected via <code>pipeline_run_envs</code> for local runtime configuration.</p>
 <p>See the <a href="https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial">pipeline tutorial</a>.</p>
 <h3 id="openlineage-integration">OpenLineage integration</h3>
 <ul>
 <li>Automatic emission of START, COMPLETE, FAIL, and ABORT events</li>
 <li>Dataset-level schema facets</li>
 <li>Data quality assertions from dbt tests</li>
-<li>Custom CELINE governance facets (including <code>userFilterColumn</code>, <code>medallion</code>, <code>classification</code>)</li>
+<li>Custom CELINE governance facets (including <code>row_filters</code>, <code>medallion</code>, <code>classification</code>)</li>
 </ul>
 <h3 id="dataset-tooling">Dataset tooling</h3>
 <p>The <code>DatasetClient</code> enables:</p>
@@ -4228,7 +4228,7 @@ tests/
 </ul>
 <hr />
 <h2 id="installation">Installation</h2>
-<pre><code class="language-bash">pip install celine-utils
+<pre><code class="language-bash">uv add celine-utils
 </code></pre>
 <hr />
 <h2 id="intended-audience">Intended audience</h2>

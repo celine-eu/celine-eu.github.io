@@ -996,30 +996,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#site" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Site
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jsonb-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        JSONB Fields
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1035,10 +1013,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#iri-convention" class="md-nav__link">
+  <a href="#jsonb-conventions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        IRI Convention
+        JSONB Conventions
       
     </span>
   </a>
@@ -3923,30 +3901,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#site" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Site
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jsonb-fields" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        JSONB Fields
-      
-    </span>
-  </a>
   
 </li>
       
@@ -3962,10 +3918,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#iri-convention" class="md-nav__link">
+  <a href="#jsonb-conventions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        IRI Convention
+        JSONB Conventions
       
     </span>
   </a>
@@ -3992,7 +3948,7 @@
 <h1 id="data-model">Data Model</h1>
 <h2 id="core-entities">Core Entities</h2>
 <h3 id="community">Community</h3>
-<p>A Renewable Energy Community (REC) is the top-level entity. It groups members, sites, and assets under a shared energy boundary.</p>
+<p>Top-level entity representing a Renewable Energy Community.</p>
 <table>
 <thead>
 <tr>
@@ -4005,7 +3961,7 @@
 <tr>
 <td><code>key</code></td>
 <td><code>str</code></td>
-<td>Unique community identifier (e.g., <code>COMM1</code>)</td>
+<td>Unique community identifier (e.g., <code>example_rec</code>)</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -4018,19 +3974,44 @@
 <td>Optional free-text description</td>
 </tr>
 <tr>
-<td><code>metadata</code></td>
+<td><code>areas</code></td>
 <td><code>JSONB</code></td>
-<td>Extensible properties (GSE zone, regulatory context, etc.)</td>
+<td>Named areas, each with <code>name</code>, <code>topology</code> (list of node IDs), optional <code>location</code>/<code>geometry</code></td>
 </tr>
 <tr>
-<td><code>created_at</code></td>
-<td><code>datetime</code></td>
-<td>Record creation timestamp</td>
+<td><code>topology</code></td>
+<td><code>JSONB</code></td>
+<td>Grid topology as a list of nodes (<code>id</code>, <code>type</code>, <code>name</code>, <code>operator_id</code>, children)</td>
+</tr>
+<tr>
+<td><code>legal</code></td>
+<td><code>JSONB</code></td>
+<td>Legal info: <code>name</code>, <code>vat</code>, <code>legal_form</code></td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td><code>JSONB</code></td>
+<td>Public URLs: <code>website</code>, <code>logo</code>, <code>privacy_policy</code>, <code>terms</code></td>
+</tr>
+<tr>
+<td><code>contact</code></td>
+<td><code>JSONB</code></td>
+<td>Contact info: <code>email</code>, <code>pec</code>, <code>phone</code></td>
+</tr>
+<tr>
+<td><code>settings</code></td>
+<td><code>JSONB</code></td>
+<td>Operational settings: <code>timezone</code>, <code>currency</code></td>
+</tr>
+<tr>
+<td><code>extra</code></td>
+<td><code>JSONB</code></td>
+<td>Extensible properties; <code>extra.operators</code> holds operator definitions</td>
 </tr>
 </tbody>
 </table>
 <h3 id="member">Member</h3>
-<p>A participant belonging to a community. Members can be producers, consumers, or prosumers.</p>
+<p>A participant belonging to a community.</p>
 <table>
 <thead>
 <tr>
@@ -4041,14 +4022,14 @@
 </thead>
 <tbody>
 <tr>
-<td><code>id</code></td>
+<td><code>key</code></td>
 <td><code>str</code></td>
-<td>Unique member identifier</td>
+<td>Unique member identifier within the community</td>
 </tr>
 <tr>
-<td><code>community_key</code></td>
+<td><code>user_id</code></td>
 <td><code>str</code></td>
-<td>Foreign key to Community</td>
+<td>Identity provider user ID</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -4058,17 +4039,32 @@
 <tr>
 <td><code>role</code></td>
 <td><code>str</code></td>
-<td><code>producer</code>, <code>consumer</code>, or <code>prosumer</code></td>
+<td><code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, or <code>admin</code></td>
 </tr>
 <tr>
-<td><code>metadata</code></td>
+<td><code>area</code></td>
+<td><code>str</code></td>
+<td>Reference to a community area key</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>str</code></td>
+<td><code>pending</code>, <code>active</code>, <code>suspended</code>, or <code>inactive</code></td>
+</tr>
+<tr>
+<td><code>delivery_points</code></td>
 <td><code>JSONB</code></td>
-<td>Additional properties</td>
+<td>List of delivery point objects (<code>id</code>, <code>type</code>, <code>description</code>, <code>address</code>, <code>tariff</code>, <code>active</code>)</td>
+</tr>
+<tr>
+<td><code>extra</code></td>
+<td><code>JSONB</code></td>
+<td>Extensible properties; <code>extra.type</code> holds a schema.org CURIE</td>
 </tr>
 </tbody>
 </table>
 <h3 id="asset">Asset</h3>
-<p>A physical or virtual energy asset (meter, panel, battery, etc.) associated with a member.</p>
+<p>A physical or virtual energy asset associated with a member and community.</p>
 <table>
 <thead>
 <tr>
@@ -4079,80 +4075,74 @@
 </thead>
 <tbody>
 <tr>
-<td><code>id</code></td>
+<td><code>key</code></td>
 <td><code>str</code></td>
-<td>Unique asset identifier</td>
-</tr>
-<tr>
-<td><code>member_id</code></td>
-<td><code>str</code></td>
-<td>Foreign key to Member</td>
+<td>Unique asset identifier within the community</td>
 </tr>
 <tr>
 <td><code>asset_type</code></td>
 <td><code>str</code></td>
-<td>Type classification (e.g., <code>pv</code>, <code>meter</code>, <code>battery</code>)</td>
+<td><code>pv</code>, <code>storage</code>, <code>meter</code>, <code>ev_charger</code>, <code>heat_pump</code>, or <code>load</code></td>
 </tr>
 <tr>
-<td><code>metadata</code></td>
+<td><code>name</code></td>
+<td><code>str</code></td>
+<td>Display name</td>
+</tr>
+<tr>
+<td><code>sensor_id</code></td>
+<td><code>str?</code></td>
+<td>Optional sensor/meter identifier (promoted column for lookups)</td>
+</tr>
+<tr>
+<td><code>properties</code></td>
 <td><code>JSONB</code></td>
-<td>Asset-specific properties</td>
+<td>Type-specific properties (e.g., <code>capacity_kwp</code> for PV, <code>meter_type</code>/<code>pod</code> for meters)</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td><code>JSONB</code></td>
+<td>SAREF-inspired device specification: <code>manufacturer</code>, <code>model</code>, <code>serial_number</code>, <code>firmware_version</code>, <code>type</code></td>
+</tr>
+<tr>
+<td><code>relationships</code></td>
+<td><code>JSONB</code></td>
+<td>Asset relationships: <code>measures</code> (list of asset keys), <code>paired_with</code> (asset key)</td>
+</tr>
+<tr>
+<td><code>extra</code></td>
+<td><code>JSONB</code></td>
+<td>Extensible properties</td>
+</tr>
+<tr>
+<td><code>community_id</code></td>
+<td><code>FK</code></td>
+<td>Foreign key to Community</td>
+</tr>
+<tr>
+<td><code>owner_id</code></td>
+<td><code>FK</code></td>
+<td>Foreign key to Member</td>
 </tr>
 </tbody>
 </table>
-<h3 id="site">Site</h3>
-<p>A physical location grouping assets. Optional intermediate layer between Member and Asset.</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td><code>str</code></td>
-<td>Unique site identifier</td>
-</tr>
-<tr>
-<td><code>member_id</code></td>
-<td><code>str</code></td>
-<td>Owning member</td>
-</tr>
-<tr>
-<td><code>address</code></td>
-<td><code>str</code></td>
-<td>Physical address</td>
-</tr>
-<tr>
-<td><code>coordinates</code></td>
-<td><code>JSONB</code></td>
-<td>Optional GeoJSON point</td>
-</tr>
-</tbody>
-</table>
-<h2 id="jsonb-fields">JSONB Fields</h2>
-<p>JSONB fields provide flexible extensibility without schema migrations. They are surfaced verbatim in API responses and stored as validated JSON. Common patterns:</p>
-<ul>
-<li><code>metadata.gse_zone</code> — GSE regulatory zone (Italian deployments)
-| - <code>metadata.boundary</code> — participant ID list for consumption boundaries</li>
-<li><code>metadata.capacity_kw</code> — installed capacity in kilowatts</li>
-</ul>
 <h2 id="relationships">Relationships</h2>
 <pre><code>Community
-  └── Member (many)
-        └── Site (many, optional)
-              └── Asset (many)
+  +-- Member (many)
+  |     +-- Asset (many, via owner_id)
+  +-- Asset (many, via community_id)
 </code></pre>
-<p>Assets without a site are attached directly to a Member.</p>
-<h2 id="iri-convention">IRI Convention</h2>
-<p>All entities are represented as expanded IRIs in JSON-LD responses using the CELINE ontology:</p>
-<pre><code>https://celine-eu.github.io/ontologies/celine#Community
-https://data.celine.eu/communities/COMM1
-</code></pre>
-<p>No CURIE output is produced. The <code>@context</code> always references the remote context document.</p>
+<p>Assets belong to both a community and an owning member. There is no <code>Site</code> entity; assets attach directly to members.</p>
+<h2 id="jsonb-conventions">JSONB Conventions</h2>
+<p>JSONB fields provide flexible extensibility without schema migrations. They are stored as validated JSON and surfaced verbatim in API responses. Type-specific asset properties vary by <code>asset_type</code>:</p>
+<ul>
+<li><strong>pv</strong>: <code>capacity_kwp</code>, <code>orientation</code>, <code>tilt</code>, <code>installation_date</code></li>
+<li><strong>storage</strong>: <code>capacity_kwh</code>, <code>max_power_kw</code>, <code>chemistry</code></li>
+<li><strong>meter</strong>: <code>meter_type</code>, <code>pod</code>, <code>direction</code></li>
+<li><strong>ev_charger</strong>: <code>max_power_kw</code>, <code>connector_type</code>, <code>num_connectors</code>, <code>smart_charging</code></li>
+<li><strong>heat_pump</strong>: <code>thermal_power_kw</code>, <code>cop</code>, <code>heat_source</code>, <code>reversible</code></li>
+<li><strong>load</strong>: <code>rated_power_kw</code>, <code>load_type</code>, <code>controllable</code>, <code>priority</code></li>
+</ul>
 
 
 

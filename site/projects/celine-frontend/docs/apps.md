@@ -6,54 +6,94 @@ Standalone full-page AI assistant application. Provides a single-route SvelteKit
 
 **Entry point:** `apps/assistant/src/routes/+page.svelte`
 
-```svelte
-<ChatCore apiBaseUrl="/api" mode="full" />
-```
+**Backend:** `celine-ai-assistant` (port 8012)
 
-This app is deployed as part of the celine-ai-assistant service, served at the root path. The layout provides no navigation or chrome — just the chat interface.
-
-**Docker image:** `ghcr.io/celine-eu/assistant-ui`
+**Docker image:** `ghcr.io/celine-eu/celine-assistant`
 
 **Dev:**
 ```bash
-pnpm dev:assistant
-# http://localhost:5174
+task dev:assistant
+# http://localhost:3003
 ```
 
 ---
 
 ## apps/webapp
 
-REC participant webapp. A full SvelteKit application for community members, including an energy overview, notifications, settings, and the embedded assistant.
+REC participant webapp. A full SvelteKit application for community members, including energy overview, weather, forecast, suggestions, gamification, notifications, settings, feedback, and the embedded assistant.
 
 **Routes:**
 
 | Route | Description |
 |---|---|
 | `/` | Energy overview — production, consumption, incentives |
+| `/suggestions` | Flexibility window suggestions with accept/reject |
 | `/assistant` | Embedded `ChatCore` in full mode |
 | `/notifications` | Notification list and read/delete |
-| `/settings` | Notification preferences and push subscription |
+| `/settings` | User preferences (language, units) |
+| `/profile` | User profile |
+| `/privacy` | Privacy policy |
+| `/terms` | Terms of service |
+| `/accept-terms` | Terms acceptance flow |
+| `/not-a-participant` | Non-participant landing |
+| `/no-smart-meter` | No smart meter landing |
 
-**Layout:** `apps/webapp/src/routes/+layout.svelte`
+**Key components:** `EnergyChart`, `ForecastCard`, `WeatherWidget`, `StatCard`, `SuggestionCard`, `GamificationPanel`, `PointsChart`
 
-The root layout wraps the app in `AssistantProvider`, which injects the floating assistant widget. It also calls `GET /api/me` to check terms acceptance before rendering child routes.
+**Layout:** The root layout wraps the app in `AssistantProvider` (floating assistant widget) and calls `GET /api/me` to check terms acceptance.
 
-**BFF proxy pattern:**
-
-The webapp proxies assistant requests through its FastAPI BFF:
-
-```python
-# webapp BFF
-@router.api_route("/assistant/{path:path}", methods=["GET", "POST", "DELETE"])
-async def proxy_assistant(path: str, request: Request):
-    return await proxy_to(f"{ASSISTANT_URL}/api/{path}", request)
-```
-
-This keeps the assistant's API behind the same origin as the webapp, forwarding the user's identity automatically.
+**Backend:** `celine-webapp` BFF (port 8014)
 
 **Dev:**
 ```bash
-pnpm dev:webapp
-# http://localhost:5173
+task dev:webapp
+# http://localhost:3005
+```
+
+---
+
+## apps/grid
+
+Grid resilience dashboard for DSO operators. Displays wind and heat risk maps, alert distributions, trend charts, substation topology, CIM asset topology, and manages alert rules and notification settings.
+
+**Routes:**
+
+| Route | Description |
+|---|---|
+| `/` | Main grid dashboard — risk maps, filters, trends |
+| `/management` | Alert rules and notification settings management |
+| `/denied` | Access denied page (non-DSO users) |
+
+**Key components:** `AutocompleteSelect`, `FilterBar`, `LineInspectPanel`, `RiskDonut`, `TrendSparkline`
+
+**Backend:** `celine-grid` (port 8015)
+
+**Docker image:** `ghcr.io/celine-eu/celine-grid-ui`
+
+**Dev:**
+```bash
+task dev:grid
+# http://localhost:3006
+```
+
+---
+
+## apps/roi
+
+PV installation ROI calculator. Single-page application for estimating the financial return of a photovoltaic installation, including production estimates, CER incentives, CAPEX, and financial analysis. Supports PDF export of results and map-based location selection.
+
+**Routes:**
+
+| Route | Description |
+|---|---|
+| `/` | ROI calculator — input form, map picker, results |
+
+**Package dependency:** Uses `@celine-eu/roi-ui` (`RoiCore`, `RoiWidget`) from `packages/roi-ui`.
+
+**Backend:** `celine-roi` (port 8013)
+
+**Dev:**
+```bash
+task dev:roi
+# http://localhost:3004
 ```

@@ -137,6 +137,7 @@ sources:
 ```
 
 Resolution precedence:
+
 1. Exact match
 2. Longest matching wildcard
 3. Defaults
@@ -201,6 +202,16 @@ Retention period in days.
 ### `documentation_url`
 Link to human-readable documentation for the dataset.
 
+### `row_filters`
+List of row filter specifications for per-subject or consent-based row filtering. Each filter is a dict with `handler` (the filter strategy) and `args` (handler-specific arguments).
+
+```yaml
+row_filters:
+  - handler: user_column
+    args:
+      column: user_id
+```
+
 ### `source_system`
 Origin system or domain (e.g. `openweathermap`, `copernicus`, `dwd`).
 
@@ -249,6 +260,7 @@ celine-utils governance generate marquez --app <app_name>
 ```
 
 The CLI will:
+
 1. Discover datasets from Marquez
 2. Prompt for governance metadata per dataset
 3. Allow pattern-based scoping

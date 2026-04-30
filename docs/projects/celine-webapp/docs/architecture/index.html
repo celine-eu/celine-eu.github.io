@@ -1199,6 +1199,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3884,6 +3895,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#frontend" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3919,7 +3941,7 @@
 - The browser is not exposed to internal service URLs or access tokens
 - The BFF can aggregate, transform, and cache data from multiple services</p>
 <h2 id="deployment-model">Deployment Model</h2>
-<p>Requests from the browser pass through Caddy (TLS termination) → oauth2_proxy (OIDC authentication against Keycloak) → the BFF. The BFF then forwards authenticated requests to internal services (digital-twin, nudging-tool, celine-ai-assistant).</p>
+<p>Requests from the browser pass through Caddy (TLS termination) -&gt; oauth2_proxy (OIDC authentication against Keycloak) -&gt; the BFF. The BFF then forwards authenticated requests to internal services.</p>
 <table>
 <thead>
 <tr>
@@ -3946,7 +3968,7 @@
 </tr>
 <tr>
 <td>Backend services</td>
-<td>digital-twin, nudging-tool, celine-ai-assistant</td>
+<td>digital-twin, nudging-tool, flexibility-api, rec-registry</td>
 <td>Domain data</td>
 </tr>
 </tbody>
@@ -3971,15 +3993,19 @@
 <tbody>
 <tr>
 <td><strong>Digital Twin</strong></td>
-<td>Energy overview data, participant values</td>
+<td>Energy overview, weather, forecast, participant values, community data</td>
 </tr>
 <tr>
 <td><strong>nudging-tool</strong></td>
-<td>Notification list and preferences</td>
+<td>Notification list, preferences, web push, flexibility reminders</td>
 </tr>
 <tr>
-<td><strong>celine-ai-assistant</strong></td>
-<td>Embedded chat assistant (proxied)</td>
+<td><strong>flexibility-api</strong></td>
+<td>Gamification points, commitment history, flexibility window responses</td>
+</tr>
+<tr>
+<td><strong>rec-registry</strong></td>
+<td>Community metadata (name, areas, links)</td>
 </tr>
 <tr>
 <td><strong>Keycloak</strong></td>
@@ -3987,6 +4013,12 @@
 </tr>
 </tbody>
 </table>
+<p>All service clients are provided via <code>celine-sdk</code>.</p>
+<h2 id="database">Database</h2>
+<p>PostgreSQL (async via SQLAlchemy + asyncpg). Stores:
+- User settings (language, units)
+- Terms acceptance records
+- Feedback submissions</p>
 <h2 id="frontend">Frontend</h2>
 <p>This repository is a pure API backend. The participant frontend (SvelteKit) is maintained separately in <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>. The frontend communicates exclusively with this BFF at <code>/api/*</code>.</p>
 

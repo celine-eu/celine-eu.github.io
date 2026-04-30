@@ -17,6 +17,9 @@ This monorepo contains the frontend applications and shared packages for the CEL
 │   │   │   └── ThemeToggle.svelte
 │   │   └── package.json
 │   │
+│   ├── roi-ui/                  # @celine-eu/roi-ui - ROI calculator UI components
+│   │   └── package.json
+│   │
 │   └── assistant-ui/            # @celine-eu/assistant-ui - AI chat components
 │       ├── src/
 │       │   ├── ChatCore.svelte          # Main chat component
@@ -40,6 +43,12 @@ This monorepo contains the frontend applications and shared packages for the CEL
 │   │   ├── src/routes/
 │   │   │   ├── +layout.svelte
 │   │   │   └── +page.svelte     # Full-page chat
+│   │   └── package.json
+│   │
+│   ├── grid/                    # Grid Resilience Dashboard
+│   │   └── package.json
+│   │
+│   ├── roi/                     # PV ROI Calculator
 │   │   └── package.json
 │   │
 │   └── webapp/                  # REC Participant Webapp
@@ -67,7 +76,7 @@ This monorepo contains the frontend applications and shared packages for the CEL
 | Document | Description |
 |---|---|
 | [Packages](https://celine-eu.github.io/projects/celine-frontend/docs/packages) | @celine-eu/ui components, @celine-eu/assistant-ui exports |
-| [Apps](https://celine-eu.github.io/projects/celine-frontend/docs/apps) | standalone assistant app, webapp routes and BFF proxy |
+| [Apps](https://celine-eu.github.io/projects/celine-frontend/docs/apps) | assistant, webapp, grid, roi apps |
 | [Theming](https://celine-eu.github.io/projects/celine-frontend/docs/theming) | CSS custom properties, design tokens, dark mode |
 | [Development](https://celine-eu.github.io/projects/celine-frontend/docs/development) | pnpm workspace setup, adding icons, creating components, build pipeline |
 
@@ -80,11 +89,11 @@ npm install -g pnpm
 # Install all dependencies
 pnpm install
 
-# Run the assistant standalone
+# Run individual apps
 pnpm dev:assistant
-
-# Run the webapp
 pnpm dev:webapp
+pnpm dev:grid
+pnpm dev:roi
 
 # Build all
 pnpm build
@@ -225,16 +234,14 @@ Use [Lucide](https://lucide.dev/) icon paths.
 2. Export from `src/index.js`
 3. Add TypeScript types if needed
 
-## Backend Integration (Webapp)
+## Backend Services
 
-The webapp proxies assistant requests through its BFF:
+Each app connects to its corresponding backend service:
 
-```python
-# webapp BFF: /api/assistant/* -> assistant backend
-@router.api_route("/assistant/{path:path}", methods=["GET", "POST", "DELETE"])
-async def proxy_assistant(path: str, request: Request):
-    return await proxy_to(f"{ASSISTANT_URL}/api/{path}", request)
-```
-
-This allows the assistant to receive user context from the webapp.
+| App | Backend | Port |
+|---|---|---|
+| assistant | celine-ai-assistant | 8012 |
+| webapp | celine-webapp (BFF) | 8014 |
+| grid | celine-grid | 8015 |
+| roi | celine-roi | 8013 |
 

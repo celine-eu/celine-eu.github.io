@@ -2977,6 +2977,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#row_filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        row_filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#source_system" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4294,6 +4305,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#row_filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        row_filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#source_system" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4512,10 +4534,12 @@ sources:
   datasets.raw.*:
     classification: red
 </code></pre>
-<p>Resolution precedence:
-1. Exact match
-2. Longest matching wildcard
-3. Defaults</p>
+<p>Resolution precedence:</p>
+<ol>
+<li>Exact match</li>
+<li>Longest matching wildcard</li>
+<li>Defaults</li>
+</ol>
 <hr />
 <h2 id="governance-fields">Governance Fields</h2>
 <h3 id="license"><code>license</code></h3>
@@ -4559,6 +4583,13 @@ This text should be surfaced in catalogs, APIs, or documentation when datasets a
 <p>Retention period in days.</p>
 <h3 id="documentation_url"><code>documentation_url</code></h3>
 <p>Link to human-readable documentation for the dataset.</p>
+<h3 id="row_filters"><code>row_filters</code></h3>
+<p>List of row filter specifications for per-subject or consent-based row filtering. Each filter is a dict with <code>handler</code> (the filter strategy) and <code>args</code> (handler-specific arguments).</p>
+<pre><code class="language-yaml">row_filters:
+  - handler: user_column
+    args:
+      column: user_id
+</code></pre>
 <h3 id="source_system"><code>source_system</code></h3>
 <p>Origin system or domain (e.g. <code>openweathermap</code>, <code>copernicus</code>, <code>dwd</code>).</p>
 <hr />
@@ -4593,11 +4624,13 @@ This text should be surfaced in catalogs, APIs, or documentation when datasets a
 <h3 id="command">Command</h3>
 <pre><code class="language-bash">celine-utils governance generate marquez --app &lt;app_name&gt;
 </code></pre>
-<p>The CLI will:
-1. Discover datasets from Marquez
-2. Prompt for governance metadata per dataset
-3. Allow pattern-based scoping
-4. Write <code>governance.yaml</code> to the pipeline folder</p>
+<p>The CLI will:</p>
+<ol>
+<li>Discover datasets from Marquez</li>
+<li>Prompt for governance metadata per dataset</li>
+<li>Allow pattern-based scoping</li>
+<li>Write <code>governance.yaml</code> to the pipeline folder</li>
+</ol>
 <h3 id="non-interactive-mode">Non-Interactive Mode</h3>
 <pre><code class="language-bash">celine-utils governance generate marquez --app &lt;app_name&gt; --yes
 </code></pre>

@@ -4037,16 +4037,20 @@
 <td><code>GET /api/me</code></td>
 </tr>
 <tr>
-<td><strong>grid</strong></td>
+<td><strong>grid — wind</strong></td>
 <td><code>GET /api/grid/{network_id}/wind/map</code>, <code>/wind/bosco</code>, <code>/wind/alert-distribution</code>, <code>/wind/trend</code></td>
 </tr>
 <tr>
-<td></td>
+<td><strong>grid — heat</strong></td>
 <td><code>GET /api/grid/{network_id}/heat/map</code>, <code>/heat/alert-distribution</code>, <code>/heat/trend</code></td>
 </tr>
 <tr>
-<td></td>
+<td><strong>grid — infra</strong></td>
 <td><code>GET /api/grid/{network_id}/substations/map</code>, <code>/filters</code>, <code>/summary</code></td>
+</tr>
+<tr>
+<td><strong>grid — CIM topology</strong></td>
+<td><code>GET /api/grid/{network_id}/tile-index</code>, <code>/shapes</code>, <code>/risks</code>, <code>/risks-now</code>, <code>/trendline</code></td>
 </tr>
 <tr>
 <td><strong>alerts</strong></td>
@@ -4062,6 +4066,7 @@
 </tr>
 </tbody>
 </table>
+<p>The CIM topology endpoints proxy ValueFetcherSpec-backed queries from the Digital Twin. <code>/tile-index</code> and <code>/shapes</code> set <code>Cache-Control: public, max-age=3600</code>. <code>/shapes</code> assembles GeoJSON FeatureCollections from per-row feature data. <code>/risks-now</code> returns current nowcasting observations without date filtering.</p>
 <h2 id="local-development">Local development</h2>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
@@ -4109,9 +4114,34 @@ task run                             # hot-reload on :8015
 <td>nudging-tool base URL</td>
 </tr>
 <tr>
+<td><code>DATABASE_ECHO</code></td>
+<td><code>false</code></td>
+<td>Log SQL statements</td>
+</tr>
+<tr>
 <td><code>CELINE_OIDC_CLIENT_SECRET</code></td>
 <td><code>svc-grid</code></td>
 <td>OIDC client secret</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_BASE_URL</code></td>
+<td>(from sdk default)</td>
+<td>OIDC issuer base URL</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_CLIENT_ID</code></td>
+<td><code>svc-grid</code></td>
+<td>OIDC client ID</td>
+</tr>
+<tr>
+<td><code>DT_CLIENT_SCOPE</code></td>
+<td>—</td>
+<td>OAuth2 scope for outbound DT calls</td>
+</tr>
+<tr>
+<td><code>NUDGING_SCOPE</code></td>
+<td>—</td>
+<td>OAuth2 scope for outbound nudging calls</td>
 </tr>
 <tr>
 <td><code>CORS_ORIGINS</code></td>
@@ -4132,6 +4162,11 @@ task run                             # hot-reload on :8015
 <td><code>MQTT__HOST</code></td>
 <td><code>localhost</code></td>
 <td>MQTT broker host</td>
+</tr>
+<tr>
+<td><code>MQTT__PORT</code></td>
+<td><code>1883</code></td>
+<td>MQTT broker port</td>
 </tr>
 <tr>
 <td><code>JWT_HEADER_NAME</code></td>

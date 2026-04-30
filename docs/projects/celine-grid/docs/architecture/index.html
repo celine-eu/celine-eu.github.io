@@ -4023,9 +4023,10 @@
 
 <h1 id="architecture">Architecture</h1>
 <h2 id="overview">Overview</h2>
-<p><code>celine-grid</code> is a FastAPI Backend-for-Frontend. It has no domain logic of its own — it orchestrates two external concerns:</p>
+<p><code>celine-grid</code> is a FastAPI Backend-for-Frontend. It orchestrates three external concerns:</p>
 <ol>
 <li><strong>Read path</strong> — proxy grid resilience data (wind/heat risk, substations, filters, summary) from the Digital Twin to the frontend, enforcing DSO network-ownership at the request boundary.</li>
+<li><strong>CIM topology path</strong> — proxy ValueFetcherSpec-backed queries (tile-index, shapes, risks, nowcasting, trendline) from the Digital Twin, with lightweight presentation transformations (GeoJSON assembly for shapes).</li>
 <li><strong>Write path</strong> — persist per-user alert rules and notification settings in PostgreSQL, then dispatch nudging events to the nudging-tool when the grid-resilience-flow pipeline completes.</li>
 </ol>
 <pre><code>Frontend ──► celine-grid BFF ──► Digital Twin API  (read)
@@ -4064,7 +4065,7 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 </tr>
 <tr>
 <td><code>alerts.read</code></td>
-<td>Any authenticated DSO user (ownership enforced at DB query level by <code>user_id = sub</code>)</td>
+<td>Any authenticated non-service user (ownership enforced at DB query level by <code>user_id = sub</code>)</td>
 </tr>
 <tr>
 <td><code>alerts.write</code></td>
@@ -4082,7 +4083,10 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 <li><strong>Heat</strong> — <code>heat/map</code>, <code>heat/alert-distribution</code>, <code>heat/trend</code></li>
 <li><strong>Substations</strong> — <code>substations/map</code></li>
 <li><strong>Metadata</strong> — <code>filters</code>, <code>summary</code></li>
+<li><strong>CIM topology</strong> — <code>tile-index</code>, <code>shapes</code>, <code>risks</code>, <code>risks-now</code>, <code>trendline</code></li>
 </ul>
+<p>The CIM topology endpoints use ValueFetcherSpec-backed queries. <code>tile-index</code> returns the tile catalog for progressive loading. <code>shapes</code> assembles CIM asset topology as a GeoJSON FeatureCollection, parsing per-row <code>feature_geojson</code> and building Feature objects (a lightweight presentation transformation). <code>risks</code> returns date-filtered risk rows per vector. <code>risks-now</code> returns current nowcasting observations without date filtering. <code>trendline</code> returns daily risk percentage over a <code>date_from</code>/<code>date_to</code> range.</p>
+<p><code>tile-index</code> and <code>shapes</code> set <code>Cache-Control: public, max-age=3600</code> for frontend caching.</p>
 <p>Each DT call is authenticated using client-credentials OIDC flow (<code>OidcClientCredentialsProvider</code>).</p>
 <h2 id="alert-rules">Alert rules</h2>
 <p>Alert rules are stored in the <code>alert_rules</code> PostgreSQL table. Each rule belongs to a <code>user_id</code> (JWT <code>sub</code>) and a <code>network_id</code>, and carries:</p>

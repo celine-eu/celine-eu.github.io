@@ -1222,6 +1222,83 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#overview-and-energy-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview and Energy Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weather-and-forecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weather and Forecast
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexibility-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility Suggestions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#co2-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2 Reporting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#web-push-vapid" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1233,10 +1310,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#digital-twin-integration" class="md-nav__link">
+  <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Digital Twin Integration
+        Feedback
       
     </span>
   </a>
@@ -1244,21 +1321,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notification-preferences" class="md-nav__link">
+  <a href="#settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notification Preferences
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#embedded-assistant" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Embedded Assistant
+        Settings
       
     </span>
   </a>
@@ -3851,6 +3917,83 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#overview-and-energy-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview and Energy Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weather-and-forecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weather and Forecast
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexibility-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexibility Suggestions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#co2-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2 Reporting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#web-push-vapid" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3862,10 +4005,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#digital-twin-integration" class="md-nav__link">
+  <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Digital Twin Integration
+        Feedback
       
     </span>
   </a>
@@ -3873,21 +4016,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notification-preferences" class="md-nav__link">
+  <a href="#settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notification Preferences
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#embedded-assistant" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Embedded Assistant
+        Settings
       
     </span>
   </a>
@@ -3913,31 +4045,55 @@
 
 <h1 id="features">Features</h1>
 <h2 id="terms-acceptance">Terms Acceptance</h2>
-<p>Terms acceptance is enforced at the frontend layout level. On every page load, the <code>+layout.svelte</code> root layout calls <code>GET /api/me</code>. If the response has <code>terms_accepted: false</code>, the user is redirected to a terms page before accessing any other route.</p>
-<p>Acceptance is persisted in the database via <code>POST /api/me/terms</code>. Once accepted, the check passes on subsequent loads.</p>
-<h2 id="web-push-vapid">Web Push (VAPID)</h2>
-<p>The webapp supports browser push notifications using the Web Push Protocol and VAPID keys.</p>
-<p>Setup flow:
-1. Frontend requests the VAPID public key from <code>GET /api/settings/vapid-public-key</code>.
-2. Browser subscribes using the Web Push API (<code>PushManager.subscribe</code>).
-3. The subscription endpoint is registered with the BFF via <code>POST /api/settings/push-subscribe</code>.
-4. The BFF stores the subscription in the nudging-tool service.
-5. Nudging events trigger push deliveries through the registered endpoint.</p>
-<p>Note: Actual push delivery is handled by the nudging-tool service, not the BFF.</p>
-<h2 id="digital-twin-integration">Digital Twin Integration</h2>
+<p>Terms acceptance is enforced at the frontend layout level. On every page load, the frontend calls <code>GET /api/me</code>. If the response has <code>terms_accepted: false</code>, the user is redirected to a terms page. Acceptance is persisted via <code>POST /api/terms/accept</code> and checked against the current <code>POLICY_VERSION</code>.</p>
+<h2 id="overview-and-energy-data">Overview and Energy Data</h2>
 <p>The overview page displays energy data fetched from the Digital Twin service:
 - Community-level production and consumption totals
 - Participant-level meter readings
 - Incentive calculations (Italian REC rules: GSE incentives)</p>
-<p>Data is fetched server-side by the BFF, which authenticates with the Digital Twin using the user's access token. Results are transformed into the response format expected by the frontend components.</p>
-<h2 id="notification-preferences">Notification Preferences</h2>
-<p>Users can configure:
-- Whether push notifications are enabled
-- Preferred language for notification messages
-- Maximum notifications per day</p>
-<p>Preferences are stored in the nudging-tool database and affect rule evaluation during event ingestion.</p>
-<h2 id="embedded-assistant">Embedded Assistant</h2>
-<p>The <code>/assistant</code> route embeds the <code>ChatCore</code> component from <code>@celine-eu/assistant-ui</code>, connected to the celine-ai-assistant service via the BFF proxy at <code>/api/assistant/*</code>. The user's identity is forwarded automatically, enabling personalized RAG responses.</p>
+<p>Data is fetched server-side by the BFF, which authenticates with the Digital Twin using the user's access token.</p>
+<h2 id="weather-and-forecast">Weather and Forecast</h2>
+<ul>
+<li><code>GET /api/weather</code> returns current weather conditions for the user's community location via the Digital Twin.</li>
+<li><code>GET /api/forecast</code> returns energy production/consumption forecasts.</li>
+</ul>
+<h2 id="flexibility-suggestions">Flexibility Suggestions</h2>
+<p>The suggestions system integrates with the flexibility-api and Digital Twin to present energy flexibility opportunities:</p>
+<ol>
+<li><code>GET /api/suggestions</code> lists active flexibility windows with available actions.</li>
+<li>Users can accept or reject suggestions via <code>POST /api/suggestions/{id}/respond</code>, which creates commitments in the flexibility-api.</li>
+<li>Users can schedule reminders via <code>POST /api/suggestions/{id}/remind</code>, which delegates to the nudging-tool via the Digital Twin.</li>
+<li>Active commitments can be cancelled via <code>DELETE /api/commitments/{id}</code>.</li>
+</ol>
+<h2 id="gamification">Gamification</h2>
+<p><code>GET /api/gamification</code> aggregates data from multiple services:
+- Points from the flexibility-api based on commitment fulfillment
+- Badges awarded for achievements (checked and awarded automatically)
+- Community ranking from Digital Twin</p>
+<p><code>GET /api/gamification/history</code> returns the user's commitment history from the flexibility-api.</p>
+<h2 id="co2-reporting">CO2 Reporting</h2>
+<p><code>GET /api/settings/co2</code> returns carbon emission factors and configuration.</p>
+<h2 id="community">Community</h2>
+<p><code>GET /api/community</code> returns community metadata from the rec-registry, including name, description, areas, and links.</p>
+<h2 id="notifications">Notifications</h2>
+<p>The notification system proxies the nudging-tool:
+- List notifications with read/unread filtering
+- Mark individual or all notifications as read
+- Enable/disable notifications per user</p>
+<h2 id="web-push-vapid">Web Push (VAPID)</h2>
+<p>Setup flow:</p>
+<ol>
+<li>Frontend requests the VAPID public key from <code>GET /api/notifications/webpush/vapid-public-key</code>.</li>
+<li>Browser subscribes using the Web Push API (<code>PushManager.subscribe</code>).</li>
+<li>The subscription endpoint is registered via <code>POST /api/notifications/webpush/subscribe</code>.</li>
+<li>The BFF stores the subscription in the nudging-tool service.</li>
+<li>Nudging events trigger push deliveries through the registered endpoint.</li>
+</ol>
+<p>Actual push delivery is handled by the nudging-tool service, not the BFF.</p>
+<h2 id="feedback">Feedback</h2>
+<p>Users can submit feedback via <code>POST /api/feedback</code>. Feedback data can be exported using the <code>celine-webapp-export-feedback</code> CLI tool.</p>
+<h2 id="settings">Settings</h2>
+<p>Users can configure language, units, and notification preferences via <code>GET/PUT /api/settings</code>. Settings are stored in the local database.</p>
 
 
 

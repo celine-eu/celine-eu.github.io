@@ -4338,11 +4338,13 @@
 <p>The engine enforces a separation between:
 - <strong>logical ids</strong>: what the client references (dataset identifiers)
 - <strong>physical names</strong>: actual table/view names</p>
-<p>Resolution steps:
-1. parse SQL and extract table identifiers
-2. map identifiers to catalogue entries
-3. substitute physical references into the execution query (or bind via prepared mapping)
-4. reject if any identifier cannot be mapped</p>
+<p>Resolution steps:</p>
+<ol>
+<li>parse SQL and extract table identifiers</li>
+<li>map identifiers to catalogue entries</li>
+<li>substitute physical references into the execution query (or bind via prepared mapping)</li>
+<li>reject if any identifier cannot be mapped</li>
+</ol>
 <p>This prevents “escaping” to arbitrary tables.</p>
 <hr />
 <h2 id="pagination-limits-timeouts">Pagination, Limits &amp; Timeouts</h2>

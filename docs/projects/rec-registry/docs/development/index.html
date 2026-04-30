@@ -1069,10 +1069,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-compose" class="md-nav__link">
+  <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Compose
+        Taskfile Commands
       
     </span>
   </a>
@@ -3895,10 +3895,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-compose" class="md-nav__link">
+  <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Compose
+        Taskfile Commands
       
     </span>
   </a>
@@ -3958,9 +3958,10 @@
 <h1 id="development">Development</h1>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Python ≥ 3.11</li>
+<li>Python &gt;= 3.12</li>
 <li>PostgreSQL 14+</li>
 <li><code>uv</code> package manager</li>
+<li><code>task</code> (go-task)</li>
 </ul>
 <h2 id="environment-variables">Environment Variables</h2>
 <table>
@@ -3968,69 +3969,174 @@
 <tr>
 <th>Variable</th>
 <th>Description</th>
-<th>Example</th>
+<th>Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>DATABASE_URL</code></td>
 <td>PostgreSQL async connection string</td>
-<td><code>postgresql+asyncpg://postgres:postgres@localhost:5432/celine_registry</code></td>
+<td><code>postgresql+asyncpg://postgres:securepassword123@host.docker.internal:15432/celine_rec_registry</code></td>
+</tr>
+<tr>
+<td><code>DATABASE_ECHO</code></td>
+<td>Log SQL statements</td>
+<td><code>false</code></td>
 </tr>
 <tr>
 <td><code>BASE_URL</code></td>
-<td>Public base URL of the service (used for IRI generation)</td>
-<td><code>http://localhost:8000</code></td>
+<td>Public base URL of the service</td>
+<td><code>http://api.celine.localhost/rec-registry</code></td>
+</tr>
+<tr>
+<td><code>DEFAULT_PAGE_SIZE</code></td>
+<td>Default pagination page size</td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td><code>MAX_PAGE_SIZE</code></td>
+<td>Maximum pagination page size</td>
+<td><code>500</code></td>
+</tr>
+<tr>
+<td><code>AUTH_ENABLED</code></td>
+<td>Enable JWT authentication</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AUTH_HEADER_NAME</code></td>
+<td>HTTP header for auth token</td>
+<td><code>authorization</code></td>
+</tr>
+<tr>
+<td><code>OIDC__*</code></td>
+<td>OIDC settings (from <code>celine-sdk</code>)</td>
+<td>audience: <code>svc-rec-registry</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_ENABLED</code></td>
+<td>Enable OPA policy evaluation</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_DIR</code></td>
+<td>Directory containing <code>.rego</code> files</td>
+<td><code>./policies</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_DATA_DIR</code></td>
+<td>Optional directory for policy data JSON</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICIES_PACKAGE</code></td>
+<td>OPA package to evaluate</td>
+<td><code>celine.rec_registry.access</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_CACHE_ENABLED</code></td>
+<td>Enable in-memory decision cache</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_CACHE_TTL</code></td>
+<td>Cache TTL in seconds</td>
+<td><code>300</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="local-setup">Local Setup</h2>
-<pre><code class="language-bash"># Install dependencies
-uv sync
-
-# Configure environment
-export DATABASE_URL=&quot;postgresql+asyncpg://postgres:postgres@localhost:5432/celine_registry&quot;
-export BASE_URL=&quot;http://localhost:8000&quot;
+<pre><code class="language-bash">uv sync
 
 # Run migrations
-uv run alembic upgrade head
+task db:migrate
 
-# Start development server
-uv run uvicorn celine_registry.main:app --reload --host 0.0.0.0 --port 8000
+# Start development server (port 8004)
+task run
 </code></pre>
-<h2 id="docker-compose">Docker Compose</h2>
-<pre><code class="language-bash">docker compose up -d
-</code></pre>
-<p>Starts PostgreSQL and the registry API. Apply migrations with:</p>
-<pre><code class="language-bash">docker compose run --rm api alembic upgrade head
-</code></pre>
+<h2 id="taskfile-commands">Taskfile Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task run</code></td>
+<td>Start dev server on port 8004</td>
+</tr>
+<tr>
+<td><code>task debug</code></td>
+<td>Start with debugger (port 48004)</td>
+</tr>
+<tr>
+<td><code>task db:migrate</code></td>
+<td>Run <code>alembic upgrade head</code></td>
+</tr>
+<tr>
+<td><code>task db:revision</code></td>
+<td>Create new Alembic migration</td>
+</tr>
+<tr>
+<td><code>task import:community -- --file &lt;path&gt;</code></td>
+<td>Import a community YAML bundle</td>
+</tr>
+<tr>
+<td><code>task import:community:example</code></td>
+<td>Import the example community</td>
+</tr>
+<tr>
+<td><code>task release</code></td>
+<td>Run semantic-release</td>
+</tr>
+</tbody>
+</table>
 <h2 id="alembic-migrations">Alembic Migrations</h2>
 <pre><code class="language-bash"># Apply pending migrations
-uv run alembic upgrade head
+task db:migrate
 
 # Create a new migration
-uv run alembic revision --autogenerate -m &quot;add site table&quot;
+task db:revision -- -m &quot;add delivery points&quot;
 
-# Downgrade one step
+# Or directly:
+uv run alembic upgrade head
+uv run alembic revision --autogenerate -m &quot;description&quot;
 uv run alembic downgrade -1
 </code></pre>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q
 </code></pre>
-<p>Tests use a separate test database. Set <code>DATABASE_URL</code> to a test instance or use the Docker Compose test profile.</p>
 <h2 id="project-layout">Project Layout</h2>
-<pre><code>src/
-  celine_registry/
-    main.py           # FastAPI app factory
-    models.py         # SQLAlchemy ORM models
-    schemas.py        # Pydantic request/response schemas
-    routes/
-      user.py         # Read-only user endpoints
-      admin.py        # Import/export endpoints
-    jsonld.py         # JSON-LD serialization
-    bundle.py         # YAML bundle parser and validator
+<pre><code>src/celine/rec_registry/
+  main.py                    # FastAPI app factory (create_app)
+  db/
+    models.py                # SQLAlchemy ORM: Community, Member, Asset
+    session.py               # Async session management
+  schemas/
+    models.py                # Pydantic response schemas
+    bundle.py                # Bundle import schemas (v0.5)
+  api/
+    user.py                  # Self-service user endpoints
+    meta.py                  # Health, version
+    admin/
+      communities.py         # Community/member/asset browsing
+      lookup.py              # Cross-community lookups
+      management.py          # Import/export operations
+  services/
+    importer.py              # Bundle import logic
+    exporter.py              # YAML export logic
+  core/
+    settings.py              # Pydantic settings
+    middleware.py             # Auth/policy middleware
+    yaml_io.py               # YAML parsing utilities
+  cli/
+    main.py                  # CLI entry point (celine-rec-registry)
+    config.py                # CLI configuration
+policies/                    # OPA .rego policy files
 alembic/
-  versions/           # Migration scripts
+  versions/                  # Migration scripts
 </code></pre>
 
 

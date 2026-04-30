@@ -1863,6 +1863,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#celine-euroi-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @celine-eu/roi-ui
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@celine-eu/roi-ui">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exports_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3984,6 +4023,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#celine-euroi-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @celine-eu/roi-ui
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@celine-eu/roi-ui">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exports_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4037,11 +4115,15 @@
 <td><code>ThemeToggle</code></td>
 <td>Dark/light theme switcher</td>
 </tr>
+<tr>
+<td><code>FeedbackWidget</code></td>
+<td>User feedback submission widget</td>
+</tr>
 </tbody>
 </table>
 <h3 id="usage">Usage</h3>
 <pre><code class="language-svelte">&lt;script&gt;
-  import { Icon, Button, Skeleton, Panel, Modal, ThemeToggle } from '@celine-eu/ui';
+  import { Icon, Button, Skeleton, Panel, Modal, ThemeToggle, FeedbackWidget } from '@celine-eu/ui';
   import '@celine-eu/ui/theme.css';
 &lt;/script&gt;
 
@@ -4085,9 +4167,24 @@
 <td>Context-aware trigger button for inline assistant access</td>
 </tr>
 <tr>
-<td><code>api</code></td>
-<td>Module</td>
-<td>Typed API client functions</td>
+<td><code>AttachmentsPanel</code></td>
+<td>Component</td>
+<td>Attachments list panel (internal, re-exported)</td>
+</tr>
+<tr>
+<td><code>HistoryPanel</code></td>
+<td>Component</td>
+<td>Conversation history panel (internal, re-exported)</td>
+</tr>
+<tr>
+<td><code>createAssistantApi</code></td>
+<td>Function</td>
+<td>Factory for typed API client</td>
+</tr>
+<tr>
+<td><code>AssistantApi</code></td>
+<td>Type</td>
+<td>API client interface</td>
 </tr>
 <tr>
 <td><code>AssistantContext</code></td>
@@ -4206,6 +4303,44 @@
   hint?: string;    // Natural language hint
 }
 </code></pre>
+<hr />
+<h2 id="celine-euroi-ui">@celine-eu/roi-ui</h2>
+<p>ROI calculator components for the PV installation ROI app.</p>
+<h3 id="exports_1">Exports</h3>
+<table>
+<thead>
+<tr>
+<th>Export</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RoiCore</code></td>
+<td>Component</td>
+<td>Main ROI calculator with input form, map picker, and results display</td>
+</tr>
+<tr>
+<td><code>RoiWidget</code></td>
+<td>Component</td>
+<td>Embeddable ROI calculator widget</td>
+</tr>
+<tr>
+<td><code>createRoiApi</code></td>
+<td>Function</td>
+<td>Factory for typed API client</td>
+</tr>
+</tbody>
+</table>
+<h3 id="usage_1">Usage</h3>
+<pre><code class="language-svelte">&lt;script&gt;
+  import { RoiCore } from '@celine-eu/roi-ui';
+&lt;/script&gt;
+
+&lt;RoiCore apiBaseUrl=&quot;/api/v1&quot; /&gt;
+</code></pre>
+<p>Consumed by <code>apps/roi</code>. Supports PDF export of results and smartphone-friendly map selection.</p>
 
 
 

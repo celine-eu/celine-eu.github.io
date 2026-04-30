@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#flexibility-api" class="md-skip">
+        <a href="#celine-flexibility-api" class="md-skip">
           Skip to content
         </a>
       
@@ -3512,6 +3512,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3528,6 +3546,102 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taskfile-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taskfile Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3741,6 +3855,91 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taskfile-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taskfile Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3756,7 +3955,205 @@
 
 
 
-<h1 id="flexibility-api">flexibility-api</h1>
+<h1 id="celine-flexibility-api">CELINE Flexibility API</h1>
+<p>Backend service for the REC flexibility model. Manages flexibility windows (suggestions), user commitments, settlement, and gamification points. Used via the <code>celine-webapp</code> BFF.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Flexibility window suggestions with active/expired window management</li>
+<li>User commitment lifecycle: create, list, cancel, settle</li>
+<li>Gamification points calculation based on commitment fulfillment</li>
+<li>Export API for pipeline-based data mirroring</li>
+<li>Settlement of commitments with points assignment</li>
+<li>MQTT pipeline listener for automated nudge scheduling</li>
+<li>OPA-enforced access control via <code>celine-sdk</code></li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<pre><code class="language-bash">uv sync
+task alembic:migrate
+task run
+# Listens on http://localhost:8017
+</code></pre>
+<h2 id="api">API</h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Endpoints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>suggestions</strong></td>
+<td><code>GET /api/suggestions</code> — list active flexibility windows</td>
+</tr>
+<tr>
+<td></td>
+<td><code>POST /api/suggestions/{id}/respond</code> — accept/reject a suggestion</td>
+</tr>
+<tr>
+<td><strong>commitments</strong></td>
+<td><code>POST /api/commitments</code> — create a commitment</td>
+</tr>
+<tr>
+<td></td>
+<td><code>GET /api/commitments</code> — list commitments (paginated)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>DELETE /api/commitments/{id}</code> — cancel a commitment</td>
+</tr>
+<tr>
+<td></td>
+<td><code>GET /api/commitments/pending</code> — list pending commitments</td>
+</tr>
+<tr>
+<td></td>
+<td><code>PATCH /api/commitments/{id}/settle</code> — settle with points</td>
+</tr>
+<tr>
+<td></td>
+<td><code>GET /api/commitments/export</code> — export for pipeline mirroring</td>
+</tr>
+<tr>
+<td><strong>health</strong></td>
+<td><code>GET /health</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td><code>postgresql+asyncpg://...host.docker.internal:15432/flexibility</code></td>
+<td>PostgreSQL async URL</td>
+</tr>
+<tr>
+<td><code>DB_SCHEMA</code></td>
+<td><code>flexibility</code></td>
+<td>Database schema</td>
+</tr>
+<tr>
+<td><code>NUDGING_API_URL</code></td>
+<td><code>http://host.docker.internal:8016</code></td>
+<td>nudging-tool URL</td>
+</tr>
+<tr>
+<td><code>DIGITAL_TWIN_API_URL</code></td>
+<td><code>http://host.docker.internal:8002</code></td>
+<td>Digital Twin URL</td>
+</tr>
+<tr>
+<td><code>REC_REGISTRY_URL</code></td>
+<td><code>http://host.docker.internal:8004</code></td>
+<td>REC registry URL</td>
+</tr>
+<tr>
+<td><code>JWT_HEADER_NAME</code></td>
+<td><code>x-auth-request-access-token</code></td>
+<td>JWT header from oauth2_proxy</td>
+</tr>
+<tr>
+<td><code>DT_CLIENT_SCOPE</code></td>
+<td>—</td>
+<td>OIDC scope for DT calls</td>
+</tr>
+<tr>
+<td><code>REC_REGISTRY_SCOPE</code></td>
+<td>—</td>
+<td>OIDC scope for registry calls</td>
+</tr>
+<tr>
+<td><code>NUDGING_SCOPE</code></td>
+<td>—</td>
+<td>OIDC scope for nudging calls</td>
+</tr>
+<tr>
+<td><code>OIDC__*</code></td>
+<td>(from celine-sdk)</td>
+<td>OIDC settings (audience: <code>svc-flexibility</code>)</td>
+</tr>
+<tr>
+<td><code>MQTT__*</code></td>
+<td>(from celine-sdk)</td>
+<td>MQTT settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="taskfile-commands">Taskfile Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task run</code></td>
+<td>Start dev server on port 8017</td>
+</tr>
+<tr>
+<td><code>task debug</code></td>
+<td>Start with debugger (port 48017)</td>
+</tr>
+<tr>
+<td><code>task test</code></td>
+<td>Run pytest</td>
+</tr>
+<tr>
+<td><code>task alembic:migrate</code></td>
+<td>Apply pending migrations</td>
+</tr>
+<tr>
+<td><code>task alembic:revision</code></td>
+<td>Generate new migration</td>
+</tr>
+<tr>
+<td><code>task alembic:reset</code></td>
+<td>Reset DB to base</td>
+</tr>
+<tr>
+<td><code>task release</code></td>
+<td>Run semantic-release</td>
+</tr>
+</tbody>
+</table>
+<h2 id="project-layout">Project Layout</h2>
+<pre><code>src/celine/flexibility/
+  main.py                        # FastAPI app factory (create_app)
+  core/config.py                 # Pydantic settings
+  api/
+    suggestions.py               # Suggestion/window endpoints
+    commitments.py               # Commitment CRUD + settlement
+    deps.py                      # FastAPI dependencies
+  models/
+    commitment.py                # SQLAlchemy ORM: Commitment
+  schemas/
+    commitment.py                # Pydantic schemas for commitments
+    suggestion.py                # Pydantic schemas for suggestions
+  services/
+    settlement.py                # Commitment settlement + points
+    nudge_opportunity.py         # Nudge on new flexibility opportunity
+    schedule_nudge.py            # Nudge scheduling service
+    reminders.py                 # Flexibility reminders
+    pipeline_listener.py         # MQTT listener for pipeline events
+  security/
+    auth.py                      # JWT authentication
+    middleware.py                # Auth middleware
+    policy.py                    # OPA policy evaluation
+policies/                        # OPA .rego policy files
+alembic/                         # Database migrations
+</code></pre>
+<h2 id="license">License</h2>
+<p>Apache 2.0 — Copyright © 2025 Spindox Labs</p>
 
 
 

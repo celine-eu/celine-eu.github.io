@@ -980,17 +980,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Output Formats
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#user-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1003,10 +992,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-usercommunities" class="md-nav__link">
+  <a href="#get-user" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities
+        GET /user
       
     </span>
   </a>
@@ -1014,10 +1003,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usercommunitieskey" class="md-nav__link">
+  <a href="#get-usermember" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities/{key}
+        GET /user/member
       
     </span>
   </a>
@@ -1025,32 +1014,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usercommunitieskeymembers" class="md-nav__link">
+  <a href="#get-usercommunity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities/{key}/members
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-usermembersid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /user/members/{id}
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-usermembersidassets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /user/members/{id}/assets
+        GET /user/community
       
     </span>
   </a>
@@ -1069,10 +1036,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usersites" class="md-nav__link">
+  <a href="#get-userassetsasset_key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/sites
+        GET /user/assets/{asset_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-userdelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /user/delivery-points
       
     </span>
   </a>
@@ -1085,22 +1063,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#admin-routes" class="md-nav__link">
+  <a href="#admin-routes-communities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Admin Routes
+        Admin Routes — Communities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Admin Routes">
+    <nav class="md-nav" aria-label="Admin Routes — Communities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-adminexport" class="md-nav__link">
+  <a href="#get-admincommunities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /admin/export
+        GET /admin/communities
       
     </span>
   </a>
@@ -1108,21 +1086,264 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-adminimport" class="md-nav__link">
+  <a href="#get-admincommunitiescommunity_key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /admin/import
+        GET /admin/communities/{community_key}
       
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keytopology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/topology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersmember_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/{member_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersby-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersmember_keydelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/{member_key}/delivery-points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-pointsby-iddp_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points/by-id/{dp_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassetsasset_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets/{asset_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassetsby-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets/by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/meters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-routes-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Routes — Lookup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin Routes — Lookup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-delivery-pointdp_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-delivery-point/{dp_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupmember-by-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/member-by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupasset-by-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/asset-by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminlookupassets-by-sensor-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/assets-by-sensor-ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-routes-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Routes — Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin Routes — Management">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#post-adminimport" class="md-nav__link">
     <span class="md-ellipsis">
       
         POST /admin/import
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminimportyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/import/yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminexport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export
       
     </span>
   </a>
@@ -1158,10 +1379,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-well-knownjsonld-context" class="md-nav__link">
+  <a href="#get-version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /.well-known/jsonld-context
+        GET /version
       
     </span>
   </a>
@@ -3979,17 +4200,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Output Formats
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#user-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4002,10 +4212,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-usercommunities" class="md-nav__link">
+  <a href="#get-user" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities
+        GET /user
       
     </span>
   </a>
@@ -4013,10 +4223,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usercommunitieskey" class="md-nav__link">
+  <a href="#get-usermember" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities/{key}
+        GET /user/member
       
     </span>
   </a>
@@ -4024,32 +4234,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usercommunitieskeymembers" class="md-nav__link">
+  <a href="#get-usercommunity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/communities/{key}/members
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-usermembersid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /user/members/{id}
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-usermembersidassets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /user/members/{id}/assets
+        GET /user/community
       
     </span>
   </a>
@@ -4068,10 +4256,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-usersites" class="md-nav__link">
+  <a href="#get-userassetsasset_key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /user/sites
+        GET /user/assets/{asset_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-userdelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /user/delivery-points
       
     </span>
   </a>
@@ -4084,22 +4283,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#admin-routes" class="md-nav__link">
+  <a href="#admin-routes-communities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Admin Routes
+        Admin Routes — Communities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Admin Routes">
+    <nav class="md-nav" aria-label="Admin Routes — Communities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-adminexport" class="md-nav__link">
+  <a href="#get-admincommunities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /admin/export
+        GET /admin/communities
       
     </span>
   </a>
@@ -4107,21 +4306,264 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-adminimport" class="md-nav__link">
+  <a href="#get-admincommunitiescommunity_key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /admin/import
+        GET /admin/communities/{community_key}
       
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keytopology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/topology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersmember_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/{member_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersby-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymembersmember_keydelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/members/{member_key}/delivery-points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-pointsby-iddp_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points/by-id/{dp_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassetsasset_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets/{asset_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keyassetsby-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/assets/by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keymeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/meters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-routes-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Routes — Lookup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin Routes — Lookup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupcommunity-by-delivery-pointdp_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/community-by-delivery-point/{dp_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupmember-by-user-iduser_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/member-by-user-id/{user_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminlookupasset-by-sensor-idsensor_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/lookup/asset-by-sensor-id/{sensor_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminlookupassets-by-sensor-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/assets-by-sensor-ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-routes-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Routes — Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin Routes — Management">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#post-adminimport" class="md-nav__link">
     <span class="md-ellipsis">
       
         POST /admin/import
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminimportyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/import/yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-adminexport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export
       
     </span>
   </a>
@@ -4157,10 +4599,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-well-knownjsonld-context" class="md-nav__link">
+  <a href="#get-version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /.well-known/jsonld-context
+        GET /version
       
     </span>
   </a>
@@ -4190,84 +4632,109 @@
 
 
 <h1 id="api-reference">API Reference</h1>
-<p>Interactive OpenAPI docs are available at <code>http://localhost:8000/docs</code>.</p>
-<h2 id="output-formats">Output Formats</h2>
-<p>All endpoints that return registry data support the <code>format</code> query parameter:</p>
-<table>
-<thead>
-<tr>
-<th>Value</th>
-<th>Content-Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>json</code> (default)</td>
-<td><code>application/json</code></td>
-<td>Plain JSON object</td>
-</tr>
-<tr>
-<td><code>jsonld</code></td>
-<td><code>application/ld+json</code></td>
-<td>JSON-LD with <code>@context</code> reference</td>
-</tr>
-</tbody>
-</table>
-<p>JSON-LD responses include <code>"@context": "https://celine-eu.github.io/ontologies/celine.jsonld"</code> and use expanded IRIs only.</p>
+<p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code>.</p>
 <hr />
 <h2 id="user-routes">User Routes</h2>
-<p>Read-only endpoints for querying registry data.</p>
-<h3 id="get-usercommunities"><code>GET /user/communities</code></h3>
-<p>List all communities.</p>
-<p><strong>Query params:</strong>
-- <code>format</code> — output format (<code>json</code> or <code>jsonld</code>)</p>
-<h3 id="get-usercommunitieskey"><code>GET /user/communities/{key}</code></h3>
-<p>Retrieve a single community by its key.</p>
-<h3 id="get-usercommunitieskeymembers"><code>GET /user/communities/{key}/members</code></h3>
-<p>List all members of a community.</p>
-<p><strong>Query params:</strong>
-- <code>role</code> — filter by member role (<code>producer</code>, <code>consumer</code>, <code>prosumer</code>)
-- <code>format</code> — output format</p>
-<h3 id="get-usermembersid"><code>GET /user/members/{id}</code></h3>
-<p>Retrieve a single member.</p>
-<h3 id="get-usermembersidassets"><code>GET /user/members/{id}/assets</code></h3>
-<p>List all assets belonging to a member.</p>
-<p><strong>Query params:</strong>
-- <code>asset_type</code> — filter by asset type</p>
+<p>Self-service endpoints scoped to the authenticated user's membership. Prefix: <code>/user</code>.</p>
+<h3 id="get-user"><code>GET /user</code></h3>
+<p>Profile summary: user info, community membership, asset counts by type.</p>
+<h3 id="get-usermember"><code>GET /user/member</code></h3>
+<p>Own member detail (key, name, role, area, status, delivery points).</p>
+<h3 id="get-usercommunity"><code>GET /user/community</code></h3>
+<p>Detail of the community the user belongs to.</p>
 <h3 id="get-userassets"><code>GET /user/assets</code></h3>
-<p>List all assets. Supports filtering:</p>
+<p>List own assets.</p>
 <p><strong>Query params:</strong>
-- <code>community</code> — filter by community key
-- <code>member</code> — filter by member ID
-- <code>asset_type</code> — filter by asset type</p>
-<h3 id="get-usersites"><code>GET /user/sites</code></h3>
-<p>List all sites. Supports filtering:</p>
-<p><strong>Query params:</strong>
-- <code>community</code> — filter by community key
-- <code>member</code> — filter by member ID</p>
+- <code>asset_type</code> — filter by asset type (<code>pv</code>, <code>meter</code>, <code>storage</code>, <code>ev_charger</code>, <code>heat_pump</code>, <code>load</code>)</p>
+<h3 id="get-userassetsasset_key"><code>GET /user/assets/{asset_key}</code></h3>
+<p>Detail of a specific owned asset.</p>
+<h3 id="get-userdelivery-points"><code>GET /user/delivery-points</code></h3>
+<p>List own delivery points.</p>
 <hr />
-<h2 id="admin-routes">Admin Routes</h2>
-<p>Endpoints for data management. Protected by the auth/ACL middleware seam (placeholder in current release).</p>
-<h3 id="get-adminexport"><code>GET /admin/export</code></h3>
-<p>Export the full community graph as a YAML bundle.</p>
+<h2 id="admin-routes-communities">Admin Routes — Communities</h2>
+<p>Community browsing and detail endpoints. Prefix: <code>/admin</code>.</p>
+<h3 id="get-admincommunities"><code>GET /admin/communities</code></h3>
+<p>Paginated list of communities.</p>
 <p><strong>Query params:</strong>
-- <code>community</code> (required) — community key to export</p>
-<p><strong>Response:</strong> <code>application/yaml</code> — v0.4 bundle format (see <a href="https://celine-eu.github.io/projects/rec-registry/docs/import-export">import / export</a>) section.</p>
-<h3 id="get-adminimport"><code>GET /admin/import</code></h3>
-<p>Validate a YAML bundle without applying it.</p>
-<p><strong>Request:</strong> <code>multipart/form-data</code> with <code>file</code> field containing the YAML bundle.</p>
-<p><strong>Response:</strong> Validation result.</p>
+- <code>key</code> — filter by community key
+- <code>limit</code> — page size (default 50, max 500)
+- <code>cursor</code> — pagination cursor</p>
+<h3 id="get-admincommunitiescommunity_key"><code>GET /admin/communities/{community_key}</code></h3>
+<p>Community detail including areas, topology, legal, contact, settings.</p>
+<h3 id="get-admincommunitiescommunity_keytopology"><code>GET /admin/communities/{community_key}/topology</code></h3>
+<p>Grid topology nodes for a community.</p>
+<h3 id="get-admincommunitiescommunity_keymembers"><code>GET /admin/communities/{community_key}/members</code></h3>
+<p>Paginated list of members.</p>
+<p><strong>Query params:</strong>
+- <code>role</code> — filter by role (<code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, <code>admin</code>)
+- <code>status</code> — filter by status (<code>pending</code>, <code>active</code>, <code>suspended</code>, <code>inactive</code>)
+- <code>area</code> — filter by area key
+- <code>limit</code>, <code>cursor</code> — pagination</p>
+<h3 id="get-admincommunitiescommunity_keymembersmember_key"><code>GET /admin/communities/{community_key}/members/{member_key}</code></h3>
+<p>Member detail.</p>
+<h3 id="get-admincommunitiescommunity_keymembersby-user-iduser_id"><code>GET /admin/communities/{community_key}/members/by-user-id/{user_id}</code></h3>
+<p>Lookup member by user ID within a community.</p>
+<h3 id="get-admincommunitiescommunity_keymembersmember_keydelivery-points"><code>GET /admin/communities/{community_key}/members/{member_key}/delivery-points</code></h3>
+<p>Delivery points for a specific member.</p>
+<h3 id="get-admincommunitiescommunity_keydelivery-points"><code>GET /admin/communities/{community_key}/delivery-points</code></h3>
+<p>Paginated list of all delivery points in a community.</p>
+<p><strong>Query params:</strong>
+- <code>type</code> — filter by delivery point type
+- <code>active</code> — filter by active status
+- <code>limit</code>, <code>cursor</code> — pagination</p>
+<h3 id="get-admincommunitiescommunity_keydelivery-pointsby-iddp_id"><code>GET /admin/communities/{community_key}/delivery-points/by-id/{dp_id}</code></h3>
+<p>Lookup a specific delivery point by its ID.</p>
+<h3 id="get-admincommunitiescommunity_keyassets"><code>GET /admin/communities/{community_key}/assets</code></h3>
+<p>Paginated list of community assets.</p>
+<p><strong>Query params:</strong>
+- <code>asset_type</code> — filter by type
+- <code>owner</code> — filter by member key
+- <code>limit</code>, <code>cursor</code> — pagination</p>
+<h3 id="get-admincommunitiescommunity_keyassetsasset_key"><code>GET /admin/communities/{community_key}/assets/{asset_key}</code></h3>
+<p>Asset detail.</p>
+<h3 id="get-admincommunitiescommunity_keyassetsby-sensor-idsensor_id"><code>GET /admin/communities/{community_key}/assets/by-sensor-id/{sensor_id}</code></h3>
+<p>Lookup asset by sensor ID within a community.</p>
+<h3 id="get-admincommunitiescommunity_keymeters"><code>GET /admin/communities/{community_key}/meters</code></h3>
+<p>Convenience endpoint listing meter-type assets with POD and meter type info.</p>
+<p><strong>Query params:</strong>
+- <code>owner</code> — filter by member key
+- <code>limit</code>, <code>cursor</code> — pagination</p>
+<hr />
+<h2 id="admin-routes-lookup">Admin Routes — Lookup</h2>
+<p>Cross-community lookups. Prefix: <code>/admin/lookup</code>.</p>
+<h3 id="get-adminlookupcommunity-by-user-iduser_id"><code>GET /admin/lookup/community-by-user-id/{user_id}</code></h3>
+<p>Find which community a user belongs to.</p>
+<h3 id="get-adminlookupcommunity-by-sensor-idsensor_id"><code>GET /admin/lookup/community-by-sensor-id/{sensor_id}</code></h3>
+<p>Find which community owns a given sensor.</p>
+<h3 id="get-adminlookupcommunity-by-delivery-pointdp_id"><code>GET /admin/lookup/community-by-delivery-point/{dp_id}</code></h3>
+<p>Find which community a delivery point belongs to.</p>
+<h3 id="get-adminlookupmember-by-user-iduser_id"><code>GET /admin/lookup/member-by-user-id/{user_id}</code></h3>
+<p>Lookup member details by user ID across communities.</p>
+<h3 id="get-adminlookupasset-by-sensor-idsensor_id"><code>GET /admin/lookup/asset-by-sensor-id/{sensor_id}</code></h3>
+<p>Lookup asset details by sensor ID across communities.</p>
+<h3 id="post-adminlookupassets-by-sensor-ids"><code>POST /admin/lookup/assets-by-sensor-ids</code></h3>
+<p>Batch lookup: resolve multiple sensor IDs to assets in a single request.</p>
+<p><strong>Request body:</strong> list of sensor ID strings.</p>
+<hr />
+<h2 id="admin-routes-management">Admin Routes — Management</h2>
+<p>Import/export operations. Prefix: <code>/admin</code>.</p>
 <h3 id="post-adminimport"><code>POST /admin/import</code></h3>
-<p>Replace the full community graph from a YAML bundle. Deletes the existing community and all related entities, then recreates from the bundle.</p>
-<p><strong>Request:</strong> <code>multipart/form-data</code> with <code>file</code> field.</p>
-<p><strong>Response:</strong> <code>201</code> on success.</p>
+<p>Import a community from a JSON bundle. Full replace: deletes existing community graph and recreates from bundle. Atomic operation.</p>
+<p><strong>Request body:</strong> JSON bundle (see <a href="../import-export/">Import &amp; Export</a>).</p>
+<p><strong>Response:</strong> <code>ImportReport</code> with created counts.</p>
+<h3 id="post-adminimportyaml"><code>POST /admin/import/yaml</code></h3>
+<p>Import one or more communities from a YAML multidocument body. Each document is a separate community bundle.</p>
+<p><strong>Request body:</strong> <code>text/yaml</code> — multidocument YAML.</p>
+<p><strong>Response:</strong> <code>MultiImportReport</code> with per-community results.</p>
+<h3 id="get-adminexport"><code>GET /admin/export</code></h3>
+<p>Export communities as YAML multidocument.</p>
+<p><strong>Response:</strong> <code>text/plain</code> — YAML bundle(s).</p>
 <hr />
 <h2 id="meta-routes">Meta Routes</h2>
 <h3 id="get-health"><code>GET /health</code></h3>
-<p>Health check endpoint. No authentication required. Returns <code>{"status": "ok"}</code>.</p>
-<h3 id="get-well-knownjsonld-context"><code>GET /.well-known/jsonld-context</code></h3>
-<p>Redirects to the CELINE JSON-LD context document.</p>
+<p>Health check. Returns <code>{"status": "ok"}</code>.</p>
+<h3 id="get-version"><code>GET /version</code></h3>
+<p>Service version information.</p>
 
 
 

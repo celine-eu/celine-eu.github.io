@@ -4892,11 +4892,13 @@ config_hash = compute_config_hash({
 })
 # → &quot;abc123def456&quot;
 </code></pre>
-<p>When <code>reuse_existing: true</code> (default):
-1. Compute config hash
-2. Look for existing scenario with same hash
-3. If found and not expired, return existing
-4. Otherwise, build new scenario</p>
+<p>When <code>reuse_existing: true</code> (default):</p>
+<ol>
+<li>Compute config hash</li>
+<li>Look for existing scenario with same hash</li>
+<li>If found and not expired, return existing</li>
+<li>Otherwise, build new scenario</li>
+</ol>
 <h3 id="ttl-and-expiration">TTL and Expiration</h3>
 <p>Scenarios expire after <code>ttl_hours</code>:</p>
 <pre><code class="language-json">{

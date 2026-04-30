@@ -1813,6 +1813,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#appsgrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apps/grid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appsroi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apps/roi
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3828,6 +3850,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#appsgrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apps/grid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appsroi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apps/roi
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3849,17 +3893,15 @@
 <h2 id="appsassistant">apps/assistant</h2>
 <p>Standalone full-page AI assistant application. Provides a single-route SvelteKit app that renders <code>ChatCore</code> in full-viewport mode.</p>
 <p><strong>Entry point:</strong> <code>apps/assistant/src/routes/+page.svelte</code></p>
-<pre><code class="language-svelte">&lt;ChatCore apiBaseUrl=&quot;/api&quot; mode=&quot;full&quot; /&gt;
-</code></pre>
-<p>This app is deployed as part of the celine-ai-assistant service, served at the root path. The layout provides no navigation or chrome — just the chat interface.</p>
-<p><strong>Docker image:</strong> <code>ghcr.io/celine-eu/assistant-ui</code></p>
+<p><strong>Backend:</strong> <code>celine-ai-assistant</code> (port 8012)</p>
+<p><strong>Docker image:</strong> <code>ghcr.io/celine-eu/celine-assistant</code></p>
 <p><strong>Dev:</strong></p>
-<pre><code class="language-bash">pnpm dev:assistant
-# http://localhost:5174
+<pre><code class="language-bash">task dev:assistant
+# http://localhost:3003
 </code></pre>
 <hr />
 <h2 id="appswebapp">apps/webapp</h2>
-<p>REC participant webapp. A full SvelteKit application for community members, including an energy overview, notifications, settings, and the embedded assistant.</p>
+<p>REC participant webapp. A full SvelteKit application for community members, including energy overview, weather, forecast, suggestions, gamification, notifications, settings, feedback, and the embedded assistant.</p>
 <p><strong>Routes:</strong></p>
 <table>
 <thead>
@@ -3874,6 +3916,10 @@
 <td>Energy overview — production, consumption, incentives</td>
 </tr>
 <tr>
+<td><code>/suggestions</code></td>
+<td>Flexibility window suggestions with accept/reject</td>
+</tr>
+<tr>
 <td><code>/assistant</code></td>
 <td>Embedded <code>ChatCore</code> in full mode</td>
 </tr>
@@ -3883,23 +3929,97 @@
 </tr>
 <tr>
 <td><code>/settings</code></td>
-<td>Notification preferences and push subscription</td>
+<td>User preferences (language, units)</td>
+</tr>
+<tr>
+<td><code>/profile</code></td>
+<td>User profile</td>
+</tr>
+<tr>
+<td><code>/privacy</code></td>
+<td>Privacy policy</td>
+</tr>
+<tr>
+<td><code>/terms</code></td>
+<td>Terms of service</td>
+</tr>
+<tr>
+<td><code>/accept-terms</code></td>
+<td>Terms acceptance flow</td>
+</tr>
+<tr>
+<td><code>/not-a-participant</code></td>
+<td>Non-participant landing</td>
+</tr>
+<tr>
+<td><code>/no-smart-meter</code></td>
+<td>No smart meter landing</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Layout:</strong> <code>apps/webapp/src/routes/+layout.svelte</code></p>
-<p>The root layout wraps the app in <code>AssistantProvider</code>, which injects the floating assistant widget. It also calls <code>GET /api/me</code> to check terms acceptance before rendering child routes.</p>
-<p><strong>BFF proxy pattern:</strong></p>
-<p>The webapp proxies assistant requests through its FastAPI BFF:</p>
-<pre><code class="language-python"># webapp BFF
-@router.api_route(&quot;/assistant/{path:path}&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;, &quot;DELETE&quot;])
-async def proxy_assistant(path: str, request: Request):
-    return await proxy_to(f&quot;{ASSISTANT_URL}/api/{path}&quot;, request)
-</code></pre>
-<p>This keeps the assistant's API behind the same origin as the webapp, forwarding the user's identity automatically.</p>
+<p><strong>Key components:</strong> <code>EnergyChart</code>, <code>ForecastCard</code>, <code>WeatherWidget</code>, <code>StatCard</code>, <code>SuggestionCard</code>, <code>GamificationPanel</code>, <code>PointsChart</code></p>
+<p><strong>Layout:</strong> The root layout wraps the app in <code>AssistantProvider</code> (floating assistant widget) and calls <code>GET /api/me</code> to check terms acceptance.</p>
+<p><strong>Backend:</strong> <code>celine-webapp</code> BFF (port 8014)</p>
 <p><strong>Dev:</strong></p>
-<pre><code class="language-bash">pnpm dev:webapp
-# http://localhost:5173
+<pre><code class="language-bash">task dev:webapp
+# http://localhost:3005
+</code></pre>
+<hr />
+<h2 id="appsgrid">apps/grid</h2>
+<p>Grid resilience dashboard for DSO operators. Displays wind and heat risk maps, alert distributions, trend charts, substation topology, CIM asset topology, and manages alert rules and notification settings.</p>
+<p><strong>Routes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>Main grid dashboard — risk maps, filters, trends</td>
+</tr>
+<tr>
+<td><code>/management</code></td>
+<td>Alert rules and notification settings management</td>
+</tr>
+<tr>
+<td><code>/denied</code></td>
+<td>Access denied page (non-DSO users)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key components:</strong> <code>AutocompleteSelect</code>, <code>FilterBar</code>, <code>LineInspectPanel</code>, <code>RiskDonut</code>, <code>TrendSparkline</code></p>
+<p><strong>Backend:</strong> <code>celine-grid</code> (port 8015)</p>
+<p><strong>Docker image:</strong> <code>ghcr.io/celine-eu/celine-grid-ui</code></p>
+<p><strong>Dev:</strong></p>
+<pre><code class="language-bash">task dev:grid
+# http://localhost:3006
+</code></pre>
+<hr />
+<h2 id="appsroi">apps/roi</h2>
+<p>PV installation ROI calculator. Single-page application for estimating the financial return of a photovoltaic installation, including production estimates, CER incentives, CAPEX, and financial analysis. Supports PDF export of results and map-based location selection.</p>
+<p><strong>Routes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>ROI calculator — input form, map picker, results</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Package dependency:</strong> Uses <code>@celine-eu/roi-ui</code> (<code>RoiCore</code>, <code>RoiWidget</code>) from <code>packages/roi-ui</code>.</p>
+<p><strong>Backend:</strong> <code>celine-roi</code> (port 8013)</p>
+<p><strong>Dev:</strong></p>
+<pre><code class="language-bash">task dev:roi
+# http://localhost:3004
 </code></pre>
 
 

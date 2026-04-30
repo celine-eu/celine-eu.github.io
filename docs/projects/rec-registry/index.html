@@ -957,6 +957,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3873,6 +3884,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3912,23 +3934,27 @@
 
 
 <h1 id="celine-rec-registry">CELINE REC Registry</h1>
-<p>Read-only JSON-LD API for REC (Renewable Energy Community) composition. Exposes communities, participants, memberships, sites, assets, and meters following DCAT-AP conventions and the CELINE ontology.</p>
+<p>API for modelling Renewable Energy Communities (RECs). Manages communities, members, assets, delivery points, and grid topology. Provides self-service endpoints for participants and administrative endpoints for managers, with import/export of community bundles in YAML format.</p>
 <h2 id="features">Features</h2>
 <ul>
-<li>DCAT-AP compatible responses</li>
-<li>JSON-LD output with IRI expansion (no CURIEs)</li>
-<li><code>?format=json</code> (default) and <code>?format=jsonld</code> query parameter</li>
-<li>JSON-LD context always references <code>https://celine-eu.github.io/ontologies/celine.jsonld</code></li>
-<li>Admin import/export with full replace semantics</li>
-<li>Subleaf endpoints with query filters</li>
-<li>Auth/ACL middleware seam on <code>/admin/*</code> and write methods</li>
+<li>Multi-community support with v0.5 schema</li>
+<li>Self-service user API (profile, membership, assets, delivery points)</li>
+<li>Admin API for community management, cross-community lookup, and batch operations</li>
+<li>YAML-based import/export with full replace semantics</li>
+<li>In-process OPA policy evaluation for authorization</li>
+<li>CLI (<code>celine-rec-registry</code>) for import, export, listing, and lookup operations</li>
+<li>Paginated responses with cursor-based navigation</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
-<pre><code class="language-bash">export DATABASE_URL=&quot;postgresql+asyncpg://postgres:postgres@localhost:5432/celine_registry&quot;
-export BASE_URL=&quot;http://localhost:8000&quot;
+<pre><code class="language-bash">uv sync
 
-alembic upgrade head
-uvicorn celine_registry.main:app --reload --host 0.0.0.0 --port 8000
+export DATABASE_URL=&quot;postgresql+asyncpg://postgres:securepassword123@host.docker.internal:15432/celine_rec_registry&quot;
+
+uv run alembic upgrade head
+# or: task db:migrate
+
+task run
+# runs on port 8004
 </code></pre>
 <h2 id="api-overview">API Overview</h2>
 <table>
@@ -3940,35 +3966,43 @@ uvicorn celine_registry.main:app --reload --host 0.0.0.0 --port 8000
 </thead>
 <tbody>
 <tr>
-<td><code>GET /user/communities</code></td>
-<td>List all communities</td>
+<td><code>GET /user</code></td>
+<td>Self-service: profile, membership, community, assets, delivery points</td>
 </tr>
 <tr>
-<td><code>GET /user/communities/{key}</code></td>
-<td>Community detail</td>
+<td><code>GET /admin/communities</code></td>
+<td>List/detail communities, members, assets, delivery points, meters</td>
 </tr>
 <tr>
-<td><code>GET /user/communities/{key}/members</code></td>
-<td>Members of a community</td>
-</tr>
-<tr>
-<td><code>GET /user/assets</code></td>
-<td>List assets (filterable by community, member)</td>
-</tr>
-<tr>
-<td><code>GET /admin/import</code></td>
-<td>Validate a YAML bundle</td>
+<td><code>GET /admin/lookup/*</code></td>
+<td>Cross-community lookups by user ID, sensor ID, or delivery point</td>
 </tr>
 <tr>
 <td><code>POST /admin/import</code></td>
-<td>Replace community graph from YAML bundle</td>
+<td>Import community from JSON bundle</td>
 </tr>
 <tr>
-<td><code>GET /admin/export?community={key}</code></td>
-<td>Export full YAML bundle</td>
+<td><code>POST /admin/import/yaml</code></td>
+<td>Import communities from YAML multidocument</td>
+</tr>
+<tr>
+<td><code>GET /admin/export</code></td>
+<td>Export communities as YAML</td>
+</tr>
+<tr>
+<td><code>GET /health</code>, <code>GET /version</code></td>
+<td>Service health and version</td>
 </tr>
 </tbody>
 </table>
+<h2 id="cli">CLI</h2>
+<pre><code class="language-bash">celine-rec-registry import --file recs/rec-example.yaml
+celine-rec-registry export --community example_rec
+celine-rec-registry list
+celine-rec-registry tree --community example_rec
+celine-rec-registry lookup-user --user-id &lt;id&gt;
+celine-rec-registry lookup-sensor --sensor-id &lt;id&gt;
+</code></pre>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
@@ -3979,20 +4013,20 @@ uvicorn celine_registry.main:app --reload --host 0.0.0.0 --port 8000
 </thead>
 <tbody>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/rec-registry/docs/data-model">Data Model</a></td>
+<td><a href="docs/data-model/">Data Model</a></td>
 <td>Community, Member, Asset schema; JSONB fields; relationships</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/rec-registry/docs/api-reference">API Reference</a></td>
-<td>All endpoint groups, query params, output formats</td>
+<td><a href="docs/api-reference/">API Reference</a></td>
+<td>All endpoint groups, query params, responses</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/rec-registry/docs/import-export">Import &amp; Export</a></td>
-<td>Bundle format, replace semantics, idempotency</td>
+<td><a href="docs/import-export/">Import &amp; Export</a></td>
+<td>Bundle format, replace semantics, CLI usage</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/rec-registry/docs/development">Development</a></td>
-<td>DATABASE_URL, Alembic migrations, local dev, testing</td>
+<td><a href="docs/development/">Development</a></td>
+<td>Setup, configuration, migrations, project layout</td>
 </tr>
 </tbody>
 </table>

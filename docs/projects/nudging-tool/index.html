@@ -1374,6 +1374,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3895,6 +3906,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3934,75 +3956,133 @@
 
 
 <h1 id="celine-nudging-tool">CELINE Nudging Tool</h1>
-<p>Backend service that transforms Digital Twin events into personalized push notifications for renewable energy community participants.</p>
+<p>Notification service for the CELINE platform. Receives events from other services, evaluates rules with custom Python evaluators, renders templated messages, and delivers notifications via web push or email. Handles deduplication, frequency limiting, user preferences, and scheduled delivery.</p>
 <h2 id="event-flow">Event Flow</h2>
-<pre><code>DigitalTwinEvent -&gt; Engine -&gt; Orchestrator -&gt; Publisher (web push)
+<pre><code>Event -&gt; Engine -&gt; Orchestrator -&gt; Publisher (web push / email)
+                                      |
+Scheduler -&gt; ScheduledEvent ----------+
 </code></pre>
 <ol>
-<li><strong>Engine</strong> — evaluates rules against the incoming event, selects matching nudge type and severity, renders a Jinja2 message template</li>
-<li><strong>Orchestrator</strong> — applies delivery policies (suppression, deduplication, frequency limits, user preferences)</li>
-<li><strong>Publisher</strong> — sends the notification via the registered delivery channel (currently: <code>web</code> via VAPID web push)</li>
+<li><strong>Engine</strong> — evaluates rules using per-rule Python evaluators, selects matching rules, renders Jinja2 message templates per channel and language</li>
+<li><strong>Orchestrator</strong> — applies delivery policies (suppression, deduplication, frequency limits, user preferences, per-community overrides)</li>
+<li><strong>Publisher</strong> — sends via web push (VAPID) or email (SMTP)</li>
+<li><strong>Scheduler</strong> — processes due scheduled events on a polling loop</li>
 </ol>
 <h2 id="features">Features</h2>
 <ul>
-<li>Rule-based engine with YAML-seeded rules, templates, and preferences</li>
+<li>Rule-based engine with per-rule Python evaluators and Jinja2 templates</li>
+<li>Two delivery channels: web push (VAPID) and email (SMTP)</li>
 <li>Delivery suppression and deduplication (daily / weekly / monthly / yearly scopes)</li>
-<li>Web push (VAPID) via pywebpush</li>
-<li>Configurable per-user notification preferences</li>
+<li>Per-user notification preferences with kind-level opt-in/opt-out</li>
+<li>Per-community rule overrides</li>
+<li>Scheduled event delivery</li>
+<li>Notification catalog with i18n support (<code>active_kinds.yaml</code>)</li>
+<li>Seed-based rule/template management via CLI</li>
+<li>OPA-enforced access control</li>
 <li>PostgreSQL persistence via SQLAlchemy async</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
-<p><strong>Docker (recommended):</strong></p>
-<pre><code class="language-bash">docker compose up --build
-</code></pre>
-<p>Starts: <code>db</code> (PostgreSQL on port 5433), <code>initdb</code> (schema + seed), <code>api</code> (port 8000).</p>
-<p><strong>Local Python:</strong></p>
 <pre><code class="language-bash">uv sync
-python -m db.init_db        # create schema and seed data
-hypercorn api.main:app --bind 0.0.0.0:8000
+task alembic:migrate
+task seed                    # seed rules from ./seed directory
+task run                     # runs on port 8016
 </code></pre>
 <h2 id="configuration">Configuration</h2>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
-<th>Description</th>
 <th>Default</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>DATABASE_URL</code></td>
+<td><code>postgresql+asyncpg://...host.docker.internal:15432/nudging</code></td>
 <td>PostgreSQL async URL</td>
-<td>required</td>
 </tr>
 <tr>
 <td><code>DEFAULT_LANG</code></td>
-<td>Default notification language</td>
 <td><code>en</code></td>
+<td>Default notification language</td>
 </tr>
 <tr>
 <td><code>MAX_PER_DAY_DEFAULT</code></td>
-<td>Default max notifications per day</td>
 <td><code>3</code></td>
+<td>Default max notifications per day</td>
+</tr>
+<tr>
+<td><code>SCHEDULER_POLL_SECONDS</code></td>
+<td><code>30.0</code></td>
+<td>Scheduler polling interval</td>
+</tr>
+<tr>
+<td><code>SEED_DIR</code></td>
+<td><code>./seed</code></td>
+<td>Directory containing rule definitions</td>
+</tr>
+<tr>
+<td><code>ORCHESTRATOR_URL</code></td>
+<td><code>http://api.celine.localhost/nudging</code></td>
+<td>Public base URL</td>
 </tr>
 <tr>
 <td><code>VAPID_PUBLIC_KEY</code></td>
+<td>—</td>
 <td>VAPID public key (base64url)</td>
-<td>required</td>
 </tr>
 <tr>
 <td><code>VAPID_PRIVATE_KEY</code></td>
+<td>—</td>
 <td>VAPID private key (base64url)</td>
-<td>required</td>
 </tr>
 <tr>
 <td><code>VAPID_SUBJECT</code></td>
-<td>VAPID contact (mailto: or https:)</td>
-<td>required</td>
+<td><code>mailto:dev@example.com</code></td>
+<td>VAPID contact URI</td>
+</tr>
+<tr>
+<td><code>SMTP_HOST</code></td>
+<td>—</td>
+<td>SMTP server hostname</td>
+</tr>
+<tr>
+<td><code>SMTP_PORT</code></td>
+<td><code>587</code></td>
+<td>SMTP server port</td>
+</tr>
+<tr>
+<td><code>SMTP_USERNAME</code></td>
+<td>—</td>
+<td>SMTP authentication username</td>
+</tr>
+<tr>
+<td><code>SMTP_PASSWORD</code></td>
+<td>—</td>
+<td>SMTP authentication password</td>
+</tr>
+<tr>
+<td><code>SMTP_USE_TLS</code></td>
+<td><code>true</code></td>
+<td>Use STARTTLS</td>
+</tr>
+<tr>
+<td><code>EMAIL_FROM</code></td>
+<td>—</td>
+<td>Sender email address</td>
+</tr>
+<tr>
+<td><code>OIDC__*</code></td>
+<td>(from celine-sdk)</td>
+<td>OIDC settings (audience: <code>svc-nudging</code>)</td>
 </tr>
 </tbody>
 </table>
+<h2 id="cli">CLI</h2>
+<pre><code class="language-bash">nudging-cli seed apply ./seed   # seed rules and templates
+nudging-cli vapid               # generate VAPID keys
+</code></pre>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
@@ -4013,20 +4093,20 @@ hypercorn api.main:app --bind 0.0.0.0:8000
 </thead>
 <tbody>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/nudging-tool/docs/architecture">Architecture</a></td>
-<td>Event flow, engine/orchestrator/publisher components, database models</td>
+<td><a href="docs/architecture/">Architecture</a></td>
+<td>Event flow, engine/orchestrator/publisher, database models</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/nudging-tool/docs/engine">Engine</a></td>
-<td>Rule evaluation, NudgeType/Severity, Jinja2 templates, dedup scopes, YAML seed format</td>
+<td><a href="docs/engine/">Engine</a></td>
+<td>Rule evaluation, evaluators, templates, dedup, seed format</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/nudging-tool/docs/api-reference">API Reference</a></td>
-<td>All endpoints: ingest-event, webpush, notifications, preferences</td>
+<td><a href="docs/api-reference/">API Reference</a></td>
+<td>All endpoints: admin, notifications, preferences, webpush</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/nudging-tool/docs/development">Development</a></td>
-<td>Local setup, VAPID key generation, seed management, running tests</td>
+<td><a href="docs/development/">Development</a></td>
+<td>Local setup, VAPID keys, seed management, testing</td>
 </tr>
 </tbody>
 </table>

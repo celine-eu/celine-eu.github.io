@@ -574,10 +574,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#required-settings" class="md-nav__link">
+  <a href="#openai-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Required Settings
+        OpenAI Settings
       
     </span>
   </a>
@@ -585,10 +585,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-settings" class="md-nav__link">
+  <a href="#vector-store" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optional Settings
+        Vector Store
       
     </span>
   </a>
@@ -596,10 +596,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-compose-example" class="md-nav__link">
+  <a href="#database" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Compose Example
+        Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-materials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Materials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uploads-and-ingestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uploads and Ingestion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General
       
     </span>
   </a>
@@ -3829,10 +3873,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#required-settings" class="md-nav__link">
+  <a href="#openai-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Required Settings
+        OpenAI Settings
       
     </span>
   </a>
@@ -3840,10 +3884,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-settings" class="md-nav__link">
+  <a href="#vector-store" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optional Settings
+        Vector Store
       
     </span>
   </a>
@@ -3851,10 +3895,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-compose-example" class="md-nav__link">
+  <a href="#database" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Compose Example
+        Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-materials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Materials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uploads-and-ingestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uploads and Ingestion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General
       
     </span>
   </a>
@@ -3890,40 +3978,8 @@
 
 
 <h1 id="configuration">Configuration</h1>
-<p>All settings are defined in <code>src/celine/assistant/settings.py</code> using <code>pydantic-settings</code>. Values are read from environment variables.</p>
-<h2 id="required-settings">Required Settings</h2>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>OPENAI_API_KEY</code></td>
-<td><code>str</code></td>
-<td>OpenAI API key</td>
-</tr>
-<tr>
-<td><code>DATABASE_URL</code></td>
-<td><code>str</code></td>
-<td>PostgreSQL async connection string (<code>postgresql+asyncpg://...</code>)</td>
-</tr>
-<tr>
-<td><code>JWKS_URL</code></td>
-<td><code>str</code></td>
-<td>JWKS endpoint for JWT signature verification</td>
-</tr>
-<tr>
-<td><code>QDRANT_URL</code></td>
-<td><code>str</code></td>
-<td>Qdrant base URL</td>
-</tr>
-</tbody>
-</table>
-<h2 id="optional-settings">Optional Settings</h2>
+<p>All settings are defined in <code>src/celine/assistant/settings.py</code> using <code>pydantic-settings</code>. Values are read from environment variables or <code>.env</code> file.</p>
+<h2 id="openai-settings">OpenAI Settings</h2>
 <table>
 <thead>
 <tr>
@@ -3935,16 +3991,53 @@
 </thead>
 <tbody>
 <tr>
-<td><code>OPENAI_MODEL</code></td>
+<td><code>OPENAI_API_KEY</code></td>
 <td><code>str</code></td>
-<td><code>gpt-4o</code></td>
+<td>—</td>
+<td>OpenAI API key (required)</td>
+</tr>
+<tr>
+<td><code>OPENAI_CHAT_MODEL</code></td>
+<td><code>str</code></td>
+<td><code>gpt-4o-mini</code></td>
 <td>Chat completion model</td>
 </tr>
 <tr>
-<td><code>EMBED_MODEL</code></td>
+<td><code>OPENAI_EMBED_MODEL</code></td>
 <td><code>str</code></td>
 <td><code>text-embedding-3-small</code></td>
 <td>Embedding model for indexing and retrieval</td>
+</tr>
+<tr>
+<td><code>OPENAI_VISION_MODEL</code></td>
+<td><code>str</code></td>
+<td><code>gpt-4o-mini</code></td>
+<td>Vision model for image captioning</td>
+</tr>
+</tbody>
+</table>
+<h2 id="vector-store">Vector Store</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QDRANT_URL</code></td>
+<td><code>str</code></td>
+<td><code>http://host.docker.internal:6333</code></td>
+<td>Qdrant base URL</td>
+</tr>
+<tr>
+<td><code>QDRANT_API_KEY</code></td>
+<td><code>str?</code></td>
+<td>—</td>
+<td>Optional Qdrant API key</td>
 </tr>
 <tr>
 <td><code>QDRANT_COLLECTION</code></td>
@@ -3952,47 +4045,122 @@
 <td><code>celine_docs</code></td>
 <td>Qdrant collection name</td>
 </tr>
+</tbody>
+</table>
+<h2 id="database">Database</h2>
+<table>
+<thead>
 <tr>
-<td><code>TOP_K</code></td>
-<td><code>int</code></td>
-<td><code>5</code></td>
-<td>Number of retrieved context chunks per query</td>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td><code>str</code></td>
+<td><code>postgresql+asyncpg://...host.docker.internal:15432/ai_assistant</code></td>
+<td>PostgreSQL async connection string</td>
 </tr>
 <tr>
-<td><code>MAX_HISTORY_MESSAGES</code></td>
+<td><code>DB_POOL_SIZE</code></td>
+<td><code>int</code></td>
+<td><code>10</code></td>
+<td>Connection pool size</td>
+</tr>
+<tr>
+<td><code>DB_MAX_OVERFLOW</code></td>
 <td><code>int</code></td>
 <td><code>20</code></td>
-<td>Maximum messages loaded from history per request</td>
+<td>Max overflow connections</td>
 </tr>
 <tr>
-<td><code>S3_ENDPOINT_URL</code></td>
-<td><code>str</code></td>
-<td>none</td>
-<td>S3-compatible storage endpoint (if used)</td>
+<td><code>DB_POOL_TIMEOUT</code></td>
+<td><code>int</code></td>
+<td><code>30</code></td>
+<td>Pool timeout in seconds</td>
 </tr>
 <tr>
-<td><code>S3_BUCKET</code></td>
-<td><code>str</code></td>
-<td><code>assistant-uploads</code></td>
-<td>Bucket for raw file uploads</td>
+<td><code>DB_POOL_RECYCLE</code></td>
+<td><code>int</code></td>
+<td><code>1800</code></td>
+<td>Connection recycle time in seconds</td>
+</tr>
+</tbody>
+</table>
+<h2 id="authentication">Authentication</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OAUTH2_TRUST_HEADERS</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Trust JWT from proxy headers (oauth2_proxy)</td>
 </tr>
 <tr>
-<td><code>LOG_LEVEL</code></td>
-<td><code>str</code></td>
-<td><code>INFO</code></td>
-<td>Python log level</td>
+<td><code>OAUTH2_JWKS_URL</code></td>
+<td><code>str?</code></td>
+<td>—</td>
+<td>JWKS endpoint for JWT verification (auto-discovered if not set)</td>
 </tr>
+<tr>
+<td><code>OAUTH2_ISSUER</code></td>
+<td><code>str?</code></td>
+<td>—</td>
+<td>OAuth2 issuer URL</td>
+</tr>
+<tr>
+<td><code>OAUTH2_AUDIENCE</code></td>
+<td><code>str?</code></td>
+<td><code>oauth2_proxy</code></td>
+<td>Expected JWT audience</td>
+</tr>
+<tr>
+<td><code>OAUTH2_JWT_COOKIE_NAME</code></td>
+<td><code>str?</code></td>
+<td>—</td>
+<td>Optional JWT cookie name</td>
+</tr>
+<tr>
+<td><code>ADMIN_GROUP</code></td>
+<td><code>str</code></td>
+<td><code>admins</code></td>
+<td>Group name for admin access</td>
+</tr>
+</tbody>
+</table>
+<h2 id="training-materials">Training Materials</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td><code>TRAINING_MATERIALS_PATH</code></td>
 <td><code>str</code></td>
 <td><code>/workspace/repositories/celine-training-materials</code></td>
-<td>Local checkout path used for Markdown ingestion and git sync</td>
+<td>Local checkout path for training materials</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_REPO_URL</code></td>
 <td><code>str</code></td>
-<td>empty</td>
-<td>Git URL to clone/pull <code>celine-training-materials</code> from inside the container</td>
+<td>—</td>
+<td>Git URL to clone/pull training materials</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_REF</code></td>
@@ -4004,32 +4172,95 @@
 <td><code>TRAINING_MATERIALS_SYNC_ON_START</code></td>
 <td><code>bool</code></td>
 <td><code>true</code></td>
-<td>If true, clone/fetch/checkout the training repo on startup before ingestion</td>
+<td>Auto-sync training materials on startup</td>
+</tr>
+</tbody>
+</table>
+<h2 id="uploads-and-ingestion">Uploads and Ingestion</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UPLOADS_URI</code></td>
+<td><code>str</code></td>
+<td><code>file://./data/uploads</code></td>
+<td>Upload storage URI</td>
+</tr>
+<tr>
+<td><code>MAX_UPLOAD_MB</code></td>
+<td><code>int</code></td>
+<td><code>25</code></td>
+<td>Maximum upload file size in MB</td>
+</tr>
+<tr>
+<td><code>INGEST_ENABLE</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Enable RAG ingestion</td>
+</tr>
+<tr>
+<td><code>INGEST_FORCE_RELOAD_ON_START</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Force re-ingest all documents on startup</td>
 </tr>
 <tr>
 <td><code>MANIFEST_PATH</code></td>
 <td><code>str</code></td>
 <td><code>/app/data/manifest.json</code></td>
-<td>Writable manifest file used to track ingested training materials and site docs</td>
+<td>Manifest file for tracking ingested documents</td>
+</tr>
+<tr>
+<td><code>DOCS_POLL_INTERVAL_SECONDS</code></td>
+<td><code>int</code></td>
+<td><code>60</code></td>
+<td>Polling interval for document changes</td>
 </tr>
 </tbody>
 </table>
-<h2 id="docker-compose-example">Docker Compose Example</h2>
-<pre><code class="language-yaml">environment:
-  OPENAI_API_KEY: sk-...
-  DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/assistant
-  JWKS_URL: http://keycloak:8080/realms/celine/protocol/openid-connect/certs
-  QDRANT_URL: http://qdrant:6333
-  TRAINING_MATERIALS_PATH: /app/training-materials
-  TRAINING_MATERIALS_REPO_URL: https://&lt;token&gt;@github.com/celine-eu/celine-training-materials.git
-  TRAINING_MATERIALS_REF: origin/main
-</code></pre>
+<h2 id="general">General</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>APP_ENV</code></td>
+<td><code>str</code></td>
+<td><code>prod</code></td>
+<td>Application environment</td>
+</tr>
+<tr>
+<td><code>LOG_LEVEL</code></td>
+<td><code>str</code></td>
+<td><code>INFO</code></td>
+<td>Python log level</td>
+</tr>
+<tr>
+<td><code>DIGITAL_TWIN_API_URL</code></td>
+<td><code>str?</code></td>
+<td>—</td>
+<td>Digital Twin API URL for dashboard context enrichment</td>
+</tr>
+</tbody>
+</table>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><code>JWKS_URL</code> must be reachable at startup. The JWKS is fetched lazily on first request and cached.</li>
 <li><code>DATABASE_URL</code> must use the <code>asyncpg</code> driver for async SQLAlchemy compatibility.</li>
-<li>Storage for uploads defaults to local disk if <code>S3_ENDPOINT_URL</code> is not set.</li>
-<li>In Kubernetes, use an authenticated HTTPS Git URL or another credentialed Git transport for <code>TRAINING_MATERIALS_REPO_URL</code>.</li>
+<li>When <code>OAUTH2_TRUST_HEADERS</code> is <code>true</code>, the JWT from <code>x-auth-request-access-token</code> header is trusted without JWKS verification (used behind oauth2_proxy).</li>
+<li>Upload storage defaults to local disk. The <code>UPLOADS_URI</code> supports <code>file://</code> and <code>s3://</code> schemes.</li>
 </ul>
 
 

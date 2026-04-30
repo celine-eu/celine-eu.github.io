@@ -652,10 +652,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#start-services-via-docker-compose" class="md-nav__link">
+  <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start Services via Docker Compose
+        Taskfile Commands
       
     </span>
   </a>
@@ -663,10 +663,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#full-stack-via-docker" class="md-nav__link">
+  <a href="#docker-compose" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full Stack via Docker
+        Docker Compose
       
     </span>
   </a>
@@ -3884,10 +3884,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#start-services-via-docker-compose" class="md-nav__link">
+  <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start Services via Docker Compose
+        Taskfile Commands
       
     </span>
   </a>
@@ -3895,10 +3895,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#full-stack-via-docker" class="md-nav__link">
+  <a href="#docker-compose" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full Stack via Docker
+        Docker Compose
       
     </span>
   </a>
@@ -3958,70 +3958,95 @@
 <h1 id="development">Development</h1>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Python ≥ 3.11</li>
-<li>Docker and Docker Compose</li>
+<li>Python &gt;= 3.12</li>
 <li><code>uv</code> package manager</li>
+<li><code>task</code> (go-task)</li>
 <li>A running Qdrant instance</li>
-<li>A running PostgreSQL instance</li>
+<li>PostgreSQL at <code>localhost:15432</code></li>
 </ul>
 <h2 id="local-setup">Local Setup</h2>
-<pre><code class="language-bash"># Clone and enter the repo
-cd celine-ai-assistant
-
-# Install dependencies
-uv sync
-
-# Copy and edit the environment file
+<pre><code class="language-bash">uv sync
 cp .env.example .env
-# Set OPENAI_API_KEY, DATABASE_URL, JWKS_URL, QDRANT_URL
-</code></pre>
-<h2 id="start-services-via-docker-compose">Start Services via Docker Compose</h2>
-<pre><code class="language-bash"># Start Qdrant + PostgreSQL
-docker compose up -d qdrant db
+# Set OPENAI_API_KEY, DATABASE_URL, QDRANT_URL
 
-# Run database migrations
 uv run alembic upgrade head
-
-# Start the API
-uv run uvicorn celine.assistant.main:app --reload --host 0.0.0.0 --port 8000
+task run
+# Listens on http://localhost:8012
 </code></pre>
-<h2 id="full-stack-via-docker">Full Stack via Docker</h2>
+<h2 id="taskfile-commands">Taskfile Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task run</code></td>
+<td>Start dev server on port 8012 with reload</td>
+</tr>
+<tr>
+<td><code>task debug</code></td>
+<td>Start with debugger (port 48012)</td>
+</tr>
+<tr>
+<td><code>task setup</code></td>
+<td>Install dependencies with uv</td>
+</tr>
+<tr>
+<td><code>task alembic:migrate</code></td>
+<td>Apply all pending migrations</td>
+</tr>
+<tr>
+<td><code>task alembic:sync-model</code></td>
+<td>Generate new Alembic migration</td>
+</tr>
+<tr>
+<td><code>task alembic:reset</code></td>
+<td>Reset DB to base</td>
+</tr>
+<tr>
+<td><code>task release</code></td>
+<td>Run semantic-release</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-compose">Docker Compose</h2>
 <pre><code class="language-bash">docker compose up -d
 </code></pre>
-<p>This starts: <code>db</code> (PostgreSQL), <code>qdrant</code>, and <code>api</code> (the assistant).</p>
+<p>Starts Qdrant, PostgreSQL, and the API container.</p>
 <h2 id="database-migrations">Database Migrations</h2>
-<p>Migrations are managed with Alembic:</p>
-<pre><code class="language-bash"># Apply all pending migrations
-uv run alembic upgrade head
-
-# Create a new migration
-uv run alembic revision --autogenerate -m &quot;describe change&quot;
-
-# Downgrade one step
-uv run alembic downgrade -1
+<pre><code class="language-bash">task alembic:migrate                     # apply pending
+task alembic:sync-model                  # autogenerate new migration
+task alembic:reset                       # downgrade to base
 </code></pre>
 <h2 id="running-tests">Running Tests</h2>
 <pre><code class="language-bash">uv run pytest -q
 </code></pre>
-<p>Tests use an in-memory or test-configured database and mock OpenAI/Qdrant calls.</p>
 <h2 id="project-layout">Project Layout</h2>
 <pre><code>src/celine/assistant/
-├── auth.py           # JWT verification, identity extraction
-├── db/
-│   ├── engine.py     # SQLAlchemy async engine setup
-│   └── models.py     # ORM models: Conversation, Message, Attachment
-├── docs_source.py    # Document source abstraction for RAG
-├── history.py        # Conversation and message persistence
-├── ingest.py         # File parsing and Qdrant ingestion
-├── main.py           # FastAPI app factory, lifespan, router registration
-├── models.py         # Pydantic request/response models
-├── openai_stream.py  # SSE streaming wrapper for LlamaIndex
-├── openai_vision.py  # Vision/image attachment handling
-├── qdrant_setup.py   # Qdrant collection initialization
-├── rag.py            # LlamaIndex index, retriever, query engine
-├── routes.py         # FastAPI route handlers
-├── settings.py       # pydantic-settings configuration
-└── uploads.py        # File upload storage and metadata
+  main.py                      # FastAPI app factory (create_app)
+  routes.py                    # All route handlers
+  settings.py                  # Pydantic-settings configuration
+  auth.py                      # JWT verification (trusted headers or JWKS)
+  rag.py                       # LlamaIndex index, retriever, query engine
+  ingest.py                    # File parsing and Qdrant ingestion
+  history.py                   # Conversation and message persistence
+  uploads.py                   # File upload storage and metadata
+  openai_stream.py             # SSE streaming wrapper
+  openai_vision.py             # Image captioning via vision model
+  dashboard_context.py         # Digital Twin context enrichment
+  training_materials.py        # Training materials indexing
+  training_materials_sync.py   # Git sync for training materials
+  site_docs.py                 # Documentation site content indexing
+  qdrant_setup.py              # Qdrant collection initialization
+  models.py                    # Pydantic request/response models
+  logging_.py                  # Logging configuration
+  db/
+    engine.py                  # SQLAlchemy async engine setup
+    models.py                  # ORM: Conversation, Message, Attachment
+alembic/                       # Database migrations
 </code></pre>
 
 

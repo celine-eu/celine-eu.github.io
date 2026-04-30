@@ -4102,6 +4102,11 @@ into a cohesive, entity-scoped API surface.</p>
 <td><code>/participants/{participant_id}</code></td>
 <td><code>/values/meter_readings</code>, <code>/values/assets</code>, <code>/profile</code>, <code>/flexibility</code></td>
 </tr>
+<tr>
+<td>Grid</td>
+<td><code>/grid/{network_id}</code></td>
+<td><code>/values/wind_risks</code>, <code>/values/heat_risks</code>, <code>/values/tile_index</code>, <code>/values/shapes</code>, <code>/values/nowcasting_observations</code>, <code>/values/trendline</code>, <code>/wind/map</code>, <code>/heat/map</code>, <code>/substations/map</code>, <code>/filters</code>, <code>/summary</code></td>
+</tr>
 </tbody>
 </table>
 <p>All domains share common infrastructure:</p>
@@ -4160,14 +4165,22 @@ into a cohesive, entity-scoped API surface.</p>
 <td><code>DEEnergyCommunityDomain</code></td>
 <td>German BEG rules, Marktstammdaten</td>
 </tr>
+<tr>
+<td><code>ITGridDomain</code></td>
+<td>Italian grid resilience (wind/heat risks, CIM topology, nowcasting)</td>
+</tr>
 </tbody>
 </table>
 <h3 id="jinja2-query-templates">Jinja2 Query Templates</h3>
 <p>Value fetcher queries use two-phase rendering:</p>
 <ol>
-<li><strong>Jinja</strong> handles structural logic: <code>{{ entity.id }}</code>, <code>{% if ... %}</code>,
-   <code>{{ entity.metadata.zone | sql_list }}</code></li>
-<li><strong>Bind parameters</strong> handle safe value injection: <code>:start</code>, <code>:end</code></li>
+<li>
+<p><strong>Jinja</strong> handles structural logic: <code>{{ entity.id }}</code>, <code>{% if ... %}</code>,
+   <code>{{ entity.metadata.zone | sql_list }}</code></p>
+</li>
+<li>
+<p><strong>Bind parameters</strong> handle safe value injection: <code>:start</code>, <code>:end</code></p>
+</li>
 </ol>
 <pre><code class="language-sql">SELECT timestamp, kwh
 FROM consumption
@@ -4242,8 +4255,12 @@ domains:
 │   ├── energy_community/
 │   │   ├── base.py     # EnergyCommunityDomain (shared logic)
 │   │   └── domain.py   # ITEnergyCommunityDomain (Italian REC)
-│   └── participant/
-│       └── domain.py   # ParticipantDomain + ITParticipantDomain
+│   ├── participant/
+│   │   └── domain.py   # ParticipantDomain + ITParticipantDomain
+│   └── grid/
+│       ├── domain.py   # GridDomain + ITGridDomain
+│       ├── queries.py  # Grid-specific query templates
+│       └── routes/     # wind.py, heat.py, substations.py
 │
 └── main.py             # Application factory (create_app)
 
@@ -4302,8 +4319,9 @@ tests/
 </tbody>
 </table>
 <h2 id="running">Running</h2>
-<pre><code class="language-bash">pip install -e &quot;.[dev]&quot;
-uvicorn celine.dt.main:create_app --factory --reload
+<pre><code class="language-bash">uv sync
+task run
+# Listens on http://localhost:8002
 </code></pre>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">pytest tests/ -v

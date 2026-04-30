@@ -3079,41 +3079,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#om-pipeline-open-meteo" class="md-nav__link">
+  <a href="#pipeline-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OM pipeline (Open-Meteo)
+        Pipeline Summary
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="OM pipeline (Open-Meteo)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pipeline-layers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pipeline layers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-in-docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run in Docker
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4144,41 +4116,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#om-pipeline-open-meteo" class="md-nav__link">
+  <a href="#pipeline-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OM pipeline (Open-Meteo)
+        Pipeline Summary
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="OM pipeline (Open-Meteo)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pipeline-layers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pipeline layers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-in-docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run in Docker
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4225,7 +4169,7 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 </tr>
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/pipelines-reference">Pipelines Reference</a></td>
-<td>Per-pipeline reference: om, dwd, owm, copernicus, osm</td>
+<td>Per-pipeline reference: om, mt, dwd, owm, copernicus, osm, rec_registry, rec_flexibility_commitments</td>
 </tr>
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/development">Development</a></td>
@@ -4238,11 +4182,16 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 <p>This repository hosts <strong>end-to-end data pipelines</strong> based on <strong>open and public data sources</strong>, including:</p>
 <ul>
 <li><strong>Meteorological data</strong></li>
+<li>Open-Meteo (OM) — weather forecasts, historical archive, wind/heat risks, observations</li>
+<li>MeteoTrentino (MT) — regional weather: stations, observations, forecasts, alerts</li>
 <li>OpenWeatherMap (OWM)</li>
-<li>Deutscher Wetterdienst (DWD – ICON-D2)</li>
+<li>Deutscher Wetterdienst (DWD — ICON-D2)</li>
 <li>Copernicus Climate &amp; Atmosphere Services (ERA5, CAMS)</li>
 <li><strong>Geospatial open data</strong></li>
 <li>OpenStreetMap (OSM)</li>
+<li><strong>REC data mirrors</strong></li>
+<li>REC Registry — community/member/asset data mirror</li>
+<li>Flexibility commitments — commitment data mirror from flexibility-api</li>
 </ul>
 <p>Each pipeline follows the same <strong>canonical CELINE structure</strong>:
 - ingestion (Meltano / Singer taps)
@@ -4254,11 +4203,14 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 <h2 id="repository-structure">Repository structure</h2>
 <pre><code class="language-text">celine-pipelines/
 ├── apps/
-│   ├── copernicus/     # Copernicus Climate &amp; Atmosphere pipelines
-│   ├── dwd/            # DWD ICON-D2 weather model
-│   ├── om/             # Open-Meteo weather pipeline (forecast + historical + ML features)
-│   ├── osm/            # OpenStreetMap ingestion &amp; curation
-│   └── owm/            # OpenWeatherMap pipelines
+│   ├── copernicus/                  # Copernicus Climate &amp; Atmosphere pipelines
+│   ├── dwd/                         # DWD ICON-D2 weather model
+│   ├── mt/                          # MeteoTrentino regional weather
+│   ├── om/                          # Open-Meteo (weather, wind, heat, observations)
+│   ├── osm/                         # OpenStreetMap ingestion &amp; curation
+│   ├── owm/                         # OpenWeatherMap pipelines
+│   ├── rec_flexibility_commitments/ # Flexibility commitments mirror
+│   └── rec_registry/                # REC Registry data mirror
 │
 ├── scripts/            # Release &amp; utility scripts
 ├── skaffold.yaml       # Container build configuration
@@ -4318,7 +4270,7 @@ https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial</p>
 <h2 id="local-development">Local development</h2>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>Python ≥ 3.11</li>
+<li>Python &gt;= 3.12</li>
 <li>Docker &amp; Docker Compose</li>
 <li><code>uv</code> </li>
 <li>Prefect</li>
@@ -4368,64 +4320,90 @@ limitations under the License.</p>
 <p>This work is part of the <strong>CELINE project</strong>, funded under the European Union framework, and builds upon multiple open data initiatives including:
 - Copernicus Programme
 - Deutscher Wetterdienst (DWD)
+- Open-Meteo
+- MeteoTrentino / Provincia Autonoma di Trento
 - OpenStreetMap contributors
 - OpenWeather Ltd.</p>
 <hr />
-<h2 id="om-pipeline-open-meteo">OM pipeline (Open-Meteo)</h2>
-<p>The Open-Meteo pipeline fetches hourly weather data (forecast + historical archive),
-transforms it through staging and silver layers (4 natural weather variables),
-then computes 29 ML features in a gold layer for energy consumption forecasting.</p>
-<h3 id="pipeline-layers">Pipeline layers</h3>
+<h2 id="pipeline-summary">Pipeline Summary</h2>
 <table>
 <thead>
 <tr>
-<th>Layer</th>
-<th>Description</th>
+<th>Pipeline</th>
+<th>Source</th>
+<th>Schedule</th>
+<th>Key Outputs</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>RAW</strong></td>
-<td>Verbatim API data (<code>raw.om_weather</code>)</td>
+<td><strong>om</strong> (weather)</td>
+<td>Open-Meteo</td>
+<td>2x daily</td>
+<td>Weather features for energy forecasting</td>
 </tr>
 <tr>
-<td><strong>STAGING</strong></td>
-<td>Type-cast and deduplicated records (<code>ds_dev_staging.stg_om_weather</code>)</td>
+<td><strong>om</strong> (wind)</td>
+<td>Open-Meteo</td>
+<td>Daily</td>
+<td>Wind risk assessments per grid node</td>
 </tr>
 <tr>
-<td><strong>SILVER</strong></td>
-<td>4 natural weather variables: <code>shortwave_radiation</code>, <code>cloud_cover</code>, <code>temperature_2m</code>, <code>precipitation</code> (<code>ds_dev_silver.om_weather_hourly</code>)</td>
+<td><strong>om</strong> (heat)</td>
+<td>Open-Meteo</td>
+<td>Daily</td>
+<td>Heat risk assessments (P90 altitude-band)</td>
 </tr>
 <tr>
-<td><strong>GOLD</strong></td>
-<td>29 ML features: temporal/Fourier encodings, rolling stats, thermal dynamics, interaction features (<code>ds_dev_gold.om_weather_features</code>)</td>
+<td><strong>om</strong> (obs)</td>
+<td>Open-Meteo</td>
+<td>Every 2h</td>
+<td>15-min weather observations</td>
+</tr>
+<tr>
+<td><strong>mt</strong></td>
+<td>MeteoTrentino</td>
+<td>Hourly</td>
+<td>Regional weather stations, forecasts, alerts</td>
+</tr>
+<tr>
+<td><strong>owm</strong></td>
+<td>OpenWeatherMap</td>
+<td>Scheduled</td>
+<td>Weather data for specific locations</td>
+</tr>
+<tr>
+<td><strong>dwd</strong></td>
+<td>DWD</td>
+<td>Scheduled</td>
+<td>ICON-D2 weather model data</td>
+</tr>
+<tr>
+<td><strong>copernicus</strong></td>
+<td>Copernicus</td>
+<td>Scheduled</td>
+<td>ERA5/CAMS climate data</td>
+</tr>
+<tr>
+<td><strong>osm</strong></td>
+<td>OpenStreetMap</td>
+<td>On-demand</td>
+<td>Geospatial layers for REC areas</td>
+</tr>
+<tr>
+<td><strong>rec_registry</strong></td>
+<td>REC Registry API</td>
+<td>Every 5 min</td>
+<td>Community/member/asset mirror</td>
+</tr>
+<tr>
+<td><strong>rec_flexibility_commitments</strong></td>
+<td>Flexibility API</td>
+<td>Every 15 min</td>
+<td>Commitment data mirror (90-day window)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="run-in-docker">Run in Docker</h3>
-<pre><code class="language-bash"># Forecast mode (daily use)
-docker compose up datasets-db -d
-docker compose build pipeline-om
-docker compose run --rm pipeline-om python3 -c &quot;
-from flows.pipeline import om_flow
-om_flow(config={'mode': 'forecast'})
-&quot;
-</code></pre>
-<pre><code class="language-bash"># Historical backfill
-docker compose run --rm pipeline-om python3 -c &quot;
-from flows.pipeline import om_flow
-om_flow(config={'mode': 'historical', 'start_date': '2024-12-01'})
-&quot;
-</code></pre>
-<pre><code class="language-bash"># Both historical + forecast
-docker compose run --rm pipeline-om python3 -c &quot;
-from flows.pipeline import om_flow
-om_flow(config={'mode': 'both', 'start_date': '2024-12-01'})
-&quot;
-</code></pre>
-<p>Or start as a scheduled service (daily at 06:00):</p>
-<pre><code class="language-bash">docker compose up pipeline-om -d
-</code></pre>
 
 
 

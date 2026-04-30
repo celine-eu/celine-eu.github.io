@@ -1397,10 +1397,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nudgetype-and-severity" class="md-nav__link">
+  <a href="#nudgetype" class="md-nav__link">
     <span class="md-ellipsis">
       
-        NudgeType and Severity
+        NudgeType
       
     </span>
   </a>
@@ -1430,10 +1430,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#yaml-seed-format" class="md-nav__link">
+  <a href="#notification-kinds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        YAML Seed Format
+        Notification Kinds
       
     </span>
   </a>
@@ -1441,10 +1441,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#seed-data-management" class="md-nav__link">
+  <a href="#rule-overrides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Seed Data Management
+        Rule Overrides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed Management
       
     </span>
   </a>
@@ -3862,10 +3884,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nudgetype-and-severity" class="md-nav__link">
+  <a href="#nudgetype" class="md-nav__link">
     <span class="md-ellipsis">
       
-        NudgeType and Severity
+        NudgeType
       
     </span>
   </a>
@@ -3895,10 +3917,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#yaml-seed-format" class="md-nav__link">
+  <a href="#notification-kinds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        YAML Seed Format
+        Notification Kinds
       
     </span>
   </a>
@@ -3906,10 +3928,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#seed-data-management" class="md-nav__link">
+  <a href="#rule-overrides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Seed Data Management
+        Rule Overrides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed Management
       
     </span>
   </a>
@@ -3934,14 +3978,17 @@
 
 
 <h1 id="engine">Engine</h1>
-<p>The engine is the core rule evaluation component of the nudging-tool. It maps incoming Digital Twin events to nudge decisions.</p>
+<p>The engine is the core rule evaluation component. It maps incoming events to notification decisions using per-rule Python evaluators.</p>
 <h2 id="rule-evaluation">Rule Evaluation</h2>
-<p>For each incoming event:
-1. The engine queries the database for rules matching the <code>event_type</code>.
-2. Each rule is evaluated against the event's <code>facts</code> dictionary (conditions may check field presence, thresholds, or scenario values).
-3. The first matching rule's <code>nudge_type</code> and <code>severity</code> are selected.
-4. The appropriate Jinja2 template is rendered using the facts as context variables.</p>
-<h2 id="nudgetype-and-severity">NudgeType and Severity</h2>
+<p>For each incoming event:</p>
+<ol>
+<li>The engine resolves matching rules by <code>rule_id</code> list or event scenario mapping</li>
+<li>Each rule's custom Python evaluator is loaded from <code>seed/rules/&lt;rule_id&gt;/evaluate.py</code></li>
+<li>The evaluator decides whether the rule should fire given the event payload</li>
+<li>If it fires, the appropriate Jinja2 template is rendered per channel and language</li>
+<li>Per-community rule overrides may modify rule behavior</li>
+</ol>
+<h2 id="nudgetype">NudgeType</h2>
 <table>
 <thead>
 <tr>
@@ -3951,56 +3998,30 @@
 </thead>
 <tbody>
 <tr>
-<td><code>energy_alert</code></td>
-<td>Significant deviation in energy behavior</td>
+<td><code>informative</code></td>
+<td>General information, low urgency</td>
 </tr>
 <tr>
-<td><code>savings_opportunity</code></td>
-<td>Actionable suggestion to reduce consumption or increase sharing</td>
+<td><code>opportunity</code></td>
+<td>Actionable suggestion or flexibility window</td>
 </tr>
 <tr>
-<td><code>community_milestone</code></td>
-<td>Community-level achievement or threshold crossed</td>
-</tr>
-<tr>
-<td><code>incentive_update</code></td>
-<td>Changes to incentive rates or GSE values</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>Severity</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>info</code></td>
-<td>Informational, low urgency</td>
-</tr>
-<tr>
-<td><code>warning</code></td>
-<td>Attention required</td>
-</tr>
-<tr>
-<td><code>critical</code></td>
-<td>Immediate action suggested</td>
+<td><code>alert</code></td>
+<td>Attention required, higher urgency</td>
 </tr>
 </tbody>
 </table>
 <h2 id="jinja2-templates">Jinja2 Templates</h2>
-<p>Templates use the <code>facts</code> payload as context variables:</p>
+<p>Templates use the event <code>facts</code> payload as context variables:</p>
 <pre><code>{% if delta_pct &gt; 20 %}
 Your import from the grid increased by {{ delta_pct|round(1) }}% compared to {{ prev_period }}.
 {% else %}
 Your import changed by {{ delta_pct|round(1) }}%.
 {% endif %}
 </code></pre>
-<p>Templates are language-specific. The engine selects the template matching the user's preferred language (from <code>UserPreference</code>) or falls back to <code>DEFAULT_LANG</code>.</p>
+<p>Templates are organized per channel (web, email) and language. The engine selects the template matching the user's preferred language or falls back to <code>DEFAULT_LANG</code>.</p>
 <h2 id="deduplication-scopes">Deduplication Scopes</h2>
-<p>Deduplication prevents sending the same nudge type to the same user multiple times within a window:</p>
+<p>Deduplication prevents sending the same rule to the same user multiple times within a window:</p>
 <table>
 <thead>
 <tr>
@@ -4011,50 +4032,58 @@ Your import changed by {{ delta_pct|round(1) }}%.
 <tbody>
 <tr>
 <td><code>daily</code></td>
-<td>Same nudge type not repeated today</td>
+<td>Same rule not repeated today</td>
 </tr>
 <tr>
 <td><code>weekly</code></td>
-<td>Same nudge type not repeated this ISO week</td>
+<td>Same rule not repeated this ISO week</td>
 </tr>
 <tr>
 <td><code>monthly</code></td>
-<td>Same nudge type not repeated this month</td>
+<td>Same rule not repeated this month</td>
 </tr>
 <tr>
 <td><code>yearly</code></td>
-<td>Same nudge type not repeated this year</td>
+<td>Same rule not repeated this year</td>
 </tr>
 </tbody>
 </table>
-<p>The dedup key is composed of: <code>user_id + community_id + nudge_type + scope</code>.</p>
-<h2 id="yaml-seed-format">YAML Seed Format</h2>
-<p>Rules, templates, and preferences are seeded from YAML files at DB initialization:</p>
-<p><strong>seed/rules.yaml:</strong></p>
-<pre><code class="language-yaml">- event_type: imported_up
-  conditions:
-    delta_pct:
-      gte: 10.0
-  nudge_type: energy_alert
-  severity: warning
-  frequency: daily
+<p>The dedup key is: <code>rule_id:user_id:community_id:scope</code>.</p>
+<h2 id="notification-kinds">Notification Kinds</h2>
+<p><code>active_kinds.yaml</code> defines the catalog of notification kinds with i18n labels. Users can opt in or out of specific kinds via their preferences.</p>
+<h2 id="rule-overrides">Rule Overrides</h2>
+<p>Per-community overrides allow customizing rule behavior (e.g., different thresholds, templates, or enabled status) without modifying the base rule definition.</p>
+<h2 id="seed-directory-structure">Seed Directory Structure</h2>
+<p>Rules are seeded from a directory structure (default <code>./seed</code>):</p>
+<pre><code>seed/
+  rules/
+    imported_up/
+      rule.yaml           # Rule definition (kind, nudge_type, severity, etc.)
+      evaluate.py          # Custom Python evaluator
+      templates/
+        web_en.j2          # Web push template (English)
+        web_it.j2          # Web push template (Italian)
+        email_en.j2        # Email template (English)
+    flexibility_opportunity/
+      rule.yaml
+      evaluate.py
+      templates/
+        web_en.j2
+    ...
+  active_kinds.yaml        # Notification kind catalog with i18n
 </code></pre>
-<p><strong>seed/templates.yaml:</strong></p>
-<pre><code class="language-yaml">- nudge_type: energy_alert
-  severity: warning
-  language: en
-  title: &quot;Grid import increased&quot;
-  body: &quot;Your grid import rose by {{ delta_pct|round(1) }}% compared to last {{ period }}.&quot;
+<p>Each rule directory contains:
+- <code>rule.yaml</code> — rule metadata (kind, nudge_type, severity, definition)
+- <code>evaluate.py</code> — Python module with an evaluate function that receives the event and returns a decision
+- <code>templates/</code> — Jinja2 templates named <code>{channel}_{lang}.j2</code></p>
+<h2 id="seed-management">Seed Management</h2>
+<pre><code class="language-bash"># Apply seed data via CLI
+nudging-cli seed apply ./seed --client-id celine-cli --client-secret celine-cli
+
+# Or via taskfile
+task seed
 </code></pre>
-<p><strong>seed/preferences.yaml:</strong></p>
-<pre><code class="language-yaml">- user_id: user-it
-  community_id: COMM1
-  language: it
-  max_per_day: 3
-  enabled: true
-</code></pre>
-<h2 id="seed-data-management">Seed Data Management</h2>
-<p>Seed data is applied by <code>python -m db.init_db</code>, which performs <code>drop_all + create_all</code> followed by seed loading. To update rules without resetting, modify YAML files and re-run the init script in a dev environment. Production updates should use Alembic migrations or direct DB writes.</p>
+<p>The CLI authenticates and calls <code>POST /admin/seed/apply</code> to upsert rules and templates from the seed directory.</p>
 
 
 

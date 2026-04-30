@@ -14,12 +14,13 @@ Shared design system and base component library for CELINE frontends.
 | `Panel` | Slide-over side panel |
 | `Skeleton` | Loading skeleton placeholder |
 | `ThemeToggle` | Dark/light theme switcher |
+| `FeedbackWidget` | User feedback submission widget |
 
 ### Usage
 
 ```svelte
 <script>
-  import { Icon, Button, Skeleton, Panel, Modal, ThemeToggle } from '@celine-eu/ui';
+  import { Icon, Button, Skeleton, Panel, Modal, ThemeToggle, FeedbackWidget } from '@celine-eu/ui';
   import '@celine-eu/ui/theme.css';
 </script>
 
@@ -45,7 +46,10 @@ AI assistant chat interface. Provides a full chat experience that can be embedde
 | `AssistantProvider` | Component | Context provider — wraps the app and includes the floating widget |
 | `AssistantWidget` | Component | Floating button that opens a chat modal |
 | `AskAssistantButton` | Component | Context-aware trigger button for inline assistant access |
-| `api` | Module | Typed API client functions |
+| `AttachmentsPanel` | Component | Attachments list panel (internal, re-exported) |
+| `HistoryPanel` | Component | Conversation history panel (internal, re-exported) |
+| `createAssistantApi` | Function | Factory for typed API client |
+| `AssistantApi` | Type | API client interface |
 | `AssistantContext` | Type | Context payload shape |
 
 ### ChatCore Modes
@@ -82,3 +86,29 @@ interface AssistantContext {
   hint?: string;    // Natural language hint
 }
 ```
+
+---
+
+## @celine-eu/roi-ui
+
+ROI calculator components for the PV installation ROI app.
+
+### Exports
+
+| Export | Type | Description |
+|---|---|---|
+| `RoiCore` | Component | Main ROI calculator with input form, map picker, and results display |
+| `RoiWidget` | Component | Embeddable ROI calculator widget |
+| `createRoiApi` | Function | Factory for typed API client |
+
+### Usage
+
+```svelte
+<script>
+  import { RoiCore } from '@celine-eu/roi-ui';
+</script>
+
+<RoiCore apiBaseUrl="/api/v1" />
+```
+
+Consumed by `apps/roi`. Supports PDF export of results and smartphone-friendly map selection.

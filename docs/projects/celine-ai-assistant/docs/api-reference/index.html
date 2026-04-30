@@ -792,28 +792,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-adminingest" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /admin/ingest
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#post-adminreload" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /admin/reload
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#post-admintraining-materialssync" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4231,28 +4209,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-adminingest" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /admin/ingest
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#post-adminreload" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /admin/reload
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#post-admintraining-materialssync" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4314,7 +4270,7 @@
 
 
 <h1 id="api-reference">API Reference</h1>
-<p>All endpoints require a valid JWT in the <code>Authorization: Bearer &lt;token&gt;</code> header unless noted otherwise. The OpenAPI schema is available at <code>http://localhost:8000/docs</code>.</p>
+<p>All endpoints require a valid JWT unless noted otherwise. The JWT is read from the <code>x-auth-request-access-token</code> header (oauth2_proxy) or <code>Authorization: Bearer</code> header. OpenAPI docs at <code>http://localhost:8012/docs</code>.</p>
 <h2 id="chat">Chat</h2>
 <h3 id="post-chat"><code>POST /chat</code></h3>
 <p>Stream a chat response via Server-Sent Events.</p>
@@ -4322,21 +4278,25 @@
 <pre><code class="language-json">{
   &quot;message&quot;: &quot;string&quot;,
   &quot;conversation_id&quot;: &quot;optional-uuid&quot;,
-  &quot;context&quot;: {&quot;page&quot;: &quot;dashboard&quot;}
+  &quot;attachment_ids&quot;: [&quot;optional-list-of-uuids&quot;],
+  &quot;context&quot;: {&quot;page&quot;: &quot;dashboard&quot;},
+  &quot;top_k&quot;: 5,
+  &quot;include_citations&quot;: false
 }
 </code></pre>
-<p><strong>Response:</strong> <code>text/event-stream</code> — SSE tokens followed by a <code>[DONE]</code> sentinel.</p>
+<p><strong>Response:</strong> <code>text/event-stream</code> — SSE events with <code>data: {"type": "&lt;type&gt;", "data": ...}</code> format.</p>
 <p><strong>Behavior:</strong>
 - Creates a new conversation if <code>conversation_id</code> is omitted.
-- Retrieves relevant document chunks from Qdrant before calling OpenAI.
+- Loads authorized attachments and retrieves relevant document chunks from Qdrant.
+- Enriches the prompt with dashboard context from Digital Twin if configured.
 - Persists the full assistant reply once streaming completes.</p>
 <hr />
 <h2 id="uploads-and-attachments">Uploads and Attachments</h2>
 <h3 id="post-upload"><code>POST /upload</code></h3>
-<p>Upload a file for RAG ingestion.</p>
+<p>Upload a file for RAG ingestion (user scope).</p>
 <p><strong>Request:</strong> <code>multipart/form-data</code> with <code>file</code> field.</p>
 <p><strong>Response:</strong> <code>201</code> with attachment metadata including <code>id</code>, <code>filename</code>, <code>content_type</code>.</p>
-<p>The file is parsed, chunked, embedded, and upserted into Qdrant. Raw file is stored in object storage.</p>
+<p>Images are captioned via the vision model before chunking. All files are parsed, chunked, embedded, and upserted into Qdrant.</p>
 <h3 id="get-attachments"><code>GET /attachments</code></h3>
 <p>List all attachments belonging to the authenticated user.</p>
 <h3 id="get-attachmentsidraw"><code>GET /attachments/{id}/raw</code></h3>
@@ -4346,7 +4306,7 @@
 <hr />
 <h2 id="conversations">Conversations</h2>
 <h3 id="get-conversations"><code>GET /conversations</code></h3>
-<p>List all conversations for the authenticated user. Returns <code>id</code>, <code>title</code>, <code>created_at</code>, <code>message_count</code>.</p>
+<p>List all conversations for the authenticated user.</p>
 <h3 id="get-conversationsidmessages"><code>GET /conversations/{id}/messages</code></h3>
 <p>Return all messages in a conversation.</p>
 <h3 id="delete-conversationsid"><code>DELETE /conversations/{id}</code></h3>
@@ -4354,24 +4314,14 @@
 <hr />
 <h2 id="user">User</h2>
 <h3 id="get-user"><code>GET /user</code></h3>
-<p>Return the authenticated user's profile derived from the JWT (<code>sub</code>, <code>email</code>, <code>name</code>).</p>
+<p>Return the authenticated user's profile derived from the JWT.</p>
 <hr />
 <h2 id="admin">Admin</h2>
-<p>The following endpoints require the user to have admin group membership.</p>
+<p>The following endpoints require the user to be a member of the admin group.</p>
 <h3 id="post-adminuploads"><code>POST /admin/uploads</code></h3>
-<p>List or inspect all uploads across all users (admin view).</p>
-<h3 id="post-adminingest"><code>POST /admin/ingest</code></h3>
-<p>Re-index an existing attachment by ID. Useful after model changes.</p>
-<h3 id="post-adminreload"><code>POST /admin/reload</code></h3>
-<p>Reload the LlamaIndex index from the current Qdrant state without restarting the service.</p>
+<p>Upload a file as a system-level attachment (visible to all users).</p>
 <h3 id="post-admintraining-materialssync"><code>POST /admin/training-materials/sync</code></h3>
-<p>Clone or refresh <code>celine-training-materials</code> inside the API container, check out the requested ref, and ingest Markdown files.</p>
-<p><strong>Request body:</strong></p>
-<pre><code class="language-json">{
-  &quot;target_ref&quot;: &quot;origin/main&quot;
-}
-</code></pre>
-<p><code>target_ref</code> is optional. If omitted, the service uses <code>TRAINING_MATERIALS_REF</code>.</p>
+<p>Clone or refresh <code>celine-training-materials</code> inside the container, check out the requested ref, and ingest Markdown files.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

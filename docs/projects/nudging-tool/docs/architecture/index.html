@@ -1403,10 +1403,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#publisher" class="md-nav__link">
+  <a href="#publishers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publisher
+        Publishers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scheduler
       
     </span>
   </a>
@@ -1423,6 +1434,17 @@
     <span class="md-ellipsis">
       
         Database Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization
       
     </span>
   </a>
@@ -3913,10 +3935,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#publisher" class="md-nav__link">
+  <a href="#publishers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publisher
+        Publishers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scheduler
       
     </span>
   </a>
@@ -3933,6 +3966,17 @@
     <span class="md-ellipsis">
       
         Database Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization
       
     </span>
   </a>
@@ -3969,7 +4013,7 @@
 
 <h1 id="architecture">Architecture</h1>
 <h2 id="event-flow">Event Flow</h2>
-<p>The nudging pipeline processes events in three sequential stages:</p>
+<p>The nudging pipeline processes events through sequential stages:</p>
 <table>
 <thead>
 <tr>
@@ -3981,83 +4025,111 @@
 <tbody>
 <tr>
 <td>1. Ingestion</td>
-<td><code>POST /ingest-event</code></td>
-<td>Validates the incoming <code>DigitalTwinEvent</code> payload</td>
+<td><code>POST /admin/ingest-event</code></td>
+<td>Validates the incoming event payload</td>
 </tr>
 <tr>
 <td>2. Rule Evaluation</td>
 <td><code>engine/engine_service.py</code></td>
-<td>Matches event against rules, selects nudge type, renders message</td>
+<td>Matches event against rules, runs per-rule Python evaluators, renders messages</td>
 </tr>
 <tr>
 <td>3. Orchestration</td>
 <td><code>orchestrator/orchestrator.py</code></td>
-<td>Applies suppression, dedup, preferences</td>
+<td>Applies suppression, dedup, frequency limits, user preferences</td>
 </tr>
 <tr>
 <td>4. Delivery</td>
-<td><code>publishers/web/worker.py</code></td>
-<td>Sends web push notification via pywebpush</td>
+<td><code>publishers/web/worker.py</code>, <code>publishers/email/worker.py</code></td>
+<td>Sends web push or email</td>
 </tr>
 </tbody>
 </table>
+<p>Scheduled events follow the same pipeline but are triggered by the background scheduler instead of direct ingestion.</p>
 <h2 id="components">Components</h2>
 <h3 id="engine">Engine</h3>
-<p>The engine receives a <code>DigitalTwinEvent</code> and:
-1. Looks up matching rules from the database (seeded from <code>seed/rules.yaml</code>)
-2. Evaluates rule conditions against the event's <code>facts</code> payload
-3. Selects a <code>NudgeType</code> and <code>Severity</code>
-4. Renders a Jinja2 message template for the target language</p>
+<p>The engine receives an event and:</p>
+<ol>
+<li>Resolves matching rules by <code>rule_id</code> or event scenario</li>
+<li>Loads each rule's custom Python evaluator from the seed directory</li>
+<li>Evaluates whether the rule should fire given the event payload</li>
+<li>Applies per-community rule overrides if configured</li>
+<li>Renders Jinja2 message templates per channel (web, email) and language</li>
+</ol>
 <h3 id="orchestrator">Orchestrator</h3>
-<p>The orchestrator decides whether and how to deliver a nudge:
-- Checks per-user notification preferences (<code>max_per_day</code>, language)
-- Applies deduplication: prevents duplicate nudges within a scope window (daily/weekly/monthly/yearly)
-- Applies suppression: respects global delivery limits
-- Emits the delivery record for the publisher</p>
-<h3 id="publisher">Publisher</h3>
-<p>The publisher registry holds registered delivery channels. Currently only <code>web</code> is registered, which:
-- Looks up the user's web push subscription endpoint
-- Constructs a VAPID-signed push message
-- Calls the push service via pywebpush</p>
+<p>The orchestrator decides whether and how to deliver a notification:
+- Checks per-user notification preferences (enabled, channels, per-kind opt-in/opt-out)
+- Applies deduplication using <code>rule_id:user_id:community_id:scope</code> keys
+- Enforces frequency limits (<code>max_per_day</code>)
+- Emits delivery jobs for each applicable channel</p>
+<h3 id="publishers">Publishers</h3>
+<ul>
+<li><strong>Web push</strong> (<code>publishers/web/worker.py</code>) — sends VAPID-authenticated push via pywebpush</li>
+<li><strong>Email</strong> (<code>publishers/email/worker.py</code>) — sends via SMTP with TLS/SSL support</li>
+</ul>
+<h3 id="scheduler">Scheduler</h3>
+<p><code>scheduler.py</code> runs as a background task, polling <code>scheduled_events</code> every <code>SCHEDULER_POLL_SECONDS</code>. Due events are processed through the engine pipeline in batches.</p>
 <h2 id="database-models">Database Models</h2>
+<p>PostgreSQL (async via SQLAlchemy + asyncpg):</p>
 <table>
 <thead>
 <tr>
-<th>Model</th>
-<th>Description</th>
+<th>Table</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>NudgeRule</code></td>
-<td>Rule definition: event type, conditions, nudge type, severity</td>
+<td><code>rules</code></td>
+<td>Rule definitions: id, kind, nudge_type, severity, definition (JSONB)</td>
 </tr>
 <tr>
-<td><code>NudgeTemplate</code></td>
-<td>Jinja2 message template per language and nudge type</td>
+<td><code>rule_overrides</code></td>
+<td>Per-community overrides for rules</td>
 </tr>
 <tr>
-<td><code>UserPreference</code></td>
-<td>Per-user preferences: language, max per day, enabled flag</td>
+<td><code>templates</code></td>
+<td>Jinja2 message templates per rule, channel, language</td>
 </tr>
 <tr>
-<td><code>WebPushSubscription</code></td>
-<td>Browser push endpoint, keys per user/community</td>
+<td><code>user_preferences</code></td>
+<td>Per-user preferences: enabled, channels, language, per-kind settings, max_per_day</td>
 </tr>
 <tr>
-<td><code>NudgeDelivery</code></td>
-<td>Delivery record: nudge, user, timestamp, status, dedup key</td>
+<td><code>nudges_log</code></td>
+<td>Event processing log</td>
+</tr>
+<tr>
+<td><code>notifications</code></td>
+<td>Delivered notifications with read/deleted status</td>
+</tr>
+<tr>
+<td><code>delivery_log</code></td>
+<td>Per-channel delivery attempt records</td>
+</tr>
+<tr>
+<td><code>web_push_subscriptions</code></td>
+<td>Browser push subscription endpoints per user/community</td>
+</tr>
+<tr>
+<td><code>scheduled_events</code></td>
+<td>Future events to be processed at <code>fire_at</code> time</td>
 </tr>
 </tbody>
 </table>
+<h2 id="authorization">Authorization</h2>
+<p>OPA-enforced via <code>policies/celine/nudging/authz.rego</code>:
+- <code>ingest</code> action — service accounts with <code>nudging.ingest</code> or <code>nudging.admin</code> scope
+- <code>admin</code> action — service accounts with <code>nudging.admin</code> scope
+- User endpoints — JWT-based ownership (notifications/preferences scoped to authenticated user)</p>
 <h2 id="stack">Stack</h2>
 <ul>
-<li>Python 3.11</li>
-<li>FastAPI + Hypercorn</li>
+<li>Python &gt;= 3.12, FastAPI, uvicorn</li>
 <li>SQLAlchemy 2 (async) + asyncpg</li>
-<li>PostgreSQL 16</li>
-<li>Jinja2 for template rendering</li>
+<li>Alembic for migrations</li>
 <li>pywebpush for VAPID web push</li>
+<li>Jinja2 for template rendering</li>
+<li>Pydantic settings</li>
 </ul>
 
 

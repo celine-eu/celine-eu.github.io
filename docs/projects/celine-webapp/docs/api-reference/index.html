@@ -1206,10 +1206,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apimeterms" class="md-nav__link">
+  <a href="#post-apitermsaccept" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/me/terms
+        POST /api/terms/accept
       
     </span>
   </a>
@@ -1250,22 +1250,106 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notifications" class="md-nav__link">
+  <a href="#weather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notifications
+        Weather
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Notifications">
+    <nav class="md-nav" aria-label="Weather">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-apinotifications" class="md-nav__link">
+  <a href="#get-apiweather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /api/notifications
+        GET /api/weather
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forecast
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forecast">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apiforecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/forecast
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Community">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apicommunity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/community
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggestions-and-commitments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggestions and Commitments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suggestions and Commitments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apisuggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/suggestions
       
     </span>
   </a>
@@ -1273,10 +1357,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apinotificationsidread" class="md-nav__link">
+  <a href="#post-apisuggestionssuggestion_idremind" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/notifications/{id}/read
+        POST /api/suggestions/{suggestion_id}/remind
       
     </span>
   </a>
@@ -1284,10 +1368,88 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#delete-apinotificationsid" class="md-nav__link">
+  <a href="#post-apisuggestionssuggestion_idrespond" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DELETE /api/notifications/{id}
+        POST /api/suggestions/{suggestion_id}/respond
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-apicommitmentscommitment_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DELETE /api/commitments/{commitment_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gamification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apigamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/gamification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apigamificationhistory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/gamification/history
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#co2-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2 Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CO2 Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apisettingsco2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/settings/co2
       
     </span>
   </a>
@@ -1333,11 +1495,28 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#get-apisettingsvapid-public-key" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /api/settings/vapid-public-key
+        Notifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apinotifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/notifications
       
     </span>
   </a>
@@ -1345,10 +1524,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apisettingspush-subscribe" class="md-nav__link">
+  <a href="#post-apinotificationsenable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/settings/push-subscribe
+        POST /api/notifications/enable
       
     </span>
   </a>
@@ -1356,10 +1535,65 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apisettingspush-unsubscribe" class="md-nav__link">
+  <a href="#post-apinotificationsdisable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/settings/push-unsubscribe
+        POST /api/notifications/disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationsread-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/read-all
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationsnotification_idread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/{notification_id}/read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apinotificationswebpushvapid-public-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/notifications/webpush/vapid-public-key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationswebpushsubscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/webpush/subscribe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationswebpushunsubscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/webpush/unsubscribe
       
     </span>
   </a>
@@ -1372,22 +1606,50 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#assistant-proxy" class="md-nav__link">
+  <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Assistant Proxy
+        Feedback
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Assistant Proxy">
+    <nav class="md-nav" aria-label="Feedback">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#apiassistantpath" class="md-nav__link">
+  <a href="#post-apifeedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        * /api/assistant/{path}
+        POST /api/feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Health">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /health
       
     </span>
   </a>
@@ -4025,10 +4287,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apimeterms" class="md-nav__link">
+  <a href="#post-apitermsaccept" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/me/terms
+        POST /api/terms/accept
       
     </span>
   </a>
@@ -4069,22 +4331,106 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notifications" class="md-nav__link">
+  <a href="#weather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notifications
+        Weather
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Notifications">
+    <nav class="md-nav" aria-label="Weather">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-apinotifications" class="md-nav__link">
+  <a href="#get-apiweather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /api/notifications
+        GET /api/weather
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forecast
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forecast">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apiforecast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/forecast
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Community">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apicommunity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/community
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggestions-and-commitments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggestions and Commitments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suggestions and Commitments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apisuggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/suggestions
       
     </span>
   </a>
@@ -4092,10 +4438,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apinotificationsidread" class="md-nav__link">
+  <a href="#post-apisuggestionssuggestion_idremind" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/notifications/{id}/read
+        POST /api/suggestions/{suggestion_id}/remind
       
     </span>
   </a>
@@ -4103,10 +4449,88 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#delete-apinotificationsid" class="md-nav__link">
+  <a href="#post-apisuggestionssuggestion_idrespond" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DELETE /api/notifications/{id}
+        POST /api/suggestions/{suggestion_id}/respond
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-apicommitmentscommitment_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DELETE /api/commitments/{commitment_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gamification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apigamification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/gamification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apigamificationhistory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/gamification/history
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#co2-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2 Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CO2 Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apisettingsco2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/settings/co2
       
     </span>
   </a>
@@ -4152,11 +4576,28 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#get-apisettingsvapid-public-key" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /api/settings/vapid-public-key
+        Notifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-apinotifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/notifications
       
     </span>
   </a>
@@ -4164,10 +4605,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apisettingspush-subscribe" class="md-nav__link">
+  <a href="#post-apinotificationsenable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/settings/push-subscribe
+        POST /api/notifications/enable
       
     </span>
   </a>
@@ -4175,10 +4616,65 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-apisettingspush-unsubscribe" class="md-nav__link">
+  <a href="#post-apinotificationsdisable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /api/settings/push-unsubscribe
+        POST /api/notifications/disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationsread-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/read-all
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationsnotification_idread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/{notification_id}/read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apinotificationswebpushvapid-public-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/notifications/webpush/vapid-public-key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationswebpushsubscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/webpush/subscribe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apinotificationswebpushunsubscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/notifications/webpush/unsubscribe
       
     </span>
   </a>
@@ -4191,22 +4687,50 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#assistant-proxy" class="md-nav__link">
+  <a href="#feedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Assistant Proxy
+        Feedback
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Assistant Proxy">
+    <nav class="md-nav" aria-label="Feedback">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#apiassistantpath" class="md-nav__link">
+  <a href="#post-apifeedback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        * /api/assistant/{path}
+        POST /api/feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Health">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /health
       
     </span>
   </a>
@@ -4236,36 +4760,54 @@
 
 
 <h1 id="api-reference">API Reference</h1>
-<p>All BFF endpoints are served under <code>/api</code>. The JWT is read from the <code>X-Auth-Request-Access-Token</code> header (injected by oauth2_proxy). No client-side auth header is needed.</p>
+<p>All BFF endpoints are served under <code>/api</code>. The JWT is read from the <code>X-Auth-Request-Access-Token</code> header (injected by oauth2_proxy). Interactive docs at <code>http://localhost:8014/docs</code>.</p>
 <h2 id="user">User</h2>
 <h3 id="get-apime"><code>GET /api/me</code></h3>
-<p>Returns the authenticated user's profile. Used by the frontend layout loader to enforce terms acceptance.</p>
-<p><strong>Response:</strong></p>
-<pre><code class="language-json">{
-  &quot;sub&quot;: &quot;user-uuid&quot;,
-  &quot;email&quot;: &quot;user@example.com&quot;,
-  &quot;name&quot;: &quot;Alice Rossi&quot;,
-  &quot;groups&quot;: [&quot;/viewers&quot;],
-  &quot;terms_accepted&quot;: true
-}
-</code></pre>
-<p>If <code>terms_accepted</code> is <code>false</code>, the frontend redirects to the terms acceptance flow.</p>
-<h3 id="post-apimeterms"><code>POST /api/me/terms</code></h3>
-<p>Record the user's acceptance of terms. Sets <code>terms_accepted = true</code> for the authenticated user.</p>
+<p>Returns the authenticated user's profile, terms acceptance status, and settings.</p>
+<h3 id="post-apitermsaccept"><code>POST /api/terms/accept</code></h3>
+<p>Record the user's acceptance of the current terms version.</p>
 <hr />
 <h2 id="overview">Overview</h2>
 <h3 id="get-apioverview"><code>GET /api/overview</code></h3>
 <p>Returns the energy overview for the authenticated user's community. Aggregates data from the Digital Twin.</p>
-<p><strong>Response:</strong></p>
-<pre><code class="language-json">{
-  &quot;community_id&quot;: &quot;COMM1&quot;,
-  &quot;period&quot;: &quot;2026-03&quot;,
-  &quot;production_kwh&quot;: 1200.5,
-  &quot;consumption_kwh&quot;: 980.3,
-  &quot;shared_kwh&quot;: 430.1,
-  &quot;incentive_eur&quot;: 85.20
-}
-</code></pre>
+<hr />
+<h2 id="weather">Weather</h2>
+<h3 id="get-apiweather"><code>GET /api/weather</code></h3>
+<p>Returns current weather conditions for the user's community location via the Digital Twin.</p>
+<hr />
+<h2 id="forecast">Forecast</h2>
+<h3 id="get-apiforecast"><code>GET /api/forecast</code></h3>
+<p>Returns energy production/consumption forecast for the user via the Digital Twin.</p>
+<hr />
+<h2 id="community">Community</h2>
+<h3 id="get-apicommunity"><code>GET /api/community</code></h3>
+<p>Returns community metadata (name, description, areas, links) from the rec-registry.</p>
+<hr />
+<h2 id="suggestions-and-commitments">Suggestions and Commitments</h2>
+<h3 id="get-apisuggestions"><code>GET /api/suggestions</code></h3>
+<p>List active flexibility window suggestions for the user. Includes current window details, acceptance status, and available actions.</p>
+<h3 id="post-apisuggestionssuggestion_idremind"><code>POST /api/suggestions/{suggestion_id}/remind</code></h3>
+<p>Schedule a flexibility reminder for a suggestion via the nudging-tool.</p>
+<h3 id="post-apisuggestionssuggestion_idrespond"><code>POST /api/suggestions/{suggestion_id}/respond</code></h3>
+<p>Accept or reject a flexibility suggestion. Creates a commitment in the flexibility-api.</p>
+<h3 id="delete-apicommitmentscommitment_id"><code>DELETE /api/commitments/{commitment_id}</code></h3>
+<p>Cancel an active commitment.</p>
+<hr />
+<h2 id="gamification">Gamification</h2>
+<h3 id="get-apigamification"><code>GET /api/gamification</code></h3>
+<p>Returns the user's gamification profile: points from flexibility-api, badges, level, and community ranking from Digital Twin.</p>
+<h3 id="get-apigamificationhistory"><code>GET /api/gamification/history</code></h3>
+<p>Returns the user's commitment history from the flexibility-api.</p>
+<hr />
+<h2 id="co2-settings">CO2 Settings</h2>
+<h3 id="get-apisettingsco2"><code>GET /api/settings/co2</code></h3>
+<p>Returns CO2 emission factors and configuration.</p>
+<hr />
+<h2 id="settings">Settings</h2>
+<h3 id="get-apisettings"><code>GET /api/settings</code></h3>
+<p>Return the user's current settings (language, units, notification preferences).</p>
+<h3 id="put-apisettings"><code>PUT /api/settings</code></h3>
+<p>Update user settings.</p>
 <hr />
 <h2 id="notifications">Notifications</h2>
 <h3 id="get-apinotifications"><code>GET /api/notifications</code></h3>
@@ -4274,33 +4816,28 @@
 - <code>limit</code> — max results (default 20)
 - <code>offset</code> — pagination offset
 - <code>unread</code> — if <code>true</code>, return only unread</p>
-<h3 id="post-apinotificationsidread"><code>POST /api/notifications/{id}/read</code></h3>
-<p>Mark a notification as read.</p>
-<h3 id="delete-apinotificationsid"><code>DELETE /api/notifications/{id}</code></h3>
-<p>Delete a notification.</p>
-<hr />
-<h2 id="settings">Settings</h2>
-<h3 id="get-apisettings"><code>GET /api/settings</code></h3>
-<p>Return the user's current settings including notification preferences and push subscription status.</p>
-<h3 id="put-apisettings"><code>PUT /api/settings</code></h3>
-<p>Update notification preferences.</p>
-<p><strong>Request body:</strong></p>
-<pre><code class="language-json">{
-  &quot;notifications_enabled&quot;: true,
-  &quot;preferred_language&quot;: &quot;en&quot;,
-  &quot;max_per_day&quot;: 3
-}
-</code></pre>
-<h3 id="get-apisettingsvapid-public-key"><code>GET /api/settings/vapid-public-key</code></h3>
+<h3 id="post-apinotificationsenable"><code>POST /api/notifications/enable</code></h3>
+<p>Enable notifications for the user.</p>
+<h3 id="post-apinotificationsdisable"><code>POST /api/notifications/disable</code></h3>
+<p>Disable notifications for the user.</p>
+<h3 id="post-apinotificationsread-all"><code>POST /api/notifications/read-all</code></h3>
+<p>Mark all notifications as read.</p>
+<h3 id="post-apinotificationsnotification_idread"><code>POST /api/notifications/{notification_id}/read</code></h3>
+<p>Mark a single notification as read.</p>
+<h3 id="get-apinotificationswebpushvapid-public-key"><code>GET /api/notifications/webpush/vapid-public-key</code></h3>
 <p>Return the VAPID public key for web push subscription setup.</p>
-<h3 id="post-apisettingspush-subscribe"><code>POST /api/settings/push-subscribe</code></h3>
+<h3 id="post-apinotificationswebpushsubscribe"><code>POST /api/notifications/webpush/subscribe</code></h3>
 <p>Register a browser push subscription endpoint.</p>
-<h3 id="post-apisettingspush-unsubscribe"><code>POST /api/settings/push-unsubscribe</code></h3>
+<h3 id="post-apinotificationswebpushunsubscribe"><code>POST /api/notifications/webpush/unsubscribe</code></h3>
 <p>Remove a push subscription.</p>
 <hr />
-<h2 id="assistant-proxy">Assistant Proxy</h2>
-<h3 id="apiassistantpath"><code>* /api/assistant/{path}</code></h3>
-<p>Proxy all assistant requests (GET, POST, DELETE) to the celine-ai-assistant service, forwarding the user's access token.</p>
+<h2 id="feedback">Feedback</h2>
+<h3 id="post-apifeedback"><code>POST /api/feedback</code></h3>
+<p>Submit user feedback. Returns <code>201</code> on success.</p>
+<hr />
+<h2 id="health">Health</h2>
+<h3 id="get-health"><code>GET /health</code></h3>
+<p>Service health check.</p>
 
 
 

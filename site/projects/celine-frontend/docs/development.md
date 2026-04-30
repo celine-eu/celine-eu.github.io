@@ -2,8 +2,9 @@
 
 ## Prerequisites
 
-- Node.js ≥ 20
-- pnpm ≥ 8
+- Node.js >= 20
+- pnpm >= 8
+- `task` (go-task)
 
 ```bash
 npm install -g pnpm
@@ -13,30 +14,33 @@ npm install -g pnpm
 
 ```bash
 # Install all workspace dependencies
-pnpm install
+task setup
+# or: pnpm install
+```
 
-# Run the standalone assistant app
-pnpm dev:assistant
-# http://localhost:5174
+## Dev Servers
 
-# Run the webapp
-pnpm dev:webapp
-# http://localhost:5173
-
-# Build all packages and apps
-pnpm build
+```bash
+task dev:assistant    # http://localhost:3003
+task dev:roi          # http://localhost:3004
+task dev:webapp       # http://localhost:3005
+task dev:grid         # http://localhost:3006
 ```
 
 ## Workspace Structure
 
 ```
 packages/
-  ui/               @celine-eu/ui
-  assistant-ui/     @celine-eu/assistant-ui
+  ui/               @celine-eu/ui          — shared design system
+  assistant-ui/     @celine-eu/assistant-ui — AI chat components
+  roi-ui/           @celine-eu/roi-ui      — ROI calculator components
 apps/
-  assistant/        Standalone assistant app
-  webapp/           REC participant webapp
+  assistant/        Standalone AI assistant     (v0.15.0)
+  roi/              PV ROI calculator           (v0.14.0)
+  webapp/           REC participant webapp      (v0.17.0)
+  grid/             Grid resilience dashboard   (v0.12.0)
 pnpm-workspace.yaml
+taskfile.yaml
 ```
 
 ## Adding an Icon
@@ -54,30 +58,52 @@ Use [Lucide](https://lucide.dev/) icon paths for consistency.
 
 ## Creating a New Component
 
-1. Choose the correct package: `ui` for generic UI components, `assistant-ui` for chat-specific components.
+1. Choose the correct package: `ui` for generic UI, `assistant-ui` for chat, `roi-ui` for ROI calculator.
 2. Create the `.svelte` file in `packages/<package>/src/`.
-3. Export it from `packages/<package>/src/index.js`:
-   ```javascript
+3. Export it from `packages/<package>/src/index.ts`:
+   ```typescript
    export { default as MyComponent } from './MyComponent.svelte';
    ```
-4. Add TypeScript types to the exports in `index.d.ts` if needed.
 
-## Build Pipeline
-
-Each package builds via `vite build` (library mode). Apps build via `vite build` (SPA/SSR mode).
+## Build
 
 ```bash
-# Build only packages
-pnpm --filter @celine-eu/ui build
-pnpm --filter @celine-eu/assistant-ui build
+# Build all
+task build
 
-# Build only apps
-pnpm --filter webapp build
-pnpm --filter assistant build
+# Build individual apps
+task build:webapp
+task build:assistant
+task build:roi
+task build:grid
+```
+
+## Docker
+
+```bash
+task docker:webapp      # Build webapp image
+task docker:assistant   # Build assistant image
+task docker:grid        # Build grid image
+task docker:all         # Build all images
+```
+
+## Release
+
+Each app is independently versioned via `release-it` with conventional commits. Tags follow `<app>-v<version>`.
+
+```bash
+task release:<app>          # bump, changelog, tag, push
+task release:<app>:dry      # preview (assistant, webapp, grid)
+task release                # release all apps
 ```
 
 ## API Requirements
 
-The assistant components expect the celine-ai-assistant API to be available at `apiBaseUrl`. The webapp BFF proxies `/api/assistant/*` to the assistant service.
+Each app connects to its backend service:
 
-For local development of the assistant app standalone, start `celine-ai-assistant` locally and set `apiBaseUrl` to `http://localhost:8000`.
+| App | Backend | API Port |
+|---|---|---|
+| assistant | celine-ai-assistant | 8012 |
+| webapp | celine-webapp (BFF) | 8014 |
+| roi | celine-roi | 8013 |
+| grid | celine-grid | 8015 |
