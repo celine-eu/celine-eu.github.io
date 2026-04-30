@@ -18,7 +18,7 @@ tasks:
 
   serve:
     desc: Run local MkDocs dev server
-    deps: [build]
+    deps: [ build ]
     cmds:
       - "{{.MKDOCS}} serve -a 127.0.0.1:{{.PORT}}"
 
@@ -44,12 +44,7 @@ tasks:
       - task install
       - task rebuild
 
-  dump_code:
-    desc: Dump relevant codebase
+  docs:stale:
+    desc: Check documentation staleness across repositories
     cmds:
-      - "{{.PYTHON}} scripts/dump_source.py"
-
-  generate_ontology_docs:
-    desc: Generate ontology docs
-    cmds:
-      - "{{.PYTHON}} scripts/generate_ontology_docs.py site/ontologies/celine.ttl site/ontologies/celine https://celine-eu.github.io/ontologies/celine#"
+      - "{{.PYTHON}} scripts/check_staleness.py {{.CLI_ARGS}}"
