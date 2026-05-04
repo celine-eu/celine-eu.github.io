@@ -1530,6 +1530,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-notificationstrack-click" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /notifications/track-click
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4263,6 +4274,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-notificationstrack-click" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /notifications/track-click
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4450,6 +4472,13 @@
 <p>Mark a notification as read.</p>
 <h3 id="delete-notificationsid"><code>DELETE /notifications/{id}</code></h3>
 <p>Soft-delete a notification.</p>
+<h3 id="post-notificationstrack-click"><code>POST /notifications/track-click</code></h3>
+<p>Track that a web push notification has been clicked.</p>
+<pre><code class="language-json">{
+  &quot;token&quot;: &quot;signed-tracking-token-from-push-payload&quot;,
+  &quot;action&quot;: &quot;default&quot;
+}
+</code></pre>
 <hr />
 <h2 id="user-preferences">User Preferences</h2>
 <h3 id="get-preferencesme"><code>GET /preferences/me</code></h3>
