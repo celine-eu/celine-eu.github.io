@@ -4109,18 +4109,19 @@
 <li>Demonstrators, KPIs, and evaluation (WP5)</li>
 <li>mapping from tabular data to RDF / JSON-LD</li>
 </ul>
-<p>The CELINE ontology is a <strong>unified ontology profile</strong> — not a standalone domain ontology — that connects PECO, SAREF, SOSA, BIGG and EM-KPI into a coherent semantic target for the CELINE ecosystem.</p>
+<p>The CELINE ontology is a <strong>unified ontology profile</strong> — not a standalone domain ontology — that connects PECO, SAREF, SOSA/SSN into a coherent semantic target for the CELINE ecosystem. Since v0.5, KPI semantics are defined natively via a generic <code>KPIDefinition</code> / <code>KPICatalog</code> layer, with alignment to external vocabularies expressed through SKOS annotations rather than OWL imports.</p>
 <p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code></p>
 <p><strong>Documentation</strong>: <a href="https://celine-eu.github.io/ontologies/">https://celine-eu.github.io/ontologies/</a></p>
 <hr />
 <h2 id="repository-structure">Repository structure</h2>
 <pre><code>specs/          Ontology source artifacts (versioned)
-  current/      → symlink to latest version
-  v0.3/
+  current/      → latest version (v0.5)
+  v0.5/
     celine.ttl           OWL/RDF definition (Turtle)
     celine.shacl.ttl     SHACL validation shapes
     celine.jsonld        JSON-LD context
     celine.schema.json   JSON Schema for API validation
+    examples/            JSON-LD instance data examples
 
 releases/       Generated WIDOCO HTML documentation (versioned)
   current/      → symlink to latest version
@@ -4222,7 +4223,8 @@ task docs:widoco -- vX.X  # specific version
 <hr />
 <h2 id="design-principles">Design principles</h2>
 <ul>
-<li><strong>Standards first</strong>: reuse ETSI SAREF, W3C SOSA/SSN, BIGG, EM-KPI</li>
+<li><strong>Standards first</strong>: reuse ETSI SAREF, W3C SOSA/SSN, PECO for domain semantics</li>
+<li><strong>Alignment via SKOS</strong>: external KPI vocabularies (BIGG, SAREF4CITY) are referenced through <code>skos:closeMatch</code> / <code>skos:relatedMatch</code> annotations, not OWL imports</li>
 <li><strong>Thin CELINE layer</strong>: only project-specific glue concepts are defined here</li>
 <li><strong>Modular &amp; versionable</strong>: <code>specs/</code> and <code>releases/</code> evolve independently</li>
 <li><strong>Tool-friendly</strong>: compatible with rdflib, JSON-LD processors, SHACL engines</li>
