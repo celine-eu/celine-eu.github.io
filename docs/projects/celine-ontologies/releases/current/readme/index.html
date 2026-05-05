@@ -21,7 +21,7 @@
     
     
       
-        <title>CELINE Ontology v0.4 - CELINE Project</title>
+        <title>CELINE Ontology v0.5 - CELINE Project</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-ontology-v04" class="md-skip">
+        <a href="#celine-ontology-v05" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CELINE Ontology v0.4
+              CELINE Ontology v0.5
             
           </span>
         </div>
@@ -3784,10 +3784,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#changes-from-v03" class="md-nav__link">
+  <a href="#changes-from-v04" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changes from v0.3
+        Changes from v0.4
       
     </span>
   </a>
@@ -3806,10 +3806,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flexibility-data-flow" class="md-nav__link">
+  <a href="#kpi-data-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flexibility data flow
+        KPI data flow
       
     </span>
   </a>
@@ -3817,10 +3817,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flexibility-envelope-and-constraint-data-flow" class="md-nav__link">
+  <a href="#kpi-catalog-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flexibility envelope and constraint data flow
+        KPI Catalog entries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-from-v04" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration from v0.4
       
     </span>
   </a>
@@ -3855,31 +3866,42 @@
 
 
 
-<h1 id="celine-ontology-v04">CELINE Ontology v0.4</h1>
+<h1 id="celine-ontology-v05">CELINE Ontology v0.5</h1>
 <p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code>
 <strong>IRI</strong>: <code>https://w3id.org/celine-eu</code>
-<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.4</code></p>
-<p>Adds REC flexibility commitment and settlement modelling on top of the v0.3 orchestration layer.</p>
-<h2 id="changes-from-v03">Changes from v0.3</h2>
+<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.5</code></p>
+<p>Introduces a generic, REC-centric KPI container and removes direct BIGG/BIGG4KPI imports.
+KPI alignment is now expressed via SKOS mapping annotations rather than OWL imports.</p>
+<h2 id="changes-from-v04">Changes from v0.4</h2>
 <ul>
-<li><strong>New class layer: Flexibility Commitment</strong> — models a member's pledge to provide flexibility
-  on one or more of their PODs, including mode (Automated / Voluntary) and direction (FlexDown / FlexUp)</li>
-<li><strong>New class: FlexibilityCredit</strong> — kWh-denominated credit awarded upon fulfillment, grounded
-  in SOSA observations for auditability</li>
-<li><strong>New class layer: Settlement</strong> — <code>SettlementRun</code>, <code>CostItem</code>, and <code>RedistributionResult</code> model
-  the full redistribution cycle: credit aggregation → monetary conversion → cost deduction → net payout per member</li>
-<li><strong>New class: FlexibilityEnvelope</strong> — declared capability of a POD (max up/down power, available
-  energy, availability windows); aligned with <code>saref4ener:PowerProfile</code> already in scope</li>
-<li><strong>New class: FlexibilityConstraint</strong> — operational constraints on flexibility activation
-  (notice period, min/max duration, recovery time, max activations per day)</li>
-<li><strong>Four SKOS vocabularies</strong> — <code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code>, <code>ConstraintType</code>
-  with built-in concepts (<code>Automated</code>, <code>Voluntary</code>, <code>FlexDown</code>, <code>FlexUp</code>, <code>AdminCost</code>, <code>Fee</code>, <code>Debt</code>,
-  <code>DurationConstraint</code>, <code>NoticeConstraint</code>, <code>RecoveryConstraint</code>, <code>FrequencyConstraint</code>)</li>
-<li><strong>SHACL shapes</strong> added for all new classes; existing <code>CommunityContextShape</code> and
-  <code>FlexibilityCommitmentShape</code> extended with <code>hasEnvelope</code> and <code>withinEnvelope</code></li>
-<li><strong>JSON-LD context</strong> and <strong>JSON Schema</strong> extended with all new terms</li>
-<li>No new <code>owl:imports</code> — new classes connect to existing PECO (<code>peco:Electric_POD</code>) and
-  <code>time:Interval</code> terms already in scope; envelope semantics aligned via <code>rdfs:seeAlso</code> to SAREF4ENER</li>
+<li><strong>New class: KPIDefinition</strong> — typed KPI definition independent of evaluation, with name,
+  description, optional formula, unit of measure, scope type, calculation method, and temporal
+  granularity. Dual-typed as <code>owl:Class</code> and <code>skos:Concept</code> when used in the KPI catalog.</li>
+<li><strong>Modified class: KPIEvaluation</strong> — now references a <code>celine:KPIDefinition</code> via
+  <code>celine:hasKPIDefinition</code> (mandatory), replacing the previous <code>celine:evaluatesKPI</code> →
+  <code>bigg:KPI</code> link. New mandatory properties: <code>hasKPIValue</code>, <code>hasEvaluationTimeInterval</code>,
+  <code>hasEvaluatedScope</code>. Optional provenance via <code>hasInputObservation</code> and
+  <code>hasInputKPIEvaluation</code> for derived KPIs.</li>
+<li><strong>Removed: BIGG/BIGG4KPI imports</strong> — the two <code>owl:imports</code> targeting BIGG ontology and
+  bigg4kpi extension are removed. The <code>bigg:</code> and <code>bigg4kpi:</code> prefixes are retained for
+  SKOS alignment annotations.</li>
+<li><strong>Removed: <code>celine:evaluatesKPI</code></strong> — replaced by <code>celine:hasKPIDefinition</code>.</li>
+<li><strong>Four new SKOS concept schemes</strong> — <code>KPIScope</code> (Community, Member, POD, Asset, Building,
+  Other), <code>KPICalculationMethod</code> (Total, Average, Instantaneous, Ratio, Maximum, Minimum,
+  Derived, Other), <code>KPITemporalGranularity</code> (Realtime, Hourly, Daily, Weekly, Monthly,
+  Quarterly, Yearly, Period), <code>UnitOfMeasure</code> (KilowattHour, Kilowatt, Euro, Dimensionless)</li>
+<li><strong>KPI Catalog</strong> — <code>celine:KPICatalog</code> SKOS concept scheme with 11 initial REC-relevant KPI
+  definitions (SelfConsumptionRate, SelfSufficiencyRate, SharedEnergy,
+  SharedEnergyMemberShare, IncentiveAccrued, IncentiveMemberShare, WithdrawnEnergy,
+  FedInEnergy, LocalGenerationEnergy, PeakReductionAchieved, FlexibilityActivated)</li>
+<li><strong>SKOS alignment annotations</strong> — class-level <code>skos:closeMatch</code> toward
+  <code>s4city:KeyPerformanceIndicator</code>, <code>s4city:KeyPerformanceIndicatorAssessment</code>,
+  <code>bigg4kpi:KPIAssessment</code>, and <code>bigg4kpi:BuildingKeyPerformanceIndicator</code>.
+  Individual catalog entries note pending SCPS alignment.</li>
+<li><strong>SHACL shapes</strong> — new <code>KPIDefinitionShape</code>, updated <code>KPIEvaluationShape</code>, concept scheme
+  validation shapes for all four new SKOS schemes. BIGG class targets removed.</li>
+<li><strong>JSON-LD context</strong> — BIGG prefix and <code>evaluatesKPI</code> mapping removed. New terms added for
+  all KPI properties and catalog entries.</li>
 </ul>
 <h2 id="classes">Classes</h2>
 <table>
@@ -3911,8 +3933,12 @@
 <td>Reference to an external dataset (input or output)</td>
 </tr>
 <tr>
+<td><code>celine:KPIDefinition</code></td>
+<td><strong>New in v0.5</strong> — Typed KPI definition with scope, method, granularity, and unit</td>
+</tr>
+<tr>
 <td><code>celine:KPIEvaluation</code></td>
-<td>Evaluation of a BIGG KPI in a Scenario or SimulationRun</td>
+<td><strong>Modified in v0.5</strong> — Evaluation of a KPI, now linked to a KPIDefinition</td>
 </tr>
 <tr>
 <td><code>celine:FlexibilityCommitment</code></td>
@@ -3944,56 +3970,125 @@
 </tr>
 </tbody>
 </table>
-<h2 id="flexibility-data-flow">Flexibility data flow</h2>
-<pre><code>peco:Energy_community_member
+<h2 id="kpi-data-flow">KPI data flow</h2>
+<pre><code>celine:KPIDefinition  (typed + SKOS concept in KPICatalog)
+  │ hasKPIName, hasKPIDescription, hasKPIFormula
+  │ hasKPIScopeType     → KPIScope (Community | Member | POD | ...)
+  │ hasKPICalculationMethod → KPICalculationMethod (Total | Ratio | ...)
+  │ hasKPITemporalGranularity → KPITemporalGranularity (Period | Monthly | ...)
+  │ hasKPIUnit          → UnitOfMeasure (kWh | kW | EUR | Dimensionless)
   │
-  ├─ committedBy ←── FlexibilityCommitment ──► onPOD ──► peco:Electric_POD
-  │                        │ hasCommitmentMode: Automated | Voluntary
-  │                        │ hasFlexibilityDirection: FlexDown | FlexUp
-  │                        │ targetFlexibility: xsd:decimal (kWh)
-  │                        │ hasTimeInterval: time:Interval
-  │                        │
-  │                        └─ generatesCredit ──► FlexibilityCredit
-  │                                                    │ creditAmount: xsd:decimal (kWh)
-  │                                                    └─ evidencedBy ──► sosa:Observation
-  │
-  └─ resultFor ←── RedistributionResult ◄── hasRedistributionResult ──┐
-                        │ creditBalance  (kWh)                         │
-                        │ grossAmount    (currency)              SettlementRun
-                        │ costDeduction  (currency)                    │ conversionRate (€/kWh)
-                        └─ netAmount     (currency)                    │ currency (ISO 4217)
-                                                                       └─ hasCostItem ──► CostItem
-                                                                                              │ hasCostType: AdminCost | Fee | Debt
-                                                                                              └─ costAmount (currency)
+  └─ hasKPIDefinition ←── KPIEvaluation
+                              │ hasKPIValue: xsd:decimal
+                              │ hasEvaluationTimeInterval → time:Interval
+                              │ hasEvaluatedScope → CommunityContext | Member | POD
+                              │ hasInputObservation → sosa:Observation (optional)
+                              └─ hasInputKPIEvaluation → KPIEvaluation (optional, for derived KPIs)
 </code></pre>
-<h2 id="flexibility-envelope-and-constraint-data-flow">Flexibility envelope and constraint data flow</h2>
-<pre><code>peco:Electric_POD ──► hasEnvelope (via CommunityContext)
-                           │
-                    FlexibilityEnvelope  (≈ saref4ener:PowerProfile)
-                           │ maxFlexUp      (kW)
-                           │ maxFlexDown    (kW)
-                           │ availableEnergy (kWh)
-                           │ hasAvailabilityWindow ──► time:Interval
-                           └─ hasConstraint ──► FlexibilityConstraint
-                                                    │ hasConstraintType: DurationConstraint
-                                                    │                  | NoticeConstraint
-                                                    │                  | RecoveryConstraint
-                                                    │                  | FrequencyConstraint
-                                                    │ minNotificationTime   (xsd:duration)
-                                                    │ minActivationDuration (xsd:duration)
-                                                    │ maxActivationDuration (xsd:duration)
-                                                    │ minRecoveryTime       (xsd:duration)
-                                                    └─ maxActivationsPerDay (xsd:integer)
-
-FlexibilityCommitment ──► withinEnvelope ──► FlexibilityEnvelope
-  (commitment amounts must not exceed envelope maxFlexUp/maxFlexDown bounds)
-</code></pre>
+<h2 id="kpi-catalog-entries">KPI Catalog entries</h2>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Scope</th>
+<th>Method</th>
+<th>Granularity</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SelfConsumptionRate</code></td>
+<td>Community</td>
+<td>Ratio</td>
+<td>Period</td>
+<td>Dimensionless</td>
+</tr>
+<tr>
+<td><code>SelfSufficiencyRate</code></td>
+<td>Community</td>
+<td>Ratio</td>
+<td>Period</td>
+<td>Dimensionless</td>
+</tr>
+<tr>
+<td><code>SharedEnergy</code></td>
+<td>Community</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+<tr>
+<td><code>SharedEnergyMemberShare</code></td>
+<td>Member</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+<tr>
+<td><code>IncentiveAccrued</code></td>
+<td>Community</td>
+<td>Total</td>
+<td>Period</td>
+<td>EUR</td>
+</tr>
+<tr>
+<td><code>IncentiveMemberShare</code></td>
+<td>Member</td>
+<td>Total</td>
+<td>Period</td>
+<td>EUR</td>
+</tr>
+<tr>
+<td><code>WithdrawnEnergy</code></td>
+<td>POD</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+<tr>
+<td><code>FedInEnergy</code></td>
+<td>POD</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+<tr>
+<td><code>LocalGenerationEnergy</code></td>
+<td>Community</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+<tr>
+<td><code>PeakReductionAchieved</code></td>
+<td>Community</td>
+<td>Total</td>
+<td>Period</td>
+<td>kW</td>
+</tr>
+<tr>
+<td><code>FlexibilityActivated</code></td>
+<td>Community</td>
+<td>Total</td>
+<td>Period</td>
+<td>kWh</td>
+</tr>
+</tbody>
+</table>
+<h2 id="migration-from-v04">Migration from v0.4</h2>
+<ol>
+<li>Replace <code>celine:evaluatesKPI &lt;bigg:KPI_IRI&gt;</code> with <code>celine:hasKPIDefinition &lt;celine:CatalogEntry&gt;</code></li>
+<li>Replace <code>rdf:value "..."^^xsd:decimal</code> with <code>celine:hasKPIValue "..."^^xsd:decimal</code></li>
+<li>Add <code>celine:hasEvaluationTimeInterval</code> and <code>celine:hasEvaluatedScope</code> (now mandatory)</li>
+<li>Remove any direct references to <code>bigg:</code> or <code>bigg4kpi:</code> terms in instance data</li>
+<li>Optionally add <code>celine:hasInputObservation</code> for provenance</li>
+</ol>
 <h2 id="imports">Imports</h2>
 <ul>
 <li>PECO (<code>https://purl.org/peco/peco-core</code>)</li>
 <li>SAREF core v3.1.1 + SAREF4ENER v1.2.1 (ETSI, versioned)</li>
 <li>SOSA (W3C <code>w3c/sdw@dee1bdd3c3</code>)</li>
-<li>BIGG ontology + bigg4kpi (<code>BeeGroup-cimne/biggontology@776e245668</code>)</li>
 </ul>
 
 
