@@ -1,23 +1,23 @@
 <https://w3id.org/celine-eu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.4> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.5> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://purl.org/peco/peco-core> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://raw.githubusercontent.com/BeeGroup-cimne/biggontology/776e245668bba171b0eacfccfa9d6e5166860d8e/extensions/bigg4kpi.ttl> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://raw.githubusercontent.com/BeeGroup-cimne/biggontology/776e245668bba171b0eacfccfa9d6e5166860d8e/ontology/ontology.ttl> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://saref.etsi.org/core/v3.1.1/saref.ttl> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/created> "2026-03-24"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://w3id.org/celine-eu> <http://purl.org/dc/terms/description> "The CELINE Core Ontology is a lightweight orchestration profile for\n    Renewable Energy Communities (RECs) and Digital Twin workflows. It connects established\n    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN and BIGG — without redefining their domain\n    semantics, providing a minimal coordination layer for simulation scenarios, dataset\n    references, KPI evaluation, and REC flexibility commitment and settlement." .
+<https://w3id.org/celine-eu> <http://purl.org/dc/terms/description> "The CELINE Core Ontology is a lightweight orchestration profile for\n    Renewable Energy Communities (RECs) and Digital Twin workflows. It connects established\n    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN — without redefining their domain\n    semantics, providing a minimal coordination layer for simulation scenarios, dataset\n    references, KPI definition and evaluation, and REC flexibility commitment and settlement." .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> .
+<https://w3id.org/celine-eu> <http://purl.org/dc/terms/modified> "2026-05-05"^^<http://www.w3.org/2001/XMLSchema#date> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/title> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespacePrefix> "celine" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/celine-eu#" .
+<https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#comment> "Version 0.5 introduces a generic, REC-centric KPI container (KPIDefinition,\n    KPICatalog, KPIScope, KPICalculationMethod, KPITemporalGranularity) and removes the direct\n    BIGG and BIGG4KPI imports. KPI alignment to external vocabularies (BIGG, SAREF, SAREF4ENER,\n    SOSA) is now expressed via SKOS mapping annotations on KPI classes rather than via OWL\n    imports. Existing KPIEvaluation usage is preserved with mandatory\n    linkage to a KPIDefinition." .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#label> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://celine-eu.github.io/> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://github.com/celine-eu> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://www.celineproject.eu/> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.3> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.4" .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.4> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.5.0" .
 # 
 # 
 # #################################################################
@@ -26,6 +26,21 @@
 # #
 # #################################################################
 # 
+# 
+# http://www.w3.org/2004/02/skos/core#closeMatch
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://www.w3.org/2004/02/skos/core#hasTopConcept
+<http://www.w3.org/2004/02/skos/core#hasTopConcept> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://www.w3.org/2004/02/skos/core#inScheme
+<http://www.w3.org/2004/02/skos/core#inScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://www.w3.org/2004/02/skos/core#notation
+<http://www.w3.org/2004/02/skos/core#notation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://www.w3.org/2004/02/skos/core#relatedMatch
+<http://www.w3.org/2004/02/skos/core#relatedMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 # 
 # http://www.w3.org/2004/02/skos/core#topConceptOf
 <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
@@ -68,14 +83,6 @@
 <https://w3id.org/celine-eu#envelopeFor> <http://www.w3.org/2000/01/rdf-schema#comment> "The POD whose physical and operational flexibility is described by this envelope." .
 <https://w3id.org/celine-eu#envelopeFor> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#envelopeFor> <http://www.w3.org/2000/01/rdf-schema#label> "envelope for" .
-# 
-# https://w3id.org/celine-eu#evaluatesKPI
-<https://w3id.org/celine-eu#evaluatesKPI> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/celine-eu#evaluatesKPI> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
-<https://w3id.org/celine-eu#evaluatesKPI> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/bigg/ontology#KPI> .
-<https://w3id.org/bigg/ontology#KPI> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/celine-eu#evaluatesKPI> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#evaluatesKPI> <http://www.w3.org/2000/01/rdf-schema#label> "evaluates KPI" .
 # 
 # https://w3id.org/celine-eu#evidencedBy
 <https://w3id.org/celine-eu#evidencedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -162,6 +169,33 @@
 <https://w3id.org/celine-eu#hasEnvelope> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#hasEnvelope> <http://www.w3.org/2000/01/rdf-schema#label> "has flexibility envelope" .
 # 
+# https://w3id.org/celine-eu#hasEvaluatedScope
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/2000/01/rdf-schema#range> _:genid1 .
+_:genid1 <http://www.w3.org/2002/07/owl#unionOf> _:genid4 .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid3 .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid2 .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/celine-eu#CommunityContext> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://purl.org/peco/peco-core#Energy_community_member> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://purl.org/peco/peco-core#Electric_POD> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/2000/01/rdf-schema#comment> "The entity (community, member, or POD) for which this KPI was evaluated."@en .
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasEvaluatedScope> <http://www.w3.org/2000/01/rdf-schema#label> "has evaluated scope"@en .
+# 
+# https://w3id.org/celine-eu#hasEvaluationTimeInterval
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2006/time#Interval> .
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/2000/01/rdf-schema#comment> "The time interval over which the KPI was evaluated."@en .
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasEvaluationTimeInterval> <http://www.w3.org/2000/01/rdf-schema#label> "has evaluation time interval"@en .
+# 
 # https://w3id.org/celine-eu#hasFlexibilityDirection
 <https://w3id.org/celine-eu#hasFlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <https://w3id.org/celine-eu#hasFlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#FlexibilityCommitment> .
@@ -170,12 +204,68 @@
 <https://w3id.org/celine-eu#hasFlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#hasFlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#label> "has flexibility direction" .
 # 
+# https://w3id.org/celine-eu#hasInputKPIEvaluation
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#comment> "Upstream KPI evaluation(s) used as input for computing a derived KPI."@en .
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasInputKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#label> "has input KPI evaluation"@en .
+# 
+# https://w3id.org/celine-eu#hasInputObservation
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/ns/sosa/Observation> .
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/2000/01/rdf-schema#comment> "SOSA observation(s) used as input data for computing this KPI evaluation."@en .
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasInputObservation> <http://www.w3.org/2000/01/rdf-schema#label> "has input observation"@en .
+# 
+# https://w3id.org/celine-eu#hasKPICalculationMethod
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#comment> "Expected values from celine:KPICalculationMethod concept scheme."@en .
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI calculation method"@en .
+# 
+# https://w3id.org/celine-eu#hasKPIDefinition
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an evaluation to the KPI type being measured."@en .
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIDefinition> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI definition"@en .
+# 
 # https://w3id.org/celine-eu#hasKPIEvaluation
 <https://w3id.org/celine-eu#hasKPIEvaluation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <https://w3id.org/celine-eu#hasKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#SimulationRun> .
 <https://w3id.org/celine-eu#hasKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/celine-eu#KPIEvaluation> .
 <https://w3id.org/celine-eu#hasKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#hasKPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI evaluation" .
+# 
+# https://w3id.org/celine-eu#hasKPIScopeType
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/2000/01/rdf-schema#comment> "Expected values from celine:KPIScope concept scheme."@en .
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIScopeType> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI scope type"@en .
+# 
+# https://w3id.org/celine-eu#hasKPITemporalGranularity
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#comment> "Expected values from celine:KPITemporalGranularity concept scheme."@en .
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI temporal granularity"@en .
+# 
+# https://w3id.org/celine-eu#hasKPIUnit
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "Unit of measure for the KPI value. Expected values from celine:UnitOfMeasure concept scheme."@en .
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIUnit> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI unit"@en .
 # 
 # https://w3id.org/celine-eu#hasRedistributionResult
 <https://w3id.org/celine-eu#hasRedistributionResult> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -348,9 +438,41 @@
 <https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 <https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#RedistributionResult> .
 <https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
-<https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#comment> "Monetary value of the member's credit balance before cost deductions (creditBalance × conversionRate)." .
+<https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#comment> "Monetary value of the member's credit balance before cost deductions (creditBalance x conversionRate)." .
 <https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#grossAmount> <http://www.w3.org/2000/01/rdf-schema#label> "gross amount" .
+# 
+# https://w3id.org/celine-eu#hasKPIDescription
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/2000/01/rdf-schema#comment> "Free-text description of the KPI. Use xml:lang tagging for multilingual descriptions."@en .
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIDescription> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI description"@en .
+# 
+# https://w3id.org/celine-eu#hasKPIFormula
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/2000/01/rdf-schema#comment> "Optional free-text or MathML representation of the KPI calculation formula."@en .
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIFormula> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI formula"@en .
+# 
+# https://w3id.org/celine-eu#hasKPIName
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/2000/01/rdf-schema#comment> "Canonical name of the KPI. For multilingual names use rdfs:label with language tags."@en .
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIName> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI name"@en .
+# 
+# https://w3id.org/celine-eu#hasKPIValue
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#KPIEvaluation> .
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/2000/01/rdf-schema#comment> "The computed numeric value of the KPI for this evaluation."@en .
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#hasKPIValue> <http://www.w3.org/2000/01/rdf-schema#label> "has KPI value"@en .
 # 
 # https://w3id.org/celine-eu#maxActivationDuration
 <https://w3id.org/celine-eu#maxActivationDuration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
@@ -412,7 +534,7 @@
 <https://w3id.org/celine-eu#netAmount> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 <https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/celine-eu#RedistributionResult> .
 <https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
-<https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#comment> "Final redistribution amount for this member (grossAmount − costDeduction)." .
+<https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#comment> "Final redistribution amount for this member (grossAmount - costDeduction)." .
 <https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#netAmount> <http://www.w3.org/2000/01/rdf-schema#label> "net amount" .
 # 
@@ -433,9 +555,10 @@
 # #################################################################
 # 
 # 
-# https://purl.org/peco/peco-core#EnergyCommunity
+# http://www.w3.org/2004/02/skos/core#ConceptScheme
+<http://www.w3.org/2004/02/skos/core#ConceptScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 # 
-# https://w3id.org/bigg/ontology#KPI
+# https://purl.org/peco/peco-core#EnergyCommunity
 # 
 # https://w3id.org/celine-eu#CommunityContext
 <https://w3id.org/celine-eu#CommunityContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -487,12 +610,25 @@
 <https://w3id.org/celine-eu#FlexibilityEnvelope> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://saref.etsi.org/saref4ener/> .
 <https://w3id.org/celine-eu#FlexibilityEnvelope> <http://www.w3.org/2004/02/skos/core#example> "ex:env_hp a celine:FlexibilityEnvelope ;\n    celine:envelopeFor           ex:pod_rossi_heatpump ;\n    celine:maxFlexUp             \"2.0\"^^xsd:decimal ;\n    celine:maxFlexDown           \"3.0\"^^xsd:decimal ;\n    celine:availableEnergy       \"6.0\"^^xsd:decimal ;\n    celine:hasAvailabilityWindow ex:window_morning ;\n    celine:hasConstraint         ex:constraint_hp ." .
 # 
+# https://w3id.org/celine-eu#KPIDefinition
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2000/01/rdf-schema#comment> "A definition of a KPI type, independent of any specific evaluation.\n    Captures the name, description, formula, unit, scope, calculation method and temporal\n    granularity of a KPI. Instances may simultaneously be skos:Concept members of the\n    celine:KPICatalog controlled vocabulary."@en .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2000/01/rdf-schema#label> "Definizione KPI"@it .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Definition"@en .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://saref.etsi.org/saref4city/KeyPerformanceIndicator> .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2004/02/skos/core#example> "ex:kpi_def_ssr a celine:KPIDefinition , skos:Concept ;\n    skos:inScheme           celine:KPICatalog ;\n    celine:hasKPIName       \"Self-Sufficiency Rate\" ;\n    celine:hasKPIDescription \"Ratio of locally consumed energy to total consumption.\"@en ;\n    celine:hasKPIScopeType           celine:ScopeCommunity ;\n    celine:hasKPICalculationMethod   celine:MethodRatio ;\n    celine:hasKPITemporalGranularity celine:GranularityPeriod ;\n    celine:hasKPIUnit                celine:Dimensionless ." .
+<https://w3id.org/celine-eu#KPIDefinition> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://bigg-project.eu/bigg4kpi#BuildingKeyPerformanceIndicator> .
+# 
 # https://w3id.org/celine-eu#KPIEvaluation
 <https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation of a BIGG KPI in a specific Scenario or SimulationRun." .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation of a KPI for a specific scope entity and time interval.\n    References a KPIDefinition for the metric type, and carries the computed value,\n    the evaluation period, and optional provenance links to observations or upstream\n    KPI evaluations."@en .
 <https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Evaluation" .
-<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2004/02/skos/core#example> "ex:kpi_self_sufficiency a celine:KPIEvaluation ;\n    celine:evaluatesKPI bigg:SelfSufficiencyRate ;\n    rdf:value           \"0.72\"^^xsd:decimal ." .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Evaluation"@en .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2000/01/rdf-schema#label> "Valutazione KPI"@it .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://bigg-project.eu/bigg4kpi#KPIAssessment> .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://saref.etsi.org/saref4city/KeyPerformanceIndicatorAssessment> .
+<https://w3id.org/celine-eu#KPIEvaluation> <http://www.w3.org/2004/02/skos/core#example> "ex:kpi_eval_ssr_q3 a celine:KPIEvaluation ;\n    celine:hasKPIDefinition        celine:SelfSufficiencyRate ;\n    celine:hasKPIValue             \"0.72\"^^xsd:decimal ;\n    celine:hasEvaluationTimeInterval ex:interval_q3_2025 ;\n    celine:hasEvaluatedScope       ex:ctx1 ;\n    celine:hasInputObservation     ex:obs_meter_001 ." .
 # 
 # https://w3id.org/celine-eu#RedistributionResult
 <https://w3id.org/celine-eu#RedistributionResult> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -510,7 +646,7 @@
 # 
 # https://w3id.org/celine-eu#SettlementRun
 <https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/2000/01/rdf-schema#comment> "Execution of the redistribution calculation for a settlement period.\n    Aggregates FlexibilityCredits across all members, applies a linear conversion rate\n    (kWh → monetary), deducts shared cost voices (CostItems), and produces one\n    RedistributionResult per member." .
+<https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/2000/01/rdf-schema#comment> "Execution of the redistribution calculation for a settlement period.\n    Aggregates FlexibilityCredits across all members, applies a linear conversion rate\n    (kWh -> monetary), deducts shared cost voices (CostItems), and produces one\n    RedistributionResult per member." .
 <https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/2000/01/rdf-schema#label> "Settlement Run" .
 <https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/2004/02/skos/core#example> "ex:sr_2025_q3 a celine:SettlementRun ;\n    celine:settlesContext           ex:ctx1 ;\n    celine:hasTimeInterval          ex:interval_q3_2025 ;\n    celine:conversionRate           \"0.12\"^^xsd:decimal ;\n    celine:currency                 \"EUR\" ;\n    celine:hasCostItem              ex:cost_admin, ex:cost_platform_fee ;\n    celine:hasRedistributionResult  ex:result_rossi, ex:result_bianchi ." .
@@ -541,24 +677,23 @@
 # https://w3id.org/celine-eu#AdminCost
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
-<https://w3id.org/celine-eu#CostType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2000/01/rdf-schema#comment> "Overhead and management costs for operating the REC." .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost" .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
 # 
 # https://w3id.org/celine-eu#Automated
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
-<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member." .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated" .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CommitmentMode> .
 # 
 # https://w3id.org/celine-eu#CommitmentMode
+<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 <https://w3id.org/celine-eu#CommitmentMode> <http://purl.org/dc/terms/description> "Classification of how a flexibility commitment is activated." .
 <https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
@@ -574,6 +709,7 @@
 <https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#prefLabel> "Constraint Type" .
 # 
 # https://w3id.org/celine-eu#CostType
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#CostType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 <https://w3id.org/celine-eu#CostType> <http://purl.org/dc/terms/description> "Classification of cost voices within a SettlementRun." .
 <https://w3id.org/celine-eu#CostType> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
@@ -583,50 +719,109 @@
 # https://w3id.org/celine-eu#Debt
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2000/01/rdf-schema#comment> "Outstanding obligation carried forward from a previous settlement period." .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt" .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
+# 
+# https://w3id.org/celine-eu#Dimensionless
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2000/01/rdf-schema#comment> "Dimensionless quantity (ratio, fraction, percentage). UCUM code: 1"@en .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#UnitOfMeasure> .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2004/02/skos/core#notation> "1" .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2004/02/skos/core#prefLabel> "Adimensionale"@it .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2004/02/skos/core#prefLabel> "Dimensionless"@en .
+<https://w3id.org/celine-eu#Dimensionless> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#UnitOfMeasure> .
 # 
 # https://w3id.org/celine-eu#DurationConstraint
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum or maximum duration of a single flexibility activation event." .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint" .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
+# 
+# https://w3id.org/celine-eu#Euro
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2000/01/rdf-schema#comment> "Currency unit, ISO 4217 code EUR."@en .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#UnitOfMeasure> .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2004/02/skos/core#notation> "EUR" .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2004/02/skos/core#prefLabel> "Euro"@en .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2004/02/skos/core#prefLabel> "Euro"@it .
+<https://w3id.org/celine-eu#Euro> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#UnitOfMeasure> .
+# 
+# https://w3id.org/celine-eu#FedInEnergy
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#FedInEnergy> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FedInEnergy> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopePOD> .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FedInEnergy> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FedInEnergy> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FedInEnergy> <https://w3id.org/celine-eu#hasKPIName> "Fed-In Energy" .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Energia immessa"@it .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Fed-In Energy"@en .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2004/02/skos/core#definition> "Total energy fed into the grid by a POD during the evaluation period."@en .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#FedInEnergy> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
 # 
 # https://w3id.org/celine-eu#Fee
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2000/01/rdf-schema#comment> "Platform, service or regulatory fee charged to the community." .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee" .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
 # 
 # https://w3id.org/celine-eu#FlexDown
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
-<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2000/01/rdf-schema#comment> "Decrease community net consumption: reduce load or increase local generation." .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down" .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#FlexibilityDirection> .
 # 
 # https://w3id.org/celine-eu#FlexUp
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2000/01/rdf-schema#comment> "Increase community net consumption: increase load or reduce local generation." .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up" .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#FlexibilityDirection> .
 # 
+# https://w3id.org/celine-eu#FlexibilityActivated
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <https://w3id.org/celine-eu#hasKPIName> "Flexibility Activated" .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2000/01/rdf-schema#label> "Flessibilità attivata"@it .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2000/01/rdf-schema#label> "Flexibility Activated"@en .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2004/02/skos/core#definition> "Total flexibility energy activated (delivered) during the evaluation period, across all commitments in scope."@en .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#FlexibilityActivated> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
 # https://w3id.org/celine-eu#FlexibilityDirection
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://purl.org/dc/terms/description> "Direction of the flexibility commitment relative to the community baseline." .
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
@@ -636,37 +831,500 @@
 # https://w3id.org/celine-eu#FrequencyConstraint
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the maximum number of flexibility activations permitted within a given period." .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint" .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
+# 
+# https://w3id.org/celine-eu#GranularityDaily
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per day."@en .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2004/02/skos/core#prefLabel> "Daily"@en .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2004/02/skos/core#prefLabel> "Giornaliero"@it .
+<https://w3id.org/celine-eu#GranularityDaily> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityHourly
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per hour."@en .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hourly"@en .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Orario"@it .
+<https://w3id.org/celine-eu#GranularityHourly> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityMonthly
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per calendar month."@en .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Mensile"@it .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Monthly"@en .
+<https://w3id.org/celine-eu#GranularityMonthly> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityPeriod
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation over an arbitrary time period defined by the evaluation's time interval."@en .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2004/02/skos/core#prefLabel> "Period"@en .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2004/02/skos/core#prefLabel> "Periodo"@it .
+<https://w3id.org/celine-eu#GranularityPeriod> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityQuarterly
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per calendar quarter."@en .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Quarterly"@en .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Trimestrale"@it .
+<https://w3id.org/celine-eu#GranularityQuarterly> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityRealtime
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2000/01/rdf-schema#comment> "Continuous or near-real-time evaluation."@en .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2004/02/skos/core#prefLabel> "Realtime"@en .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2004/02/skos/core#prefLabel> "Tempo reale"@it .
+<https://w3id.org/celine-eu#GranularityRealtime> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityWeekly
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per week."@en .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Settimanale"@it .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Weekly"@en .
+<https://w3id.org/celine-eu#GranularityWeekly> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#GranularityYearly
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluation aggregated or sampled per calendar year."@en .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Annuale"@it .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2004/02/skos/core#prefLabel> "Yearly"@en .
+<https://w3id.org/celine-eu#GranularityYearly> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPITemporalGranularity> .
+# 
+# https://w3id.org/celine-eu#IncentiveAccrued
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#Euro> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <https://w3id.org/celine-eu#hasKPIName> "Incentive Accrued" .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2000/01/rdf-schema#label> "Incentive Accrued"@en .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2000/01/rdf-schema#label> "Incentivo maturato"@it .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2004/02/skos/core#definition> "Total monetary incentive accrued by the community for shared energy during the evaluation period."@en .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#IncentiveAccrued> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#IncentiveMemberShare
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeMember> .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#Euro> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <https://w3id.org/celine-eu#hasKPIName> "Incentive Member Share" .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2000/01/rdf-schema#label> "Incentive Member Share"@en .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2000/01/rdf-schema#label> "Quota incentivo membro"@it .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2004/02/skos/core#definition> "Share of the community's accrued incentive attributed to an individual member during the evaluation period."@en .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#IncentiveMemberShare> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#KPICalculationMethod
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://purl.org/dc/terms/description> "Classification of the mathematical method used to compute a KPI value."@en .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Calculation Method"@en .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2000/01/rdf-schema#label> "Metodo di calcolo KPI"@it .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodAverage> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodDerived> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodInstantaneous> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodMaximum> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodMinimum> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodOther> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodRatio> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#KPICalculationMethod> <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Calculation Method"@en .
+# 
+# https://w3id.org/celine-eu#KPICatalog
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/celine-eu#KPICatalog> <http://purl.org/dc/terms/description> "Controlled vocabulary of named, REC-relevant KPI definitions.\n    Each member is both a skos:Concept and a celine:KPIDefinition."@en .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2000/01/rdf-schema#label> "Catalogo KPI"@it .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Catalog"@en .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#FedInEnergy> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#FlexibilityActivated> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#IncentiveAccrued> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#IncentiveMemberShare> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#LocalGenerationEnergy> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#PeakReductionAchieved> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#SelfConsumptionRate> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#SelfSufficiencyRate> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#SharedEnergy> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#SharedEnergyMemberShare> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#WithdrawnEnergy> .
+<https://w3id.org/celine-eu#KPICatalog> <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Catalog"@en .
+# 
+# https://w3id.org/celine-eu#KPIScope
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/celine-eu#KPIScope> <http://purl.org/dc/terms/description> "Classification of the entity scope at which a KPI is evaluated."@en .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2000/01/rdf-schema#label> "Ambito KPI"@it .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Scope"@en .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopeAsset> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopeBuilding> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopeMember> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopeOther> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#ScopePOD> .
+<https://w3id.org/celine-eu#KPIScope> <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Scope"@en .
+# 
+# https://w3id.org/celine-eu#KPITemporalGranularity
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://purl.org/dc/terms/description> "Classification of the temporal resolution at which a KPI is evaluated."@en .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#label> "Granularità temporale KPI"@it .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2000/01/rdf-schema#label> "KPI Temporal Granularity"@en .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityDaily> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityHourly> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityMonthly> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityQuarterly> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityRealtime> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityWeekly> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#GranularityYearly> .
+<https://w3id.org/celine-eu#KPITemporalGranularity> <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Temporal Granularity"@en .
+# 
+# https://w3id.org/celine-eu#Kilowatt
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2000/01/rdf-schema#comment> "Unit of power equal to 1000 watts. UCUM code: kW"@en .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#UnitOfMeasure> .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2004/02/skos/core#notation> "kW" .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowatt"@en .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowatt"@it .
+<https://w3id.org/celine-eu#Kilowatt> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#UnitOfMeasure> .
+# 
+# https://w3id.org/celine-eu#KilowattHour
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2000/01/rdf-schema#comment> "Unit of energy equal to 3.6 MJ. UCUM code: kW.h"@en .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#UnitOfMeasure> .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2004/02/skos/core#notation> "kW.h" .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowatt-hour"@en .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowattora"@it .
+<https://w3id.org/celine-eu#KilowattHour> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#UnitOfMeasure> .
+# 
+# https://w3id.org/celine-eu#LocalGenerationEnergy
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <https://w3id.org/celine-eu#hasKPIName> "Local Generation Energy" .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Energia di generazione locale"@it .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Local Generation Energy"@en .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2004/02/skos/core#definition> "Total energy produced by all local generation assets within the community during the evaluation period."@en .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#LocalGenerationEnergy> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#MethodAverage
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2000/01/rdf-schema#comment> "Arithmetic mean of all values over the evaluation period."@en .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2004/02/skos/core#prefLabel> "Average"@en .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2004/02/skos/core#prefLabel> "Media"@it .
+<https://w3id.org/celine-eu#MethodAverage> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodDerived
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2000/01/rdf-schema#comment> "Value computed from one or more upstream KPI evaluations."@en .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2004/02/skos/core#prefLabel> "Derivato"@it .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2004/02/skos/core#prefLabel> "Derived"@en .
+<https://w3id.org/celine-eu#MethodDerived> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodInstantaneous
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2000/01/rdf-schema#comment> "Single-point measurement or snapshot value at a specific instant."@en .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2004/02/skos/core#prefLabel> "Instantaneous"@en .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2004/02/skos/core#prefLabel> "Istantaneo"@it .
+<https://w3id.org/celine-eu#MethodInstantaneous> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodMaximum
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2000/01/rdf-schema#comment> "Highest observed value over the evaluation period."@en .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2004/02/skos/core#prefLabel> "Massimo"@it .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2004/02/skos/core#prefLabel> "Maximum"@en .
+<https://w3id.org/celine-eu#MethodMaximum> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodMinimum
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2000/01/rdf-schema#comment> "Lowest observed value over the evaluation period."@en .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2004/02/skos/core#prefLabel> "Minimo"@it .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2004/02/skos/core#prefLabel> "Minimum"@en .
+<https://w3id.org/celine-eu#MethodMinimum> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodOther
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2000/01/rdf-schema#comment> "Calculation method that does not fit the predefined categories."@en .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2004/02/skos/core#prefLabel> "Altro"@it .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2004/02/skos/core#prefLabel> "Other"@en .
+<https://w3id.org/celine-eu#MethodOther> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodRatio
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2000/01/rdf-schema#comment> "Quotient of two quantities, typically expressed as a fraction or percentage."@en .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2004/02/skos/core#prefLabel> "Rapporto"@it .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ratio"@en .
+<https://w3id.org/celine-eu#MethodRatio> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
+# 
+# https://w3id.org/celine-eu#MethodTotal
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2000/01/rdf-schema#comment> "Summation of all values over the evaluation period."@en .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICalculationMethod> .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2004/02/skos/core#prefLabel> "Total"@en .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2004/02/skos/core#prefLabel> "Totale"@it .
+<https://w3id.org/celine-eu#MethodTotal> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICalculationMethod> .
 # 
 # https://w3id.org/celine-eu#NoticeConstraint
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum lead time required before activating flexibility." .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint" .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
+# 
+# https://w3id.org/celine-eu#PeakReductionAchieved
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#Kilowatt> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <https://w3id.org/celine-eu#hasKPIName> "Peak Reduction Achieved" .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2000/01/rdf-schema#label> "Peak Reduction Achieved"@en .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2000/01/rdf-schema#label> "Riduzione di picco raggiunta"@it .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2004/02/skos/core#definition> "Reduction in peak power demand achieved by the community through flexibility activation during the evaluation period."@en .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#PeakReductionAchieved> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
 # 
 # https://w3id.org/celine-eu#RecoveryConstraint
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum rest period required between consecutive flexibility activations." .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint" .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
+# 
+# https://w3id.org/celine-eu#ScopeAsset
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI evaluated for a specific energy asset (e.g. PV panel, battery)."@en .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2004/02/skos/core#prefLabel> "Asset"@en .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2004/02/skos/core#prefLabel> "Asset"@it .
+<https://w3id.org/celine-eu#ScopeAsset> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#ScopeBuilding
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI evaluated at the level of a single building."@en .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2004/02/skos/core#prefLabel> "Building"@en .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2004/02/skos/core#prefLabel> "Edificio"@it .
+<https://w3id.org/celine-eu#ScopeBuilding> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#ScopeCommunity
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI evaluated at the level of the entire energy community."@en .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2004/02/skos/core#prefLabel> "Community"@en .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2004/02/skos/core#prefLabel> "Comunità"@it .
+<https://w3id.org/celine-eu#ScopeCommunity> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#ScopeMember
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI evaluated for an individual energy community member."@en .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2004/02/skos/core#prefLabel> "Member"@en .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2004/02/skos/core#prefLabel> "Membro"@it .
+<https://w3id.org/celine-eu#ScopeMember> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#ScopeOther
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI scope that does not fit the predefined categories."@en .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2004/02/skos/core#prefLabel> "Altro"@it .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2004/02/skos/core#prefLabel> "Other"@en .
+<https://w3id.org/celine-eu#ScopeOther> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#ScopePOD
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2000/01/rdf-schema#comment> "KPI evaluated at the level of a single Point of Delivery."@en .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPIScope> .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2004/02/skos/core#prefLabel> "POD"@en .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2004/02/skos/core#prefLabel> "POD"@it .
+<https://w3id.org/celine-eu#ScopePOD> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPIScope> .
+# 
+# https://w3id.org/celine-eu#SelfConsumptionRate
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodRatio> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#Dimensionless> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <https://w3id.org/celine-eu#hasKPIName> "Self-Consumption Rate" .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2000/01/rdf-schema#label> "Self-Consumption Rate"@en .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2000/01/rdf-schema#label> "Tasso di autoconsumo"@it .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2004/02/skos/core#definition> "Ratio of energy consumed locally to total energy produced locally by the community."@en .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#SelfConsumptionRate> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#SelfSufficiencyRate
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodRatio> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#Dimensionless> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <https://w3id.org/celine-eu#hasKPIName> "Self-Sufficiency Rate" .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2000/01/rdf-schema#label> "Self-Sufficiency Rate"@en .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2000/01/rdf-schema#label> "Tasso di autosufficienza"@it .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2004/02/skos/core#definition> "Ratio of energy consumed from local production to total energy consumed by the community."@en .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#SelfSufficiencyRate> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#SharedEnergy
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#SharedEnergy> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#SharedEnergy> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeCommunity> .
+<https://w3id.org/celine-eu#SharedEnergy> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#SharedEnergy> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#SharedEnergy> <https://w3id.org/celine-eu#hasKPIName> "Shared Energy" .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Energia condivisa"@it .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Shared Energy"@en .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2004/02/skos/core#definition> "Total energy shared within the community during the evaluation period, as defined by the Italian ARERA regulation for RECs."@en .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#SharedEnergy> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#SharedEnergyMemberShare
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopeMember> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <https://w3id.org/celine-eu#hasKPIName> "Shared Energy Member Share" .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2000/01/rdf-schema#label> "Quota energia condivisa membro"@it .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2000/01/rdf-schema#label> "Shared Energy Member Share"@en .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2004/02/skos/core#definition> "Share of the community's shared energy attributed to an individual member during the evaluation period."@en .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#SharedEnergyMemberShare> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
+# 
+# https://w3id.org/celine-eu#UnitOfMeasure
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://purl.org/dc/terms/description> "SKOS controlled vocabulary for KPI measurement units, aligned to UCUM codes."@en .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2000/01/rdf-schema#label> "Unit of Measure"@en .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2000/01/rdf-schema#label> "Unità di misura"@it .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Dimensionless> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Euro> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Kilowatt> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#UnitOfMeasure> <http://www.w3.org/2004/02/skos/core#prefLabel> "Unit of Measure"@en .
 # 
 # https://w3id.org/celine-eu#Voluntary
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment activated manually by the member at their discretion." .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary" .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CommitmentMode> .
+# 
+# https://w3id.org/celine-eu#WithdrawnEnergy
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/celine-eu#KPIDefinition> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <https://w3id.org/celine-eu#hasKPICalculationMethod> <https://w3id.org/celine-eu#MethodTotal> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <https://w3id.org/celine-eu#hasKPIScopeType> <https://w3id.org/celine-eu#ScopePOD> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <https://w3id.org/celine-eu#hasKPITemporalGranularity> <https://w3id.org/celine-eu#GranularityPeriod> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <https://w3id.org/celine-eu#hasKPIUnit> <https://w3id.org/celine-eu#KilowattHour> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <https://w3id.org/celine-eu#hasKPIName> "Withdrawn Energy" .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Energia prelevata"@it .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2000/01/rdf-schema#label> "Withdrawn Energy"@en .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2004/02/skos/core#definition> "Total energy withdrawn from the grid by a POD during the evaluation period."@en .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#KPICatalog> .
+<https://w3id.org/celine-eu#WithdrawnEnergy> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#KPICatalog> .
 # 
 # Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/

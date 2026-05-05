@@ -7,33 +7,58 @@
 @base <https://w3id.org/celine-eu#> .
 
 <https://w3id.org/celine-eu> rdf:type owl:Ontology ;
-                              owl:versionIRI <https://w3id.org/celine-eu/v0.4> ;
+                              owl:versionIRI <https://w3id.org/celine-eu/v0.5> ;
                               owl:imports <https://purl.org/peco/peco-core> ,
-                                          <https://raw.githubusercontent.com/BeeGroup-cimne/biggontology/776e245668bba171b0eacfccfa9d6e5166860d8e/extensions/bigg4kpi.ttl> ,
-                                          <https://raw.githubusercontent.com/BeeGroup-cimne/biggontology/776e245668bba171b0eacfccfa9d6e5166860d8e/ontology/ontology.ttl> ,
                                           <https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl> ,
                                           <https://saref.etsi.org/core/v3.1.1/saref.ttl> ,
                                           <https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl> ;
                               <http://purl.org/dc/terms/created> "2026-03-24"^^xsd:date ;
                               <http://purl.org/dc/terms/description> """The CELINE Core Ontology is a lightweight orchestration profile for
     Renewable Energy Communities (RECs) and Digital Twin workflows. It connects established
-    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN and BIGG — without redefining their domain
+    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN — without redefining their domain
     semantics, providing a minimal coordination layer for simulation scenarios, dataset
-    references, KPI evaluation, and REC flexibility commitment and settlement.""" ;
+    references, KPI definition and evaluation, and REC flexibility commitment and settlement.""" ;
                               <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> ;
+                              <http://purl.org/dc/terms/modified> "2026-05-05"^^xsd:date ;
                               <http://purl.org/dc/terms/title> "CELINE Core Ontology" ;
                               <http://purl.org/vocab/vann/preferredNamespacePrefix> "celine" ;
                               <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/celine-eu#" ;
+                              rdfs:comment """Version 0.5 introduces a generic, REC-centric KPI container (KPIDefinition,
+    KPICatalog, KPIScope, KPICalculationMethod, KPITemporalGranularity) and removes the direct
+    BIGG and BIGG4KPI imports. KPI alignment to external vocabularies (BIGG, SAREF, SAREF4ENER,
+    SOSA) is now expressed via SKOS mapping annotations on KPI classes rather than via OWL
+    imports. Existing KPIEvaluation usage is preserved with mandatory
+    linkage to a KPIDefinition.""" ;
                               rdfs:label "CELINE Core Ontology" ;
                               rdfs:seeAlso <https://celine-eu.github.io/> ,
                                            <https://github.com/celine-eu> ,
                                            <https://www.celineproject.eu/> ;
-                              owl:priorVersion <https://w3id.org/celine-eu/v0.3> ;
-                              owl:versionInfo "0.4" .
+                              owl:priorVersion <https://w3id.org/celine-eu/v0.4> ;
+                              owl:versionInfo "0.5.0" .
 
 #################################################################
 #    Annotation properties
 #################################################################
+
+###  http://www.w3.org/2004/02/skos/core#closeMatch
+<http://www.w3.org/2004/02/skos/core#closeMatch> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#hasTopConcept
+<http://www.w3.org/2004/02/skos/core#hasTopConcept> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#inScheme
+<http://www.w3.org/2004/02/skos/core#inScheme> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#notation
+<http://www.w3.org/2004/02/skos/core#notation> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#relatedMatch
+<http://www.w3.org/2004/02/skos/core#relatedMatch> rdf:type owl:AnnotationProperty .
+
 
 ###  http://www.w3.org/2004/02/skos/core#topConceptOf
 <http://www.w3.org/2004/02/skos/core#topConceptOf> rdf:type owl:AnnotationProperty .
@@ -75,14 +100,6 @@
              rdfs:comment "The POD whose physical and operational flexibility is described by this envelope." ;
              rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
              rdfs:label "envelope for" .
-
-
-###  https://w3id.org/celine-eu#evaluatesKPI
-:evaluatesKPI rdf:type owl:ObjectProperty ;
-              rdfs:domain :KPIEvaluation ;
-              rdfs:range <https://w3id.org/bigg/ontology#KPI> ;
-              rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-              rdfs:label "evaluates KPI" .
 
 
 ###  https://w3id.org/celine-eu#evidencedBy
@@ -180,6 +197,29 @@
              rdfs:label "has flexibility envelope" .
 
 
+###  https://w3id.org/celine-eu#hasEvaluatedScope
+:hasEvaluatedScope rdf:type owl:ObjectProperty ;
+                   rdfs:domain :KPIEvaluation ;
+                   rdfs:range [ rdf:type owl:Class ;
+                                owl:unionOf ( <https://purl.org/peco/peco-core#Electric_POD>
+                                              <https://purl.org/peco/peco-core#Energy_community_member>
+                                              :CommunityContext
+                                            )
+                              ] ;
+                   rdfs:comment "The entity (community, member, or POD) for which this KPI was evaluated."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   rdfs:label "has evaluated scope"@en .
+
+
+###  https://w3id.org/celine-eu#hasEvaluationTimeInterval
+:hasEvaluationTimeInterval rdf:type owl:ObjectProperty ;
+                           rdfs:domain :KPIEvaluation ;
+                           rdfs:range <http://www.w3.org/2006/time#Interval> ;
+                           rdfs:comment "The time interval over which the KPI was evaluated."@en ;
+                           rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                           rdfs:label "has evaluation time interval"@en .
+
+
 ###  https://w3id.org/celine-eu#hasFlexibilityDirection
 :hasFlexibilityDirection rdf:type owl:ObjectProperty ;
                          rdfs:domain :FlexibilityCommitment ;
@@ -189,12 +229,75 @@
                          rdfs:label "has flexibility direction" .
 
 
+###  https://w3id.org/celine-eu#hasInputKPIEvaluation
+:hasInputKPIEvaluation rdf:type owl:ObjectProperty ;
+                       rdfs:domain :KPIEvaluation ;
+                       rdfs:range :KPIEvaluation ;
+                       rdfs:comment "Upstream KPI evaluation(s) used as input for computing a derived KPI."@en ;
+                       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                       rdfs:label "has input KPI evaluation"@en .
+
+
+###  https://w3id.org/celine-eu#hasInputObservation
+:hasInputObservation rdf:type owl:ObjectProperty ;
+                     rdfs:domain :KPIEvaluation ;
+                     rdfs:range <http://www.w3.org/ns/sosa/Observation> ;
+                     rdfs:comment "SOSA observation(s) used as input data for computing this KPI evaluation."@en ;
+                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     rdfs:label "has input observation"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPICalculationMethod
+:hasKPICalculationMethod rdf:type owl:ObjectProperty ;
+                         rdfs:domain :KPIDefinition ;
+                         rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                         rdfs:comment "Expected values from celine:KPICalculationMethod concept scheme."@en ;
+                         rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                         rdfs:label "has KPI calculation method"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPIDefinition
+:hasKPIDefinition rdf:type owl:ObjectProperty ;
+                  rdfs:domain :KPIEvaluation ;
+                  rdfs:range :KPIDefinition ;
+                  rdfs:comment "Links an evaluation to the KPI type being measured."@en ;
+                  rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                  rdfs:label "has KPI definition"@en .
+
+
 ###  https://w3id.org/celine-eu#hasKPIEvaluation
 :hasKPIEvaluation rdf:type owl:ObjectProperty ;
                   rdfs:domain :SimulationRun ;
                   rdfs:range :KPIEvaluation ;
                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                   rdfs:label "has KPI evaluation" .
+
+
+###  https://w3id.org/celine-eu#hasKPIScopeType
+:hasKPIScopeType rdf:type owl:ObjectProperty ;
+                 rdfs:domain :KPIDefinition ;
+                 rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                 rdfs:comment "Expected values from celine:KPIScope concept scheme."@en ;
+                 rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                 rdfs:label "has KPI scope type"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPITemporalGranularity
+:hasKPITemporalGranularity rdf:type owl:ObjectProperty ;
+                           rdfs:domain :KPIDefinition ;
+                           rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                           rdfs:comment "Expected values from celine:KPITemporalGranularity concept scheme."@en ;
+                           rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                           rdfs:label "has KPI temporal granularity"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPIUnit
+:hasKPIUnit rdf:type owl:ObjectProperty ;
+            rdfs:domain :KPIDefinition ;
+            rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+            rdfs:comment "Unit of measure for the KPI value. Expected values from celine:UnitOfMeasure concept scheme."@en ;
+            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+            rdfs:label "has KPI unit"@en .
 
 
 ###  https://w3id.org/celine-eu#hasRedistributionResult
@@ -384,9 +487,45 @@
 :grossAmount rdf:type owl:DatatypeProperty ;
              rdfs:domain :RedistributionResult ;
              rdfs:range xsd:decimal ;
-             rdfs:comment "Monetary value of the member's credit balance before cost deductions (creditBalance × conversionRate)." ;
+             rdfs:comment "Monetary value of the member's credit balance before cost deductions (creditBalance x conversionRate)." ;
              rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
              rdfs:label "gross amount" .
+
+
+###  https://w3id.org/celine-eu#hasKPIDescription
+:hasKPIDescription rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :KPIDefinition ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "Free-text description of the KPI. Use xml:lang tagging for multilingual descriptions."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   rdfs:label "has KPI description"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPIFormula
+:hasKPIFormula rdf:type owl:DatatypeProperty ;
+               rdfs:domain :KPIDefinition ;
+               rdfs:range xsd:string ;
+               rdfs:comment "Optional free-text or MathML representation of the KPI calculation formula."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               rdfs:label "has KPI formula"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPIName
+:hasKPIName rdf:type owl:DatatypeProperty ;
+            rdfs:domain :KPIDefinition ;
+            rdfs:range xsd:string ;
+            rdfs:comment "Canonical name of the KPI. For multilingual names use rdfs:label with language tags."@en ;
+            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+            rdfs:label "has KPI name"@en .
+
+
+###  https://w3id.org/celine-eu#hasKPIValue
+:hasKPIValue rdf:type owl:DatatypeProperty ;
+             rdfs:domain :KPIEvaluation ;
+             rdfs:range xsd:decimal ;
+             rdfs:comment "The computed numeric value of the KPI for this evaluation."@en ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             rdfs:label "has KPI value"@en .
 
 
 ###  https://w3id.org/celine-eu#maxActivationDuration
@@ -456,7 +595,7 @@
 :netAmount rdf:type owl:DatatypeProperty ;
            rdfs:domain :RedistributionResult ;
            rdfs:range xsd:decimal ;
-           rdfs:comment "Final redistribution amount for this member (grossAmount − costDeduction)." ;
+           rdfs:comment "Final redistribution amount for this member (grossAmount - costDeduction)." ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
            rdfs:label "net amount" .
 
@@ -474,12 +613,12 @@
 #    Classes
 #################################################################
 
+###  http://www.w3.org/2004/02/skos/core#ConceptScheme
+<http://www.w3.org/2004/02/skos/core#ConceptScheme> rdf:type owl:Class .
+
+
 ###  https://purl.org/peco/peco-core#EnergyCommunity
 <https://purl.org/peco/peco-core#EnergyCommunity> rdf:type owl:Class .
-
-
-###  https://w3id.org/bigg/ontology#KPI
-<https://w3id.org/bigg/ontology#KPI> rdf:type owl:Class .
 
 
 ###  https://w3id.org/celine-eu#CommunityContext
@@ -590,14 +729,44 @@ ex:cost_platform_fee a celine:CostItem ;
     celine:hasConstraint         ex:constraint_hp .""" .
 
 
+###  https://w3id.org/celine-eu#KPIDefinition
+:KPIDefinition rdf:type owl:Class ;
+               rdfs:comment """A definition of a KPI type, independent of any specific evaluation.
+    Captures the name, description, formula, unit, scope, calculation method and temporal
+    granularity of a KPI. Instances may simultaneously be skos:Concept members of the
+    celine:KPICatalog controlled vocabulary."""@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               rdfs:label "Definizione KPI"@it ,
+                          "KPI Definition"@en ;
+               <http://www.w3.org/2004/02/skos/core#closeMatch> <https://saref.etsi.org/saref4city/KeyPerformanceIndicator> ;
+               <http://www.w3.org/2004/02/skos/core#example> """ex:kpi_def_ssr a celine:KPIDefinition , skos:Concept ;
+    skos:inScheme           celine:KPICatalog ;
+    celine:hasKPIName       \"Self-Sufficiency Rate\" ;
+    celine:hasKPIDescription \"Ratio of locally consumed energy to total consumption.\"@en ;
+    celine:hasKPIScopeType           celine:ScopeCommunity ;
+    celine:hasKPICalculationMethod   celine:MethodRatio ;
+    celine:hasKPITemporalGranularity celine:GranularityPeriod ;
+    celine:hasKPIUnit                celine:Dimensionless .""" ;
+               <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://bigg-project.eu/bigg4kpi#BuildingKeyPerformanceIndicator> .
+
+
 ###  https://w3id.org/celine-eu#KPIEvaluation
 :KPIEvaluation rdf:type owl:Class ;
-               rdfs:comment "Evaluation of a BIGG KPI in a specific Scenario or SimulationRun." ;
+               rdfs:comment """Evaluation of a KPI for a specific scope entity and time interval.
+    References a KPIDefinition for the metric type, and carries the computed value,
+    the evaluation period, and optional provenance links to observations or upstream
+    KPI evaluations."""@en ;
                rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-               rdfs:label "KPI Evaluation" ;
-               <http://www.w3.org/2004/02/skos/core#example> """ex:kpi_self_sufficiency a celine:KPIEvaluation ;
-    celine:evaluatesKPI bigg:SelfSufficiencyRate ;
-    rdf:value           \"0.72\"^^xsd:decimal .""" .
+               rdfs:label "KPI Evaluation"@en ,
+                          "Valutazione KPI"@it ;
+               <http://www.w3.org/2004/02/skos/core#closeMatch> <http://bigg-project.eu/bigg4kpi#KPIAssessment> ,
+                                                                <https://saref.etsi.org/saref4city/KeyPerformanceIndicatorAssessment> ;
+               <http://www.w3.org/2004/02/skos/core#example> """ex:kpi_eval_ssr_q3 a celine:KPIEvaluation ;
+    celine:hasKPIDefinition        celine:SelfSufficiencyRate ;
+    celine:hasKPIValue             \"0.72\"^^xsd:decimal ;
+    celine:hasEvaluationTimeInterval ex:interval_q3_2025 ;
+    celine:hasEvaluatedScope       ex:ctx1 ;
+    celine:hasInputObservation     ex:obs_meter_001 .""" .
 
 
 ###  https://w3id.org/celine-eu#RedistributionResult
@@ -631,7 +800,7 @@ ex:cost_platform_fee a celine:CostItem ;
 :SettlementRun rdf:type owl:Class ;
                rdfs:comment """Execution of the redistribution calculation for a settlement period.
     Aggregates FlexibilityCredits across all members, applies a linear conversion rate
-    (kWh → monetary), deducts shared cost voices (CostItems), and produces one
+    (kWh -> monetary), deducts shared cost voices (CostItems), and produces one
     RedistributionResult per member.""" ;
                rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                rdfs:label "Settlement Run" ;
@@ -672,9 +841,9 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#AdminCost
 :AdminCost rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
            rdfs:comment "Overhead and management costs for operating the REC." ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+           <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
            <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost" ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
 
@@ -682,9 +851,9 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#Automated
 :Automated rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
            rdfs:comment "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member." ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+           <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
            <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated" ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CommitmentMode .
 
@@ -719,29 +888,70 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#Debt
 :Debt rdf:type owl:NamedIndividual ,
                <http://www.w3.org/2004/02/skos/core#Concept> ;
-      <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
       rdfs:comment "Outstanding obligation carried forward from a previous settlement period." ;
       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+      <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
       <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt" ;
       <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
+
+
+###  https://w3id.org/celine-eu#Dimensionless
+:Dimensionless rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "Dimensionless quantity (ratio, fraction, percentage). UCUM code: 1"@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :UnitOfMeasure ;
+               <http://www.w3.org/2004/02/skos/core#notation> "1" ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Adimensionale"@it ,
+                                                               "Dimensionless"@en ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :UnitOfMeasure .
 
 
 ###  https://w3id.org/celine-eu#DurationConstraint
 :DurationConstraint rdf:type owl:NamedIndividual ,
                              <http://www.w3.org/2004/02/skos/core#Concept> ;
-                    <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                     rdfs:comment "Constraint on the minimum or maximum duration of a single flexibility activation event." ;
                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                    <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint" ;
                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
+
+
+###  https://w3id.org/celine-eu#Euro
+:Euro rdf:type owl:NamedIndividual ,
+               <http://www.w3.org/2004/02/skos/core#Concept> ;
+      rdfs:comment "Currency unit, ISO 4217 code EUR."@en ;
+      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+      <http://www.w3.org/2004/02/skos/core#inScheme> :UnitOfMeasure ;
+      <http://www.w3.org/2004/02/skos/core#notation> "EUR" ;
+      <http://www.w3.org/2004/02/skos/core#prefLabel> "Euro"@en ,
+                                                      "Euro"@it ;
+      <http://www.w3.org/2004/02/skos/core#topConceptOf> :UnitOfMeasure .
+
+
+###  https://w3id.org/celine-eu#FedInEnergy
+:FedInEnergy rdf:type owl:NamedIndividual ,
+                      <http://www.w3.org/2004/02/skos/core#Concept> ,
+                      :KPIDefinition ;
+             :hasKPICalculationMethod :MethodTotal ;
+             :hasKPIScopeType :ScopePOD ;
+             :hasKPITemporalGranularity :GranularityPeriod ;
+             :hasKPIUnit :KilowattHour ;
+             :hasKPIName "Fed-In Energy" ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             rdfs:label "Energia immessa"@it ,
+                        "Fed-In Energy"@en ;
+             <http://www.w3.org/2004/02/skos/core#definition> "Total energy fed into the grid by a POD during the evaluation period."@en ;
+             <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+             <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
 
 
 ###  https://w3id.org/celine-eu#Fee
 :Fee rdf:type owl:NamedIndividual ,
               <http://www.w3.org/2004/02/skos/core#Concept> ;
-     <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
      rdfs:comment "Platform, service or regulatory fee charged to the community." ;
      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+     <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
      <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee" ;
      <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
 
@@ -749,9 +959,9 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#FlexDown
 :FlexDown rdf:type owl:NamedIndividual ,
                    <http://www.w3.org/2004/02/skos/core#Concept> ;
-          <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
           rdfs:comment "Decrease community net consumption: reduce load or increase local generation." ;
           rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+          <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
           <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down" ;
           <http://www.w3.org/2004/02/skos/core#topConceptOf> :FlexibilityDirection .
 
@@ -759,11 +969,28 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#FlexUp
 :FlexUp rdf:type owl:NamedIndividual ,
                  <http://www.w3.org/2004/02/skos/core#Concept> ;
-        <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
         rdfs:comment "Increase community net consumption: increase load or reduce local generation." ;
         rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+        <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
         <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up" ;
         <http://www.w3.org/2004/02/skos/core#topConceptOf> :FlexibilityDirection .
+
+
+###  https://w3id.org/celine-eu#FlexibilityActivated
+:FlexibilityActivated rdf:type owl:NamedIndividual ,
+                               <http://www.w3.org/2004/02/skos/core#Concept> ,
+                               :KPIDefinition ;
+                      :hasKPICalculationMethod :MethodTotal ;
+                      :hasKPIScopeType :ScopeCommunity ;
+                      :hasKPITemporalGranularity :GranularityPeriod ;
+                      :hasKPIUnit :KilowattHour ;
+                      :hasKPIName "Flexibility Activated" ;
+                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                      rdfs:label "Flessibilità attivata"@it ,
+                                 "Flexibility Activated"@en ;
+                      <http://www.w3.org/2004/02/skos/core#definition> "Total flexibility energy activated (delivered) during the evaluation period, across all commitments in scope."@en ;
+                      <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                      <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
 
 
 ###  https://w3id.org/celine-eu#FlexibilityDirection
@@ -778,41 +1005,548 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#FrequencyConstraint
 :FrequencyConstraint rdf:type owl:NamedIndividual ,
                               <http://www.w3.org/2004/02/skos/core#Concept> ;
-                     <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                      rdfs:comment "Constraint on the maximum number of flexibility activations permitted within a given period." ;
                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                      <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint" ;
                      <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
+
+
+###  https://w3id.org/celine-eu#GranularityDaily
+:GranularityDaily rdf:type owl:NamedIndividual ,
+                           <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  rdfs:comment "Evaluation aggregated or sampled per day."@en ;
+                  rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                  <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                  <http://www.w3.org/2004/02/skos/core#prefLabel> "Daily"@en ,
+                                                                  "Giornaliero"@it ;
+                  <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityHourly
+:GranularityHourly rdf:type owl:NamedIndividual ,
+                            <http://www.w3.org/2004/02/skos/core#Concept> ;
+                   rdfs:comment "Evaluation aggregated or sampled per hour."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                   <http://www.w3.org/2004/02/skos/core#prefLabel> "Hourly"@en ,
+                                                                   "Orario"@it ;
+                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityMonthly
+:GranularityMonthly rdf:type owl:NamedIndividual ,
+                             <http://www.w3.org/2004/02/skos/core#Concept> ;
+                    rdfs:comment "Evaluation aggregated or sampled per calendar month."@en ;
+                    rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                    <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                    <http://www.w3.org/2004/02/skos/core#prefLabel> "Mensile"@it ,
+                                                                    "Monthly"@en ;
+                    <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityPeriod
+:GranularityPeriod rdf:type owl:NamedIndividual ,
+                            <http://www.w3.org/2004/02/skos/core#Concept> ;
+                   rdfs:comment "Evaluation over an arbitrary time period defined by the evaluation's time interval."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                   <http://www.w3.org/2004/02/skos/core#prefLabel> "Period"@en ,
+                                                                   "Periodo"@it ;
+                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityQuarterly
+:GranularityQuarterly rdf:type owl:NamedIndividual ,
+                               <http://www.w3.org/2004/02/skos/core#Concept> ;
+                      rdfs:comment "Evaluation aggregated or sampled per calendar quarter."@en ;
+                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                      <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                      <http://www.w3.org/2004/02/skos/core#prefLabel> "Quarterly"@en ,
+                                                                      "Trimestrale"@it ;
+                      <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityRealtime
+:GranularityRealtime rdf:type owl:NamedIndividual ,
+                              <http://www.w3.org/2004/02/skos/core#Concept> ;
+                     rdfs:comment "Continuous or near-real-time evaluation."@en ;
+                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Realtime"@en ,
+                                                                     "Tempo reale"@it ;
+                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityWeekly
+:GranularityWeekly rdf:type owl:NamedIndividual ,
+                            <http://www.w3.org/2004/02/skos/core#Concept> ;
+                   rdfs:comment "Evaluation aggregated or sampled per week."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                   <http://www.w3.org/2004/02/skos/core#prefLabel> "Settimanale"@it ,
+                                                                   "Weekly"@en ;
+                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#GranularityYearly
+:GranularityYearly rdf:type owl:NamedIndividual ,
+                            <http://www.w3.org/2004/02/skos/core#Concept> ;
+                   rdfs:comment "Evaluation aggregated or sampled per calendar year."@en ;
+                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                   <http://www.w3.org/2004/02/skos/core#inScheme> :KPITemporalGranularity ;
+                   <http://www.w3.org/2004/02/skos/core#prefLabel> "Annuale"@it ,
+                                                                   "Yearly"@en ;
+                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPITemporalGranularity .
+
+
+###  https://w3id.org/celine-eu#IncentiveAccrued
+:IncentiveAccrued rdf:type owl:NamedIndividual ,
+                           <http://www.w3.org/2004/02/skos/core#Concept> ,
+                           :KPIDefinition ;
+                  :hasKPICalculationMethod :MethodTotal ;
+                  :hasKPIScopeType :ScopeCommunity ;
+                  :hasKPITemporalGranularity :GranularityPeriod ;
+                  :hasKPIUnit :Euro ;
+                  :hasKPIName "Incentive Accrued" ;
+                  rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                  rdfs:label "Incentive Accrued"@en ,
+                             "Incentivo maturato"@it ;
+                  <http://www.w3.org/2004/02/skos/core#definition> "Total monetary incentive accrued by the community for shared energy during the evaluation period."@en ;
+                  <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                  <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#IncentiveMemberShare
+:IncentiveMemberShare rdf:type owl:NamedIndividual ,
+                               <http://www.w3.org/2004/02/skos/core#Concept> ,
+                               :KPIDefinition ;
+                      :hasKPICalculationMethod :MethodTotal ;
+                      :hasKPIScopeType :ScopeMember ;
+                      :hasKPITemporalGranularity :GranularityPeriod ;
+                      :hasKPIUnit :Euro ;
+                      :hasKPIName "Incentive Member Share" ;
+                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                      rdfs:label "Incentive Member Share"@en ,
+                                 "Quota incentivo membro"@it ;
+                      <http://www.w3.org/2004/02/skos/core#definition> "Share of the community's accrued incentive attributed to an individual member during the evaluation period."@en ;
+                      <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                      <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#KPICalculationMethod
+:KPICalculationMethod rdf:type owl:NamedIndividual ,
+                               <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                      <http://purl.org/dc/terms/description> "Classification of the mathematical method used to compute a KPI value."@en ;
+                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                      rdfs:label "KPI Calculation Method"@en ,
+                                 "Metodo di calcolo KPI"@it ;
+                      <http://www.w3.org/2004/02/skos/core#hasTopConcept> :MethodAverage ,
+                                                                          :MethodDerived ,
+                                                                          :MethodInstantaneous ,
+                                                                          :MethodMaximum ,
+                                                                          :MethodMinimum ,
+                                                                          :MethodOther ,
+                                                                          :MethodRatio ,
+                                                                          :MethodTotal ;
+                      <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Calculation Method"@en .
+
+
+###  https://w3id.org/celine-eu#KPICatalog
+:KPICatalog rdf:type owl:NamedIndividual ,
+                     <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+            <http://purl.org/dc/terms/description> """Controlled vocabulary of named, REC-relevant KPI definitions.
+    Each member is both a skos:Concept and a celine:KPIDefinition."""@en ;
+            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+            rdfs:label "Catalogo KPI"@it ,
+                       "KPI Catalog"@en ;
+            <http://www.w3.org/2004/02/skos/core#hasTopConcept> :FedInEnergy ,
+                                                                :FlexibilityActivated ,
+                                                                :IncentiveAccrued ,
+                                                                :IncentiveMemberShare ,
+                                                                :LocalGenerationEnergy ,
+                                                                :PeakReductionAchieved ,
+                                                                :SelfConsumptionRate ,
+                                                                :SelfSufficiencyRate ,
+                                                                :SharedEnergy ,
+                                                                :SharedEnergyMemberShare ,
+                                                                :WithdrawnEnergy ;
+            <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Catalog"@en .
+
+
+###  https://w3id.org/celine-eu#KPIScope
+:KPIScope rdf:type owl:NamedIndividual ,
+                   <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+          <http://purl.org/dc/terms/description> "Classification of the entity scope at which a KPI is evaluated."@en ;
+          rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+          rdfs:label "Ambito KPI"@it ,
+                     "KPI Scope"@en ;
+          <http://www.w3.org/2004/02/skos/core#hasTopConcept> :ScopeAsset ,
+                                                              :ScopeBuilding ,
+                                                              :ScopeCommunity ,
+                                                              :ScopeMember ,
+                                                              :ScopeOther ,
+                                                              :ScopePOD ;
+          <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Scope"@en .
+
+
+###  https://w3id.org/celine-eu#KPITemporalGranularity
+:KPITemporalGranularity rdf:type owl:NamedIndividual ,
+                                 <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                        <http://purl.org/dc/terms/description> "Classification of the temporal resolution at which a KPI is evaluated."@en ;
+                        rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                        rdfs:label "Granularità temporale KPI"@it ,
+                                   "KPI Temporal Granularity"@en ;
+                        <http://www.w3.org/2004/02/skos/core#hasTopConcept> :GranularityDaily ,
+                                                                            :GranularityHourly ,
+                                                                            :GranularityMonthly ,
+                                                                            :GranularityPeriod ,
+                                                                            :GranularityQuarterly ,
+                                                                            :GranularityRealtime ,
+                                                                            :GranularityWeekly ,
+                                                                            :GranularityYearly ;
+                        <http://www.w3.org/2004/02/skos/core#prefLabel> "KPI Temporal Granularity"@en .
+
+
+###  https://w3id.org/celine-eu#Kilowatt
+:Kilowatt rdf:type owl:NamedIndividual ,
+                   <http://www.w3.org/2004/02/skos/core#Concept> ;
+          rdfs:comment "Unit of power equal to 1000 watts. UCUM code: kW"@en ;
+          rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+          <http://www.w3.org/2004/02/skos/core#inScheme> :UnitOfMeasure ;
+          <http://www.w3.org/2004/02/skos/core#notation> "kW" ;
+          <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowatt"@en ,
+                                                          "Kilowatt"@it ;
+          <http://www.w3.org/2004/02/skos/core#topConceptOf> :UnitOfMeasure .
+
+
+###  https://w3id.org/celine-eu#KilowattHour
+:KilowattHour rdf:type owl:NamedIndividual ,
+                       <http://www.w3.org/2004/02/skos/core#Concept> ;
+              rdfs:comment "Unit of energy equal to 3.6 MJ. UCUM code: kW.h"@en ;
+              rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+              <http://www.w3.org/2004/02/skos/core#inScheme> :UnitOfMeasure ;
+              <http://www.w3.org/2004/02/skos/core#notation> "kW.h" ;
+              <http://www.w3.org/2004/02/skos/core#prefLabel> "Kilowatt-hour"@en ,
+                                                              "Kilowattora"@it ;
+              <http://www.w3.org/2004/02/skos/core#topConceptOf> :UnitOfMeasure .
+
+
+###  https://w3id.org/celine-eu#LocalGenerationEnergy
+:LocalGenerationEnergy rdf:type owl:NamedIndividual ,
+                                <http://www.w3.org/2004/02/skos/core#Concept> ,
+                                :KPIDefinition ;
+                       :hasKPICalculationMethod :MethodTotal ;
+                       :hasKPIScopeType :ScopeCommunity ;
+                       :hasKPITemporalGranularity :GranularityPeriod ;
+                       :hasKPIUnit :KilowattHour ;
+                       :hasKPIName "Local Generation Energy" ;
+                       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                       rdfs:label "Energia di generazione locale"@it ,
+                                  "Local Generation Energy"@en ;
+                       <http://www.w3.org/2004/02/skos/core#definition> "Total energy produced by all local generation assets within the community during the evaluation period."@en ;
+                       <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                       <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#MethodAverage
+:MethodAverage rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "Arithmetic mean of all values over the evaluation period."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Average"@en ,
+                                                               "Media"@it ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodDerived
+:MethodDerived rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "Value computed from one or more upstream KPI evaluations."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Derivato"@it ,
+                                                               "Derived"@en ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodInstantaneous
+:MethodInstantaneous rdf:type owl:NamedIndividual ,
+                              <http://www.w3.org/2004/02/skos/core#Concept> ;
+                     rdfs:comment "Single-point measurement or snapshot value at a specific instant."@en ;
+                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Instantaneous"@en ,
+                                                                     "Istantaneo"@it ;
+                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodMaximum
+:MethodMaximum rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "Highest observed value over the evaluation period."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Massimo"@it ,
+                                                               "Maximum"@en ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodMinimum
+:MethodMinimum rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "Lowest observed value over the evaluation period."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Minimo"@it ,
+                                                               "Minimum"@en ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodOther
+:MethodOther rdf:type owl:NamedIndividual ,
+                      <http://www.w3.org/2004/02/skos/core#Concept> ;
+             rdfs:comment "Calculation method that does not fit the predefined categories."@en ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+             <http://www.w3.org/2004/02/skos/core#prefLabel> "Altro"@it ,
+                                                             "Other"@en ;
+             <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodRatio
+:MethodRatio rdf:type owl:NamedIndividual ,
+                      <http://www.w3.org/2004/02/skos/core#Concept> ;
+             rdfs:comment "Quotient of two quantities, typically expressed as a fraction or percentage."@en ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+             <http://www.w3.org/2004/02/skos/core#prefLabel> "Rapporto"@it ,
+                                                             "Ratio"@en ;
+             <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
+
+
+###  https://w3id.org/celine-eu#MethodTotal
+:MethodTotal rdf:type owl:NamedIndividual ,
+                      <http://www.w3.org/2004/02/skos/core#Concept> ;
+             rdfs:comment "Summation of all values over the evaluation period."@en ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             <http://www.w3.org/2004/02/skos/core#inScheme> :KPICalculationMethod ;
+             <http://www.w3.org/2004/02/skos/core#prefLabel> "Total"@en ,
+                                                             "Totale"@it ;
+             <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICalculationMethod .
 
 
 ###  https://w3id.org/celine-eu#NoticeConstraint
 :NoticeConstraint rdf:type owl:NamedIndividual ,
                            <http://www.w3.org/2004/02/skos/core#Concept> ;
-                  <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                   rdfs:comment "Constraint on the minimum lead time required before activating flexibility." ;
                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                  <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                   <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint" ;
                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
+
+
+###  https://w3id.org/celine-eu#PeakReductionAchieved
+:PeakReductionAchieved rdf:type owl:NamedIndividual ,
+                                <http://www.w3.org/2004/02/skos/core#Concept> ,
+                                :KPIDefinition ;
+                       :hasKPICalculationMethod :MethodTotal ;
+                       :hasKPIScopeType :ScopeCommunity ;
+                       :hasKPITemporalGranularity :GranularityPeriod ;
+                       :hasKPIUnit :Kilowatt ;
+                       :hasKPIName "Peak Reduction Achieved" ;
+                       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                       rdfs:label "Peak Reduction Achieved"@en ,
+                                  "Riduzione di picco raggiunta"@it ;
+                       <http://www.w3.org/2004/02/skos/core#definition> "Reduction in peak power demand achieved by the community through flexibility activation during the evaluation period."@en ;
+                       <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                       <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
 
 
 ###  https://w3id.org/celine-eu#RecoveryConstraint
 :RecoveryConstraint rdf:type owl:NamedIndividual ,
                              <http://www.w3.org/2004/02/skos/core#Concept> ;
-                    <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                     rdfs:comment "Constraint on the minimum rest period required between consecutive flexibility activations." ;
                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                    <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint" ;
                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
+
+
+###  https://w3id.org/celine-eu#ScopeAsset
+:ScopeAsset rdf:type owl:NamedIndividual ,
+                     <http://www.w3.org/2004/02/skos/core#Concept> ;
+            rdfs:comment "KPI evaluated for a specific energy asset (e.g. PV panel, battery)."@en ;
+            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+            <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+            <http://www.w3.org/2004/02/skos/core#prefLabel> "Asset"@en ,
+                                                            "Asset"@it ;
+            <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#ScopeBuilding
+:ScopeBuilding rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#Concept> ;
+               rdfs:comment "KPI evaluated at the level of a single building."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Building"@en ,
+                                                               "Edificio"@it ;
+               <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#ScopeCommunity
+:ScopeCommunity rdf:type owl:NamedIndividual ,
+                         <http://www.w3.org/2004/02/skos/core#Concept> ;
+                rdfs:comment "KPI evaluated at the level of the entire energy community."@en ;
+                rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+                <http://www.w3.org/2004/02/skos/core#prefLabel> "Community"@en ,
+                                                                "Comunità"@it ;
+                <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#ScopeMember
+:ScopeMember rdf:type owl:NamedIndividual ,
+                      <http://www.w3.org/2004/02/skos/core#Concept> ;
+             rdfs:comment "KPI evaluated for an individual energy community member."@en ;
+             rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+             <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+             <http://www.w3.org/2004/02/skos/core#prefLabel> "Member"@en ,
+                                                             "Membro"@it ;
+             <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#ScopeOther
+:ScopeOther rdf:type owl:NamedIndividual ,
+                     <http://www.w3.org/2004/02/skos/core#Concept> ;
+            rdfs:comment "KPI scope that does not fit the predefined categories."@en ;
+            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+            <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+            <http://www.w3.org/2004/02/skos/core#prefLabel> "Altro"@it ,
+                                                            "Other"@en ;
+            <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#ScopePOD
+:ScopePOD rdf:type owl:NamedIndividual ,
+                   <http://www.w3.org/2004/02/skos/core#Concept> ;
+          rdfs:comment "KPI evaluated at the level of a single Point of Delivery."@en ;
+          rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+          <http://www.w3.org/2004/02/skos/core#inScheme> :KPIScope ;
+          <http://www.w3.org/2004/02/skos/core#prefLabel> "POD"@en ,
+                                                          "POD"@it ;
+          <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPIScope .
+
+
+###  https://w3id.org/celine-eu#SelfConsumptionRate
+:SelfConsumptionRate rdf:type owl:NamedIndividual ,
+                              <http://www.w3.org/2004/02/skos/core#Concept> ,
+                              :KPIDefinition ;
+                     :hasKPICalculationMethod :MethodRatio ;
+                     :hasKPIScopeType :ScopeCommunity ;
+                     :hasKPITemporalGranularity :GranularityPeriod ;
+                     :hasKPIUnit :Dimensionless ;
+                     :hasKPIName "Self-Consumption Rate" ;
+                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     rdfs:label "Self-Consumption Rate"@en ,
+                                "Tasso di autoconsumo"@it ;
+                     <http://www.w3.org/2004/02/skos/core#definition> "Ratio of energy consumed locally to total energy produced locally by the community."@en ;
+                     <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#SelfSufficiencyRate
+:SelfSufficiencyRate rdf:type owl:NamedIndividual ,
+                              <http://www.w3.org/2004/02/skos/core#Concept> ,
+                              :KPIDefinition ;
+                     :hasKPICalculationMethod :MethodRatio ;
+                     :hasKPIScopeType :ScopeCommunity ;
+                     :hasKPITemporalGranularity :GranularityPeriod ;
+                     :hasKPIUnit :Dimensionless ;
+                     :hasKPIName "Self-Sufficiency Rate" ;
+                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                     rdfs:label "Self-Sufficiency Rate"@en ,
+                                "Tasso di autosufficienza"@it ;
+                     <http://www.w3.org/2004/02/skos/core#definition> "Ratio of energy consumed from local production to total energy consumed by the community."@en ;
+                     <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#SharedEnergy
+:SharedEnergy rdf:type owl:NamedIndividual ,
+                       <http://www.w3.org/2004/02/skos/core#Concept> ,
+                       :KPIDefinition ;
+              :hasKPICalculationMethod :MethodTotal ;
+              :hasKPIScopeType :ScopeCommunity ;
+              :hasKPITemporalGranularity :GranularityPeriod ;
+              :hasKPIUnit :KilowattHour ;
+              :hasKPIName "Shared Energy" ;
+              rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+              rdfs:label "Energia condivisa"@it ,
+                         "Shared Energy"@en ;
+              <http://www.w3.org/2004/02/skos/core#definition> "Total energy shared within the community during the evaluation period, as defined by the Italian ARERA regulation for RECs."@en ;
+              <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+              <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#SharedEnergyMemberShare
+:SharedEnergyMemberShare rdf:type owl:NamedIndividual ,
+                                  <http://www.w3.org/2004/02/skos/core#Concept> ,
+                                  :KPIDefinition ;
+                         :hasKPICalculationMethod :MethodTotal ;
+                         :hasKPIScopeType :ScopeMember ;
+                         :hasKPITemporalGranularity :GranularityPeriod ;
+                         :hasKPIUnit :KilowattHour ;
+                         :hasKPIName "Shared Energy Member Share" ;
+                         rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                         rdfs:label "Quota energia condivisa membro"@it ,
+                                    "Shared Energy Member Share"@en ;
+                         <http://www.w3.org/2004/02/skos/core#definition> "Share of the community's shared energy attributed to an individual member during the evaluation period."@en ;
+                         <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                         <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
+
+
+###  https://w3id.org/celine-eu#UnitOfMeasure
+:UnitOfMeasure rdf:type owl:NamedIndividual ,
+                        <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+               <http://purl.org/dc/terms/description> "SKOS controlled vocabulary for KPI measurement units, aligned to UCUM codes."@en ;
+               rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+               rdfs:label "Unit of Measure"@en ,
+                          "Unità di misura"@it ;
+               <http://www.w3.org/2004/02/skos/core#hasTopConcept> :Dimensionless ,
+                                                                   :Euro ,
+                                                                   :Kilowatt ,
+                                                                   :KilowattHour ;
+               <http://www.w3.org/2004/02/skos/core#prefLabel> "Unit of Measure"@en .
 
 
 ###  https://w3id.org/celine-eu#Voluntary
 :Voluntary rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
            rdfs:comment "Commitment activated manually by the member at their discretion." ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+           <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
            <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary" ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CommitmentMode .
+
+
+###  https://w3id.org/celine-eu#WithdrawnEnergy
+:WithdrawnEnergy rdf:type owl:NamedIndividual ,
+                          <http://www.w3.org/2004/02/skos/core#Concept> ,
+                          :KPIDefinition ;
+                 :hasKPICalculationMethod :MethodTotal ;
+                 :hasKPIScopeType :ScopePOD ;
+                 :hasKPITemporalGranularity :GranularityPeriod ;
+                 :hasKPIUnit :KilowattHour ;
+                 :hasKPIName "Withdrawn Energy" ;
+                 rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
+                 rdfs:label "Energia prelevata"@it ,
+                            "Withdrawn Energy"@en ;
+                 <http://www.w3.org/2004/02/skos/core#definition> "Total energy withdrawn from the grid by a POD during the evaluation period."@en ;
+                 <http://www.w3.org/2004/02/skos/core#inScheme> :KPICatalog ;
+                 <http://www.w3.org/2004/02/skos/core#topConceptOf> :KPICatalog .
 
 
 ###  Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/
