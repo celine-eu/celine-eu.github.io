@@ -11,6 +11,50 @@
     } ]
   } ]
 }, {
+  "@id" : "_:genid12",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/celine-eu#DistributionFeeder"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#PowerTransformer"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#Substation"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid16",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://purl.org/peco/peco-core#Asset"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid5",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/celine-eu#DistributionFeeder"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#PowerTransformer"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#Substation"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid9",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+    } ]
+  } ]
+}, {
   "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 }, {
@@ -32,6 +76,11 @@
   "@id" : "http://www.w3.org/2004/02/skos/core#topConceptOf",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
 }, {
+  "@id" : "https://purl.org/peco/peco-core#Electric_POD",
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+  } ]
+}, {
   "@id" : "https://purl.org/peco/peco-core#EnergyCommunity",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 }, {
@@ -49,7 +98,7 @@
   } ],
   "http://purl.org/dc/terms/modified" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2026-05-05"
+    "@value" : "2026-05-14"
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@value" : "CELINE Core Ontology"
@@ -61,7 +110,7 @@
     "@value" : "https://w3id.org/celine-eu#"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Version 0.5 introduces a generic, REC-centric KPI container (KPIDefinition,\n    KPICatalog, KPIScope, KPICalculationMethod, KPITemporalGranularity) and removes the direct\n    BIGG and BIGG4KPI imports. KPI alignment to external vocabularies (BIGG, SAREF, SAREF4ENER,\n    SOSA) is now expressed via SKOS mapping annotations on KPI classes rather than via OWL\n    imports. Existing KPIEvaluation usage is preserved with mandatory\n    linkage to a KPIDefinition."
+    "@value" : "Version 0.6 adds REC-registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), and member classification vocabularies\n    (MemberRole, MemberStatus). CIM alignment via skos:closeMatch to IEC 61968 profile;\n    SAREF alignment via skos:closeMatch only — no new owl:imports. Asset technical\n    attributes are intentionally omitted; specs live in the external rec-registry catalogue,\n    addressed by celine:hasLocalIdentifier."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@value" : "CELINE Core Ontology"
@@ -83,13 +132,13 @@
     "@id" : "https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#priorVersion" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.4"
-  } ],
-  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
     "@id" : "https://w3id.org/celine-eu/v0.5"
   } ],
+  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
+    "@id" : "https://w3id.org/celine-eu/v0.6"
+  } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "0.5.0"
+    "@value" : "0.6.0"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#AdminCost",
@@ -128,6 +177,46 @@
     "@id" : "https://w3id.org/celine-eu#CommitmentMode"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#BatteryStorage",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A battery energy storage system. Technical attributes live in the external rec-registry catalogue."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Battery Storage"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Energy_storage"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://saref.etsi.org/core/Device"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#CUPS",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "Spain — Código Universal de Punto de Suministro. Assigned by the distribution company to each supply point."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "CUPS"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#CommitmentMode",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
@@ -159,6 +248,57 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#example" : [ {
     "@value" : "ex:ctx1 a celine:CommunityContext ;\n    celine:hasCommunity    ex:rec_valdarno ;\n    celine:usesAsset       ex:pv_panel_01 ;\n    celine:hasSimulation   ex:sim_baseline ;\n    celine:hasCommitment   ex:fc_001 ;\n    celine:hasSettlementRun ex:sr_2025_q3 ."
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#ConnectionPoint",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A generalised point where a consumer or prosumer connects to the distribution grid. Country-specific identifier schemes (POD, CUPS, PRM, etc.) are captured via celine:hasIdentifierScheme. PECO Electric_POD is declared as a subclass."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Connection Point"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/UsagePoint"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
+  "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
+    "@value" : "National metering-point identifier schemes used across European energy markets."
+  } ],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Connection Point Identifier Scheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#CUPS"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#EAN"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#MALO"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#MPAN"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#POD"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#PRM"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Connection Point Identifier Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#ConstraintType",
@@ -271,6 +411,26 @@
     "@id" : "https://w3id.org/celine-eu#UnitOfMeasure"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#DistributionFeeder",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A feeder line distributing power from a substation to downstream connection points."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Distribution Feeder"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/Feeder"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#DurationConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -287,6 +447,66 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#EAN",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "Belgium / Netherlands — European Article Number code used to identify metering points in the Benelux energy markets."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "EAN"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#EVCharger",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "An electric vehicle charging station. Technical attributes live in the external rec-registry catalogue."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "EV Charger"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://saref.etsi.org/core/Device"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#ElectricityMeter",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A metering device measuring energy flows at a connection point or asset."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Electricity Meter"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://saref.etsi.org/core/Device"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#Euro",
@@ -734,6 +954,46 @@
     "@id" : "https://w3id.org/celine-eu#KPITemporalGranularity"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#GridOperator",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "An entity that operates grid infrastructure. Typically a Distribution System Operator (DSO). Role-based modelling is deferred; class-based typing is consistent with PECO style."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Grid Operator"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Agent"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/Company"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#HeatPump",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A heat pump for space heating, cooling, or hot water. Technical attributes live in the external rec-registry catalogue."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Heat Pump"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://saref.etsi.org/saref4bldg/HeatPump"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#IncentiveAccrued",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -1126,6 +1386,108 @@
     "@id" : "https://w3id.org/celine-eu#KilowattHour"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#MALO",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "Germany — Marktlokation. Identifies a market location in the German energy market under BNetzA regulation."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "MALO"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#MPAN",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "United Kingdom — Meter Point Administration Number. Assigned by the regional distribution network operator."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "MPAN"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#MemberRole",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
+  "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
+    "@value" : "Classification of how a member participates in the energy community."
+  } ],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Member Role"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#RoleAdmin"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RoleConsumer"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RoleOperator"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RoleProducer"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RoleProsumer"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Member Role"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#MemberStatus",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
+  "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
+    "@value" : "Lifecycle status of a member within the energy community."
+  } ],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Member Status"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#StatusActive"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#StatusInactive"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#StatusPending"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#StatusSuspended"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Member Status"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#MethodAverage",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -1328,6 +1690,66 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#POD",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "Italy — Punto di Prelievo. Regulated by ARERA; identifies a single withdrawal or injection point on the national grid."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "POD"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#PRM",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#note" : [ {
+    "@language" : "en",
+    "@value" : "France — Point Référence Mesure. Managed by Enedis; identifies the metering point for billing and balancing."
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "PRM"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#PVSystem",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A photovoltaic system. Technical attributes (rated power, panel type, etc.) live in the external rec-registry catalogue, addressed by celine:hasLocalIdentifier."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "PV System"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://saref.etsi.org/core/Device"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#PeakReductionAchieved",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -1369,6 +1791,46 @@
     "@id" : "https://w3id.org/celine-eu#Kilowatt"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#PowerTransformer",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A transformer within a substation that converts between voltage levels."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Power Transformer"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/PowerTransformer"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#PrimarySubstation",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "HV/MV substation at the boundary between the transmission and distribution networks (e.g. Italian cabina primaria)."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Primary Substation"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#Substation"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#RecoveryConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -1400,6 +1862,120 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#example" : [ {
     "@value" : "ex:result_rossi a celine:RedistributionResult ;\n    celine:resultFor        ex:member_rossi ;\n    celine:creditBalance    \"2.1\"^^xsd:decimal ;\n    celine:grossAmount      \"0.252\"^^xsd:decimal ;\n    celine:costDeduction    \"0.048\"^^xsd:decimal ;\n    celine:netAmount        \"0.204\"^^xsd:decimal ."
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RegulatoryZone",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Administrative coverage area defined by energy regulation, e.g. the service zone of a primary substation under Italian Decreto 199/2021 (GSE perimeter)."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Regulatory Zone"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RoleAdmin",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member with administrative privileges over the community configuration."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Admin"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RoleConsumer",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member who only withdraws energy from the community."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Consumer"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RoleOperator",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member with operational responsibilities for community infrastructure."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Operator"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RoleProducer",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member who only feeds energy into the community."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Producer"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#RoleProsumer",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member who both produces and consumes energy."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Prosumer"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberRole"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#Scenario",
@@ -1553,6 +2129,26 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
     "@id" : "https://w3id.org/celine-eu#KPIScope"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#SecondarySubstation",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "MV/LV substation serving end-user connection points (e.g. Italian cabina secondaria)."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Secondary Substation"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#Substation"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate",
@@ -1762,6 +2358,106 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#example" : [ {
     "@value" : "ex:run_001 a celine:SimulationRun ;\n    celine:usesDataset      ex:ds_irradiance ;\n    celine:producesDataset  ex:ds_energy_forecast ;\n    celine:hasKPIEvaluation ex:kpi_self_sufficiency ."
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#StatusActive",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Member is currently participating in the community."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Active"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#StatusInactive",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Member has left the community or membership has been terminated."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Inactive"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#StatusPending",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Member has applied but is not yet active in the community."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Pending"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#StatusSuspended",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Member participation is temporarily suspended."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#inScheme" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Suspended"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#MemberStatus"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#Substation",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Abstract superclass for electrical substations in the distribution grid."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Substation"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
+    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#UnitOfMeasure",
@@ -2310,6 +3006,46 @@
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#hasGridOperator",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The grid operator(s) serving this community context."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has grid operator"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#GridOperator"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasIdentifierScheme",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The national identifier scheme for this connection point. Expected values from celine:ConnectionPointIdentifierScheme."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has identifier scheme"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#hasInputKPIEvaluation",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -2545,6 +3281,66 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#decimal"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#hasLocalIdentifier",
+  "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Local identifier string. For connection points: the national metering code (POD, CUPS, PRM, etc.). For assets: the registry's local asset key, used as the lookup handle into the external rec-registry catalogue."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "_:genid16"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has local identifier"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2001/XMLSchema#string"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasMemberRole",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The participation role of this member. Expected values from celine:MemberRole."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has member role"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasMemberStatus",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The lifecycle status of this member. Expected values from celine:MemberStatus."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has member status"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#hasRedistributionResult",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
@@ -2558,6 +3354,26 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/celine-eu#RedistributionResult"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasRegulatoryZone",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The regulatory zone(s) covered by this community context."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has regulatory zone"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#RegulatoryZone"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#hasScenario",
@@ -2632,6 +3448,46 @@
     "@id" : "http://www.w3.org/2006/time#Interval"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#hasTopologyNode",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A grid topology element associated with this community context."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has topology node"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "_:genid5"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#inRegulatoryZone",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The regulatory zone to which this member or connection point belongs."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "_:genid9"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "in regulatory zone"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#RegulatoryZone"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#maxActivationDuration",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -2702,6 +3558,26 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2001/XMLSchema#decimal"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#measures",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The asset whose energy flows are metered by this electricity meter."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#ElectricityMeter"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "measures"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#minActivationDuration",
@@ -2794,6 +3670,46 @@
     "@id" : "https://purl.org/peco/peco-core#Electric_POD"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#operatedBy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The grid operator responsible for this infrastructure element."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "_:genid12"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "operated by"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#GridOperator"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#pairedWith",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#SymmetricProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Symmetric link between co-located or functionally coupled assets (e.g. PV system paired with battery storage)."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "paired with"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#producesDataset",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
@@ -2822,6 +3738,26 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#servedBy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The substation(s) that serve this regulatory zone."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#RegulatoryZone"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "served by"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#settlesContext",
