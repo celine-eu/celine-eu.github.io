@@ -14,6 +14,9 @@
 @prefix bigg:   <https://w3id.org/bigg/ontology#> .
 @prefix bigg4kpi: <http://bigg-project.eu/bigg4kpi#> .
 @prefix s4city: <https://saref.etsi.org/saref4city/> .
+@prefix s4bldg: <https://saref.etsi.org/saref4bldg/> .
+@prefix s4ener: <https://saref.etsi.org/saref4ener/> .
+@prefix cim:    <https://ontology.tno.nl/IEC_CIM/> .
 
 ################################################################################
 # Ontology
@@ -21,9 +24,9 @@
 
 <https://w3id.org/celine-eu>
     a owl:Ontology ;
-    owl:versionIRI      <https://w3id.org/celine-eu/v0.5> ;
-    owl:priorVersion    <https://w3id.org/celine-eu/v0.4> ;
-    owl:versionInfo     "0.5.0" ;
+    owl:versionIRI      <https://w3id.org/celine-eu/v0.6> ;
+    owl:priorVersion    <https://w3id.org/celine-eu/v0.5> ;
+    owl:versionInfo     "0.6.0" ;
     rdfs:label          "CELINE Core Ontology" ;
     dct:title           "CELINE Core Ontology" ;
     dct:description     """The CELINE Core Ontology is a lightweight orchestration profile for
@@ -31,15 +34,18 @@
     standards — PECO, SAREF, SAREF4ENER, SOSA/SSN — without redefining their domain
     semantics, providing a minimal coordination layer for simulation scenarios, dataset
     references, KPI definition and evaluation, and REC flexibility commitment and settlement.""" ;
-    rdfs:comment        """Version 0.5 introduces a generic, REC-centric KPI container (KPIDefinition,
-    KPICatalog, KPIScope, KPICalculationMethod, KPITemporalGranularity) and removes the direct
-    BIGG and BIGG4KPI imports. KPI alignment to external vocabularies (BIGG, SAREF, SAREF4ENER,
-    SOSA) is now expressed via SKOS mapping annotations on KPI classes rather than via OWL
-    imports. Existing KPIEvaluation usage is preserved with mandatory
-    linkage to a KPIDefinition.""" ;
+    rdfs:comment        """Version 0.6 adds REC-registry-aligned grid topology (Substation,
+    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),
+    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass
+    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,
+    ElectricityMeter, EVCharger, HeatPump), and member modeling (hasMember linkage, MemberRole and MemberStatus
+    vocabularies). CIM alignment via skos:closeMatch to IEC 61968 profile;
+    SAREF alignment via skos:closeMatch only — no new owl:imports. Asset technical
+    attributes are intentionally omitted; specs live in the external rec-registry catalogue,
+    addressed by celine:hasLocalIdentifier.""" ;
     dct:license         <https://creativecommons.org/licenses/by/4.0/> ;
     dct:created         "2026-03-24"^^xsd:date ;
-    dct:modified        "2026-05-05"^^xsd:date ;
+    dct:modified        "2026-05-14"^^xsd:date ;
     vann:preferredNamespacePrefix "celine" ;
     vann:preferredNamespaceUri    "https://w3id.org/celine-eu#" ;
     rdfs:seeAlso
@@ -61,9 +67,13 @@ celine:CommunityContext
     rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
     rdfs:label          "Community Context" ;
     rdfs:comment        """Operational context binding a PECO Energy Community
-    with assets, datasets, simulations and flexibility commitments.""" ;
+    with assets, datasets, simulations and flexibility commitments. Member
+    participation in this context is enumerated via celine:hasMember; each
+    member is linked to the wrapped peco:Energy_community via
+    peco:is_member_of (PECO predicate, reused as-is).""" ;
     skos:example        """ex:ctx1 a celine:CommunityContext ;
     celine:hasCommunity    ex:rec_valdarno ;
+    celine:hasMember       ex:member_001 , ex:member_002 ;
     celine:usesAsset       ex:pv_panel_01 ;
     celine:hasSimulation   ex:sim_baseline ;
     celine:hasCommitment   ex:fc_001 ;
@@ -112,6 +122,126 @@ celine:DatasetReference
     skos:example        """ex:ds_irradiance a celine:DatasetReference ;
     dct:identifier  "irradiance-2025-07" ;
     dct:source      <https://data.example.org/weather/irradiance> .""" .
+
+################################################################################
+# Grid Topology Classes  (new in v0.6)
+################################################################################
+
+celine:Substation
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "Substation"@en ;
+    rdfs:comment        "Abstract superclass for electrical substations in the distribution grid."@en ;
+    skos:closeMatch     cim:Substation .
+
+celine:PrimarySubstation
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     celine:Substation ;
+    rdfs:label          "Primary Substation"@en ;
+    rdfs:comment        "HV/MV substation at the boundary between the transmission and distribution networks (e.g. Italian cabina primaria)."@en ;
+    skos:closeMatch     cim:Substation .
+
+celine:SecondarySubstation
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     celine:Substation ;
+    rdfs:label          "Secondary Substation"@en ;
+    rdfs:comment        "MV/LV substation serving end-user connection points (e.g. Italian cabina secondaria)."@en ;
+    skos:closeMatch     cim:Substation .
+
+celine:PowerTransformer
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "Power Transformer"@en ;
+    rdfs:comment        "A transformer within a substation that converts between voltage levels."@en ;
+    skos:closeMatch     cim:PowerTransformer .
+
+celine:DistributionFeeder
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "Distribution Feeder"@en ;
+    rdfs:comment        "A feeder line distributing power from a substation to downstream connection points."@en ;
+    skos:closeMatch     cim:Feeder .
+
+celine:RegulatoryZone
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Regulatory Zone"@en ;
+    rdfs:comment        "Administrative coverage area defined by energy regulation, e.g. the service zone of a primary substation under Italian Decreto 199/2021 (GSE perimeter)."@en .
+
+################################################################################
+# Grid Actor  (new in v0.6)
+################################################################################
+
+celine:GridOperator
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Agent ;
+    rdfs:label          "Grid Operator"@en ;
+    rdfs:comment        "An entity that operates grid infrastructure. Typically a Distribution System Operator (DSO). Role-based modelling is deferred; class-based typing is consistent with PECO style."@en ;
+    skos:closeMatch     cim:Company .
+
+################################################################################
+# Connection Point  (new in v0.6)
+################################################################################
+
+celine:ConnectionPoint
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Connection Point"@en ;
+    rdfs:comment        "A generalised point where a consumer or prosumer connects to the distribution grid. Country-specific identifier schemes (POD, CUPS, PRM, etc.) are captured via celine:hasIdentifierScheme. PECO Electric_POD is declared as a subclass."@en ;
+    skos:closeMatch     cim:UsagePoint .
+
+peco:Electric_POD
+    rdfs:subClassOf     celine:ConnectionPoint .
+
+################################################################################
+# Asset Classes — Presence-Only Inventory  (new in v0.6)
+################################################################################
+
+celine:PVSystem
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "PV System"@en ;
+    rdfs:comment        "A photovoltaic system. Technical attributes (rated power, panel type, etc.) live in the external rec-registry catalogue, addressed by celine:hasLocalIdentifier."@en ;
+    skos:closeMatch     saref:Device .
+
+celine:BatteryStorage
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Energy_storage ;
+    rdfs:label          "Battery Storage"@en ;
+    rdfs:comment        "A battery energy storage system. Technical attributes live in the external rec-registry catalogue."@en ;
+    skos:closeMatch     saref:Device .
+
+celine:ElectricityMeter
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "Electricity Meter"@en ;
+    rdfs:comment        "A metering device measuring energy flows at a connection point or asset."@en ;
+    skos:closeMatch     saref:Device .
+
+celine:EVCharger
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "EV Charger"@en ;
+    rdfs:comment        "An electric vehicle charging station. Technical attributes live in the external rec-registry catalogue."@en ;
+    skos:closeMatch     saref:Device .
+
+celine:HeatPump
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:subClassOf     peco:Asset ;
+    rdfs:label          "Heat Pump"@en ;
+    rdfs:comment        "A heat pump for space heating, cooling, or hot water. Technical attributes live in the external rec-registry catalogue."@en ;
+    skos:closeMatch     s4bldg:HeatPump .
 
 ################################################################################
 # KPI Definition Layer  (new in v0.5)
@@ -284,6 +414,26 @@ celine:FlexibilityConstraint
     celine:maxActivationsPerDay  "3"^^xsd:integer .""" .
 
 ################################################################################
+# Flexibility Request  (new in v0.6)
+################################################################################
+
+celine:FlexibilityRequest
+    a owl:Class ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Flexibility Request"@en ;
+    rdfs:comment        """A demand signal issued by a community operator or automated system
+    requesting members to activate flexibility within a given time window. Specifies the
+    desired direction (FlexDown/FlexUp) and target amount. One request may result in zero,
+    one, or many FlexibilityCommitments from different members."""@en ;
+    skos:example        """ex:req_001 a celine:FlexibilityRequest ;
+    celine:requestedBy              ex:dso_enel ;
+    celine:hasFlexibilityDirection  celine:FlexDown ;
+    celine:requestedFlexibility     "10.0"^^xsd:decimal ;
+    celine:hasTimeInterval          ex:interval_2025_07_01_peak ;
+    celine:hasRequestStatus         celine:RequestFulfilled ;
+    celine:resultsInCommitment      ex:fc_001 , ex:fc_002 .""" .
+
+################################################################################
 # Controlled Vocabularies — Flexibility & Settlement  (carried from v0.4)
 ################################################################################
 
@@ -402,6 +552,63 @@ celine:FrequencyConstraint
     skos:topConceptOf   celine:ConstraintType ;
     skos:prefLabel      "Frequency Constraint" ;
     rdfs:comment        "Constraint on the maximum number of flexibility activations permitted within a given period." .
+
+################################################################################
+# Controlled Vocabularies — Request Status  (new in v0.6)
+################################################################################
+
+celine:RequestStatus
+    a skos:ConceptScheme ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Request Status"@en ;
+    skos:prefLabel      "Request Status"@en ;
+    dct:description     "Lifecycle status of a flexibility request."@en ;
+    skos:hasTopConcept
+        celine:RequestOpen ,
+        celine:RequestFulfilled ,
+        celine:RequestPartial ,
+        celine:RequestExpired ,
+        celine:RequestCancelled .
+
+celine:RequestOpen
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:RequestStatus ;
+    skos:topConceptOf   celine:RequestStatus ;
+    skos:prefLabel      "Open"@en ;
+    rdfs:comment        "Request has been issued and is awaiting commitments."@en .
+
+celine:RequestFulfilled
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:RequestStatus ;
+    skos:topConceptOf   celine:RequestStatus ;
+    skos:prefLabel      "Fulfilled"@en ;
+    rdfs:comment        "Sufficient commitments received to meet the requested target."@en .
+
+celine:RequestPartial
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:RequestStatus ;
+    skos:topConceptOf   celine:RequestStatus ;
+    skos:prefLabel      "Partially Fulfilled"@en ;
+    rdfs:comment        "Some commitments received but total falls below the requested target."@en .
+
+celine:RequestExpired
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:RequestStatus ;
+    skos:topConceptOf   celine:RequestStatus ;
+    skos:prefLabel      "Expired"@en ;
+    rdfs:comment        "Activation window passed without sufficient response."@en .
+
+celine:RequestCancelled
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:RequestStatus ;
+    skos:topConceptOf   celine:RequestStatus ;
+    skos:prefLabel      "Cancelled"@en ;
+    rdfs:comment        "Request withdrawn before the activation window."@en .
 
 ################################################################################
 # Controlled Vocabularies — KPI Scope  (new in v0.5)
@@ -692,6 +899,177 @@ celine:Dimensionless
     skos:prefLabel      "Dimensionless"@en , "Adimensionale"@it ;
     skos:notation       "1" ;
     rdfs:comment        "Dimensionless quantity (ratio, fraction, percentage). UCUM code: 1"@en .
+
+################################################################################
+# Controlled Vocabularies — Connection Point Identifier Scheme  (new in v0.6)
+################################################################################
+
+celine:ConnectionPointIdentifierScheme
+    a skos:ConceptScheme ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Connection Point Identifier Scheme"@en ;
+    skos:prefLabel      "Connection Point Identifier Scheme"@en ;
+    dct:description     "National metering-point identifier schemes used across European energy markets."@en ;
+    skos:hasTopConcept
+        celine:POD ,
+        celine:CUPS ,
+        celine:PRM ,
+        celine:MALO ,
+        celine:EAN ,
+        celine:MPAN .
+
+celine:POD
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "POD"@en ;
+    skos:note           "Italy — Punto di Prelievo. Regulated by ARERA; identifies a single withdrawal or injection point on the national grid."@en .
+
+celine:CUPS
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "CUPS"@en ;
+    skos:note           "Spain — Código Universal de Punto de Suministro. Assigned by the distribution company to each supply point."@en .
+
+celine:PRM
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "PRM"@en ;
+    skos:note           "France — Point Référence Mesure. Managed by Enedis; identifies the metering point for billing and balancing."@en .
+
+celine:MALO
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "MALO"@en ;
+    skos:note           "Germany — Marktlokation. Identifies a market location in the German energy market under BNetzA regulation."@en .
+
+celine:EAN
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "EAN"@en ;
+    skos:note           "Belgium / Netherlands — European Article Number code used to identify metering points in the Benelux energy markets."@en .
+
+celine:MPAN
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:ConnectionPointIdentifierScheme ;
+    skos:topConceptOf   celine:ConnectionPointIdentifierScheme ;
+    skos:prefLabel      "MPAN"@en ;
+    skos:note           "United Kingdom — Meter Point Administration Number. Assigned by the regional distribution network operator."@en .
+
+################################################################################
+# Controlled Vocabularies — Member Role  (new in v0.6)
+################################################################################
+
+celine:MemberRole
+    a skos:ConceptScheme ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Member Role"@en ;
+    skos:prefLabel      "Member Role"@en ;
+    dct:description     "Classification of how a member participates in the energy community."@en ;
+    skos:hasTopConcept
+        celine:RoleConsumer ,
+        celine:RoleProsumer ,
+        celine:RoleProducer ,
+        celine:RoleOperator ,
+        celine:RoleAdmin .
+
+celine:RoleConsumer
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberRole ;
+    skos:topConceptOf   celine:MemberRole ;
+    skos:prefLabel      "Consumer"@en ;
+    rdfs:comment        "A member who only withdraws energy from the community."@en .
+
+celine:RoleProsumer
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberRole ;
+    skos:topConceptOf   celine:MemberRole ;
+    skos:prefLabel      "Prosumer"@en ;
+    rdfs:comment        "A member who both produces and consumes energy."@en .
+
+celine:RoleProducer
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberRole ;
+    skos:topConceptOf   celine:MemberRole ;
+    skos:prefLabel      "Producer"@en ;
+    rdfs:comment        "A member who only feeds energy into the community."@en .
+
+celine:RoleOperator
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberRole ;
+    skos:topConceptOf   celine:MemberRole ;
+    skos:prefLabel      "Operator"@en ;
+    rdfs:comment        "A member with operational responsibilities for community infrastructure."@en .
+
+celine:RoleAdmin
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberRole ;
+    skos:topConceptOf   celine:MemberRole ;
+    skos:prefLabel      "Admin"@en ;
+    rdfs:comment        "A member with administrative privileges over the community configuration."@en .
+
+################################################################################
+# Controlled Vocabularies — Member Status  (new in v0.6)
+################################################################################
+
+celine:MemberStatus
+    a skos:ConceptScheme ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:label          "Member Status"@en ;
+    skos:prefLabel      "Member Status"@en ;
+    dct:description     "Lifecycle status of a member within the energy community."@en ;
+    skos:hasTopConcept
+        celine:StatusPending ,
+        celine:StatusActive ,
+        celine:StatusSuspended ,
+        celine:StatusInactive .
+
+celine:StatusPending
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberStatus ;
+    skos:topConceptOf   celine:MemberStatus ;
+    skos:prefLabel      "Pending"@en ;
+    rdfs:comment        "Member has applied but is not yet active in the community."@en .
+
+celine:StatusActive
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberStatus ;
+    skos:topConceptOf   celine:MemberStatus ;
+    skos:prefLabel      "Active"@en ;
+    rdfs:comment        "Member is currently participating in the community."@en .
+
+celine:StatusSuspended
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberStatus ;
+    skos:topConceptOf   celine:MemberStatus ;
+    skos:prefLabel      "Suspended"@en ;
+    rdfs:comment        "Member participation is temporarily suspended."@en .
+
+celine:StatusInactive
+    a skos:Concept ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    skos:inScheme       celine:MemberStatus ;
+    skos:topConceptOf   celine:MemberStatus ;
+    skos:prefLabel      "Inactive"@en ;
+    rdfs:comment        "Member has left the community or membership has been terminated."@en .
 
 ################################################################################
 # KPI Catalog  (new in v0.5)
@@ -1093,10 +1471,12 @@ celine:hasCommitmentMode
 celine:hasFlexibilityDirection
     a owl:ObjectProperty ;
     rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
-    rdfs:domain         celine:FlexibilityCommitment ;
+    rdfs:domain         [ a owl:Class ;
+                          owl:unionOf ( celine:FlexibilityCommitment
+                                        celine:FlexibilityRequest ) ] ;
     rdfs:range          skos:Concept ;
     rdfs:label          "has flexibility direction" ;
-    rdfs:comment        "Expected values: celine:FlexDown or celine:FlexUp." .
+    rdfs:comment        "Expected values: celine:FlexDown or celine:FlexUp."@en .
 
 celine:generatesCredit
     a owl:ObjectProperty ;
@@ -1227,6 +1607,163 @@ celine:hasConstraintType
     rdfs:range          skos:Concept ;
     rdfs:label          "has constraint type" ;
     rdfs:comment        "Expected values: celine:DurationConstraint, celine:NoticeConstraint, celine:RecoveryConstraint, celine:FrequencyConstraint." .
+
+################################################################################
+# Object Properties — Grid Topology & Assets  (new in v0.6)
+################################################################################
+
+celine:hasIdentifierScheme
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:ConnectionPoint ;
+    rdfs:range          skos:Concept ;
+    rdfs:label          "has identifier scheme"@en ;
+    rdfs:comment        "The national identifier scheme for this connection point. Expected values from celine:ConnectionPointIdentifierScheme."@en .
+
+celine:operatedBy
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         [ a owl:Class ;
+                          owl:unionOf ( celine:Substation
+                                        celine:PowerTransformer
+                                        celine:DistributionFeeder ) ] ;
+    rdfs:range          celine:GridOperator ;
+    rdfs:label          "operated by"@en ;
+    rdfs:comment        "The grid operator responsible for this infrastructure element."@en .
+
+celine:servedBy
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:RegulatoryZone ;
+    rdfs:range          celine:Substation ;
+    rdfs:label          "served by"@en ;
+    rdfs:comment        "The substation(s) that serve this regulatory zone."@en .
+
+celine:inRegulatoryZone
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         [ a owl:Class ;
+                          owl:unionOf ( peco:Energy_community_member
+                                        celine:ConnectionPoint ) ] ;
+    rdfs:range          celine:RegulatoryZone ;
+    rdfs:label          "in regulatory zone"@en ;
+    rdfs:comment        "The regulatory zone to which this member or connection point belongs."@en .
+
+celine:hasRegulatoryZone
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:CommunityContext ;
+    rdfs:range          celine:RegulatoryZone ;
+    rdfs:label          "has regulatory zone"@en ;
+    rdfs:comment        "The regulatory zone(s) covered by this community context."@en .
+
+celine:hasTopologyNode
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:CommunityContext ;
+    rdfs:range          [ a owl:Class ;
+                          owl:unionOf ( celine:Substation
+                                        celine:PowerTransformer
+                                        celine:DistributionFeeder ) ] ;
+    rdfs:label          "has topology node"@en ;
+    rdfs:comment        "A grid topology element associated with this community context."@en .
+
+celine:hasGridOperator
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:CommunityContext ;
+    rdfs:range          celine:GridOperator ;
+    rdfs:label          "has grid operator"@en ;
+    rdfs:comment        "The grid operator(s) serving this community context."@en .
+
+celine:pairedWith
+    a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         peco:Asset ;
+    rdfs:range          peco:Asset ;
+    rdfs:label          "paired with"@en ;
+    rdfs:comment        "Symmetric link between co-located or functionally coupled assets (e.g. PV system paired with battery storage)."@en .
+
+celine:measures
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:ElectricityMeter ;
+    rdfs:range          peco:Asset ;
+    rdfs:label          "measures"@en ;
+    rdfs:comment        "The asset whose energy flows are metered by this electricity meter."@en .
+
+################################################################################
+# Object Properties — Member  (new in v0.6)
+################################################################################
+
+celine:hasMember
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:CommunityContext ;
+    rdfs:range          peco:Energy_community_member ;
+    rdfs:label          "has member"@en ;
+    rdfs:comment        "A member participating in this community context. Mirrors the rec-registry's per-community member list. The reciprocal PECO link from the member to the wrapped peco:Energy_community is peco:is_member_of."@en .
+
+celine:hasMemberRole
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         peco:Energy_community_member ;
+    rdfs:range          skos:Concept ;
+    rdfs:label          "has member role"@en ;
+    rdfs:comment        "The participation role of this member within their energy community. Expected values from celine:MemberRole. Following the rec-registry conceptual model, a member has exactly one role per community; cross-community role differences are out of scope for v0.6."@en .
+
+celine:hasMemberStatus
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         peco:Energy_community_member ;
+    rdfs:range          skos:Concept ;
+    rdfs:label          "has member status"@en ;
+    rdfs:comment        "The lifecycle status of this member within their energy community. Expected values from celine:MemberStatus. Following the rec-registry conceptual model, a member has exactly one status per community."@en .
+
+################################################################################
+# Object Properties — Flexibility Request  (new in v0.6)
+################################################################################
+
+celine:hasFlexibilityRequest
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:CommunityContext ;
+    rdfs:range          celine:FlexibilityRequest ;
+    rdfs:label          "has flexibility request"@en ;
+    rdfs:comment        "A flexibility request issued within this community context."@en .
+
+celine:requestedBy
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:FlexibilityRequest ;
+    rdfs:range          peco:Agent ;
+    rdfs:label          "requested by"@en ;
+    rdfs:comment        "The operator or automated system that issued this flexibility request."@en .
+
+celine:hasRequestStatus
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:FlexibilityRequest ;
+    rdfs:range          skos:Concept ;
+    rdfs:label          "has request status"@en ;
+    rdfs:comment        "Expected values from celine:RequestStatus."@en .
+
+celine:resultsInCommitment
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:FlexibilityRequest ;
+    rdfs:range          celine:FlexibilityCommitment ;
+    rdfs:label          "results in commitment"@en ;
+    rdfs:comment        "FlexibilityCommitment(s) created in response to this request."@en .
+
+celine:inResponseTo
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:FlexibilityCommitment ;
+    rdfs:range          celine:FlexibilityRequest ;
+    rdfs:label          "in response to"@en ;
+    rdfs:comment        "The flexibility request that triggered this commitment."@en ;
+    owl:inverseOf       celine:resultsInCommitment .
 
 ################################################################################
 # Data Properties — KPI  (new in v0.5)
@@ -1415,3 +1952,29 @@ celine:maxActivationsPerDay
     rdfs:range          xsd:integer ;
     rdfs:label          "max activations per day" ;
     rdfs:comment        "Maximum number of flexibility activation events permitted within a 24-hour period." .
+
+################################################################################
+# Data Properties — Flexibility Request  (new in v0.6)
+################################################################################
+
+celine:requestedFlexibility
+    a owl:DatatypeProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         celine:FlexibilityRequest ;
+    rdfs:range          xsd:decimal ;
+    rdfs:label          "requested flexibility"@en ;
+    rdfs:comment        "Target flexibility amount in kWh. Positive value; direction is expressed by hasFlexibilityDirection."@en .
+
+################################################################################
+# Data Properties — Grid & Asset Identity  (new in v0.6)
+################################################################################
+
+celine:hasLocalIdentifier
+    a owl:DatatypeProperty ;
+    rdfs:isDefinedBy    <https://w3id.org/celine-eu> ;
+    rdfs:domain         [ a owl:Class ;
+                          owl:unionOf ( celine:ConnectionPoint
+                                        peco:Asset ) ] ;
+    rdfs:range          xsd:string ;
+    rdfs:label          "has local identifier"@en ;
+    rdfs:comment        "Local identifier string. For connection points: the national metering code (POD, CUPS, PRM, etc.). For assets: the registry's local asset key, used as the lookup handle into the external rec-registry catalogue."@en .

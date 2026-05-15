@@ -3829,6 +3829,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#new-object-properties-flexibility-request-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New object properties — flexibility request (5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-datatype-property-flexibility-request-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New datatype property — flexibility request (1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#new-object-properties-member-2" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4000,6 +4022,7 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <li><strong><code>celine:DistributionFeeder</code></strong> — feeder line from substation to downstream connection points</li>
 <li><strong><code>celine:RegulatoryZone</code></strong> — administrative coverage area (e.g. GSE primary-substation service zone)</li>
 <li><strong><code>celine:GridOperator</code></strong> — grid infrastructure operator, typically a DSO (<code>rdfs:subClassOf peco:Agent</code>)</li>
+<li><strong><code>celine:FlexibilityRequest</code></strong> — demand signal requesting members to activate flexibility</li>
 <li><strong><code>celine:ConnectionPoint</code></strong> — generalised grid connection point; <code>peco:Electric_POD</code> is declared as subclass</li>
 <li><strong><code>celine:PVSystem</code></strong> — photovoltaic system (presence-only)</li>
 <li><strong><code>celine:BatteryStorage</code></strong> — battery energy storage system (<code>rdfs:subClassOf peco:Energy_storage</code>)</li>
@@ -4023,6 +4046,18 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <ul>
 <li><strong><code>celine:hasLocalIdentifier</code></strong> — (ConnectionPoint ∪ peco:Asset) → xsd:string</li>
 </ul>
+<h3 id="new-object-properties-flexibility-request-5">New object properties — flexibility request (5)</h3>
+<ul>
+<li><strong><code>celine:hasFlexibilityRequest</code></strong> — CommunityContext → FlexibilityRequest</li>
+<li><strong><code>celine:requestedBy</code></strong> — FlexibilityRequest → peco:Agent</li>
+<li><strong><code>celine:hasRequestStatus</code></strong> — FlexibilityRequest → skos:Concept (from RequestStatus)</li>
+<li><strong><code>celine:resultsInCommitment</code></strong> — FlexibilityRequest → FlexibilityCommitment</li>
+<li><strong><code>celine:inResponseTo</code></strong> — FlexibilityCommitment → FlexibilityRequest (inverse of resultsInCommitment)</li>
+</ul>
+<h3 id="new-datatype-property-flexibility-request-1">New datatype property — flexibility request (1)</h3>
+<ul>
+<li><strong><code>celine:requestedFlexibility</code></strong> — FlexibilityRequest → xsd:decimal (target kWh, positive)</li>
+</ul>
 <h3 id="new-object-properties-member-2">New object properties — member (2)</h3>
 <ul>
 <li><strong><code>celine:hasMemberRole</code></strong> — peco:Energy_community_member → skos:Concept (from MemberRole)</li>
@@ -4036,14 +4071,20 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
   <code>RoleOperator</code>, <code>RoleAdmin</code></li>
 <li><strong><code>celine:MemberStatus</code></strong> with 4 concepts: <code>StatusPending</code>, <code>StatusActive</code>,
   <code>StatusSuspended</code>, <code>StatusInactive</code></li>
+<li><strong><code>celine:RequestStatus</code></strong> with 5 concepts: <code>RequestOpen</code>, <code>RequestFulfilled</code>,
+  <code>RequestPartial</code>, <code>RequestExpired</code>, <code>RequestCancelled</code></li>
 </ul>
 <h3 id="modified">Modified</h3>
 <ul>
 <li><strong><code>peco:Electric_POD</code></strong> — declared <code>rdfs:subClassOf celine:ConnectionPoint</code>. This is the single
   statement where v0.6 reaches into PECO's namespace. Existing POD queries continue to work;
   new queries can use <code>ConnectionPoint</code> for country-portable code.</li>
-<li><strong><code>celine:CommunityContext</code></strong> — gains three new optional properties: <code>hasRegulatoryZone</code>,
-  <code>hasTopologyNode</code>, <code>hasGridOperator</code>.</li>
+<li><strong><code>celine:CommunityContext</code></strong> — gains four new optional properties: <code>hasRegulatoryZone</code>,
+  <code>hasTopologyNode</code>, <code>hasGridOperator</code>, <code>hasFlexibilityRequest</code>.</li>
+<li><strong><code>celine:FlexibilityCommitment</code></strong> — gains optional <code>inResponseTo</code> linking back to the
+  triggering FlexibilityRequest.</li>
+<li><strong><code>celine:hasFlexibilityDirection</code></strong> — domain widened from FlexibilityCommitment to
+  union of FlexibilityCommitment and FlexibilityRequest.</li>
 </ul>
 <h3 id="alignment-policy">Alignment policy</h3>
 <ul>
@@ -4132,6 +4173,10 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <tr>
 <td><code>celine:FlexibilityConstraint</code></td>
 <td>Operational constraints on flexibility activation (notice, duration, recovery, frequency)</td>
+</tr>
+<tr>
+<td><code>celine:FlexibilityRequest</code></td>
+<td><strong>New in v0.6</strong> — Demand signal requesting members to activate flexibility</td>
 </tr>
 <tr>
 <td><code>celine:Substation</code></td>

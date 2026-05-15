@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://w3id.org/celine-eu/v0.5/celine.schema.json",
+  "$id": "https://w3id.org/celine-eu/v0.6/celine.schema.json",
   "title": "CELINE JSON-LD schema",
   "type": "object",
   "required": [
@@ -75,7 +75,12 @@
             "hasSimulation": { "$ref": "#/$defs/IRIorList" },
             "hasCommitment": { "$ref": "#/$defs/IRIorList" },
             "hasSettlementRun": { "$ref": "#/$defs/IRIorList" },
-            "hasEnvelope": { "$ref": "#/$defs/IRIorList" }
+            "hasEnvelope": { "$ref": "#/$defs/IRIorList" },
+            "hasRegulatoryZone": { "$ref": "#/$defs/IRIorList" },
+            "hasTopologyNode": { "$ref": "#/$defs/IRIorList" },
+            "hasGridOperator": { "$ref": "#/$defs/IRIorList" },
+            "hasFlexibilityRequest": { "$ref": "#/$defs/IRIorList" },
+            "hasMember": { "$ref": "#/$defs/IRIorList" }
           },
           "required": ["hasCommunity"]
         }
@@ -216,7 +221,8 @@
             "targetFlexibility": { "type": "number", "exclusiveMinimum": 0 },
             "hasTimeInterval": { "$ref": "#/$defs/IRI" },
             "generatesCredit": { "$ref": "#/$defs/IRIorList" },
-            "withinEnvelope": { "$ref": "#/$defs/IRI" }
+            "withinEnvelope": { "$ref": "#/$defs/IRI" },
+            "inResponseTo": { "$ref": "#/$defs/IRI" }
           },
           "required": ["committedBy", "onPOD", "hasCommitmentMode", "hasFlexibilityDirection", "targetFlexibility", "hasTimeInterval"]
         }
@@ -348,6 +354,146 @@
         }
       ]
     },
+    "FlexibilityRequest": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:FlexibilityRequest" },
+                { "type": "array", "contains": { "const": "celine:FlexibilityRequest" } }
+              ]
+            },
+            "requestedBy": { "$ref": "#/$defs/IRI" },
+            "hasFlexibilityDirection": { "$ref": "#/$defs/IRI" },
+            "requestedFlexibility": { "type": "number", "exclusiveMinimum": 0 },
+            "hasTimeInterval": { "$ref": "#/$defs/IRI" },
+            "hasRequestStatus": { "$ref": "#/$defs/IRI" },
+            "resultsInCommitment": { "$ref": "#/$defs/IRIorList" }
+          },
+          "required": ["requestedBy", "hasFlexibilityDirection", "requestedFlexibility", "hasTimeInterval"]
+        }
+      ]
+    },
+    "Substation": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "enum": ["celine:Substation", "celine:PrimarySubstation", "celine:SecondarySubstation"] },
+                { "type": "array", "contains": { "enum": ["celine:Substation", "celine:PrimarySubstation", "celine:SecondarySubstation"] } }
+              ]
+            },
+            "operatedBy": { "$ref": "#/$defs/IRI" },
+            "hasLocalIdentifier": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "PowerTransformer": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:PowerTransformer" },
+                { "type": "array", "contains": { "const": "celine:PowerTransformer" } }
+              ]
+            },
+            "operatedBy": { "$ref": "#/$defs/IRI" },
+            "hasLocalIdentifier": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "DistributionFeeder": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:DistributionFeeder" },
+                { "type": "array", "contains": { "const": "celine:DistributionFeeder" } }
+              ]
+            },
+            "operatedBy": { "$ref": "#/$defs/IRI" },
+            "hasLocalIdentifier": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "RegulatoryZone": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:RegulatoryZone" },
+                { "type": "array", "contains": { "const": "celine:RegulatoryZone" } }
+              ]
+            },
+            "servedBy": { "$ref": "#/$defs/IRIorList" }
+          }
+        }
+      ]
+    },
+    "GridOperator": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:GridOperator" },
+                { "type": "array", "contains": { "const": "celine:GridOperator" } }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ConnectionPoint": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "const": "celine:ConnectionPoint" },
+                { "type": "array", "contains": { "const": "celine:ConnectionPoint" } }
+              ]
+            },
+            "hasIdentifierScheme": { "$ref": "#/$defs/IRI" },
+            "hasLocalIdentifier": { "type": "string" },
+            "inRegulatoryZone": { "$ref": "#/$defs/IRI" }
+          }
+        }
+      ]
+    },
+    "AssetInstance": {
+      "allOf": [
+        { "$ref": "#/$defs/NodeBase" },
+        {
+          "properties": {
+            "@type": {
+              "anyOf": [
+                { "enum": ["celine:PVSystem", "celine:BatteryStorage", "celine:ElectricityMeter", "celine:EVCharger", "celine:HeatPump"] },
+                { "type": "array", "contains": { "enum": ["celine:PVSystem", "celine:BatteryStorage", "celine:ElectricityMeter", "celine:EVCharger", "celine:HeatPump"] } }
+              ]
+            },
+            "hasLocalIdentifier": { "type": "string" },
+            "pairedWith": { "$ref": "#/$defs/IRIorList" },
+            "measures": { "$ref": "#/$defs/IRIorList" }
+          }
+        }
+      ]
+    },
     "Node": {
       "anyOf": [
         { "$ref": "#/$defs/CommunityContext" },
@@ -364,6 +510,14 @@
         { "$ref": "#/$defs/RedistributionResult" },
         { "$ref": "#/$defs/FlexibilityEnvelope" },
         { "$ref": "#/$defs/FlexibilityConstraint" },
+        { "$ref": "#/$defs/FlexibilityRequest" },
+        { "$ref": "#/$defs/Substation" },
+        { "$ref": "#/$defs/PowerTransformer" },
+        { "$ref": "#/$defs/DistributionFeeder" },
+        { "$ref": "#/$defs/RegulatoryZone" },
+        { "$ref": "#/$defs/GridOperator" },
+        { "$ref": "#/$defs/ConnectionPoint" },
+        { "$ref": "#/$defs/AssetInstance" },
         { "$ref": "#/$defs/NodeBase" }
       ]
     }
