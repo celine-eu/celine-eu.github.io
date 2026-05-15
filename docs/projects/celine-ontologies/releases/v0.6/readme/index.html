@@ -3796,10 +3796,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#new-classes-13" class="md-nav__link">
+  <a href="#new-classes-15" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New classes (13)
+        New classes (15)
       
     </span>
   </a>
@@ -3851,10 +3851,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#new-object-properties-member-2" class="md-nav__link">
+  <a href="#new-object-properties-member-sharing-group-5" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New object properties — member (2)
+        New object properties — member &amp; sharing group (5)
       
     </span>
   </a>
@@ -3862,10 +3862,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#new-skos-concept-schemes-3" class="md-nav__link">
+  <a href="#new-skos-concept-schemes-4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New SKOS concept schemes (3)
+        New SKOS concept schemes (4)
       
     </span>
   </a>
@@ -4013,7 +4013,7 @@ GridOperator actor, a generalised ConnectionPoint superclass, and a presence-onl
 inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); SAREF alignment via
 <code>skos:closeMatch</code> only — no new <code>owl:imports</code>.</p>
 <h2 id="changes-from-v05">Changes from v0.5</h2>
-<h3 id="new-classes-13">New classes (13)</h3>
+<h3 id="new-classes-15">New classes (15)</h3>
 <ul>
 <li><strong><code>celine:Substation</code></strong> — abstract superclass for electrical substations (<code>rdfs:subClassOf peco:Asset</code>)</li>
 <li><strong><code>celine:PrimarySubstation</code></strong> — HV/MV substation (e.g. Italian cabina primaria)</li>
@@ -4022,8 +4022,9 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <li><strong><code>celine:DistributionFeeder</code></strong> — feeder line from substation to downstream connection points</li>
 <li><strong><code>celine:RegulatoryZone</code></strong> — administrative coverage area (e.g. GSE primary-substation service zone)</li>
 <li><strong><code>celine:GridOperator</code></strong> — grid infrastructure operator, typically a DSO (<code>rdfs:subClassOf peco:Agent</code>)</li>
-<li><strong><code>celine:FlexibilityRequest</code></strong> — demand signal requesting members to activate flexibility</li>
 <li><strong><code>celine:ConnectionPoint</code></strong> — generalised grid connection point; <code>peco:Electric_POD</code> is declared as subclass</li>
+<li><strong><code>celine:SharingGroup</code></strong> — community partition for shared self-consumption within a regulatory zone (RED II double-counting prohibition)</li>
+<li><strong><code>celine:FlexibilityRequest</code></strong> — demand signal requesting members to activate flexibility</li>
 <li><strong><code>celine:PVSystem</code></strong> — photovoltaic system (presence-only)</li>
 <li><strong><code>celine:BatteryStorage</code></strong> — battery energy storage system (<code>rdfs:subClassOf peco:Energy_storage</code>)</li>
 <li><strong><code>celine:ElectricityMeter</code></strong> — metering device</li>
@@ -4058,12 +4059,15 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <ul>
 <li><strong><code>celine:requestedFlexibility</code></strong> — FlexibilityRequest → xsd:decimal (target kWh, positive)</li>
 </ul>
-<h3 id="new-object-properties-member-2">New object properties — member (2)</h3>
+<h3 id="new-object-properties-member-sharing-group-5">New object properties — member &amp; sharing group (5)</h3>
 <ul>
+<li><strong><code>celine:hasMember</code></strong> — (CommunityContext ∪ SharingGroup) → peco:Energy_community_member (domain widened from CommunityContext to also include SharingGroup)</li>
+<li><strong><code>celine:hasDeliveryPoint</code></strong> — peco:Energy_community_member → ConnectionPoint</li>
 <li><strong><code>celine:hasMemberRole</code></strong> — peco:Energy_community_member → skos:Concept (from MemberRole)</li>
 <li><strong><code>celine:hasMemberStatus</code></strong> — peco:Energy_community_member → skos:Concept (from MemberStatus)</li>
+<li><strong><code>celine:hasPartition</code></strong> — CommunityContext → SharingGroup (inverse: <code>celine:partitionOf</code>)</li>
 </ul>
-<h3 id="new-skos-concept-schemes-3">New SKOS concept schemes (3)</h3>
+<h3 id="new-skos-concept-schemes-4">New SKOS concept schemes (4)</h3>
 <ul>
 <li><strong><code>celine:ConnectionPointIdentifierScheme</code></strong> with 6 concepts: <code>POD</code> (Italy), <code>CUPS</code> (Spain),
   <code>PRM</code> (France), <code>MALO</code> (Germany), <code>EAN</code> (Belgium/Netherlands), <code>MPAN</code> (United Kingdom)</li>
@@ -4211,6 +4215,10 @@ inventory. CIM alignment via <code>skos:closeMatch</code> (IEC 61968 profile); S
 <td><strong>New in v0.6</strong> — Generalised grid connection point (superclass of Electric_POD)</td>
 </tr>
 <tr>
+<td><code>celine:SharingGroup</code></td>
+<td><strong>New in v0.6</strong> — Community partition for shared self-consumption within a regulatory zone</td>
+</tr>
+<tr>
 <td><code>celine:PVSystem</code></td>
 <td><strong>New in v0.6</strong> — Photovoltaic system (presence-only)</td>
 </tr>
@@ -4351,7 +4359,7 @@ CommunityContext --hasGridOperator---&gt; GridOperator
 <tr>
 <td><code>PeakReductionAchieved</code></td>
 <td>Community</td>
-<td>Total</td>
+<td>Derived</td>
 <td>Period</td>
 <td>kW</td>
 </tr>
