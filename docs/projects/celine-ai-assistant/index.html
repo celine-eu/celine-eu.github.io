@@ -562,6 +562,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skills
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4007,6 +4018,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skills
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4050,13 +4072,13 @@
 <p>The chat UI is part of <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> (<code>apps/assistant</code>).</p>
 <h2 id="features">Features</h2>
 <ul>
-<li>Streaming chat via Server-Sent Events (SSE)</li>
+<li><strong>Agentic chat</strong> with tool-calling loop — the LLM autonomously invokes skills to fetch live data</li>
+<li><strong>Skill system</strong> — modular skills for energy data (Digital Twin), weather/forecasts, flexibility/gamification, REC registry, and document search</li>
+<li>Streaming chat via Server-Sent Events (SSE) with tool progress events</li>
 <li>Conversation history persisted in PostgreSQL</li>
 <li>File upload with automatic RAG ingestion into Qdrant</li>
 <li>Vision support for image attachments (captioning via OpenAI vision model)</li>
-<li>Dashboard context enrichment from Digital Twin API</li>
 <li>Automatic sync of <code>celine-training-materials</code> from a Git repository</li>
-<li>Page-aware context and attachment scoping</li>
 <li>JWT authentication (trusted headers from oauth2_proxy or JWKS verification)</li>
 <li>Admin endpoints for system uploads and training materials sync</li>
 </ul>
@@ -4144,7 +4166,17 @@ task run
 <tr>
 <td><code>DIGITAL_TWIN_API_URL</code></td>
 <td>—</td>
-<td>Digital Twin API for dashboard context</td>
+<td>Digital Twin API for energy/weather/forecast skills</td>
+</tr>
+<tr>
+<td><code>REC_REGISTRY_API_URL</code></td>
+<td>—</td>
+<td>REC Registry API for membership/assets/delivery points</td>
+</tr>
+<tr>
+<td><code>FLEXIBILITY_API_URL</code></td>
+<td>—</td>
+<td>Flexibility API for load-shift suggestions and gamification</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_PATH</code></td>
@@ -4194,7 +4226,11 @@ task run
 <tbody>
 <tr>
 <td><strong>chat</strong></td>
-<td><code>POST /chat</code> (SSE streaming)</td>
+<td><code>POST /chat</code> (SSE streaming with agentic tool calls)</td>
+</tr>
+<tr>
+<td><strong>suggestions</strong></td>
+<td><code>GET /suggestions</code> (localized prompt suggestions and tool labels)</td>
 </tr>
 <tr>
 <td><strong>conversations</strong></td>
@@ -4219,6 +4255,44 @@ task run
 <tr>
 <td><strong>ops</strong></td>
 <td><code>GET /health</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="skills">Skills</h2>
+<p>The assistant uses a modular skill system. Each skill exposes OpenAI function-calling tools that the LLM invokes autonomously during conversation. Skills are registered per-request based on available API endpoints and user authentication.</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Tools</th>
+<th>Data source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Digital Twin</strong></td>
+<td><code>query_participant_metrics</code>, <code>query_community_metrics</code>, <code>query_participant_profile</code>, <code>query_participant_assets</code></td>
+<td>Digital Twin API</td>
+</tr>
+<tr>
+<td><strong>Weather</strong></td>
+<td><code>get_weather_current</code>, <code>get_weather_forecast</code>, <code>get_weather_alerts</code>, <code>get_energy_forecast</code></td>
+<td>Digital Twin API (weather fetchers)</td>
+</tr>
+<tr>
+<td><strong>Flexibility</strong></td>
+<td><code>get_flexibility_suggestions</code>, <code>get_gamification_status</code>, <code>get_commitment_history</code></td>
+<td>Flexibility API + Digital Twin API</td>
+</tr>
+<tr>
+<td><strong>REC Registry</strong></td>
+<td><code>get_my_rec_profile</code>, <code>get_my_community_details</code>, <code>get_my_assets</code>, <code>get_my_asset_detail</code>, <code>get_my_delivery_points</code></td>
+<td>REC Registry API</td>
+</tr>
+<tr>
+<td><strong>Documents</strong></td>
+<td><code>search_documents</code>, <code>get_attachment_info</code></td>
+<td>Qdrant vector store</td>
 </tr>
 </tbody>
 </table>

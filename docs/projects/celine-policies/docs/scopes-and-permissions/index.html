@@ -2762,6 +2762,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#user-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Groups
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#group-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Sources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-services-read-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Services Read Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-rec-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-REC Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#audience-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4372,6 +4433,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#user-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Groups
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#group-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Sources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-services-read-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Services Read Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-rec-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-REC Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#audience-mappers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4728,6 +4850,71 @@ default_scopes:
   - rec-registry.admin
   - nudging.admin
 </code></pre>
+<hr />
+<h2 id="user-groups">User Groups</h2>
+<p>User authorization is group-based. Groups determine what resources a user can access (e.g., internal datasets, community data).</p>
+<h3 id="group-sources">Group Sources</h3>
+<p>Groups can come from two places in the JWT:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Claim</th>
+<th>Assigned via</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Realm-level</strong></td>
+<td><code>groups: ["/admins"]</code></td>
+<td>Keycloak admin UI or <code>--group /admins</code> flag</td>
+</tr>
+<tr>
+<td><strong>Org-level</strong></td>
+<td><code>organization.&lt;alias&gt;.groups: ["/viewers"]</code></td>
+<td><code>sync-users</code> (automatic for REC participants)</td>
+</tr>
+</tbody>
+</table>
+<p>Realm-level groups are reserved for <strong>platform management</strong> (admins, managers). Regular REC participants receive org-level groups only.</p>
+<h3 id="group-hierarchy">Group Hierarchy</h3>
+<p>Groups follow the standard role hierarchy (defined in <code>ROLE_HIERARCHY</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>admins</code></td>
+<td>Full access to all resources</td>
+</tr>
+<tr>
+<td><code>managers</code></td>
+<td>Read/query access to internal datasets</td>
+</tr>
+<tr>
+<td><code>editors</code></td>
+<td>(reserved for future use)</td>
+</tr>
+<tr>
+<td><code>viewers</code></td>
+<td>Read/query access to internal datasets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-services-read-groups">How Services Read Groups</h3>
+<p>All CELINE services use <code>extract_groups()</code> from <code>celine-sdk</code> to read groups from JWT claims. This function merges realm-level and org-level groups into a flat list:</p>
+<pre><code class="language-python">from celine.sdk.auth.jwt import extract_groups
+
+groups = extract_groups(user.claims)
+# [&quot;viewers&quot;] — regardless of whether it came from realm or org
+</code></pre>
+<p>Services must NOT use <code>claims.get("groups")</code> directly — it misses org-level groups.</p>
+<h3 id="multi-rec-isolation">Multi-REC Isolation</h3>
+<p>Group-based access is a table-level gate ("can this user query internal datasets?"). Row-level isolation for multi-REC deployments is handled separately by <code>row_filters</code> in <code>governance.yaml</code>, which restrict visible rows based on the user's registered devices or community membership.</p>
 <hr />
 <h2 id="audience-mappers">Audience Mappers</h2>
 <p>The <code>oauth2_proxy_client</code> field in <code>clients.yaml</code> identifies the oauth2-proxy Keycloak client. The sync tool adds audience mappers for every service client that has a <code>scopes_prefix</code>, so that user JWTs issued through oauth2-proxy carry all service audiences and pass audience validation on each service.</p>
