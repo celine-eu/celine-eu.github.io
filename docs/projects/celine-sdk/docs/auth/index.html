@@ -794,6 +794,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groups-subject-type-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups &amp; Subject Type Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#oidc-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4025,6 +4036,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groups-subject-type-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups &amp; Subject Type Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#oidc-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4101,12 +4123,47 @@ token = await provider.get_token()
 provider = StaticTokenProvider(token=&quot;eyJ...&quot;)
 </code></pre>
 <h3 id="jwt-parsing">JWT Parsing</h3>
-<p>The <code>jwt</code> module parses tokens without re-verifying signature (for extracting claims from already-validated tokens):</p>
-<pre><code class="language-python">from celine.sdk.auth.jwt import parse_claims
+<p>The <code>jwt</code> module provides <code>JwtUser.from_token()</code> for verified JWT decoding and helpers for working with token claims.</p>
+<h3 id="groups-subject-type-detection">Groups &amp; Subject Type Detection</h3>
+<p>CELINE uses two group models depending on how the user was provisioned:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>JWT claim</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Realm-level</strong> (platform admins)</td>
+<td><code>groups</code></td>
+<td><code>["/admins"]</code></td>
+</tr>
+<tr>
+<td><strong>Org-level</strong> (REC participants)</td>
+<td><code>organization.&lt;alias&gt;.groups</code></td>
+<td><code>{"example_rec": {"groups": ["/viewers"]}}</code></td>
+</tr>
+</tbody>
+</table>
+<p>Realm-level groups grant cross-org capabilities (e.g., <code>admins</code> can manage all RECs). Org-level groups are scoped to a specific organization and are the default for REC participants imported via <code>celine-policies keycloak sync-users</code>.</p>
+<p><strong>Always use <code>extract_groups()</code></strong> to read groups from JWT claims. It merges both sources into a flat, deduplicated list with leading slashes stripped:</p>
+<pre><code class="language-python">from celine.sdk.auth.jwt import extract_groups
 
-claims = parse_claims(token_string)
-# claims.sub, claims.groups, claims.scope, claims.exp
+groups = extract_groups(user.claims)
+# [&quot;viewers&quot;]  — works for both realm and org-level groups
 </code></pre>
+<p>Do NOT use <code>claims.get("groups")</code> directly — it only returns realm-level groups and will miss org-level memberships.</p>
+<p><strong>Service vs. user detection</strong> uses <code>is_service_account()</code>, which checks <code>preferred_username</code> (authoritative for Keycloak service accounts) and human indicators (email, groups, organization membership):</p>
+<pre><code class="language-python">from celine.sdk.auth.jwt import is_service_account
+
+if is_service_account(claims):
+    # client credentials token — check scopes
+else:
+    # user token — check groups via extract_groups()
+</code></pre>
+<p>OPA policies follow this pattern: services are authorized by <strong>scopes</strong>, users by <strong>group membership</strong>.</p>
 <h3 id="oidc-discovery">OIDC Discovery</h3>
 <p>The <code>oidc_discovery</code> module fetches the OIDC well-known configuration from the provider's discovery endpoint, used internally to resolve the JWKS URI and token endpoint.</p>
 <h2 id="accesstoken-model">AccessToken Model</h2>
