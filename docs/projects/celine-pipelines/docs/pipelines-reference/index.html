@@ -4129,8 +4129,8 @@ with its own config (<code>config_wind.yaml</code>) and dbt models under
 <strong>Scheduling:</strong> Every 4 hours (<code>0 0,4,8,12,16,20 * * *</code>)
 <strong>No API key required.</strong> Free tier, ~6 calls/day.</p>
 <p><strong>Downstream consumers:</strong>
-- <code>demo3/pipelines</code> gold model <code>grid_wind_risks</code> (spatial join with power grid shapefiles)
-- <code>demo3/pipelines</code> gold model <code>grid_wind_risks_linee</code> (spatial join with medium-voltage lines)</p>
+- <code>apps/grid</code> gold model <code>grid_wind_risks</code> (spatial join with power grid shapefiles)
+- <code>apps/grid</code> gold model <code>grid_wind_risks_now</code> (nowcasting with 15-min observations)</p>
 <hr />
 <h2 id="dwd-deutscher-wetterdienst-icon-d2-paused">dwd — Deutscher Wetterdienst (ICON-D2) [PAUSED]</h2>
 <p>Ingests gridded weather model output from DWD's ICON-D2 high-resolution regional model for Germany and surrounding areas.</p>
