@@ -640,6 +640,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#service-urls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service URLs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chat-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chat Tuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#general" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4051,6 +4073,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#service-urls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service URLs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chat-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chat Tuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#general" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4111,7 +4155,7 @@
 <tr>
 <td><code>OPENAI_CHAT_MODEL</code></td>
 <td><code>str</code></td>
-<td><code>gpt-4o-mini</code></td>
+<td><code>gpt-5.4-mini</code></td>
 <td>Chat completion model</td>
 </tr>
 <tr>
@@ -4337,6 +4381,86 @@
 </tr>
 </tbody>
 </table>
+<h2 id="service-urls">Service URLs</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DIGITAL_TWIN_API_URL</code></td>
+<td><code>str?</code></td>
+<td><code>http://172.17.0.1:8002</code></td>
+<td>Digital Twin API for energy, weather, and forecast skills</td>
+</tr>
+<tr>
+<td><code>DATASETS_API_URL</code></td>
+<td><code>str?</code></td>
+<td><code>http://172.17.0.1:8001</code></td>
+<td>Dataset API (skill currently disabled — requires service tokens)</td>
+</tr>
+<tr>
+<td><code>REC_REGISTRY_API_URL</code></td>
+<td><code>str?</code></td>
+<td><code>http://172.17.0.1:8004</code></td>
+<td>REC Registry API for membership, assets, and delivery points</td>
+</tr>
+<tr>
+<td><code>FLEXIBILITY_API_URL</code></td>
+<td><code>str?</code></td>
+<td><code>http://172.17.0.1:8017</code></td>
+<td>Flexibility API for load-shift suggestions and gamification</td>
+</tr>
+</tbody>
+</table>
+<h2 id="chat-tuning">Chat Tuning</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAX_TOOL_ROUNDS</code></td>
+<td><code>int</code></td>
+<td><code>6</code></td>
+<td>Max agentic tool-calling rounds per chat request</td>
+</tr>
+<tr>
+<td><code>MAX_TOOL_RESULT_CHARS</code></td>
+<td><code>int</code></td>
+<td><code>8000</code></td>
+<td>Max characters per tool result before truncation</td>
+</tr>
+<tr>
+<td><code>CHAT_HISTORY_LIMIT</code></td>
+<td><code>int</code></td>
+<td><code>20</code></td>
+<td>Max prior messages included in the prompt</td>
+</tr>
+<tr>
+<td><code>CHAT_WORD_LIMIT</code></td>
+<td><code>int</code></td>
+<td><code>25000</code></td>
+<td>Word budget for the conversation context window</td>
+</tr>
+<tr>
+<td><code>CHAT_HOT_MESSAGES</code></td>
+<td><code>int</code></td>
+<td><code>6</code></td>
+<td>Number of recent messages sent without summarization</td>
+</tr>
+</tbody>
+</table>
 <h2 id="general">General</h2>
 <table>
 <thead>
@@ -4360,12 +4484,6 @@
 <td><code>INFO</code></td>
 <td>Python log level</td>
 </tr>
-<tr>
-<td><code>DIGITAL_TWIN_API_URL</code></td>
-<td><code>str?</code></td>
-<td>—</td>
-<td>Digital Twin API URL for dashboard context enrichment</td>
-</tr>
 </tbody>
 </table>
 <h2 id="notes">Notes</h2>
@@ -4373,6 +4491,7 @@
 <li><code>DATABASE_URL</code> must use the <code>asyncpg</code> driver for async SQLAlchemy compatibility.</li>
 <li>When <code>OAUTH2_TRUST_HEADERS</code> is <code>true</code>, the JWT from <code>x-auth-request-access-token</code> header is trusted without JWKS verification (used behind oauth2_proxy).</li>
 <li>Upload storage defaults to local disk. The <code>UPLOADS_URI</code> supports <code>file://</code> and <code>s3://</code> schemes.</li>
+<li>Skills (Digital Twin, Weather, Flexibility, REC Registry) are registered per-request only when the matching service URL is configured and a user token is available.</li>
 </ul>
 
 

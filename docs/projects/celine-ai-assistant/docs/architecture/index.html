@@ -4051,7 +4051,7 @@
 <ol>
 <li><strong>Upload</strong> — files are uploaded via <code>POST /upload</code>, parsed, and chunked. Images are captioned via the vision model.</li>
 <li><strong>Index</strong> — chunks are embedded and stored in Qdrant as vector documents</li>
-<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the OpenAI prompt, along with dashboard context and page-aware context</li>
+<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the OpenAI prompt; the LLM autonomously calls skill tools to fetch live data</li>
 <li><strong>Stream</strong> — the response is streamed back to the client via SSE</li>
 </ol>
 <h2 id="component-overview">Component Overview</h2>
@@ -4097,7 +4097,7 @@
 <tr>
 <td>OpenAI streaming</td>
 <td><code>openai_stream.py</code></td>
-<td>SSE token streaming with LlamaIndex</td>
+<td>SSE token streaming with agentic tool-calling loop</td>
 </tr>
 <tr>
 <td>Vision</td>
@@ -4105,9 +4105,19 @@
 <td>Image captioning via OpenAI vision model</td>
 </tr>
 <tr>
-<td>Dashboard context</td>
-<td><code>dashboard_context.py</code></td>
-<td>Enriches prompts with user data from Digital Twin</td>
+<td>Document processing</td>
+<td><code>document_processing.py</code></td>
+<td>MIME detection and text extraction for uploads</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td><code>skills/</code></td>
+<td>Modular skill system: Digital Twin, Weather, Flexibility, REC Registry, Documents</td>
+</tr>
+<tr>
+<td>Suggestions</td>
+<td><code>suggestions.py</code></td>
+<td>Localized prompt suggestions and tool labels</td>
 </tr>
 <tr>
 <td>Training materials</td>
@@ -4165,7 +4175,15 @@
 </tr>
 <tr>
 <td><strong>Digital Twin</strong></td>
-<td>Dashboard context enrichment (optional)</td>
+<td>Energy data, weather, and forecast queries via skills</td>
+</tr>
+<tr>
+<td><strong>REC Registry</strong></td>
+<td>Membership, assets, and delivery point queries via skills</td>
+</tr>
+<tr>
+<td><strong>Flexibility API</strong></td>
+<td>Load-shift suggestions and gamification via skills</td>
 </tr>
 <tr>
 <td><strong>Keycloak / oauth2_proxy</strong></td>
@@ -4178,7 +4196,7 @@
 <pre><code>POST /upload -&gt; parse file -&gt; (if image: caption via vision model) -&gt; split into chunks -&gt; embed (OpenAI) -&gt; upsert (Qdrant) -&gt; store metadata (PostgreSQL)
 </code></pre>
 <p>Chat path:</p>
-<pre><code>POST /chat -&gt; verify JWT -&gt; load history -&gt; load authorized attachments -&gt; retrieve context (Qdrant) -&gt; enrich with dashboard context -&gt; build prompt -&gt; stream (OpenAI SSE)
+<pre><code>POST /chat -&gt; verify JWT -&gt; load history -&gt; load authorized attachments -&gt; retrieve context (Qdrant) -&gt; build prompt -&gt; stream (OpenAI SSE with agentic tool-calling loop)
 </code></pre>
 <h2 id="database-models">Database Models</h2>
 <p>PostgreSQL (async via SQLAlchemy + asyncpg). Alembic handles migrations. Models:</p>

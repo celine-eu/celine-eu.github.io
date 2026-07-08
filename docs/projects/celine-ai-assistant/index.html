@@ -4105,7 +4105,7 @@ task run
 </tr>
 <tr>
 <td><code>OPENAI_CHAT_MODEL</code></td>
-<td><code>gpt-4o-mini</code></td>
+<td><code>gpt-5.4-mini</code></td>
 <td>Chat completion model</td>
 </tr>
 <tr>
@@ -4165,18 +4165,33 @@ task run
 </tr>
 <tr>
 <td><code>DIGITAL_TWIN_API_URL</code></td>
-<td>—</td>
+<td><code>http://172.17.0.1:8002</code></td>
 <td>Digital Twin API for energy/weather/forecast skills</td>
 </tr>
 <tr>
+<td><code>DATASETS_API_URL</code></td>
+<td><code>http://172.17.0.1:8001</code></td>
+<td>Dataset API (skill currently disabled)</td>
+</tr>
+<tr>
 <td><code>REC_REGISTRY_API_URL</code></td>
-<td>—</td>
+<td><code>http://172.17.0.1:8004</code></td>
 <td>REC Registry API for membership/assets/delivery points</td>
 </tr>
 <tr>
 <td><code>FLEXIBILITY_API_URL</code></td>
-<td>—</td>
+<td><code>http://172.17.0.1:8017</code></td>
 <td>Flexibility API for load-shift suggestions and gamification</td>
+</tr>
+<tr>
+<td><code>MAX_TOOL_ROUNDS</code></td>
+<td><code>6</code></td>
+<td>Max agentic tool-calling rounds per chat request</td>
+</tr>
+<tr>
+<td><code>CHAT_HISTORY_LIMIT</code></td>
+<td><code>20</code></td>
+<td>Max prior messages included in the prompt</td>
 </tr>
 <tr>
 <td><code>TRAINING_MATERIALS_PATH</code></td>
@@ -4227,6 +4242,10 @@ task run
 <tr>
 <td><strong>chat</strong></td>
 <td><code>POST /chat</code> (SSE streaming with agentic tool calls)</td>
+</tr>
+<tr>
+<td><strong>ping</strong></td>
+<td><code>GET /ping</code> (authenticated liveness check)</td>
 </tr>
 <tr>
 <td><strong>suggestions</strong></td>

@@ -830,6 +830,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /ping
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4359,6 +4370,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /ping
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4400,7 +4422,7 @@
 <p><strong>Behavior:</strong>
 - Creates a new conversation if <code>conversation_id</code> is omitted.
 - Loads authorized attachments and retrieves relevant document chunks from Qdrant.
-- Enriches the prompt with dashboard context from Digital Twin if configured.
+- The LLM autonomously invokes registered skills (energy data, weather, flexibility, etc.) via tool calls.
 - Persists the full assistant reply once streaming completes.</p>
 <hr />
 <h2 id="uploads-and-attachments">Uploads and Attachments</h2>
@@ -4438,6 +4460,8 @@
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>
 <p>Returns <code>{"status": "ok"}</code>. No authentication required.</p>
+<h3 id="get-ping"><code>GET /ping</code></h3>
+<p>Returns <code>{"ok": true}</code>. Requires authentication — useful as a liveness check that validates the JWT.</p>
 
 
 
