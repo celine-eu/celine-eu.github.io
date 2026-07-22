@@ -4882,6 +4882,9 @@
 <h2 id="overview">Overview</h2>
 <h3 id="get-apioverview"><code>GET /api/overview</code></h3>
 <p>Returns the energy overview for the authenticated user's community. Aggregates data from the Digital Twin.</p>
+<p>Query parameters:
+- <code>days</code>: relative range in days when no custom dates are provided, default <code>7</code>, maximum <code>365</code>.
+- <code>start_date</code> and <code>end_date</code>: inclusive custom date range in <code>YYYY-MM-DD</code> format, maximum 1 year. Both must be provided together.</p>
 <hr />
 <h2 id="weather">Weather</h2>
 <h3 id="get-apiweather"><code>GET /api/weather</code></h3>

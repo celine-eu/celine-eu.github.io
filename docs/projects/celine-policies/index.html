@@ -2501,6 +2501,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dataspace-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataspace Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dataspace-claim-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dataspace claim scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-registryadmin-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identity-registry.admin scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataspace-service-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace service clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#development" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4007,6 +4057,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dataspace-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataspace Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dataspace-claim-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dataspace claim scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-registryadmin-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identity-registry.admin scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataspace-service-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace service clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#development" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4142,6 +4242,26 @@ celine-policies keycloak set-password    # Set a user's password
 celine-policies keycloak set-user-organization  # Assign user to org + groups
 celine-policies keycloak status          # Show current Keycloak state
 </code></pre>
+<h2 id="dataspace-integration">Dataspace Integration</h2>
+<p>The CLI manages Keycloak resources for the CELINE dataspace layer (identity
+registry, onboarding, portal).</p>
+<h3 id="dataspace-claim-scope"><code>dataspace</code> claim scope</h3>
+<p><code>ensure_realm_claim_scopes()</code> creates a <code>dataspace</code> client scope with an
+<code>oidc-usermodel-attribute-mapper</code> that maps the Keycloak user attribute
+<code>dataspace_did</code> into a <code>dataspace_did</code> JWT claim (id, access, and userinfo
+tokens). The scope is assigned as a default scope on the <code>oauth2_proxy</code> client,
+so every user JWT automatically carries the claim when the attribute is set.</p>
+<h3 id="identity-registryadmin-scope"><code>identity-registry.admin</code> scope</h3>
+<p>A standard OAuth scope granting admin access to the dataspace identity-registry
+API. It follows the <code>{service}.admin</code> naming convention.</p>
+<h3 id="dataspace-service-clients">Dataspace service clients</h3>
+<p>All three follow the <code>svc-ds-*</code> naming convention to distinguish dataspace
+services from platform services (<code>svc-*</code>).</p>
+<ul>
+<li><strong><code>svc-ds-identity-registry</code></strong> -- Identity Registry backend. Owns the <code>identity-registry</code> scope prefix.</li>
+<li><strong><code>svc-ds-onboarding</code></strong> -- Onboarding service. Gets <code>identity-registry.admin</code> scope and uses <code>extra_audiences: [svc-ds-identity-registry]</code> for token forwarding.</li>
+<li><strong><code>svc-ds-portal</code></strong> -- User-facing OIDC client (<code>service_account_enabled: false</code>). Default scopes: <code>dataset.query</code>, <code>dataset.read</code>.</li>
+</ul>
 <h2 id="development">Development</h2>
 <pre><code class="language-bash"># Run MQTT auth dev server
 task run
