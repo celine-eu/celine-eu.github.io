@@ -1160,6 +1160,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cli" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3996,6 +4007,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cli" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4124,6 +4146,22 @@ task run
 </tr>
 </tbody>
 </table>
+<h2 id="data-sharing">Data sharing</h2>
+<p>A member's dataspace sharing decisions — what the community may do with their
+energy data — are read and changed at <code>/api/data-sharing</code>. The onboarding wizard
+can only <em>grant</em> such a consent, since it holds no session once somebody is
+approved, so this is where withdrawal lives; GDPR Art. 7(3) requires it to be as
+easy as giving.</p>
+<p>Everything is done <strong>as the member</strong>, with their own verifiable credential. The
+service account configured here does one thing: resolve which credential is
+theirs. A service that could grant consent on somebody's behalf would defeat the
+point of recording it.</p>
+<p><strong>Off by default</strong> (<code>DATA_SHARING_ENABLED</code>). The dataspace may not be deployed
+for some time, and a screen whose decisions take effect nowhere is worse than no
+screen — so when the flag is off the routes answer <code>404</code>, <code>/api/me</code> reports
+<code>data_sharing_enabled: false</code>, and the UI hides the section entirely.</p>
+<p>A member with no dataspace identity — somebody enabled before the integration
+existed — gets <code>has_identity: false</code> and an explanation, not an error.</p>
 <h2 id="cli">CLI</h2>
 <pre><code class="language-bash">celine-webapp-export-feedback   # Export user feedback data
 </code></pre>
