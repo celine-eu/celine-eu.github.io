@@ -935,6 +935,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#two-ways-a-community-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two ways a community changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3974,6 +3985,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#two-ways-a-community-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two ways a community changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4052,11 +4074,21 @@
 <li>Multi-community support with v0.5 schema</li>
 <li>Self-service user API (profile, membership, assets, delivery points)</li>
 <li>Admin API for community management, cross-community lookup, and batch operations</li>
-<li>YAML-based import/export with full replace semantics</li>
+<li><strong>Runtime member management</strong> — create, update, deactivate members and their delivery points and assets, one at a time</li>
+<li>YAML-based import/export with full replace semantics, guarded so a restore cannot silently delete a live community</li>
 <li>In-process OPA policy evaluation for authorization</li>
 <li>CLI (<code>celine-rec-registry</code>) for import, export, listing, and lookup operations</li>
 <li>Paginated responses with cursor-based navigation</li>
 </ul>
+<h2 id="two-ways-a-community-changes">Two ways a community changes</h2>
+<p>A community is <strong>seeded</strong> from a YAML bundle and <strong>changes</strong> through the member
+API. Both paths build the same rows, so an export taken after weeks of runtime
+changes re-imports to the same state.</p>
+<p>The distinction matters because import is <em>replacement</em>: it deletes the
+community with every member and asset, then recreates it from the file. That was
+safe when the file was the only source of members. Now that members arrive at
+runtime, restoring a stale export is the likeliest way to lose them — so
+overwriting an existing community requires <code>force</code>, and is refused without it.</p>
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash">uv sync
 
@@ -4090,12 +4122,20 @@ task run
 <td>Cross-community lookups by user ID, sensor ID, or delivery point</td>
 </tr>
 <tr>
+<td><code>POST /admin/communities/{key}/members</code></td>
+<td>Create a member; sub-resources for its delivery points and assets</td>
+</tr>
+<tr>
+<td><code>PATCH /admin/communities/{key}</code></td>
+<td>Update community metadata, areas</td>
+</tr>
+<tr>
 <td><code>POST /admin/import</code></td>
-<td>Import community from JSON bundle</td>
+<td>Import community from JSON bundle (<strong>destructive</strong>)</td>
 </tr>
 <tr>
 <td><code>POST /admin/import/yaml</code></td>
-<td>Import communities from YAML multidocument</td>
+<td>Import communities from YAML multidocument (<strong>destructive</strong>)</td>
 </tr>
 <tr>
 <td><code>GET /admin/export</code></td>
@@ -4108,7 +4148,9 @@ task run
 </tbody>
 </table>
 <h2 id="cli">CLI</h2>
-<pre><code class="language-bash">celine-rec-registry import --file recs/rec-example.yaml
+<pre><code class="language-bash">celine-rec-registry import --file recs/rec-example.yaml            # refuses an existing community
+celine-rec-registry import --file recs/rec-example.yaml --dry-run  # see what it would replace
+celine-rec-registry import --file recs/rec-example.yaml --force    # accept the replacement
 celine-rec-registry export --community example_rec
 celine-rec-registry list
 celine-rec-registry tree --community example_rec
@@ -4134,7 +4176,11 @@ celine-rec-registry lookup-sensor --sensor-id &lt;id&gt;
 </tr>
 <tr>
 <td><a href="docs/import-export/">Import &amp; Export</a></td>
-<td>Bundle format, replace semantics, CLI usage</td>
+<td>Bundle format, replace semantics, the <code>force</code> guard, CLI usage</td>
+</tr>
+<tr>
+<td><a href="AGENTS.md">AGENTS.md</a></td>
+<td>Operational setup: invariants, authorization model, the two write paths</td>
 </tr>
 <tr>
 <td><a href="docs/development/">Development</a></td>

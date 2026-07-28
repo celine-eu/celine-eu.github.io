@@ -1116,6 +1116,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Replace Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-force-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The force guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seeding-versus-changing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seeding versus changing
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4127,6 +4155,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Replace Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-force-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The force guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seeding-versus-changing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seeding versus changing
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4267,8 +4323,40 @@ task import:community -- --file recs/rec-example.yaml
 <li>The operation is atomic — if any step fails, the entire import is rolled back.</li>
 </ol>
 <p>Missing entities in the new bundle are deleted. Changed entities are recreated. New entities are added.</p>
+<h3 id="the-force-guard">The <code>force</code> guard</h3>
+<p>Because step 1 deletes everything, and because <strong>members now arrive at runtime</strong>
+through the member API, restoring a stale export is the likeliest way to lose
+weeks of approvals. So an import naming a community that already exists is
+<strong>refused</strong> unless <code>force</code> is set:</p>
+<pre><code class="language-bash"># Refused, naming what would have gone
+celine-rec-registry import --file rec.yaml
+#   Refused: Community 'example_rec' already exists with 17 member(s) and 33
+#   asset(s); importing would delete them.
+
+# See the effect first — this is how you decide whether force is warranted
+celine-rec-registry import --file rec.yaml --dry-run
+
+# Accept it
+celine-rec-registry import --file rec.yaml --force
+</code></pre>
+<p>Over HTTP the same guard answers <code>409</code>, with <code>force</code> as a body field on
+<code>POST /admin/import</code> and a query parameter on <code>POST /admin/import/yaml</code>. A
+<code>dry_run</code> is never blocked — reporting the counts is exactly how a caller judges
+whether to force.</p>
+<p>Creating a community that does not exist yet needs no <code>force</code>.</p>
+<h2 id="seeding-versus-changing">Seeding versus changing</h2>
+<p>A community is <strong>seeded</strong> from a bundle and <strong>changes</strong> through the member API
+(<code>POST /admin/communities/{key}/members</code> and its sub-resources). Both paths build
+the same rows — they share <code>services/members.py</code> — so an export taken after
+runtime changes re-imports to the same state. That property is pinned by
+<code>tests/test_writes.py::TestRoundTrip</code>; if it ever breaks, the two write paths
+have diverged and a re-import will quietly revert live data.</p>
+<p>The practical rule: the file is a <strong>seed</strong>, <code>GET /admin/export</code> is a <strong>backup</strong>,
+and once members arrive at runtime the database is the source of truth.</p>
 <h2 id="idempotency">Idempotency</h2>
-<p>Import is idempotent: importing the same bundle twice produces the same state. Use exports as authoritative backups and re-import to restore.</p>
+<p>Import is idempotent: importing the same bundle twice produces the same state
+(with <code>force</code>, since the second run is by definition a replacement). Use exports
+as authoritative backups and re-import to restore.</p>
 
 
 
