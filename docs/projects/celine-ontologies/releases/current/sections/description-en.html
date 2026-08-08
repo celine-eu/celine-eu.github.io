@@ -6,6 +6,8 @@
 
 **KPI layer** -- KPIDefinition captures named, typed KPI metrics with scope, calculation method, temporal granularity and unit of measure. KPIEvaluation records the computed value for a specific scope entity and time interval. A KPICatalog provides 11 initial REC-relevant KPI entries.
 
+**Controlled vocabularies** -- All closed enumerations are SKOS ConceptSchemes. Every scheme declares its entry points with skos:hasTopConcept and each concept states the inverse with skos:topConceptOf; the schemes are flat, so the two sets coincide.
+
 **Flexibility and settlement** -- FlexibilityRequest is the demand signal; FlexibilityCommitment is a member's pledge to deliver flexibility on specific PODs; FlexibilityCredit is the metered credit earned. FlexibilityEnvelope declares POD-level capability bounds; FlexibilityConstraint encodes activation rules. SettlementRun aggregates credits, applies costs (CostItem), and produces per-member RedistributionResults.
 
 **Grid topology** -- Substation (Primary/Secondary), PowerTransformer, DistributionFeeder model the distribution network. RegulatoryZone represents administrative coverage areas. GridOperator models the DSO. ConnectionPoint generalises the PECO Electric_POD for multi-country portability.

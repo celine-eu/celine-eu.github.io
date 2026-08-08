@@ -140,7 +140,7 @@
   } ],
   "http://purl.org/dc/terms/modified" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2026-05-27"
+    "@value" : "2026-08-08"
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@value" : "CELINE Core Ontology"
@@ -152,7 +152,7 @@
     "@value" : "https://w3id.org/celine-eu#"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming."
+    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@value" : "CELINE Core Ontology"
@@ -174,18 +174,19 @@
     "@id" : "https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#priorVersion" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.6"
-  } ],
-  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
     "@id" : "https://w3id.org/celine-eu/v0.7"
   } ],
+  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
+    "@id" : "https://w3id.org/celine-eu/v0.8"
+  } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "0.7.0"
+    "@value" : "0.8.0"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#AdminCost",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Overhead and management costs for operating the REC."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -195,6 +196,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Administrative Cost"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -204,6 +206,7 @@
   "@id" : "https://w3id.org/celine-eu#Automated",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -213,6 +216,7 @@
     "@id" : "https://w3id.org/celine-eu#CommitmentMode"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Automated"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -262,6 +266,7 @@
   "@id" : "https://w3id.org/celine-eu#CommitmentMode",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of how a flexibility commitment is activated."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -271,9 +276,16 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Commitment Mode"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#Automated"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Voluntary"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Commitment Mode"
   } ]
 }, {
@@ -346,6 +358,7 @@
   "@id" : "https://w3id.org/celine-eu#ConstraintType",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of operational constraints on flexibility activation."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -355,9 +368,20 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Constraint Type"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#DurationConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#FrequencyConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#NoticeConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RecoveryConstraint"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Constraint Type"
   } ]
 }, {
@@ -379,6 +403,7 @@
   "@id" : "https://w3id.org/celine-eu#CostType",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of cost voices within a SettlementRun."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -388,9 +413,18 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Cost Type"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#AdminCost"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Debt"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Fee"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Cost Type"
   } ]
 }, {
@@ -412,6 +446,7 @@
   "@id" : "https://w3id.org/celine-eu#Debt",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Outstanding obligation carried forward from a previous settlement period."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -421,6 +456,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Debt"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -476,6 +512,7 @@
   "@id" : "https://w3id.org/celine-eu#DurationConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum or maximum duration of a single flexibility activation event."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -485,6 +522,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Duration Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -621,6 +659,7 @@
   "@id" : "https://w3id.org/celine-eu#Fee",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Platform, service or regulatory fee charged to the community."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -630,6 +669,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Fee"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -639,6 +679,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexDown",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Decrease community net consumption: reduce load or increase local generation."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -648,6 +689,7 @@
     "@id" : "https://w3id.org/celine-eu#FlexibilityDirection"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flex Down"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -657,6 +699,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexUp",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Increase community net consumption: increase load or reduce local generation."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -666,6 +709,7 @@
     "@id" : "https://w3id.org/celine-eu#FlexibilityDirection"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flex Up"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -761,6 +805,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexibilityDirection",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Direction of the flexibility commitment relative to the community baseline."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -770,9 +815,16 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Flexibility Direction"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#FlexDown"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#FlexUp"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flexibility Direction"
   } ]
 }, {
@@ -814,6 +866,7 @@
   "@id" : "https://w3id.org/celine-eu#FrequencyConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the maximum number of flexibility activations permitted within a given period."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -823,6 +876,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Frequency Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -1734,6 +1788,7 @@
   "@id" : "https://w3id.org/celine-eu#NoticeConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum lead time required before activating flexibility."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -1743,6 +1798,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Notice Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -1893,6 +1949,7 @@
   "@id" : "https://w3id.org/celine-eu#RecoveryConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum rest period required between consecutive flexibility activations."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -1902,6 +1959,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Recovery Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -2704,6 +2762,7 @@
   "@id" : "https://w3id.org/celine-eu#Voluntary",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Commitment activated manually by the member at their discretion."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -2713,6 +2772,7 @@
     "@id" : "https://w3id.org/celine-eu#CommitmentMode"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Voluntary"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {

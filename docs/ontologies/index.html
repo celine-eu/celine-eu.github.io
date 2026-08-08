@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-ontology-v07" class="md-skip">
+        <a href="#celine-ontology-v08" class="md-skip">
           Skip to content
         </a>
       
@@ -3776,6 +3776,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#changes-from-v07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes from v0.7
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes from v0.7">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-skos-top-concepts-4-schemes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — SKOS top concepts (4 schemes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified-language-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modified — language tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#changes-from-v06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4001,6 +4040,17 @@
     <span class="md-ellipsis">
       
         KPI Catalog entries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-from-v07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration from v0.7
       
     </span>
   </a>
@@ -4102,6 +4152,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#changes-from-v07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes from v0.7
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes from v0.7">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-skos-top-concepts-4-schemes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — SKOS top concepts (4 schemes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified-language-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modified — language tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#changes-from-v06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4334,6 +4423,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#migration-from-v07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration from v0.7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#migration-from-v06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4383,15 +4483,54 @@
 
 
 
-<h1 id="celine-ontology-v07">CELINE Ontology v0.7</h1>
+<h1 id="celine-ontology-v08">CELINE Ontology v0.8</h1>
 <p><a href="index-en.html">Full ontology documentation →</a></p>
 <p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code>
 <strong>IRI</strong>: <code>https://w3id.org/celine-eu</code>
-<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.7</code></p>
-<p>Additively extends v0.6 with a generic <code>hasDataset</code> property linking assets and connection
-points to external datasources, clarified <code>DatasetReference</code> self-description via DCAT/DCT
-terms, and generalised external-catalogue wording to remove implementation-specific naming.
-Non-breaking, additive change.</p>
+<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.8</code></p>
+<p>Conformance fix over v0.7. Four SKOS schemes carried forward from v0.4 —
+<code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code>, <code>ConstraintType</code> — never received the
+<code>skos:hasTopConcept</code> assertions that the v0.5+ scheme shapes require, so v0.7 did not
+validate against its own SHACL profile. No new terms; no term is removed or retyped.</p>
+<h2 id="changes-from-v07">Changes from v0.7</h2>
+<h3 id="fixed-skos-top-concepts-4-schemes">Fixed — SKOS top concepts (4 schemes)</h3>
+<p>Each of the four schemes now declares its entry points:</p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>Top concepts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>celine:CommitmentMode</code></td>
+<td><code>Automated</code>, <code>Voluntary</code></td>
+</tr>
+<tr>
+<td><code>celine:FlexibilityDirection</code></td>
+<td><code>FlexDown</code>, <code>FlexUp</code></td>
+</tr>
+<tr>
+<td><code>celine:CostType</code></td>
+<td><code>AdminCost</code>, <code>Fee</code>, <code>Debt</code></td>
+</tr>
+<tr>
+<td><code>celine:ConstraintType</code></td>
+<td><code>DurationConstraint</code>, <code>NoticeConstraint</code>, <code>RecoveryConstraint</code>, <code>FrequencyConstraint</code></td>
+</tr>
+</tbody>
+</table>
+<p>The concepts already carried <code>skos:inScheme</code> <strong>and</strong> <code>skos:topConceptOf</code>; only the
+scheme-side <code>skos:hasTopConcept</code> was missing. All four schemes are flat — there is no
+<code>skos:broader</code> anywhere in the ontology — so every member is genuinely a top concept. The
+shapes (<code>celine:CommitmentModeSchemeShape</code> and the three siblings) are unchanged: they were
+correct, and they are what caught this.</p>
+<h3 id="modified-language-tags">Modified — language tags</h3>
+<p>Labels, prefLabels, descriptions and comments in those four scheme blocks gain <code>@en</code>,
+matching the nine schemes added in v0.5 and later. Untagged literals and <code>@en</code>-tagged ones
+are distinct RDF terms, so consumers matching on a plain string in these four vocabularies
+must now match the tagged form.</p>
 <h2 id="changes-from-v06">Changes from v0.6</h2>
 <h3 id="new-object-property-1">New object property (1)</h3>
 <ul>
@@ -4775,6 +4914,19 @@ CommunityContext --hasGridOperator---&gt; GridOperator
 </tr>
 </tbody>
 </table>
+<h2 id="migration-from-v07">Migration from v0.7</h2>
+<ol>
+<li><strong>No term changes</strong> — nothing is added, removed or retyped. Existing v0.7 instance data
+   validates unchanged against the v0.8 profile.</li>
+<li><strong>The ontology now conforms to its own shapes.</strong> If you validate instance data with the
+   vocabulary merged into the data graph (the recommended setup — <code>sh:targetNode</code> shapes
+   fire whether or not the target appears in your data), v0.7 reported 13 scheme violations
+   regardless of your data. v0.8 reports none.</li>
+<li><strong>Language tags</strong> — <code>celine:Automated</code>, <code>celine:FlexDown</code>, <code>celine:AdminCost</code>,
+   <code>celine:DurationConstraint</code> and their siblings now carry <code>@en</code> on prefLabel and comment,
+   and their schemes on label/prefLabel/description. Code matching these literals as plain
+   untagged strings must match <code>"…"@en</code> instead.</li>
+</ol>
 <h2 id="migration-from-v06">Migration from v0.6</h2>
 <ol>
 <li><strong>Additive only</strong> — no v0.6 classes or properties are removed or retyped.</li>

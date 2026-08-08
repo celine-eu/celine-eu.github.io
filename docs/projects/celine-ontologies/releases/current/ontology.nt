@@ -1,5 +1,5 @@
 <https://w3id.org/celine-eu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.7> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.8> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://purl.org/peco/peco-core> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://saref.etsi.org/core/v3.1.1/saref.ttl> .
@@ -7,17 +7,17 @@
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/created> "2026-03-24"^^<http://www.w3.org/2001/XMLSchema#date> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/description> "The CELINE Core Ontology is a lightweight orchestration profile for\n    Renewable Energy Communities (RECs) and Digital Twin workflows. It connects established\n    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN — without redefining their domain\n    semantics, providing a minimal coordination layer for simulation scenarios, dataset\n    references, KPI definition and evaluation, and REC flexibility commitment and settlement." .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> .
-<https://w3id.org/celine-eu> <http://purl.org/dc/terms/modified> "2026-05-27"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://w3id.org/celine-eu> <http://purl.org/dc/terms/modified> "2026-08-08"^^<http://www.w3.org/2001/XMLSchema#date> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/title> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespacePrefix> "celine" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/celine-eu#" .
-<https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#comment> "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming." .
+<https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#comment> "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry." .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#label> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://celine-eu.github.io/> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://github.com/celine-eu> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://www.celineproject.eu/> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.6> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.7.0" .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.7> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.8.0" .
 # 
 # 
 # #################################################################
@@ -1055,19 +1055,19 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#AdminCost
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2000/01/rdf-schema#comment> "Overhead and management costs for operating the REC." .
+<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2000/01/rdf-schema#comment> "Overhead and management costs for operating the REC."@en .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
-<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost" .
+<https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost"@en .
 <https://w3id.org/celine-eu#AdminCost> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
 # 
 # https://w3id.org/celine-eu#Automated
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member." .
+<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member."@en .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
-<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated" .
+<https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated"@en .
 <https://w3id.org/celine-eu#Automated> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CommitmentMode> .
 # 
 # https://w3id.org/celine-eu#CUPS
@@ -1082,10 +1082,12 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#CommitmentMode
 <https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
-<https://w3id.org/celine-eu#CommitmentMode> <http://purl.org/dc/terms/description> "Classification of how a flexibility commitment is activated." .
+<https://w3id.org/celine-eu#CommitmentMode> <http://purl.org/dc/terms/description> "Classification of how a flexibility commitment is activated."@en .
 <https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2000/01/rdf-schema#label> "Commitment Mode" .
-<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2004/02/skos/core#prefLabel> "Commitment Mode" .
+<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2000/01/rdf-schema#label> "Commitment Mode"@en .
+<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Automated> .
+<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Voluntary> .
+<https://w3id.org/celine-eu#CommitmentMode> <http://www.w3.org/2004/02/skos/core#prefLabel> "Commitment Mode"@en .
 # 
 # https://w3id.org/celine-eu#ConnectionPointIdentifierScheme
 <https://w3id.org/celine-eu#ConnectionPointIdentifierScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -1104,26 +1106,33 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#ConstraintType
 <https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
-<https://w3id.org/celine-eu#ConstraintType> <http://purl.org/dc/terms/description> "Classification of operational constraints on flexibility activation." .
+<https://w3id.org/celine-eu#ConstraintType> <http://purl.org/dc/terms/description> "Classification of operational constraints on flexibility activation."@en .
 <https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2000/01/rdf-schema#label> "Constraint Type" .
-<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#prefLabel> "Constraint Type" .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2000/01/rdf-schema#label> "Constraint Type"@en .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#DurationConstraint> .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#FrequencyConstraint> .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#NoticeConstraint> .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#RecoveryConstraint> .
+<https://w3id.org/celine-eu#ConstraintType> <http://www.w3.org/2004/02/skos/core#prefLabel> "Constraint Type"@en .
 # 
 # https://w3id.org/celine-eu#CostType
 <https://w3id.org/celine-eu#CostType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#CostType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
-<https://w3id.org/celine-eu#CostType> <http://purl.org/dc/terms/description> "Classification of cost voices within a SettlementRun." .
+<https://w3id.org/celine-eu#CostType> <http://purl.org/dc/terms/description> "Classification of cost voices within a SettlementRun."@en .
 <https://w3id.org/celine-eu#CostType> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2000/01/rdf-schema#label> "Cost Type" .
-<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cost Type" .
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2000/01/rdf-schema#label> "Cost Type"@en .
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#AdminCost> .
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Debt> .
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#Fee> .
+<https://w3id.org/celine-eu#CostType> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cost Type"@en .
 # 
 # https://w3id.org/celine-eu#Debt
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2000/01/rdf-schema#comment> "Outstanding obligation carried forward from a previous settlement period." .
+<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2000/01/rdf-schema#comment> "Outstanding obligation carried forward from a previous settlement period."@en .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
-<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt" .
+<https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt"@en .
 <https://w3id.org/celine-eu#Debt> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
 # 
 # https://w3id.org/celine-eu#Dimensionless
@@ -1140,10 +1149,10 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#DurationConstraint
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum or maximum duration of a single flexibility activation event." .
+<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum or maximum duration of a single flexibility activation event."@en .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
-<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint" .
+<https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint"@en .
 <https://w3id.org/celine-eu#DurationConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
 # 
 # https://w3id.org/celine-eu#EAN
@@ -1189,28 +1198,28 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#Fee
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2000/01/rdf-schema#comment> "Platform, service or regulatory fee charged to the community." .
+<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2000/01/rdf-schema#comment> "Platform, service or regulatory fee charged to the community."@en .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CostType> .
-<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee" .
+<https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee"@en .
 <https://w3id.org/celine-eu#Fee> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CostType> .
 # 
 # https://w3id.org/celine-eu#FlexDown
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2000/01/rdf-schema#comment> "Decrease community net consumption: reduce load or increase local generation." .
+<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2000/01/rdf-schema#comment> "Decrease community net consumption: reduce load or increase local generation."@en .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
-<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down" .
+<https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down"@en .
 <https://w3id.org/celine-eu#FlexDown> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#FlexibilityDirection> .
 # 
 # https://w3id.org/celine-eu#FlexUp
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2000/01/rdf-schema#comment> "Increase community net consumption: increase load or reduce local generation." .
+<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2000/01/rdf-schema#comment> "Increase community net consumption: increase load or reduce local generation."@en .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#FlexibilityDirection> .
-<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up" .
+<https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up"@en .
 <https://w3id.org/celine-eu#FlexUp> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#FlexibilityDirection> .
 # 
 # https://w3id.org/celine-eu#FlexibilityActivated
@@ -1233,18 +1242,20 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#FlexibilityDirection
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
-<https://w3id.org/celine-eu#FlexibilityDirection> <http://purl.org/dc/terms/description> "Direction of the flexibility commitment relative to the community baseline." .
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://purl.org/dc/terms/description> "Direction of the flexibility commitment relative to the community baseline."@en .
 <https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
-<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#label> "Flexibility Direction" .
-<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flexibility Direction" .
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2000/01/rdf-schema#label> "Flexibility Direction"@en .
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#FlexDown> .
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2004/02/skos/core#hasTopConcept> <https://w3id.org/celine-eu#FlexUp> .
+<https://w3id.org/celine-eu#FlexibilityDirection> <http://www.w3.org/2004/02/skos/core#prefLabel> "Flexibility Direction"@en .
 # 
 # https://w3id.org/celine-eu#FrequencyConstraint
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the maximum number of flexibility activations permitted within a given period." .
+<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the maximum number of flexibility activations permitted within a given period."@en .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
-<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint" .
+<https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint"@en .
 <https://w3id.org/celine-eu#FrequencyConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
 # 
 # https://w3id.org/celine-eu#GranularityDaily
@@ -1590,10 +1601,10 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#NoticeConstraint
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum lead time required before activating flexibility." .
+<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum lead time required before activating flexibility."@en .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
-<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint" .
+<https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint"@en .
 <https://w3id.org/celine-eu#NoticeConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
 # 
 # https://w3id.org/celine-eu#POD
@@ -1633,10 +1644,10 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#RecoveryConstraint
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum rest period required between consecutive flexibility activations." .
+<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2000/01/rdf-schema#comment> "Constraint on the minimum rest period required between consecutive flexibility activations."@en .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#ConstraintType> .
-<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint" .
+<https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint"@en .
 <https://w3id.org/celine-eu#RecoveryConstraint> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#ConstraintType> .
 # 
 # https://w3id.org/celine-eu#RequestCancelled
@@ -1915,10 +1926,10 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # https://w3id.org/celine-eu#Voluntary
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment activated manually by the member at their discretion." .
+<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2000/01/rdf-schema#comment> "Commitment activated manually by the member at their discretion."@en .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#inScheme> <https://w3id.org/celine-eu#CommitmentMode> .
-<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary" .
+<https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary"@en .
 <https://w3id.org/celine-eu#Voluntary> <http://www.w3.org/2004/02/skos/core#topConceptOf> <https://w3id.org/celine-eu#CommitmentMode> .
 # 
 # https://w3id.org/celine-eu#WithdrawnEnergy

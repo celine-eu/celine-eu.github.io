@@ -7,7 +7,7 @@
 @base <https://w3id.org/celine-eu#> .
 
 <https://w3id.org/celine-eu> rdf:type owl:Ontology ;
-                              owl:versionIRI <https://w3id.org/celine-eu/v0.7> ;
+                              owl:versionIRI <https://w3id.org/celine-eu/v0.8> ;
                               owl:imports <https://purl.org/peco/peco-core> ,
                                           <https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl> ,
                                           <https://saref.etsi.org/core/v3.1.1/saref.ttl> ,
@@ -19,7 +19,7 @@
     semantics, providing a minimal coordination layer for simulation scenarios, dataset
     references, KPI definition and evaluation, and REC flexibility commitment and settlement.""" ;
                               <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> ;
-                              <http://purl.org/dc/terms/modified> "2026-05-27"^^xsd:date ;
+                              <http://purl.org/dc/terms/modified> "2026-08-08"^^xsd:date ;
                               <http://purl.org/dc/terms/title> "CELINE Core Ontology" ;
                               <http://purl.org/vocab/vann/preferredNamespacePrefix> "celine" ;
                               <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/celine-eu#" ;
@@ -37,13 +37,20 @@
     Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the
     operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;
     clarifies DatasetReference self-description via DCAT/DCT terms; generalises
-    external-catalogue wording to remove implementation-specific naming.""" ;
+    external-catalogue wording to remove implementation-specific naming.
+    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,
+    FlexibilityDirection, CostType and ConstraintType schemes gain the
+    skos:hasTopConcept assertions their SHACL shapes require — the concepts already
+    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement
+    was missing. All four schemes are flat, so every member is a top concept. Their
+    labels, prefLabels, descriptions and comments also gain the @en tag the other
+    nine schemes already carry.""" ;
                               rdfs:label "CELINE Core Ontology" ;
                               rdfs:seeAlso <https://celine-eu.github.io/> ,
                                            <https://github.com/celine-eu> ,
                                            <https://www.celineproject.eu/> ;
-                              owl:priorVersion <https://w3id.org/celine-eu/v0.6> ;
-                              owl:versionInfo "0.7.0" .
+                              owl:priorVersion <https://w3id.org/celine-eu/v0.7> ;
+                              owl:versionInfo "0.8.0" .
 
 #################################################################
 #    Annotation properties
@@ -1256,20 +1263,20 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#AdminCost
 :AdminCost rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           rdfs:comment "Overhead and management costs for operating the REC." ;
+           rdfs:comment "Overhead and management costs for operating the REC."@en ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
            <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
-           <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost" ;
+           <http://www.w3.org/2004/02/skos/core#prefLabel> "Administrative Cost"@en ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
 
 
 ###  https://w3id.org/celine-eu#Automated
 :Automated rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           rdfs:comment "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member." ;
+           rdfs:comment "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member."@en ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
            <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
-           <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated" ;
+           <http://www.w3.org/2004/02/skos/core#prefLabel> "Automated"@en ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CommitmentMode .
 
 
@@ -1286,10 +1293,12 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#CommitmentMode
 :CommitmentMode rdf:type owl:NamedIndividual ,
                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
-                <http://purl.org/dc/terms/description> "Classification of how a flexibility commitment is activated." ;
+                <http://purl.org/dc/terms/description> "Classification of how a flexibility commitment is activated."@en ;
                 rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-                rdfs:label "Commitment Mode" ;
-                <http://www.w3.org/2004/02/skos/core#prefLabel> "Commitment Mode" .
+                rdfs:label "Commitment Mode"@en ;
+                <http://www.w3.org/2004/02/skos/core#hasTopConcept> :Automated ,
+                                                                    :Voluntary ;
+                <http://www.w3.org/2004/02/skos/core#prefLabel> "Commitment Mode"@en .
 
 
 ###  https://w3id.org/celine-eu#ConnectionPointIdentifierScheme
@@ -1310,28 +1319,35 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#ConstraintType
 :ConstraintType rdf:type owl:NamedIndividual ,
                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
-                <http://purl.org/dc/terms/description> "Classification of operational constraints on flexibility activation." ;
+                <http://purl.org/dc/terms/description> "Classification of operational constraints on flexibility activation."@en ;
                 rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-                rdfs:label "Constraint Type" ;
-                <http://www.w3.org/2004/02/skos/core#prefLabel> "Constraint Type" .
+                rdfs:label "Constraint Type"@en ;
+                <http://www.w3.org/2004/02/skos/core#hasTopConcept> :DurationConstraint ,
+                                                                    :FrequencyConstraint ,
+                                                                    :NoticeConstraint ,
+                                                                    :RecoveryConstraint ;
+                <http://www.w3.org/2004/02/skos/core#prefLabel> "Constraint Type"@en .
 
 
 ###  https://w3id.org/celine-eu#CostType
 :CostType rdf:type owl:NamedIndividual ,
                    <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
-          <http://purl.org/dc/terms/description> "Classification of cost voices within a SettlementRun." ;
+          <http://purl.org/dc/terms/description> "Classification of cost voices within a SettlementRun."@en ;
           rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-          rdfs:label "Cost Type" ;
-          <http://www.w3.org/2004/02/skos/core#prefLabel> "Cost Type" .
+          rdfs:label "Cost Type"@en ;
+          <http://www.w3.org/2004/02/skos/core#hasTopConcept> :AdminCost ,
+                                                              :Debt ,
+                                                              :Fee ;
+          <http://www.w3.org/2004/02/skos/core#prefLabel> "Cost Type"@en .
 
 
 ###  https://w3id.org/celine-eu#Debt
 :Debt rdf:type owl:NamedIndividual ,
                <http://www.w3.org/2004/02/skos/core#Concept> ;
-      rdfs:comment "Outstanding obligation carried forward from a previous settlement period." ;
+      rdfs:comment "Outstanding obligation carried forward from a previous settlement period."@en ;
       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
       <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
-      <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt" ;
+      <http://www.w3.org/2004/02/skos/core#prefLabel> "Debt"@en ;
       <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
 
 
@@ -1350,10 +1366,10 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#DurationConstraint
 :DurationConstraint rdf:type owl:NamedIndividual ,
                              <http://www.w3.org/2004/02/skos/core#Concept> ;
-                    rdfs:comment "Constraint on the minimum or maximum duration of a single flexibility activation event." ;
+                    rdfs:comment "Constraint on the minimum or maximum duration of a single flexibility activation event."@en ;
                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                     <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
-                    <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint" ;
+                    <http://www.w3.org/2004/02/skos/core#prefLabel> "Duration Constraint"@en ;
                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
 
 
@@ -1399,30 +1415,30 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#Fee
 :Fee rdf:type owl:NamedIndividual ,
               <http://www.w3.org/2004/02/skos/core#Concept> ;
-     rdfs:comment "Platform, service or regulatory fee charged to the community." ;
+     rdfs:comment "Platform, service or regulatory fee charged to the community."@en ;
      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
      <http://www.w3.org/2004/02/skos/core#inScheme> :CostType ;
-     <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee" ;
+     <http://www.w3.org/2004/02/skos/core#prefLabel> "Fee"@en ;
      <http://www.w3.org/2004/02/skos/core#topConceptOf> :CostType .
 
 
 ###  https://w3id.org/celine-eu#FlexDown
 :FlexDown rdf:type owl:NamedIndividual ,
                    <http://www.w3.org/2004/02/skos/core#Concept> ;
-          rdfs:comment "Decrease community net consumption: reduce load or increase local generation." ;
+          rdfs:comment "Decrease community net consumption: reduce load or increase local generation."@en ;
           rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
           <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
-          <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down" ;
+          <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Down"@en ;
           <http://www.w3.org/2004/02/skos/core#topConceptOf> :FlexibilityDirection .
 
 
 ###  https://w3id.org/celine-eu#FlexUp
 :FlexUp rdf:type owl:NamedIndividual ,
                  <http://www.w3.org/2004/02/skos/core#Concept> ;
-        rdfs:comment "Increase community net consumption: increase load or reduce local generation." ;
+        rdfs:comment "Increase community net consumption: increase load or reduce local generation."@en ;
         rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
         <http://www.w3.org/2004/02/skos/core#inScheme> :FlexibilityDirection ;
-        <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up" ;
+        <http://www.w3.org/2004/02/skos/core#prefLabel> "Flex Up"@en ;
         <http://www.w3.org/2004/02/skos/core#topConceptOf> :FlexibilityDirection .
 
 
@@ -1446,19 +1462,21 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#FlexibilityDirection
 :FlexibilityDirection rdf:type owl:NamedIndividual ,
                                <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
-                      <http://purl.org/dc/terms/description> "Direction of the flexibility commitment relative to the community baseline." ;
+                      <http://purl.org/dc/terms/description> "Direction of the flexibility commitment relative to the community baseline."@en ;
                       rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
-                      rdfs:label "Flexibility Direction" ;
-                      <http://www.w3.org/2004/02/skos/core#prefLabel> "Flexibility Direction" .
+                      rdfs:label "Flexibility Direction"@en ;
+                      <http://www.w3.org/2004/02/skos/core#hasTopConcept> :FlexDown ,
+                                                                          :FlexUp ;
+                      <http://www.w3.org/2004/02/skos/core#prefLabel> "Flexibility Direction"@en .
 
 
 ###  https://w3id.org/celine-eu#FrequencyConstraint
 :FrequencyConstraint rdf:type owl:NamedIndividual ,
                               <http://www.w3.org/2004/02/skos/core#Concept> ;
-                     rdfs:comment "Constraint on the maximum number of flexibility activations permitted within a given period." ;
+                     rdfs:comment "Constraint on the maximum number of flexibility activations permitted within a given period."@en ;
                      rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                      <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
-                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint" ;
+                     <http://www.w3.org/2004/02/skos/core#prefLabel> "Frequency Constraint"@en ;
                      <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
 
 
@@ -1837,10 +1855,10 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#NoticeConstraint
 :NoticeConstraint rdf:type owl:NamedIndividual ,
                            <http://www.w3.org/2004/02/skos/core#Concept> ;
-                  rdfs:comment "Constraint on the minimum lead time required before activating flexibility." ;
+                  rdfs:comment "Constraint on the minimum lead time required before activating flexibility."@en ;
                   rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                   <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
-                  <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint" ;
+                  <http://www.w3.org/2004/02/skos/core#prefLabel> "Notice Constraint"@en ;
                   <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
 
 
@@ -1884,10 +1902,10 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#RecoveryConstraint
 :RecoveryConstraint rdf:type owl:NamedIndividual ,
                              <http://www.w3.org/2004/02/skos/core#Concept> ;
-                    rdfs:comment "Constraint on the minimum rest period required between consecutive flexibility activations." ;
+                    rdfs:comment "Constraint on the minimum rest period required between consecutive flexibility activations."@en ;
                     rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
                     <http://www.w3.org/2004/02/skos/core#inScheme> :ConstraintType ;
-                    <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint" ;
+                    <http://www.w3.org/2004/02/skos/core#prefLabel> "Recovery Constraint"@en ;
                     <http://www.w3.org/2004/02/skos/core#topConceptOf> :ConstraintType .
 
 
@@ -2196,10 +2214,10 @@ ex:cost_platform_fee a celine:CostItem ;
 ###  https://w3id.org/celine-eu#Voluntary
 :Voluntary rdf:type owl:NamedIndividual ,
                     <http://www.w3.org/2004/02/skos/core#Concept> ;
-           rdfs:comment "Commitment activated manually by the member at their discretion." ;
+           rdfs:comment "Commitment activated manually by the member at their discretion."@en ;
            rdfs:isDefinedBy <https://w3id.org/celine-eu> ;
            <http://www.w3.org/2004/02/skos/core#inScheme> :CommitmentMode ;
-           <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary" ;
+           <http://www.w3.org/2004/02/skos/core#prefLabel> "Voluntary"@en ;
            <http://www.w3.org/2004/02/skos/core#topConceptOf> :CommitmentMode .
 
 
