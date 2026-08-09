@@ -1,5 +1,5 @@
 <https://w3id.org/celine-eu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.8> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionIRI> <https://w3id.org/celine-eu/v0.9> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://purl.org/peco/peco-core> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#imports> <https://saref.etsi.org/core/v3.1.1/saref.ttl> .
@@ -7,17 +7,17 @@
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/created> "2026-03-24"^^<http://www.w3.org/2001/XMLSchema#date> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/description> "The CELINE Core Ontology is a lightweight orchestration profile for\n    Renewable Energy Communities (RECs) and Digital Twin workflows. It connects established\n    standards — PECO, SAREF, SAREF4ENER, SOSA/SSN — without redefining their domain\n    semantics, providing a minimal coordination layer for simulation scenarios, dataset\n    references, KPI definition and evaluation, and REC flexibility commitment and settlement." .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> .
-<https://w3id.org/celine-eu> <http://purl.org/dc/terms/modified> "2026-08-08"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://w3id.org/celine-eu> <http://purl.org/dc/terms/modified> "2026-08-09"^^<http://www.w3.org/2001/XMLSchema#date> .
 <https://w3id.org/celine-eu> <http://purl.org/dc/terms/title> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespacePrefix> "celine" .
 <https://w3id.org/celine-eu> <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/celine-eu#" .
-<https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#comment> "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry." .
+<https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#comment> "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry.\n    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to\n    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM\n    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now\n    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are\n    checked against the CIM100 class documentation rather than dereferenced: IEC CIM\n    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one\n    external vocabulary CELINE references on documentary rather than resolvable\n    authority. celine:GridOperator also moves from cim:Company, which exists in no\n    CIM version, to cim:Organisation — note cim:Operator is a control-room person,\n    not the company." .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#label> "CELINE Core Ontology" .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://celine-eu.github.io/> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://github.com/celine-eu> .
 <https://w3id.org/celine-eu> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://www.celineproject.eu/> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.7> .
-<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.8.0" .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#priorVersion> <https://w3id.org/celine-eu/v0.8> .
+<https://w3id.org/celine-eu> <http://www.w3.org/2002/07/owl#versionInfo> "0.9.0" .
 # 
 # 
 # #################################################################
@@ -843,7 +843,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#ConnectionPoint> <http://www.w3.org/2000/01/rdf-schema#comment> "A generalised point where a consumer or prosumer connects to the distribution grid. Country-specific identifier schemes (POD, CUPS, PRM, etc.) are captured via celine:hasIdentifierScheme. PECO Electric_POD is declared as a subclass."@en .
 <https://w3id.org/celine-eu#ConnectionPoint> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#ConnectionPoint> <http://www.w3.org/2000/01/rdf-schema#label> "Connection Point"@en .
-<https://w3id.org/celine-eu#ConnectionPoint> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/UsagePoint> .
+<https://w3id.org/celine-eu#ConnectionPoint> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#UsagePoint> .
 # 
 # https://w3id.org/celine-eu#CostItem
 <https://w3id.org/celine-eu#CostItem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -865,7 +865,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#DistributionFeeder> <http://www.w3.org/2000/01/rdf-schema#comment> "A feeder line distributing power from a substation to downstream connection points."@en .
 <https://w3id.org/celine-eu#DistributionFeeder> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#DistributionFeeder> <http://www.w3.org/2000/01/rdf-schema#label> "Distribution Feeder"@en .
-<https://w3id.org/celine-eu#DistributionFeeder> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/Feeder> .
+<https://w3id.org/celine-eu#DistributionFeeder> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#Feeder> .
 # 
 # https://w3id.org/celine-eu#EVCharger
 <https://w3id.org/celine-eu#EVCharger> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -925,7 +925,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#GridOperator> <http://www.w3.org/2000/01/rdf-schema#comment> "An entity that operates grid infrastructure. Typically a Distribution System Operator (DSO). Role-based modelling is deferred; class-based typing is consistent with PECO style."@en .
 <https://w3id.org/celine-eu#GridOperator> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#GridOperator> <http://www.w3.org/2000/01/rdf-schema#label> "Grid Operator"@en .
-<https://w3id.org/celine-eu#GridOperator> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/Company> .
+<https://w3id.org/celine-eu#GridOperator> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#Organisation> .
 # 
 # https://w3id.org/celine-eu#HeatPump
 <https://w3id.org/celine-eu#HeatPump> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -969,7 +969,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#PowerTransformer> <http://www.w3.org/2000/01/rdf-schema#comment> "A transformer within a substation that converts between voltage levels."@en .
 <https://w3id.org/celine-eu#PowerTransformer> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#PowerTransformer> <http://www.w3.org/2000/01/rdf-schema#label> "Power Transformer"@en .
-<https://w3id.org/celine-eu#PowerTransformer> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/PowerTransformer> .
+<https://w3id.org/celine-eu#PowerTransformer> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#PowerTransformer> .
 # 
 # https://w3id.org/celine-eu#PrimarySubstation
 <https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -977,7 +977,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/2000/01/rdf-schema#comment> "HV/MV substation at the boundary between the transmission and distribution networks (e.g. Italian cabina primaria)."@en .
 <https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/2000/01/rdf-schema#label> "Primary Substation"@en .
-<https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/Substation> .
+<https://w3id.org/celine-eu#PrimarySubstation> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#Substation> .
 # 
 # https://w3id.org/celine-eu#RedistributionResult
 <https://w3id.org/celine-eu#RedistributionResult> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1005,7 +1005,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#SecondarySubstation> <http://www.w3.org/2000/01/rdf-schema#comment> "MV/LV substation serving end-user connection points (e.g. Italian cabina secondaria)."@en .
 <https://w3id.org/celine-eu#SecondarySubstation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#SecondarySubstation> <http://www.w3.org/2000/01/rdf-schema#label> "Secondary Substation"@en .
-<https://w3id.org/celine-eu#SecondarySubstation> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/Substation> .
+<https://w3id.org/celine-eu#SecondarySubstation> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#Substation> .
 # 
 # https://w3id.org/celine-eu#SettlementRun
 <https://w3id.org/celine-eu#SettlementRun> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1041,7 +1041,7 @@ _:genid29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <https://w3id.org/celine-eu#Substation> <http://www.w3.org/2000/01/rdf-schema#comment> "Abstract superclass for electrical substations in the distribution grid."@en .
 <https://w3id.org/celine-eu#Substation> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://w3id.org/celine-eu> .
 <https://w3id.org/celine-eu#Substation> <http://www.w3.org/2000/01/rdf-schema#label> "Substation"@en .
-<https://w3id.org/celine-eu#Substation> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://ontology.tno.nl/IEC_CIM/Substation> .
+<https://w3id.org/celine-eu#Substation> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://iec.ch/TC57/CIM100#Substation> .
 # 
 # 
 # 

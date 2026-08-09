@@ -6,9 +6,14 @@ The CELINE Core Ontology supports the semantic layer of this toolbox. It is a th
 - **PECO** (https://purl.org/peco) models the Energy Community structure, members, PODs and assets.
 - **SAREF / SAREF4ENER** (ETSI) covers smart devices and energy assets.
 - **SOSA/SSN** (W3C) covers sensor observations and measurements.
-- **IEC CIM** (IEC 61968) provides the reference model for grid topology, aligned via skos:closeMatch.
+- **IEC CIM** (CIM100) provides the reference model for grid topology, aligned via skos:closeMatch.
 
-Version 0.8 is a conformance fix and introduces no new terms:
+Version 0.9 is a conformance fix and introduces no new terms:
+
+- **CIM namespace**: The cim: prefix now binds to the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. It previously bound to https://ontology.tno.nl/IEC_CIM/ -- where TNO hosts a copy of CIM, not where CIM mints its terms -- so all seven skos:closeMatch alignments to CIM expanded to IRIs that do not exist. CIM is the one external vocabulary CELINE references on documentary rather than resolvable authority: IEC CIM is a paid standard and its namespace IRIs answer HTTP 403, so these alignments are checked against the published CIM100 class documentation.
+- **GridOperator alignment**: celine:GridOperator moves from cim:Company, which exists in no CIM version, to cim:Organisation. Note cim:Operator is a control-room person, not the operating company.
+
+Version 0.8 was a conformance fix and introduced no new terms:
 
 - **SKOS top concepts**: The CommitmentMode, FlexibilityDirection, CostType and ConstraintType schemes now carry the skos:hasTopConcept assertions their SHACL shapes require. The concepts themselves already declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement was missing. All four schemes are flat -- no skos:broader anywhere -- so every member is a top concept.
 - **Language tags**: Labels, prefLabels, descriptions and comments in those four schemes gain the @en tag already used by the other nine.

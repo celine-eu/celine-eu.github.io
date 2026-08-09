@@ -17,7 +17,7 @@
      xmlns:opla-sd="http://ontologydesignpatterns.org/opla-sd#"
      xmlns:celine-eu="https://w3id.org/celine-eu#">
     <owl:Ontology rdf:about="https://w3id.org/celine-eu">
-        <owl:versionIRI rdf:resource="https://w3id.org/celine-eu/v0.8"/>
+        <owl:versionIRI rdf:resource="https://w3id.org/celine-eu/v0.9"/>
         <owl:imports rdf:resource="https://purl.org/peco/peco-core"/>
         <owl:imports rdf:resource="https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl"/>
         <owl:imports rdf:resource="https://saref.etsi.org/core/v3.1.1/saref.ttl"/>
@@ -29,7 +29,7 @@
     semantics, providing a minimal coordination layer for simulation scenarios, dataset
     references, KPI definition and evaluation, and REC flexibility commitment and settlement.</terms:description>
         <terms:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
-        <terms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-08-08</terms:modified>
+        <terms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-08-09</terms:modified>
         <terms:title>CELINE Core Ontology</terms:title>
         <vann:preferredNamespacePrefix>celine</vann:preferredNamespacePrefix>
         <vann:preferredNamespaceUri>https://w3id.org/celine-eu#</vann:preferredNamespaceUri>
@@ -54,13 +54,23 @@
     declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement
     was missing. All four schemes are flat, so every member is a top concept. Their
     labels, prefLabels, descriptions and comments also gain the @en tag the other
-    nine schemes already carry.</rdfs:comment>
+    nine schemes already carry.
+    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to
+    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM
+    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now
+    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are
+    checked against the CIM100 class documentation rather than dereferenced: IEC CIM
+    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one
+    external vocabulary CELINE references on documentary rather than resolvable
+    authority. celine:GridOperator also moves from cim:Company, which exists in no
+    CIM version, to cim:Organisation — note cim:Operator is a control-room person,
+    not the company.</rdfs:comment>
         <rdfs:label>CELINE Core Ontology</rdfs:label>
         <rdfs:seeAlso rdf:resource="https://celine-eu.github.io/"/>
         <rdfs:seeAlso rdf:resource="https://github.com/celine-eu"/>
         <rdfs:seeAlso rdf:resource="https://www.celineproject.eu/"/>
-        <owl:priorVersion rdf:resource="https://w3id.org/celine-eu/v0.7"/>
-        <owl:versionInfo>0.8.0</owl:versionInfo>
+        <owl:priorVersion rdf:resource="https://w3id.org/celine-eu/v0.8"/>
+        <owl:versionInfo>0.9.0</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -1365,7 +1375,7 @@
         <rdfs:comment xml:lang="en">A generalised point where a consumer or prosumer connects to the distribution grid. Country-specific identifier schemes (POD, CUPS, PRM, etc.) are captured via celine:hasIdentifierScheme. PECO Electric_POD is declared as a subclass.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Connection Point</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/UsagePoint"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#UsagePoint"/>
     </owl:Class>
     
 
@@ -1419,7 +1429,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">A feeder line distributing power from a substation to downstream connection points.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Distribution Feeder</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/Feeder"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#Feeder"/>
     </owl:Class>
     
 
@@ -1560,7 +1570,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">An entity that operates grid infrastructure. Typically a Distribution System Operator (DSO). Role-based modelling is deferred; class-based typing is consistent with PECO style.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Grid Operator</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/Company"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#Organisation"/>
     </owl:Class>
     
 
@@ -1647,7 +1657,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">A transformer within a substation that converts between voltage levels.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Power Transformer</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/PowerTransformer"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#PowerTransformer"/>
     </owl:Class>
     
 
@@ -1660,7 +1670,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">HV/MV substation at the boundary between the transmission and distribution networks (e.g. Italian cabina primaria).</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Primary Substation</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/Substation"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#Substation"/>
     </owl:Class>
     
 
@@ -1719,7 +1729,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">MV/LV substation serving end-user connection points (e.g. Italian cabina secondaria).</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Secondary Substation</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/Substation"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#Substation"/>
     </owl:Class>
     
 
@@ -1804,7 +1814,7 @@ ex:cost_platform_fee a celine:CostItem ;
         <rdfs:comment xml:lang="en">Abstract superclass for electrical substations in the distribution grid.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
         <rdfs:label xml:lang="en">Substation</rdfs:label>
-        <skos:closeMatch rdf:resource="https://ontology.tno.nl/IEC_CIM/Substation"/>
+        <skos:closeMatch rdf:resource="http://iec.ch/TC57/CIM100#Substation"/>
     </owl:Class>
     
 

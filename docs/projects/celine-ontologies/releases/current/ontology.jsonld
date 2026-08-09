@@ -140,7 +140,7 @@
   } ],
   "http://purl.org/dc/terms/modified" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2026-08-08"
+    "@value" : "2026-08-09"
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@value" : "CELINE Core Ontology"
@@ -152,7 +152,7 @@
     "@value" : "https://w3id.org/celine-eu#"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry."
+    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry.\n    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to\n    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM\n    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now\n    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are\n    checked against the CIM100 class documentation rather than dereferenced: IEC CIM\n    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one\n    external vocabulary CELINE references on documentary rather than resolvable\n    authority. celine:GridOperator also moves from cim:Company, which exists in no\n    CIM version, to cim:Organisation — note cim:Operator is a control-room person,\n    not the company."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@value" : "CELINE Core Ontology"
@@ -174,13 +174,13 @@
     "@id" : "https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#priorVersion" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.7"
-  } ],
-  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
     "@id" : "https://w3id.org/celine-eu/v0.8"
   } ],
+  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
+    "@id" : "https://w3id.org/celine-eu/v0.9"
+  } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "0.8.0"
+    "@value" : "0.9.0"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#AdminCost",
@@ -318,7 +318,7 @@
     "@value" : "Connection Point"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/UsagePoint"
+    "@id" : "http://iec.ch/TC57/CIM100#UsagePoint"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme",
@@ -506,7 +506,7 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Feeder"
+    "@id" : "http://iec.ch/TC57/CIM100#Feeder"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#DurationConstraint",
@@ -1084,7 +1084,7 @@
     "@id" : "https://purl.org/peco/peco-core#Agent"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Company"
+    "@id" : "http://iec.ch/TC57/CIM100#Organisation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#HeatPump",
@@ -1923,7 +1923,7 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/PowerTransformer"
+    "@id" : "http://iec.ch/TC57/CIM100#PowerTransformer"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#PrimarySubstation",
@@ -1943,7 +1943,7 @@
     "@id" : "https://w3id.org/celine-eu#Substation"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#RecoveryConstraint",
@@ -2397,7 +2397,7 @@
     "@id" : "https://w3id.org/celine-eu#Substation"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate",
@@ -2723,7 +2723,7 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#UnitOfMeasure",

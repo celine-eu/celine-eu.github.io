@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celine-ontology-v08" class="md-skip">
+        <a href="#celine-ontology-v09" class="md-skip">
           Skip to content
         </a>
       
@@ -3776,6 +3776,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#changes-from-v08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes from v0.8
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes from v0.8">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-cim-prefix-rebound-to-iec-cim100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — cim: prefix rebound to IEC CIM100
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-celinegridoperator-alignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — celine:GridOperator alignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alignment-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alignment authority
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#changes-from-v07" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4040,6 +4090,17 @@
     <span class="md-ellipsis">
       
         KPI Catalog entries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-from-v08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration from v0.8
       
     </span>
   </a>
@@ -4152,6 +4213,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#changes-from-v08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes from v0.8
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes from v0.8">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed-cim-prefix-rebound-to-iec-cim100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — cim: prefix rebound to IEC CIM100
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-celinegridoperator-alignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed — celine:GridOperator alignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alignment-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alignment authority
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#changes-from-v07" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4423,6 +4534,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#migration-from-v08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration from v0.8
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#migration-from-v07" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4483,15 +4605,76 @@
 
 
 
-<h1 id="celine-ontology-v08">CELINE Ontology v0.8</h1>
+<h1 id="celine-ontology-v09">CELINE Ontology v0.9</h1>
 <p><a href="index-en.html">Full ontology documentation →</a></p>
 <p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code>
 <strong>IRI</strong>: <code>https://w3id.org/celine-eu</code>
-<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.8</code></p>
-<p>Conformance fix over v0.7. Four SKOS schemes carried forward from v0.4 —
-<code>CommitmentMode</code>, <code>FlexibilityDirection</code>, <code>CostType</code>, <code>ConstraintType</code> — never received the
-<code>skos:hasTopConcept</code> assertions that the v0.5+ scheme shapes require, so v0.7 did not
-validate against its own SHACL profile. No new terms; no term is removed or retyped.</p>
+<strong>Version IRI</strong>: <code>https://w3id.org/celine-eu/v0.9</code></p>
+<p>Conformance fix over v0.8. The <code>cim:</code> prefix was bound to TNO's hosting URL rather than the
+IEC CIM namespace, so every <code>skos:closeMatch</code> alignment to CIM resolved to a term that does
+not exist. No new terms; no term is removed or retyped.</p>
+<h2 id="changes-from-v08">Changes from v0.8</h2>
+<h3 id="fixed-cim-prefix-rebound-to-iec-cim100">Fixed — <code>cim:</code> prefix rebound to IEC CIM100</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Namespace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.8 (wrong)</td>
+<td><code>https://ontology.tno.nl/IEC_CIM/</code></td>
+</tr>
+<tr>
+<td>v0.9</td>
+<td><code>http://iec.ch/TC57/CIM100#</code></td>
+</tr>
+</tbody>
+</table>
+<p>TNO hosts a copy of CIM at that first URL; it is not where CIM mints its terms. Rebinding
+changes the IRI that all seven <code>skos:closeMatch</code> alignments expand to, in both <code>celine.ttl</code>
+and the <code>celine.jsonld</code> <code>@context</code>:</p>
+<table>
+<thead>
+<tr>
+<th>CELINE class</th>
+<th>CIM100 target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>celine:Substation</code>, <code>celine:PrimarySubstation</code>, <code>celine:SecondarySubstation</code></td>
+<td><code>cim:Substation</code></td>
+</tr>
+<tr>
+<td><code>celine:PowerTransformer</code></td>
+<td><code>cim:PowerTransformer</code></td>
+</tr>
+<tr>
+<td><code>celine:DistributionFeeder</code></td>
+<td><code>cim:Feeder</code></td>
+</tr>
+<tr>
+<td><code>celine:GridOperator</code></td>
+<td><code>cim:Organisation</code></td>
+</tr>
+<tr>
+<td><code>celine:ConnectionPoint</code></td>
+<td><code>cim:UsagePoint</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="fixed-celinegridoperator-alignment">Fixed — <code>celine:GridOperator</code> alignment</h3>
+<p><code>cim:Company</code> exists in no CIM version; the alignment is now <code>cim:Organisation</code>. Note that
+<code>cim:Operator</code> is a control-room <em>person</em>, not the operating company, and is not the target.</p>
+<h3 id="alignment-authority">Alignment authority</h3>
+<p>CIM is the one external vocabulary CELINE references on <strong>documentary</strong> rather than
+resolvable authority. IEC CIM is a paid standard and every CIM namespace IRI answers
+HTTP 403, so these terms are checked against the published CIM100 class documentation
+(<a href="https://zepben.github.io/evolve/docs/cim/cim100/">https://zepben.github.io/evolve/docs/cim/cim100/</a>) rather than dereferenced. The target
+profile stated in v0.6 (IEC 61968) is superseded by CIM100, which subsumes it.</p>
 <h2 id="changes-from-v07">Changes from v0.7</h2>
 <h3 id="fixed-skos-top-concepts-4-schemes">Fixed — SKOS top concepts (4 schemes)</h3>
 <p>Each of the four schemes now declares its entry points:</p>
@@ -4914,6 +5097,17 @@ CommunityContext --hasGridOperator---&gt; GridOperator
 </tr>
 </tbody>
 </table>
+<h2 id="migration-from-v08">Migration from v0.8</h2>
+<ol>
+<li><strong>No term changes</strong> — nothing is added, removed or retyped. Existing v0.8 instance data
+   validates unchanged against the v0.9 profile.</li>
+<li><strong>CIM CURIEs expand differently.</strong> Any consumer that resolved <code>cim:</code> through the CELINE
+   JSON-LD context, or copied the prefix declaration out of <code>celine.ttl</code>, now gets
+   <code>http://iec.ch/TC57/CIM100#…</code> instead of <code>https://ontology.tno.nl/IEC_CIM/…</code>. Code that
+   matched the old fully-expanded IRIs must be updated; code that carries the CURIE through
+   unexpanded is unaffected.</li>
+<li><strong><code>cim:Company</code> is gone</strong> — <code>celine:GridOperator</code> now closeMatches <code>cim:Organisation</code>.</li>
+</ol>
 <h2 id="migration-from-v07">Migration from v0.7</h2>
 <ol>
 <li><strong>No term changes</strong> — nothing is added, removed or retyped. Existing v0.7 instance data
