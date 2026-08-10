@@ -97,6 +97,9 @@
     } ]
   } ]
 }, {
+  "@id" : "http://qudt.org/schema/qudt#hasQuantityKind",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
   "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 }, {
@@ -152,7 +155,7 @@
     "@value" : "https://w3id.org/celine-eu#"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry.\n    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to\n    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM\n    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now\n    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are\n    checked against the CIM100 class documentation rather than dereferenced: IEC CIM\n    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one\n    external vocabulary CELINE references on documentary rather than resolvable\n    authority. celine:GridOperator also moves from cim:Company, which exists in no\n    CIM version, to cim:Organisation — note cim:Operator is a control-room person,\n    not the company."
+    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry.\n    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to\n    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM\n    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now\n    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are\n    checked against the CIM100 class documentation rather than dereferenced: IEC CIM\n    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one\n    external vocabulary CELINE references on documentary rather than resolvable\n    authority. celine:GridOperator also moves from cim:Company, which exists in no\n    CIM version, to cim:Organisation — note cim:Operator is a control-room person,\n    not the company.\n    Version 0.10 adds the observable properties a REC energy dataset actually\n    reports — grid import and export, self-consumed, collectively shared and\n    virtual consumed energy, and the self-consumption ratio — as\n    sosa:ObservableProperty individuals carrying qudt:hasQuantityKind. They exist\n    because no standard names them: quantitykind:Energy does not distinguish\n    import from export, and SAREF's saref:Energy is deprecated as of v3.2.1.\n    They give sosa:observedProperty a target that resolves. The energy mapping\n    specs previously pointed it at https://w3id.org/celine/property/* IRIs, which\n    are in neither this namespace (note celine-eu, not celine) nor any other, and\n    which nothing declared; the three forecast specs still do, and the forecast\n    properties they need are not minted here. Where a quantity also has a\n    celine:KPICatalog concept the two are linked with rdfs:seeAlso: the KPI is a\n    period total or rate, the observable property is what one observation\n    measures over one interval."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@value" : "CELINE Core Ontology"
@@ -174,13 +177,13 @@
     "@id" : "https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#priorVersion" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.8"
-  } ],
-  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
     "@id" : "https://w3id.org/celine-eu/v0.9"
   } ],
+  "http://www.w3.org/2002/07/owl#versionIRI" : [ {
+    "@id" : "https://w3id.org/celine-eu/v0.10"
+  } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "0.9.0"
+    "@value" : "0.10.0"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#AdminCost",
@@ -261,6 +264,33 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
     "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#CollectivelySharedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The incentivised quantity in an Italian CER: min(grid import, grid export) over coincident members, evaluated per primary substation because sharing cannot cross an unconnected one. Not the sum of any member's self-consumption. Named CollectivelySharedEnergy because celine:SharedEnergy is the period-total KPI over this property and holds that IRI."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Collectively shared energy"
+  }, {
+    "@language" : "it",
+    "@value" : "Energia condivisa"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharedEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Collectively shared energy"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#CommitmentMode",
@@ -1065,6 +1095,60 @@
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
     "@id" : "https://w3id.org/celine-eu#KPITemporalGranularity"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#GridExportEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Electrical energy fed into the distribution grid over the observation interval (IT: immissione). Producers and prosumers only. celine:FedInEnergy is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia immessa"
+  }, {
+    "@language" : "en",
+    "@value" : "Grid export energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#FedInEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Grid export energy"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#GridImportEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Electrical energy drawn from the distribution grid over the observation interval (IT: prelievo). At community scope this is the sum over the members netted together. celine:WithdrawnEnergy is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia prelevata"
+  }, {
+    "@language" : "en",
+    "@value" : "Grid import energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#WithdrawnEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Grid import energy"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#GridOperator",
@@ -2400,6 +2484,30 @@
     "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#SelfConsumedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Energy produced and consumed behind the same connection point, never reaching the grid. Distinct from celine:CollectivelySharedEnergy, which is a community-level netting of energy that did."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia autoconsumata"
+  }, {
+    "@language" : "en",
+    "@value" : "Self-consumed energy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Self-consumed energy"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -2439,6 +2547,33 @@
   } ],
   "https://w3id.org/celine-eu#hasKPIUnit" : [ {
     "@id" : "https://w3id.org/celine-eu#Dimensionless"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#SelfConsumptionRatio",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/DimensionlessRatio"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Shared energy over grid export, per substation. Not summable across substations, and not the same figure as shared energy over grid import — both are published under this name elsewhere in CELINE, so a consumer must read the denominator from this definition rather than assume it. Distinct from celine:SelfConsumptionRate, the community-scope period KPI, which uses local production as its denominator."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Quota di autoconsumo"
+  }, {
+    "@language" : "en",
+    "@value" : "Self-consumption ratio"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Self-consumption ratio"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#SelfSufficiencyRate",
@@ -2757,6 +2892,33 @@
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
     "@language" : "en",
     "@value" : "Unit of Measure"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#VirtualConsumedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member's pro-rata share of celine:CollectivelySharedEnergy, allocated by that member's contribution to community grid import over the same interval. An accounting allocation, not a metered flow. celine:SharedEnergyMemberShare is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia virtuale consumata"
+  }, {
+    "@language" : "en",
+    "@value" : "Virtual consumed energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharedEnergyMemberShare"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Virtual consumed energy"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#Voluntary",

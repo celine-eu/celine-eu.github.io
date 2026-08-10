@@ -6,7 +6,16 @@ The CELINE Core Ontology supports the semantic layer of this toolbox. It is a th
 - **PECO** (https://purl.org/peco) models the Energy Community structure, members, PODs and assets.
 - **SAREF / SAREF4ENER** (ETSI) covers smart devices and energy assets.
 - **SOSA/SSN** (W3C) covers sensor observations and measurements.
+- **QUDT** supplies quantity kinds and units for observation results.
 - **IEC CIM** (CIM100) provides the reference model for grid topology, aligned via skos:closeMatch.
+
+Version 0.10 adds the observable properties a REC energy dataset actually reports:
+
+- **Six sosa:ObservableProperty individuals**: GridImportEnergy, GridExportEnergy, SelfConsumedEnergy, CollectivelySharedEnergy, VirtualConsumedEnergy and SelfConsumptionRatio, each carrying qudt:hasQuantityKind. They give sosa:observedProperty a target that resolves. These are CELINE terms because no standard has them: quantitykind:Energy is the right quantity kind for five of the six and is asserted on each, but it does not distinguish energy drawn from the grid from energy fed into it, and that distinction is the whole content of a REC settlement.
+- **SOSA rather than SAREF for the observation structure**: saref:Measurement is deprecated in SAREF core v3.2.1 in favour of saref:Observation and convergence with SOSA/SSN, taking saref:Energy and the unit individuals with it. SOSA also supplies sosa:hasSimpleResult, the sanctioned way to put a literal result on an observation without an intermediate node a flat data row cannot mint. SAREF remains correct for the device side and CIM for the grid side.
+- **QUDT prefixes**: qudt, quantitykind and unit are bound, with no owl:imports added. Nothing already present supplied a unit -- SAREF's unit individuals are deprecated and celine:UnitOfMeasure is a four-concept SKOS scheme that resolves for nobody outside CELINE.
+- **rdfs:seeAlso to the KPI Catalog**: four of the six quantities already have a KPICatalog concept. A KPIDefinition is a period total or rate; an ObservableProperty is what one observation measures over one interval. The pairs are linked but kept distinct, which is why the shared-energy property is CollectivelySharedEnergy rather than SharedEnergy -- that IRI is a KPICatalog concept released in v0.5.
+- **celine:DefinedTermLabelShape**: a SHACL shape asserting sh:uniqueLang on rdfs:label and skos:prefLabel across every term the ontology defines, so that one IRI minted twice is reported rather than shipped. It uses sh:SPARQLTarget and therefore requires pyshacl advanced mode, as do the pre-existing concept shapes.
 
 Version 0.9 is a conformance fix and introduces no new terms:
 

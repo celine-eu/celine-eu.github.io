@@ -9,6 +9,7 @@
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:qudt="http://qudt.org/schema/qudt#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:skos="http://www.w3.org/2004/02/skos/core#"
      xmlns:vann="http://purl.org/vocab/vann/"
@@ -17,7 +18,7 @@
      xmlns:opla-sd="http://ontologydesignpatterns.org/opla-sd#"
      xmlns:celine-eu="https://w3id.org/celine-eu#">
     <owl:Ontology rdf:about="https://w3id.org/celine-eu">
-        <owl:versionIRI rdf:resource="https://w3id.org/celine-eu/v0.9"/>
+        <owl:versionIRI rdf:resource="https://w3id.org/celine-eu/v0.10"/>
         <owl:imports rdf:resource="https://purl.org/peco/peco-core"/>
         <owl:imports rdf:resource="https://raw.githubusercontent.com/w3c/sdw/dee1bdd3c339d8a0ab512c7f9bc97a08912ad7d6/ssn/integrated/sosa.ttl"/>
         <owl:imports rdf:resource="https://saref.etsi.org/core/v3.1.1/saref.ttl"/>
@@ -64,13 +65,27 @@
     external vocabulary CELINE references on documentary rather than resolvable
     authority. celine:GridOperator also moves from cim:Company, which exists in no
     CIM version, to cim:Organisation — note cim:Operator is a control-room person,
-    not the company.</rdfs:comment>
+    not the company.
+    Version 0.10 adds the observable properties a REC energy dataset actually
+    reports — grid import and export, self-consumed, collectively shared and
+    virtual consumed energy, and the self-consumption ratio — as
+    sosa:ObservableProperty individuals carrying qudt:hasQuantityKind. They exist
+    because no standard names them: quantitykind:Energy does not distinguish
+    import from export, and SAREF&apos;s saref:Energy is deprecated as of v3.2.1.
+    They give sosa:observedProperty a target that resolves. The energy mapping
+    specs previously pointed it at https://w3id.org/celine/property/* IRIs, which
+    are in neither this namespace (note celine-eu, not celine) nor any other, and
+    which nothing declared; the three forecast specs still do, and the forecast
+    properties they need are not minted here. Where a quantity also has a
+    celine:KPICatalog concept the two are linked with rdfs:seeAlso: the KPI is a
+    period total or rate, the observable property is what one observation
+    measures over one interval.</rdfs:comment>
         <rdfs:label>CELINE Core Ontology</rdfs:label>
         <rdfs:seeAlso rdf:resource="https://celine-eu.github.io/"/>
         <rdfs:seeAlso rdf:resource="https://github.com/celine-eu"/>
         <rdfs:seeAlso rdf:resource="https://www.celineproject.eu/"/>
-        <owl:priorVersion rdf:resource="https://w3id.org/celine-eu/v0.8"/>
-        <owl:versionInfo>0.9.0</owl:versionInfo>
+        <owl:priorVersion rdf:resource="https://w3id.org/celine-eu/v0.9"/>
+        <owl:versionInfo>0.10.0</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -84,6 +99,13 @@
      -->
 
 
+    
+
+
+    <!-- http://qudt.org/schema/qudt#hasQuantityKind -->
+
+
+    <owl:AnnotationProperty rdf:about="http://qudt.org/schema/qudt#hasQuantityKind"/>
     
 
 
@@ -1873,6 +1895,22 @@ ex:cost_platform_fee a celine:CostItem ;
     
 
 
+    <!-- https://w3id.org/celine-eu#CollectivelySharedEnergy -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#CollectivelySharedEnergy">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/Energy"/>
+        <rdfs:comment xml:lang="en">The incentivised quantity in an Italian CER: min(grid import, grid export) over coincident members, evaluated per primary substation because sharing cannot cross an unconnected one. Not the sum of any member&apos;s self-consumption. Named CollectivelySharedEnergy because celine:SharedEnergy is the period-total KPI over this property and holds that IRI.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="en">Collectively shared energy</rdfs:label>
+        <rdfs:label xml:lang="it">Energia condivisa</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://w3id.org/celine-eu#SharedEnergy"/>
+        <skos:prefLabel xml:lang="en">Collectively shared energy</skos:prefLabel>
+    </owl:NamedIndividual>
+    
+
+
     <!-- https://w3id.org/celine-eu#CommitmentMode -->
 
 
@@ -2243,6 +2281,38 @@ ex:cost_platform_fee a celine:CostItem ;
         <skos:prefLabel xml:lang="it">Annuale</skos:prefLabel>
         <skos:prefLabel xml:lang="en">Yearly</skos:prefLabel>
         <skos:topConceptOf rdf:resource="https://w3id.org/celine-eu#KPITemporalGranularity"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- https://w3id.org/celine-eu#GridExportEnergy -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#GridExportEnergy">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/Energy"/>
+        <rdfs:comment xml:lang="en">Electrical energy fed into the distribution grid over the observation interval (IT: immissione). Producers and prosumers only. celine:FedInEnergy is the period-total KPI over this property.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="it">Energia immessa</rdfs:label>
+        <rdfs:label xml:lang="en">Grid export energy</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://w3id.org/celine-eu#FedInEnergy"/>
+        <skos:prefLabel xml:lang="en">Grid export energy</skos:prefLabel>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- https://w3id.org/celine-eu#GridImportEnergy -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#GridImportEnergy">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/Energy"/>
+        <rdfs:comment xml:lang="en">Electrical energy drawn from the distribution grid over the observation interval (IT: prelievo). At community scope this is the sum over the members netted together. celine:WithdrawnEnergy is the period-total KPI over this property.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="it">Energia prelevata</rdfs:label>
+        <rdfs:label xml:lang="en">Grid import energy</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://w3id.org/celine-eu#WithdrawnEnergy"/>
+        <skos:prefLabel xml:lang="en">Grid import energy</skos:prefLabel>
     </owl:NamedIndividual>
     
 
@@ -2940,6 +3010,21 @@ ex:cost_platform_fee a celine:CostItem ;
     
 
 
+    <!-- https://w3id.org/celine-eu#SelfConsumedEnergy -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#SelfConsumedEnergy">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/Energy"/>
+        <rdfs:comment xml:lang="en">Energy produced and consumed behind the same connection point, never reaching the grid. Distinct from celine:CollectivelySharedEnergy, which is a community-level netting of energy that did.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="it">Energia autoconsumata</rdfs:label>
+        <rdfs:label xml:lang="en">Self-consumed energy</rdfs:label>
+        <skos:prefLabel xml:lang="en">Self-consumed energy</skos:prefLabel>
+    </owl:NamedIndividual>
+    
+
+
     <!-- https://w3id.org/celine-eu#SelfConsumptionRate -->
 
 
@@ -2957,6 +3042,22 @@ ex:cost_platform_fee a celine:CostItem ;
         <skos:definition xml:lang="en">Ratio of energy consumed locally to total energy produced locally by the community.</skos:definition>
         <skos:inScheme rdf:resource="https://w3id.org/celine-eu#KPICatalog"/>
         <skos:topConceptOf rdf:resource="https://w3id.org/celine-eu#KPICatalog"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- https://w3id.org/celine-eu#SelfConsumptionRatio -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#SelfConsumptionRatio">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/DimensionlessRatio"/>
+        <rdfs:comment xml:lang="en">Shared energy over grid export, per substation. Not summable across substations, and not the same figure as shared energy over grid import — both are published under this name elsewhere in CELINE, so a consumer must read the denominator from this definition rather than assume it. Distinct from celine:SelfConsumptionRate, the community-scope period KPI, which uses local production as its denominator.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="it">Quota di autoconsumo</rdfs:label>
+        <rdfs:label xml:lang="en">Self-consumption ratio</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://w3id.org/celine-eu#SelfConsumptionRate"/>
+        <skos:prefLabel xml:lang="en">Self-consumption ratio</skos:prefLabel>
     </owl:NamedIndividual>
     
 
@@ -3094,6 +3195,22 @@ ex:cost_platform_fee a celine:CostItem ;
         <skos:hasTopConcept rdf:resource="https://w3id.org/celine-eu#Kilowatt"/>
         <skos:hasTopConcept rdf:resource="https://w3id.org/celine-eu#KilowattHour"/>
         <skos:prefLabel xml:lang="en">Unit of Measure</skos:prefLabel>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- https://w3id.org/celine-eu#VirtualConsumedEnergy -->
+
+
+    <owl:NamedIndividual rdf:about="https://w3id.org/celine-eu#VirtualConsumedEnergy">
+        <rdf:type rdf:resource="http://www.w3.org/ns/sosa/ObservableProperty"/>
+        <qudt:hasQuantityKind rdf:resource="http://qudt.org/vocab/quantitykind/Energy"/>
+        <rdfs:comment xml:lang="en">A member&apos;s pro-rata share of celine:CollectivelySharedEnergy, allocated by that member&apos;s contribution to community grid import over the same interval. An accounting allocation, not a metered flow. celine:SharedEnergyMemberShare is the period-total KPI over this property.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://w3id.org/celine-eu"/>
+        <rdfs:label xml:lang="it">Energia virtuale consumata</rdfs:label>
+        <rdfs:label xml:lang="en">Virtual consumed energy</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://w3id.org/celine-eu#SharedEnergyMemberShare"/>
+        <skos:prefLabel xml:lang="en">Virtual consumed energy</skos:prefLabel>
     </owl:NamedIndividual>
     
 

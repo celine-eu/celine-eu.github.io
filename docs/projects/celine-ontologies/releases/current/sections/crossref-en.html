@@ -3756,6 +3756,7 @@ ex:cost_platform_fee a celine:CostItem ;
  <h3 id="annotationproperties" class="list">Annotation Properties</h3>
  <ul class="hlist">
   <li><a href="#http://www.w3.org/2004/02/skos/core#closeMatch" title="http://www.w3.org/2004/02/skos/core#closeMatch"> <span>close Match</span> </a></li>
+  <li><a href="#http://qudt.org/schema/qudt#hasQuantityKind" title="http://qudt.org/schema/qudt#hasQuantityKind"> <span>has Quantity Kind</span> </a></li>
   <li><a href="#http://www.w3.org/2004/02/skos/core#hasTopConcept" title="http://www.w3.org/2004/02/skos/core#hasTopConcept"> <span>has Top Concept</span> </a></li>
   <li><a href="#http://www.w3.org/2004/02/skos/core#inScheme" title="http://www.w3.org/2004/02/skos/core#inScheme"> <span>in Scheme</span> </a></li>
   <li><a href="#http://www.w3.org/2004/02/skos/core#notation" title="http://www.w3.org/2004/02/skos/core#notation"> <span>notation</span> </a></li>
@@ -3765,6 +3766,10 @@ ex:cost_platform_fee a celine:CostItem ;
  <div class="entity" id="http://www.w3.org/2004/02/skos/core#closeMatch">
   <h3>close Match<sup class="type-ap" title="annotation property">ap</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#annotationproperties">Annotation Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> http://www.w3.org/2004/02/skos/core#closeMatch</p>
+ </div>
+ <div class="entity" id="http://qudt.org/schema/qudt#hasQuantityKind">
+  <h3>has Quantity Kind<sup class="type-ap" title="annotation property">ap</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#annotationproperties">Annotation Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://qudt.org/schema/qudt#hasQuantityKind</p>
  </div>
  <div class="entity" id="http://www.w3.org/2004/02/skos/core#hasTopConcept">
   <h3>has Top Concept<sup class="type-ap" title="annotation property">ap</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#annotationproperties">Annotation Property ToC</a> </span></h3>
@@ -3797,6 +3802,7 @@ ex:cost_platform_fee a celine:CostItem ;
   <li><a href="#MethodAverage" title="https://w3id.org/celine-eu#MethodAverage">Average</a></li>
   <li><a href="#ScopeBuilding" title="https://w3id.org/celine-eu#ScopeBuilding">Building</a></li>
   <li><a href="#RequestCancelled" title="https://w3id.org/celine-eu#RequestCancelled">Cancelled</a></li>
+  <li><a href="#CollectivelySharedEnergy" title="https://w3id.org/celine-eu#CollectivelySharedEnergy">Collectively shared energy</a></li>
   <li><a href="#CommitmentMode" title="https://w3id.org/celine-eu#CommitmentMode">Commitment Mode</a></li>
   <li><a href="#ScopeCommunity" title="https://w3id.org/celine-eu#ScopeCommunity">Community</a></li>
   <li><a href="#ConnectionPointIdentifierScheme" title="https://w3id.org/celine-eu#ConnectionPointIdentifierScheme">Connection Point Identifier Scheme</a></li>
@@ -3820,6 +3826,8 @@ ex:cost_platform_fee a celine:CostItem ;
   <li><a href="#FlexibilityDirection" title="https://w3id.org/celine-eu#FlexibilityDirection">Flexibility Direction</a></li>
   <li><a href="#FrequencyConstraint" title="https://w3id.org/celine-eu#FrequencyConstraint">Frequency Constraint</a></li>
   <li><a href="#RequestFulfilled" title="https://w3id.org/celine-eu#RequestFulfilled">Fulfilled</a></li>
+  <li><a href="#GridExportEnergy" title="https://w3id.org/celine-eu#GridExportEnergy">Grid export energy</a></li>
+  <li><a href="#GridImportEnergy" title="https://w3id.org/celine-eu#GridImportEnergy">Grid import energy</a></li>
   <li><a href="#GranularityHourly" title="https://w3id.org/celine-eu#GranularityHourly">Hourly</a></li>
   <li><a href="#StatusInactive" title="https://w3id.org/celine-eu#StatusInactive">Inactive</a></li>
   <li><a href="#IncentiveAccrued" title="https://w3id.org/celine-eu#IncentiveAccrued">Incentive Accrued</a></li>
@@ -3859,13 +3867,16 @@ ex:cost_platform_fee a celine:CostItem ;
   <li><a href="#GranularityRealtime" title="https://w3id.org/celine-eu#GranularityRealtime">Realtime</a></li>
   <li><a href="#RecoveryConstraint" title="https://w3id.org/celine-eu#RecoveryConstraint">Recovery Constraint</a></li>
   <li><a href="#RequestStatus" title="https://w3id.org/celine-eu#RequestStatus">Request Status</a></li>
+  <li><a href="#SelfConsumedEnergy" title="https://w3id.org/celine-eu#SelfConsumedEnergy">Self-consumed energy</a></li>
   <li><a href="#SelfConsumptionRate" title="https://w3id.org/celine-eu#SelfConsumptionRate">Self-Consumption Rate</a></li>
+  <li><a href="#SelfConsumptionRatio" title="https://w3id.org/celine-eu#SelfConsumptionRatio">Self-consumption ratio</a></li>
   <li><a href="#SelfSufficiencyRate" title="https://w3id.org/celine-eu#SelfSufficiencyRate">Self-Sufficiency Rate</a></li>
   <li><a href="#SharedEnergy" title="https://w3id.org/celine-eu#SharedEnergy">Shared Energy</a></li>
   <li><a href="#SharedEnergyMemberShare" title="https://w3id.org/celine-eu#SharedEnergyMemberShare">Shared Energy Member Share</a></li>
   <li><a href="#StatusSuspended" title="https://w3id.org/celine-eu#StatusSuspended">Suspended</a></li>
   <li><a href="#MethodTotal" title="https://w3id.org/celine-eu#MethodTotal">Total</a></li>
   <li><a href="#UnitOfMeasure" title="https://w3id.org/celine-eu#UnitOfMeasure">Unit of Measure</a></li>
+  <li><a href="#VirtualConsumedEnergy" title="https://w3id.org/celine-eu#VirtualConsumedEnergy">Virtual consumed energy</a></li>
   <li><a href="#Voluntary" title="https://w3id.org/celine-eu#Voluntary">Voluntary</a></li>
   <li><a href="#GranularityWeekly" title="https://w3id.org/celine-eu#GranularityWeekly">Weekly</a></li>
   <li><a href="#WithdrawnEnergy" title="https://w3id.org/celine-eu#WithdrawnEnergy">Withdrawn Energy</a></li>
@@ -4157,6 +4168,38 @@ ex:cost_platform_fee a celine:CostItem ;
    </dd>
    <dd>
     <a href="http://www.w3.org/2004/02/skos/core#topConceptOf" target="_blank" title="http://www.w3.org/2004/02/skos/core#topConceptOf">top Concept Of</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="#RequestStatus" title="https://w3id.org/celine-eu#RequestStatus">Request Status</a> <sup class="type-ni" title="named individual">ni</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="CollectivelySharedEnergy">
+  <h3>Collectively shared energy<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#CollectivelySharedEnergy</p>
+  <div class="comment">
+   <span class="markdown">The incentivised quantity in an Italian CER: min(grid import, grid export) over coincident members, evaluated per primary substation because sharing cannot cross an unconnected one. Not the sum of any member's self-consumption. Named CollectivelySharedEnergy because celine:SharedEnergy is the period-total KPI over this property and holds that IRI.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/Energy" target="_blank" title="http://qudt.org/vocab/quantitykind/Energy">Energy</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Collectively shared energy"@en</span>
    </dd>
   </dl>
  </div>
@@ -5040,6 +5083,70 @@ ex:cost_platform_fee a celine:CostItem ;
    </dd>
    <dd>
     <a href="http://www.w3.org/2004/02/skos/core#topConceptOf" target="_blank" title="http://www.w3.org/2004/02/skos/core#topConceptOf">top Concept Of</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="#RequestStatus" title="https://w3id.org/celine-eu#RequestStatus">Request Status</a> <sup class="type-ni" title="named individual">ni</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="GridExportEnergy">
+  <h3>Grid export energy<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#GridExportEnergy</p>
+  <div class="comment">
+   <span class="markdown">Electrical energy fed into the distribution grid over the observation interval (IT: immissione). Producers and prosumers only. celine:FedInEnergy is the period-total KPI over this property.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/Energy" target="_blank" title="http://qudt.org/vocab/quantitykind/Energy">Energy</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Grid export energy"@en</span>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="GridImportEnergy">
+  <h3>Grid import energy<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#GridImportEnergy</p>
+  <div class="comment">
+   <span class="markdown">Electrical energy drawn from the distribution grid over the observation interval (IT: prelievo). At community scope this is the sum over the members netted together. celine:WithdrawnEnergy is the period-total KPI over this property.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/Energy" target="_blank" title="http://qudt.org/vocab/quantitykind/Energy">Energy</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Grid import energy"@en</span>
    </dd>
   </dl>
  </div>
@@ -6630,6 +6737,38 @@ ex:cost_platform_fee a celine:CostItem ;
    </dd>
   </dl>
  </div>
+ <div class="entity" id="SelfConsumedEnergy">
+  <h3>Self-consumed energy<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#SelfConsumedEnergy</p>
+  <div class="comment">
+   <span class="markdown">Energy produced and consumed behind the same connection point, never reaching the grid. Distinct from celine:CollectivelySharedEnergy, which is a community-level netting of energy that did.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/Energy" target="_blank" title="http://qudt.org/vocab/quantitykind/Energy">Energy</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Self-consumed energy"@en</span>
+   </dd>
+  </dl>
+ </div>
  <div class="entity" id="SelfConsumptionRate">
   <h3>Self-Consumption Rate<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/celine-eu#SelfConsumptionRate</p>
@@ -6680,6 +6819,38 @@ ex:cost_platform_fee a celine:CostItem ;
    </dd>
    <dd>
     <a href="http://www.w3.org/2004/02/skos/core#topConceptOf" target="_blank" title="http://www.w3.org/2004/02/skos/core#topConceptOf">top Concept Of</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="#KPICatalog" title="https://w3id.org/celine-eu#KPICatalog">KPI Catalog</a> <sup class="type-ni" title="named individual">ni</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="SelfConsumptionRatio">
+  <h3>Self-consumption ratio<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#SelfConsumptionRatio</p>
+  <div class="comment">
+   <span class="markdown">Shared energy over grid export, per substation. Not summable across substations, and not the same figure as shared energy over grid import — both are published under this name elsewhere in CELINE, so a consumer must read the denominator from this definition rather than assume it. Distinct from celine:SelfConsumptionRate, the community-scope period KPI, which uses local production as its denominator.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/DimensionlessRatio" target="_blank" title="http://qudt.org/vocab/quantitykind/DimensionlessRatio">Dimensionless Ratio</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Self-consumption ratio"@en</span>
    </dd>
   </dl>
  </div>
@@ -6956,6 +7127,38 @@ ex:cost_platform_fee a celine:CostItem ;
    </dd>
   </dl>
  </div>
+ <div class="entity" id="VirtualConsumedEnergy">
+  <h3>Virtual consumed energy<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> https://w3id.org/celine-eu#VirtualConsumedEnergy</p>
+  <div class="comment">
+   <span class="markdown">A member's pro-rata share of celine:CollectivelySharedEnergy, allocated by that member's contribution to community grid import over the same interval. An accounting allocation, not a metered flow. celine:SharedEnergyMemberShare is the period-total KPI over this property.</span>
+  </div>
+  <dl class="definedBy">
+   <dt>
+    Is defined by
+   </dt>
+   <dd>
+    <a href="https://w3id.org/celine-eu">https://w3id.org/celine-eu</a>
+   </dd>
+  </dl>
+  <dl class="description">
+   <dt>
+    belongs to
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/ns/sosa/ObservableProperty" target="_blank" title="http://www.w3.org/ns/sosa/ObservableProperty">Observable Property</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    has facts
+   </dt>
+   <dd>
+    <a href="http://qudt.org/schema/qudt#hasQuantityKind" target="_blank" title="http://qudt.org/schema/qudt#hasQuantityKind">has Quantity Kind</a> <sup class="type-ap" title="annotation property">ap</sup> <a href="http://qudt.org/vocab/quantitykind/Energy" target="_blank" title="http://qudt.org/vocab/quantitykind/Energy">Energy</a> <sup class="type-ep" title="external property">ep</sup>
+   </dd>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#prefLabel" target="_blank" title="http://www.w3.org/2004/02/skos/core#prefLabel">pref Label</a> <sup class="type-ap" title="annotation property">ap</sup> <span class="literal">"Virtual consumed energy"@en</span>
+   </dd>
+  </dl>
+ </div>
  <div class="entity" id="Voluntary">
   <h3>Voluntary<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/celine-eu#Voluntary</p>
@@ -7127,5 +7330,6 @@ ex:cost_platform_fee a celine:CostItem ;
 <sup class="type-op" title="Object Properties">op</sup>: Object Properties <br/>
 <sup class="type-dp" title="Data Properties">dp</sup>: Data Properties <br/>
 <sup class="type-ni" title="Named Individuals">ni</sup>: Named Individuals <br/>
+<sup class="type-ep" title="External Properties">ep</sup>: External Properties
 </div>
 </div>

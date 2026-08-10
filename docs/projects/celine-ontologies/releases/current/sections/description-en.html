@@ -16,4 +16,6 @@
 
 **Member classification** -- MemberRole and MemberStatus SKOS vocabularies classify members within their energy community, following the upstream registry single-community-per-member model.
 
-All cross-domain links to PECO, SAREF, SOSA and IEC CIM are expressed via skos:closeMatch annotations or lightweight object properties -- no external ontology is subclassed or redefined beyond PECO predicates already imported.</span>
+**Energy observation** -- Six sosa:ObservableProperty individuals name what a REC energy dataset reports: grid import and export, self-consumed energy, collectively shared energy, virtual consumed energy and the self-consumption ratio. Each carries a qudt:hasQuantityKind. The observation structure itself is SOSA's -- one sosa:Observation per quantity per interval, with sosa:hasSimpleResult and qudt:hasUnit -- and only the properties are minted here. Where a quantity also has a KPICatalog concept the two are linked with rdfs:seeAlso and kept distinct: the KPI is a period total or rate, the observable property is a single measurement.
+
+All cross-domain links to PECO, SAREF, SOSA, QUDT and IEC CIM are expressed via skos:closeMatch annotations or lightweight object properties -- no external ontology is subclassed or redefined beyond PECO predicates already imported.</span>
