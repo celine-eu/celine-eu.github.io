@@ -4144,8 +4144,7 @@
 <p>Every decision below is made by <code>policies/grid.rego</code>, evaluated in process. <strong>The Rego is
 the specification of record.</strong> Several docstrings in <code>src/celine/grid/api/deps.py</code> and an earlier version
 of <code>docs/architecture.md</code> describe scope requirements the Rego does not impose; where they
-disagree, what follows is what runs. See
-<code>.agents/knowledge/what-the-policy-actually-requires.md</code>.</p>
+disagree, what follows is what runs.</p>
 <hr />
 <h3 id="req-0006-an-operator-may-read-their-own-network-and-no-other">REQ-0006 — an operator may read their own network and no other</h3>
 <p>A non-service caller passes the <code>read</code> action only when the <code>network_id</code> in the request
@@ -4184,7 +4183,7 @@ carries a <code>network_id</code> and that is the only place one comes from. Ref
 <p>No scope is consulted. Organisation membership is the whole check.</p>
 <p>An operator removed from their organisation in Keycloak keeps their existing rules and
 loses the ability to edit or delete them — and those rules keep firing, because dispatch
-never consults the policy. See <code>.agents/knowledge/a-rule-outlives-its-author.md</code>.</p>
+never consults the policy.</p>
 <h3 id="req-0012-a-service-account-needs-gridadmin-to-touch-alert-rules">REQ-0012 — a service account needs <code>grid.admin</code> to touch alert rules</h3>
 <p>The <code>alerts.*</code> rules are all gated on the subject not being a service, so the only rule a
 service can satisfy is the blanket <code>grid.admin</code> one. <code>grid.read</code> — enough to read every

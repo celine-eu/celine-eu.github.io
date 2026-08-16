@@ -4462,7 +4462,7 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 <p><strong><code>policies/grid.rego</code> is the specification of record for the table above.</strong> Several
 docstrings in <code>src/celine/grid/api/deps.py</code> describe scope requirements — <code>grid.alerts.read</code>,
 <code>grid.alerts.write</code> — that the Rego does not impose and that appear nowhere in it. The
-Rego is what runs; see <code>.agents/knowledge/what-the-policy-actually-requires.md</code>, and
+Rego is what runs; see the companion's knowledge, and
 <code>docs/specifications/authorisation.md</code> for the behaviour stated as requirements.</p>
 <p>The consequence worth stating here: <strong>alert-rule confidentiality rests on the
 <code>WHERE user_id = :sub</code> in <code>src/celine/grid/api/alerts.py</code>, not on the policy.</strong></p>
@@ -4500,7 +4500,7 @@ Rego is what runs; see <code>.agents/knowledge/what-the-policy-actually-requires
 <li>For each triggered rule, emits an <strong><code>extr_event</code></strong> <code>DigitalTwinEvent</code> to the nudging-tool via <code>NudgingAdminClient</code>, carrying the pipeline's <code>period</code>, <code>window_start</code> and <code>window_end</code> in its facts. The hazard reported is <code>wind</code>, <code>heat</code>, or <code>thunderstorm</code> when a rule watching both triggers on both.</li>
 </ol>
 <p>Dispatch is cancelled entirely — before the Digital Twin is queried — if any of the three window fields is missing from the pipeline event.</p>
-<p>If the MQTT broker is unavailable at startup, the listener logs a warning and the rest of the service continues to operate normally. Alert dispatch is then inactive for the life of the process, and no endpoint reports this. That is one of several paths here that degrade silently; they are collected in <code>.agents/knowledge/silence-is-the-failure-mode.md</code>.</p>
+<p>If the MQTT broker is unavailable at startup, the listener logs a warning and the rest of the service continues to operate normally. Alert dispatch is then inactive for the life of the process, and no endpoint reports this. That is one of several paths here that degrade silently; they are collected in the companion's knowledge.</p>
 <h2 id="database">Database</h2>
 <p>PostgreSQL (async via SQLAlchemy + asyncpg). Two tables:</p>
 <table>
@@ -4560,8 +4560,8 @@ Rego is what runs; see <code>.agents/knowledge/what-the-policy-actually-requires
 </tbody>
 </table>
 <h2 id="key-design-decisions">Key design decisions</h2>
-<p><strong>DSO org alias as network_id</strong> — the Keycloak organisation alias is used directly as the <code>network_id</code> for DT queries. No mapping table is needed; org management in Keycloak is the single source of truth. The same string is also the Prefect namespace the pipeline listener reads, so one unmapped identifier spans three systems — see <code>.agents/knowledge/one-operator-one-network.md</code>.</p>
-<p><strong>Permissive OPA fallback</strong> — the policy engine falls back to allow-all when unavailable so development environments without a running OPA instance stay functional. Production deployments always have the policies directory present in the container. The cost is that a permit and a bypass are indistinguishable from a response; <code>.agents/knowledge/the-policy-engine-fails-open.md</code> says what to do about it, and it is why the test suite refuses to run without a loaded bundle.</p>
+<p><strong>DSO org alias as network_id</strong> — the Keycloak organisation alias is used directly as the <code>network_id</code> for DT queries. No mapping table is needed; org management in Keycloak is the single source of truth. The same string is also the Prefect namespace the pipeline listener reads, so one unmapped identifier spans three systems.</p>
+<p><strong>Permissive OPA fallback</strong> — the policy engine falls back to allow-all when unavailable so development environments without a running OPA instance stay functional. Production deployments always have the policies directory present in the container. The cost is that a permit and a bypass are indistinguishable from a response, which is why the test suite refuses to run without a loaded bundle.</p>
 <p><strong>Pipeline listener vs polling</strong> — alert dispatch is event-driven (MQTT) rather than scheduled. This avoids unnecessary DT queries and ensures alerts fire promptly after each pipeline run without coupling the BFF to a scheduler.</p>
 <p><strong>Thin BFF pattern</strong> — celine-grid performs no risk calculations. All domain logic lives in the Digital Twin. The BFF's job is routing, authentication, authorization, and persistence of user preferences. <code>/api/grid/{network_id}/shapes</code> is the only exception: it assembles a GeoJSON FeatureCollection from the DT's rows, which is presentation rather than domain logic.</p>
 <h2 id="where-the-rest-is-written-down">Where the rest is written down</h2>
@@ -4583,11 +4583,11 @@ Rego is what runs; see <code>.agents/knowledge/what-the-policy-actually-requires
 </tr>
 <tr>
 <td>what is true of the code and not visible in it</td>
-<td><code>.agents/knowledge/</code></td>
+<td>the companion's knowledge</td>
 </tr>
 <tr>
 <td>how to test a change</td>
-<td><code>.agents/playbooks/testing.md</code></td>
+<td>the companion's testing playbook</td>
 </tr>
 </tbody>
 </table>
