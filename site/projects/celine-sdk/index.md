@@ -12,16 +12,23 @@ Shared SDK for the CELINE platform. Provides OIDC authentication, MQTT broker ab
 | `celine.sdk.openapi.*` | Generated typed clients for CELINE services |
 | `celine.sdk.dt` | Digital Twin domain client helpers |
 | `celine.sdk.nudging` | Nudging service client |
+| `celine.sdk.policies` | OPA policy evaluation over a service's own `*.rego` bundle |
+| `celine.sdk.rec_registry` | REC registry client helpers |
+| `celine.sdk.flexibility` | Flexibility service client helpers |
+| `celine.sdk.ai_assistant` | AI assistant client helpers |
+
+`celine.sdk.clients`, `celine.sdk.utils` and `celine.sdk.cli` are internal: they support
+the modules above and the spec-management CLI, and are not part of the public surface.
 
 ## Installation
 
 ```bash
-# Core SDK
 pip install celine-sdk
-
-# With client generation support
-pip install 'celine-sdk[gen]'
 ```
+
+Client generation needs the code generators from this repository's `dev` dependency group
+(Python ≥ 3.11) — `uv sync` in a checkout. It is a maintainer task performed here, not
+something a consuming service does.
 
 ## CLI Quick Reference
 
@@ -32,8 +39,11 @@ celine-sdk spec fetch services.yaml
 # List discovered spec versions
 celine-sdk spec list
 
-# Generate typed Python clients (requires [gen] extra)
+# Generate typed Python clients (needs the dev dependency group)
 celine-sdk generate services.yaml
+
+# Both steps, in a checkout
+task gen
 ```
 
 ## services.yaml Format
@@ -55,6 +65,7 @@ services:
 | [Broker](https://celine-eu.github.io/projects/celine-sdk/docs/broker) | MQTT client, auto-reconnect, JWT auth, subscription handling |
 | [Settings](https://celine-eu.github.io/projects/celine-sdk/docs/settings) | OidcSettings, MqttSettings, PoliciesSettings, env var config |
 | [Spec Management](https://celine-eu.github.io/projects/celine-sdk/docs/spec-management) | services.yaml format, spec fetch, versioning, client generation |
+| [Specifications](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/index.md) | What the SDK must do, as numbered requirements each named by a test |
 
 ## License
 

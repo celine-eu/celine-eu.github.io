@@ -58,6 +58,35 @@ Examples:
 | `rec-registry.export` | Export from the registry |
 | `rec-registry.lookup` | Lookup data |
 
+### REC Onboarding
+
+The onboarding console is the one service where **groups, not scopes, are the primary
+authorization signal for humans**: a REC operator is authorised by membership of the
+community's Keycloak organization plus one of the `admins`/`managers`/`editors`/`viewers`
+org groups (see [Group Hierarchy](#group-hierarchy)), and carries no `onboarding.*`
+scope at all. These scopes exist for the other subject type — service accounts and the
+`onboarding-cli`, which have no organization and must therefore state intent explicitly.
+
+| Scope | Description |
+|-------|-------------|
+| `onboarding.admin` | Full administrative access to the console API |
+| `onboarding.recs.read` | List the communities the caller may administer |
+| `onboarding.submissions.read` | Read submissions, with fiscal code and POD masked |
+| `onboarding.submissions.reveal` | Unmask fiscal code and POD (each reveal is audit-logged) |
+| `onboarding.submissions.write` | Edit submission fields and operator notes |
+| `onboarding.submissions.review` | Take in charge, approve, reject, reopen |
+| `onboarding.submissions.purge` | GDPR erasure of a submission and its files |
+| `onboarding.enablement.retry` | Re-run a failed enablement step |
+| `onboarding.enablement.revoke` | Reverse enablement — revoke credential, membership, login |
+| `onboarding.audit.read` | Read a community's onboarding audit trail |
+| `onboarding.export` | Export submissions or consented supply points |
+
+`onboarding.submissions.purge` and `onboarding.enablement.revoke` are deliberately
+**not** covered by `onboarding.submissions.review`, mirroring
+`rec-registry.members.purge`: rejecting somebody is recoverable, erasing them or
+revoking their credential is not, and a deployment must be able to grant one without
+the other.
+
 ### Nudging
 
 | Scope | Description |
@@ -172,6 +201,34 @@ default_scopes:
   - pipelines.runs.read
 ```
 
+### svc-onboarding
+
+REC onboarding console API. Declared as a service client so `onboarding.*` has an owner
+**and** so oauth2-proxy mints `aud: svc-onboarding` on user JWTs — without that, a REC
+operator's browser token is rejected on audience validation before any policy runs.
+
+```yaml
+scopes_prefix: onboarding
+default_scopes:
+  - onboarding.admin
+```
+
+Not the same client as `svc-ds-onboarding`, which is the onboarding service's *outbound*
+identity for the dataspace. One service, two clients: this one validates inbound
+audiences, that one authenticates outbound M2M.
+
+### svc-onboarding-cli
+
+Service account for the `onboarding-cli` review and enablement commands. No
+`scopes_prefix` — it owns nothing, it only calls:
+
+```yaml
+extra_audiences:
+  - svc-onboarding
+default_scopes:
+  - onboarding.admin
+```
+
 ### celine-cli
 
 Admin CLI client — no `scopes_prefix` (sudo client, exempt from audience mapper generation):
@@ -184,6 +241,7 @@ extra_audiences:
   - svc-nudging
   - svc-flexibility
   - svc-grid
+  - svc-onboarding
   - oauth2_proxy
 default_scopes:
   - digital-twin.admin
@@ -192,7 +250,66 @@ default_scopes:
   - mqtt.admin
   - rec-registry.admin
   - nudging.admin
+  - onboarding.admin
 ```
+
+---
+
+## User Groups
+
+User authorization is group-based. Groups determine what resources a user can access (e.g., internal datasets, community data).
+
+### Group Sources
+
+Groups can come from two places in the JWT:
+
+| Source | Claim | Assigned via |
+|---|---|---|
+| **Realm-level** | `groups: ["/admins"]` | Keycloak admin UI or `--group /admins` flag |
+| **Org-level** | `organization.<alias>.groups: ["/viewers"]` | `sync-users` (automatic for REC participants) |
+
+Realm-level groups are reserved for **platform management** (admins, managers). Regular REC participants receive org-level groups only.
+
+### Group Hierarchy
+
+Groups follow the standard role hierarchy (defined in `ROLE_HIERARCHY`):
+
+| Group | Capabilities |
+|---|---|
+| `admins` | Full access to all resources |
+| `managers` | Read/query access to internal datasets |
+| `editors` | Used by the onboarding console (see below); unused elsewhere |
+| `viewers` | Read/query access to internal datasets |
+
+The same four names exist at realm level and inside every organization, and the
+distinction carries meaning: an **org**-level group grants the capability for that
+community only, a **realm**-level group grants it across every community. The onboarding
+console is the first service to use the full hierarchy, mapping it to concrete
+capabilities:
+
+| Group | Onboarding console |
+|---|---|
+| `viewers` | read submissions (PII masked), read the audit trail |
+| `editors` | + take in charge, edit fields and notes, unmask PII |
+| `managers` | + approve, reject, reopen, retry a failed enablement step, export |
+| `admins` | + GDPR erasure, reverse enablement |
+
+### How Services Read Groups
+
+All CELINE services use `extract_groups()` from `celine-sdk` to read groups from JWT claims. This function merges realm-level and org-level groups into a flat list:
+
+```python
+from celine.sdk.auth.jwt import extract_groups
+
+groups = extract_groups(user.claims)
+# ["viewers"] — regardless of whether it came from realm or org
+```
+
+Services must NOT use `claims.get("groups")` directly — it misses org-level groups.
+
+### Multi-REC Isolation
+
+Group-based access is a table-level gate ("can this user query internal datasets?"). Row-level isolation for multi-REC deployments is handled separately by `row_filters` in `governance.yaml`, which restrict visible rows based on the user's registered devices or community membership.
 
 ---
 

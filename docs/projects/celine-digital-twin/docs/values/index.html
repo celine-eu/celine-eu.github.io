@@ -3523,6 +3523,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3579,14 +3635,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3691,14 +3747,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4982,13 +5234,37 @@
 <h1 id="values-api">Values API</h1>
 <p>This document describes the <strong>Values API</strong> - a declarative data fetching system
 for the CELINE Digital Twin runtime.</p>
-<p>The Values API allows you to expose data queries as REST endpoints without
-writing code, using YAML configuration.</p>
+<p>The Values API allows you to expose data queries as REST endpoints declaratively: a
+<code>ValueFetcherSpec</code> describes the query, its input schema and its output mapping, and the
+runtime mounts the endpoint.</p>
+<blockquote>
+<p><strong>Paths and declarations below are partly stale, verified against the code on
+2026-08-15.</strong> The <em>semantics</em> — templating, payload schemas, defaults, mappers,
+pagination — are accurate and tested. The <em>surface</em> is not:</p>
+<ul>
+<li><strong>There is no global <code>/values/...</code> endpoint.</strong> Fetchers are entity-scoped and mounted
+  per domain: <code>/{route_prefix}/{entity_id}/values/{fetcher_id}</code>, on port <strong>8002</strong>. Every
+  <code>curl</code> below showing <code>localhost:8000/values/...</code> is wrong on both counts, and all of
+  them require a bearer token.</li>
+<li><strong>Fetchers are not declared in YAML.</strong> There is no <em>config/values.yaml</em> and nothing
+  reads one. A domain returns <code>ValueFetcherSpec</code> objects from <code>get_value_specs()</code>; the
+  YAML block under "Quick Start" and "Configuration Reference" is the shape of that
+  dataclass, not of a file.</li>
+<li><strong>"Module-Scoped Fetchers" is superseded.</strong> There are no modules. Fetchers are
+  namespaced <code>{domain.name}.{id}</code> in the registry, but the URL path takes the
+  <strong>domain-local</strong> id — see
+  <code>.agents/knowledge/a-fetcher-id-is-local-in-the-path-namespaced-in-the-registry.md</code>.</li>
+</ul>
+<p>The mounted surface is <code>docs/domains.md</code>. What must hold is
+<code>docs/specifications/values.md</code> and <code>docs/specifications/query-templates.md</code>.</p>
+</blockquote>
 <hr />
 <h2 id="overview">Overview</h2>
 <p>Value fetchers:
-- Are configured in <code>config/values.yaml</code> or module configs
-- Reference clients from <code>config/clients.yaml</code>
+- Are declared <strong>in code</strong>, by a domain's <code>get_value_specs()</code>. There is no
+  <em>config/values.yaml</em>; nothing reads one
+- Reference clients by key from <code>config/clients.yaml</code>, and startup fails on a key that
+  file does not declare
 - Support parameterized queries with <code>:param</code> syntax
 - Validate inputs using JSON Schema
 - Transform outputs using mappers

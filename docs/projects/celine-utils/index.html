@@ -3150,6 +3150,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3206,14 +3262,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3318,14 +3374,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4251,12 +4503,12 @@
 <p>A declarative <code>governance.yaml</code> specification defines the metadata, access control, and dataspace exposure rules for each dataset.</p>
 <p>The <code>GovernanceRule</code> model covers:</p>
 <ul>
-<li>Dataset ownership (<code>owner</code>, <code>attribution</code>)</li>
-<li>License and access level (<code>open</code>, <code>internal</code>, <code>restricted</code>, <code>secret</code>)</li>
+<li>Dataset ownership (<code>ownership</code>, <code>attribution</code>), resolved through an <a href="docs/governance-owners/">owner registry</a></li>
+<li>License and access level (<code>open</code>, <code>internal</code>, <code>restricted</code> — <code>secret</code> is accepted for compatibility and normalised to <code>restricted</code>)</li>
 <li>Data classification (<code>pii</code>, <code>green</code>, <code>yellow</code>, <code>red</code>) and retention</li>
 <li>Tags, documentation links, and source system</li>
 <li><code>row_filters</code> — list of filter specs (<code>[{handler, args}]</code>) for per-subject consent-based row filtering</li>
-<li><code>expose: true</code> — controls whether the dataset appears in the DCAT catalogue and is registered as an EDC asset</li>
+<li><strong>Two exposure gates, ANDed</strong>: <code>expose</code> controls whether the dataset is listed in the DCAT catalogue and served by the API, while <code>dataspace.expose</code> controls whether it is offered into the dataspace as an EDC asset. <code>expose</code> is tri-state — unset falls back to <code>dataspace.expose</code> so pre-split files keep their behaviour</li>
 </ul>
 <p>Extended blocks for DCAT-AP 3.0 and dataspace integration:</p>
 <p><code>dcat:</code> block — propagated to the DCAT-AP catalogue by dataset-api:
@@ -4267,14 +4519,16 @@
 - <code>accrual_periodicity</code> — dct:accrualPeriodicity URI
 - <code>conforms_to</code> — dct:conformsTo URI
 - <code>temporal.start</code> / <code>temporal.end</code> — dct:temporal coverage</p>
-<p><code>dataspace:</code> block — consumed by <code>export_governance.py</code> when registering datasets in EDC:
+<p><code>dataspace:</code> block — consumed when registering datasets in EDC:
+- <code>expose</code> — offer the dataset into the dataspace
 - <code>contract_required</code> — enables <code>ds:contractRequired</code> ODRL constraint
 - <code>consent_required</code> — enables <code>ds:consentStatus</code> ODRL constraint and consent-based row filtering
 - <code>odrl_action</code> — default ODRL action (default <code>use</code>)
 - <code>purpose</code> — ODRL purpose values
 - <code>medallion</code> — data quality level (gold / silver / bronze)</p>
-<p>Governance rules are resolved with pattern matching via <code>GovernanceResolver</code> — defaults cascade from the <code>defaults:</code> block into each source entry, with per-source values taking precedence. The <code>expose</code> and <code>dcat</code>/<code>dataspace</code> fields use an OR-merge for booleans and override-merge for objects.</p>
-<p>Both <code>celine-utils</code> (pipeline side) and <code>dataset-api/cli/export_governance.py</code> (catalogue side) parse the same <code>governance.yaml</code> format. EDC-specific sub-objects in the <code>dataspace:</code> block are silently ignored by <code>celine-utils</code> via <code>model_config = ConfigDict(extra="ignore")</code>.</p>
+<p><code>ontology:</code> block — which mapping spec says what the columns mean: <code>spec</code> (a shared mapping published in <code>celine-ontologies</code>) or <code>spec_file</code> (a path relative to the governance file). Exactly one, enforced by the schema.</p>
+<p>Governance rules are resolved with pattern matching via <code>GovernanceResolver</code>: exact key first, then the longest matching glob, then <code>defaults</code> alone. The chosen rule is overlaid on the defaults using the fields the file <strong>explicitly set</strong> — not truthiness — so <code>expose: false</code> withdraws a dataset instead of being silently dropped. <code>tags</code> and <code>dataspace.purpose</code> union, <code>consent_required</code> and <code>contract_required</code> OR, <code>ownership</code> / <code>row_filters</code> / <code>ontology</code> replace wholesale. See <a href="https://celine-eu.github.io/projects/celine-utils/docs/governance">the format reference</a> for the full table.</p>
+<p><code>celine.governance</code> is the single parser: <code>dataset-api</code>, <code>ds</code> and <code>celine-superset</code> import it rather than reimplementing it. EDC-specific sub-objects in the <code>dataspace:</code> block belong to <code>ds</code> and are ignored here via <code>model_config = ConfigDict(extra="ignore")</code> rather than rejected.</p>
 <h3 id="pipeline-orchestration">Pipeline orchestration</h3>
 <p>Structured execution layer for:</p>
 <ul>
@@ -4301,26 +4555,32 @@
 </ul>
 <h3 id="platform-integrations">Platform integrations</h3>
 <ul>
-<li>Keycloak for identity and access management</li>
-<li>Apache Superset for analytics platform integration</li>
-<li>MQTT for lightweight messaging</li>
+<li>MQTT pipeline run events, published through <code>celine-sdk</code></li>
+<li>Keycloak client-credentials tokens, for authenticating to a protected Marquez</li>
 </ul>
+<p>Keycloak and Superset <strong>administration</strong> was removed in 2.3.0 along with the
+<code>celine-utils admin</code> command tree — it was a replicable-setup tool with no remaining
+callers. Provisioning lives in <code>celine-policies</code>.</p>
 <hr />
 <h2 id="cli">CLI</h2>
-<pre><code class="language-bash">celine-utils governance generate   # generate governance.yaml template
-celine-utils pipeline init         # scaffold a new pipeline
-celine-utils pipeline run          # run a pipeline
+<pre><code class="language-bash">celine-utils governance generate marquez --app &lt;app&gt;   # scaffold governance.yaml from Marquez
+celine-utils pipeline init app &lt;name&gt;                  # scaffold a new pipeline app
+celine-utils pipeline run (meltano | dbt | prefect)    # run a pipeline stage
 </code></pre>
+<p>Full reference: <a href="https://celine-eu.github.io/projects/celine-utils/docs/cli">CLI</a>.</p>
 <hr />
 <h2 id="repository-structure">Repository structure</h2>
-<pre><code>celine/
-  admin/
-  cli/
-  common/
-  datasets/
-  pipelines/
-schemas/
+<pre><code>src/celine/
+  governance/        the thin core — three dependencies, imported by other repositories
+  utils/
+    cli/
+    common/
+    datasets/
+    pipelines/
+schema/              JSON Schemas — published, and symlinked into the package
+docs/
 tests/
+integration-tests/
 </code></pre>
 <hr />
 <h2 id="configuration">Configuration</h2>
@@ -4332,16 +4592,29 @@ tests/
 </ul>
 <hr />
 <h2 id="documentation">Documentation</h2>
+<p>Two tracks — see the <a href="https://celine-eu.github.io/projects/celine-utils/docs/">documentation index</a>.</p>
+<p><strong>Governance as a library</strong></p>
+<ul>
+<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/governance-library">The governance library</a> — <code>celine.governance</code> API, the three-dependency contract, merging, validation</li>
+<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/governance"><code>governance.yaml</code> format</a> — the grammar, resolution, the two exposure gates</li>
+<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/governance-owners"><code>owners.yaml</code> registry</a> — owner aliases to canonical identities</li>
+<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/schemas">Schemas</a> — the three published JSON Schemas</li>
+</ul>
+<p><strong>Building and running pipelines</strong></p>
 <ul>
 <li><a href="https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial">Pipeline Tutorial</a> — end-to-end pipeline setup guide</li>
-<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/governance">Governance</a> — governance.yaml format, access levels, pattern matching, dcat/dataspace blocks</li>
-<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/schemas">Schemas</a> — JSON Schema definitions including <code>governance.schema.json</code></li>
 <li><a href="https://celine-eu.github.io/projects/celine-utils/docs/cli">CLI</a> — full CLI reference</li>
+<li><a href="https://celine-eu.github.io/projects/celine-utils/docs/environment">Environment</a> — every variable and its default</li>
 </ul>
+<p><strong>Why choices were made</strong> — <a href="https://celine-eu.github.io/projects/celine-utils/docs/decisions/">Decisions</a>.</p>
 <hr />
 <h2 id="installation">Installation</h2>
-<pre><code class="language-bash">uv add celine-utils
+<pre><code class="language-bash">uv add celine-utils                    # governance only — three dependencies
+uv add &quot;celine-utils[pipelines]&quot;       # dbt / Meltano / Prefect / lineage
+uv add &quot;celine-utils[all]&quot;             # pipelines + the typed OpenLineage facet
 </code></pre>
+<p>Parsing <code>governance.yaml</code> needs no extras. That is deliberate and enforced by CI —
+see <a href="https://celine-eu.github.io/projects/celine-utils/docs/decisions/ADR-0001-governance-is-a-thin-core">ADR-0001</a>.</p>
 <hr />
 <h2 id="intended-audience">Intended audience</h2>
 <ul>

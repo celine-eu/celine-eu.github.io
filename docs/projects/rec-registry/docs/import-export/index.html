@@ -3140,6 +3140,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3196,14 +3252,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3308,14 +3364,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4347,7 +4599,7 @@ whether to force.</p>
 <h2 id="seeding-versus-changing">Seeding versus changing</h2>
 <p>A community is <strong>seeded</strong> from a bundle and <strong>changes</strong> through the member API
 (<code>POST /admin/communities/{key}/members</code> and its sub-resources). Both paths build
-the same rows — they share <code>services/members.py</code> — so an export taken after
+the same rows — they share <code>src/celine/rec_registry/services/members.py</code> — so an export taken after
 runtime changes re-imports to the same state. That property is pinned by
 <code>tests/test_writes.py::TestRoundTrip</code>; if it ever breaks, the two write paths
 have diverged and a re-import will quietly revert live data.</p>

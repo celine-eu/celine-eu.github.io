@@ -3095,6 +3095,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3151,14 +3207,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3263,14 +3319,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4124,6 +4376,8 @@
 
 
 <h1 id="architecture">Architecture</h1>
+<p>What the system <em>is</em>. What it must <strong>do</strong> is <a href="../specifications/"><code>docs/specifications/</code></a>,
+where each statement carries an identifier and a test that names it.</p>
 <h2 id="event-flow">Event Flow</h2>
 <p>The nudging pipeline processes events through sequential stages:</p>
 <table>
@@ -4142,17 +4396,17 @@
 </tr>
 <tr>
 <td>2. Rule Evaluation</td>
-<td><code>engine/engine_service.py</code></td>
+<td><code>src/celine/nudging/engine/engine_service.py</code></td>
 <td>Matches event against rules, runs per-rule Python evaluators, renders messages</td>
 </tr>
 <tr>
 <td>3. Orchestration</td>
-<td><code>orchestrator/orchestrator.py</code></td>
+<td><code>src/celine/nudging/orchestrator/orchestrator.py</code></td>
 <td>Applies suppression, dedup, frequency limits, user preferences</td>
 </tr>
 <tr>
 <td>4. Delivery</td>
-<td><code>publishers/web/worker.py</code>, <code>publishers/email/worker.py</code></td>
+<td><code>src/celine/nudging/publishers/web/worker.py</code>, <code>src/celine/nudging/publishers/email/worker.py</code></td>
 <td>Sends web push or email</td>
 </tr>
 </tbody>
@@ -4166,7 +4420,8 @@
 <li>Loads each rule's custom Python evaluator from the seed directory</li>
 <li>Evaluates whether the rule should fire given the event payload</li>
 <li>Applies per-community rule overrides if configured</li>
-<li>Renders Jinja2 message templates per channel (web, email) and language</li>
+<li>Renders one Jinja2 title and body for the resolved language — <strong>not per channel</strong>: web
+   push and email send the same rendered strings</li>
 </ol>
 <h3 id="orchestrator">Orchestrator</h3>
 <p>The orchestrator decides whether and how to deliver a notification:
@@ -4176,8 +4431,8 @@
 - Emits delivery jobs for each applicable channel</p>
 <h3 id="publishers">Publishers</h3>
 <ul>
-<li><strong>Web push</strong> (<code>publishers/web/worker.py</code>) — sends VAPID-authenticated push via pywebpush</li>
-<li><strong>Email</strong> (<code>publishers/email/worker.py</code>) — sends via SMTP with TLS/SSL support</li>
+<li><strong>Web push</strong> (<code>src/celine/nudging/publishers/web/worker.py</code>) — sends VAPID-authenticated push via pywebpush</li>
+<li><strong>Email</strong> (<code>src/celine/nudging/publishers/email/worker.py</code>) — sends via SMTP with TLS/SSL support</li>
 </ul>
 <h3 id="scheduler">Scheduler</h3>
 <p><code>scheduler.py</code> runs as a background task, polling <code>scheduled_events</code> every <code>SCHEDULER_POLL_SECONDS</code>. Due events are processed through the engine pipeline in batches.</p>
@@ -4201,7 +4456,7 @@
 </tr>
 <tr>
 <td><code>templates</code></td>
-<td>Jinja2 message templates per rule, channel, language</td>
+<td>Jinja2 title and body per rule and language, unique on (rule, lang)</td>
 </tr>
 <tr>
 <td><code>user_preferences</code></td>
@@ -4225,15 +4480,23 @@
 </tr>
 <tr>
 <td><code>scheduled_events</code></td>
-<td>Future events to be processed at <code>fire_at</code> time</td>
+<td>Future events to be processed at <code>trigger_at</code>, idempotent on <code>external_key</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="authorization">Authorization</h2>
-<p>OPA-enforced via <code>policies/celine/nudging/authz.rego</code>:
-- <code>ingest</code> action — service accounts with <code>nudging.ingest</code> or <code>nudging.admin</code> scope
-- <code>admin</code> action — service accounts with <code>nudging.admin</code> scope
-- User endpoints — JWT-based ownership (notifications/preferences scoped to authenticated user)</p>
+<p>Rego, evaluated <strong>in process</strong> through <code>celine.sdk.policies</code> (<code>regorus</code>) —
+<code>policies/celine/nudging/authz.rego</code>. No OPA server is involved.</p>
+<ul>
+<li><code>is_ingest</code> — the <code>nudging.ingest</code> scope, or any administrator</li>
+<li><code>is_admin</code> — the <code>nudging.admin</code> scope, <strong>or</strong> membership of the <code>admin</code> group
+  (realm-level or organisation-level)</li>
+<li>User endpoints — ownership in SQL, matching the token's <code>sub</code> <em>or</em> its
+  <code>preferred_username</code>. The bundle also publishes a <code>filters</code> rule, and nothing reads it.</li>
+</ul>
+<p>The bundle <strong>fails closed</strong>: the service will not start without it, and an evaluation that
+does not return an explicit <code>true</code> denies. See
+<a href="../specifications/identity-and-authorisation/">REQ-0003 – REQ-0010</a>.</p>
 <h2 id="stack">Stack</h2>
 <ul>
 <li>Python &gt;= 3.12, FastAPI, uvicorn</li>

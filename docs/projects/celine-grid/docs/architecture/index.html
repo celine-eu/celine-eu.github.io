@@ -2941,6 +2941,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -2997,14 +3053,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3109,14 +3165,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -3540,6 +3792,17 @@
     <span class="md-ellipsis">
       
         Key design decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-rest-is-written-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the rest is written down
       
     </span>
   </a>
@@ -4116,6 +4379,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#where-the-rest-is-written-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the rest is written down
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4151,8 +4425,8 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 <h2 id="request-lifecycle">Request lifecycle</h2>
 <p>Every protected request passes through two security layers before reaching a route handler:</p>
 <ol>
-<li><strong><code>PolicyMiddleware</code></strong> (<code>security/middleware.py</code>) — rejects requests with no recognisable token with <code>401</code> before any route handler is invoked. Public paths (<code>/health</code>, <code>/api/docs</code>, <code>/api/redoc</code>, <code>/api/openapi.json</code>) bypass this check.</li>
-<li><strong>FastAPI dependency</strong> (<code>api/deps.py</code>) — decodes the JWT via <code>JwtUser.from_token</code>, then delegates to <code>GridAccessPolicy</code> to perform an OPA evaluation for the specific action.</li>
+<li><strong><code>PolicyMiddleware</code></strong> (<code>src/celine/grid/security/middleware.py</code>) — rejects requests with no recognisable token with <code>401</code> before any route handler is invoked. Public paths (<code>/health</code>, <code>/api/docs</code>, <code>/api/redoc</code>, <code>/api/openapi.json</code>) bypass this check.</li>
+<li><strong>FastAPI dependency</strong> (<code>src/celine/grid/api/deps.py</code>) — decodes the JWT via <code>JwtUser.from_token</code>, then delegates to <code>GridAccessPolicy</code> to perform an OPA evaluation for the specific action.</li>
 </ol>
 <h2 id="authentication">Authentication</h2>
 <p>Tokens are accepted from two sources (checked in order):</p>
@@ -4173,19 +4447,26 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 <tbody>
 <tr>
 <td><code>read</code></td>
-<td>DSO users whose org alias matches the requested <code>network_id</code>; service accounts with <code>grid.read</code> or <code>grid.admin</code> scope</td>
+<td>DSO users whose org alias matches the requested <code>network_id</code> — <strong>no scope required, and no scope widens it</strong>; service accounts with <code>grid.read</code> or <code>grid.admin</code> scope</td>
 </tr>
 <tr>
 <td><code>alerts.read</code></td>
-<td>Any authenticated non-service user (ownership enforced at DB query level by <code>user_id = sub</code>)</td>
+<td>Any authenticated non-service user, with no scope and no organisation required (ownership enforced at DB query level by <code>user_id = sub</code>); service accounts with <code>grid.admin</code></td>
 </tr>
 <tr>
 <td><code>alerts.write</code></td>
-<td>DSO users with <code>grid.alerts.write</code> or <code>grid.admin</code> scope</td>
+<td>Any non-service user belonging to a DSO organisation, with no scope required; service accounts with <code>grid.admin</code></td>
 </tr>
 </tbody>
 </table>
-<p>The <code>GridAccessPolicy</code> class (<code>security/policy.py</code>) loads the Rego bundle once at import time and evaluates decisions per request. When the policy engine is unavailable (e.g. local dev without OPA), the policy falls back to permissive — <code>allow=True</code>.</p>
+<p><strong><code>policies/grid.rego</code> is the specification of record for the table above.</strong> Several
+docstrings in <code>src/celine/grid/api/deps.py</code> describe scope requirements — <code>grid.alerts.read</code>,
+<code>grid.alerts.write</code> — that the Rego does not impose and that appear nowhere in it. The
+Rego is what runs; see <code>.agents/knowledge/what-the-policy-actually-requires.md</code>, and
+<code>docs/specifications/authorisation.md</code> for the behaviour stated as requirements.</p>
+<p>The consequence worth stating here: <strong>alert-rule confidentiality rests on the
+<code>WHERE user_id = :sub</code> in <code>src/celine/grid/api/alerts.py</code>, not on the policy.</strong></p>
+<p>The <code>GridAccessPolicy</code> class (<code>src/celine/grid/security/policy.py</code>) loads the Rego bundle once at import time and evaluates decisions per request — in process, via <code>regorus</code>, with no OPA server involved. When the policy engine is unavailable (e.g. a working directory from which the relative default <code>./policies</code> does not resolve), the policy falls back to permissive — <code>allow=True</code>.</p>
 <p>DSO network identity comes from the Keycloak organisation claim on the JWT. The first organisation with <code>type=dso</code> becomes the user's <code>network_id</code>; <code>resolve_dso_network()</code> raises HTTP 403 if no such organisation is present.</p>
 <h2 id="grid-data-proxy">Grid data proxy</h2>
 <p>All grid endpoints live under <code>/api/grid/{network_id}/</code>. The <code>network_id</code> path parameter is validated against the user's DSO org alias (or scope for service accounts) before the request is forwarded to the Digital Twin via <code>celine.sdk.dt.DTClient</code>. DTApiError responses are mapped to appropriate HTTP status codes.</p>
@@ -4210,15 +4491,16 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 </ul>
 <p>Rule ownership is enforced at the SQL query level (<code>WHERE user_id = :sub</code>), not only at the OPA layer.</p>
 <h2 id="pipeline-listener-and-alert-dispatch">Pipeline listener and alert dispatch</h2>
-<p><code>services/pipeline_listener.py</code> subscribes to <code>celine/pipelines/runs/+</code> on startup. When a <code>PipelineRunEvent</code> with <code>status=completed</code> and <code>flow=grid-resilience-flow</code> arrives, it calls <code>dispatch_grid_alerts()</code>.</p>
-<p>The dispatcher (<code>services/alert_dispatcher.py</code>):</p>
+<p><code>src/celine/grid/services/pipeline_listener.py</code> subscribes to <code>celine/pipelines/runs/+</code> on startup. When a <code>PipelineRunEvent</code> with <code>status=completed</code> and <code>flow=grid-resilience-flow</code> arrives, it calls <code>dispatch_grid_alerts()</code>.</p>
+<p>The dispatcher (<code>src/celine/grid/services/alert_dispatcher.py</code>):</p>
 <ol>
 <li>Fetches current <code>wind_alert_distribution</code> and <code>heat_alert_distribution</code> from the DT for the event's <code>namespace</code> (= <code>network_id</code>).</li>
 <li>Loads all active <code>AlertRule</code> rows for that <code>network_id</code>.</li>
 <li>For each rule, checks whether the distribution contains events at or above the rule's threshold (<code>WARNING</code> floor = <code>{WARNING, ALERT}</code>; <code>ALERT</code> floor = <code>{ALERT}</code>).</li>
-<li>For each triggered rule, emits a <code>grid_alert</code> <code>DigitalTwinEvent</code> to the nudging-tool via <code>NudgingAdminClient</code>.</li>
+<li>For each triggered rule, emits an <strong><code>extr_event</code></strong> <code>DigitalTwinEvent</code> to the nudging-tool via <code>NudgingAdminClient</code>, carrying the pipeline's <code>period</code>, <code>window_start</code> and <code>window_end</code> in its facts. The hazard reported is <code>wind</code>, <code>heat</code>, or <code>thunderstorm</code> when a rule watching both triggers on both.</li>
 </ol>
-<p>If the MQTT broker is unavailable at startup, the listener logs a warning and the rest of the service continues to operate normally.</p>
+<p>Dispatch is cancelled entirely — before the Digital Twin is queried — if any of the three window fields is missing from the pipeline event.</p>
+<p>If the MQTT broker is unavailable at startup, the listener logs a warning and the rest of the service continues to operate normally. Alert dispatch is then inactive for the life of the process, and no endpoint reports this. That is one of several paths here that degrade silently; they are collected in <code>.agents/knowledge/silence-is-the-failure-mode.md</code>.</p>
 <h2 id="database">Database</h2>
 <p>PostgreSQL (async via SQLAlchemy + asyncpg). Two tables:</p>
 <table>
@@ -4278,10 +4560,37 @@ MQTT broker ──► pipeline_listener ──► alert_dispatcher ──► nud
 </tbody>
 </table>
 <h2 id="key-design-decisions">Key design decisions</h2>
-<p><strong>DSO org alias as network_id</strong> — the Keycloak organisation alias is used directly as the <code>network_id</code> for DT queries. No mapping table is needed; org management in Keycloak is the single source of truth.</p>
-<p><strong>Permissive OPA fallback</strong> — the policy engine falls back to allow-all when unavailable so development environments without a running OPA instance stay functional. Production deployments always have the policies directory present in the container.</p>
+<p><strong>DSO org alias as network_id</strong> — the Keycloak organisation alias is used directly as the <code>network_id</code> for DT queries. No mapping table is needed; org management in Keycloak is the single source of truth. The same string is also the Prefect namespace the pipeline listener reads, so one unmapped identifier spans three systems — see <code>.agents/knowledge/one-operator-one-network.md</code>.</p>
+<p><strong>Permissive OPA fallback</strong> — the policy engine falls back to allow-all when unavailable so development environments without a running OPA instance stay functional. Production deployments always have the policies directory present in the container. The cost is that a permit and a bypass are indistinguishable from a response; <code>.agents/knowledge/the-policy-engine-fails-open.md</code> says what to do about it, and it is why the test suite refuses to run without a loaded bundle.</p>
 <p><strong>Pipeline listener vs polling</strong> — alert dispatch is event-driven (MQTT) rather than scheduled. This avoids unnecessary DT queries and ensures alerts fire promptly after each pipeline run without coupling the BFF to a scheduler.</p>
-<p><strong>Thin BFF pattern</strong> — celine-grid performs no risk calculations. All domain logic lives in the Digital Twin. The BFF's job is routing, authentication, authorization, and persistence of user preferences.</p>
+<p><strong>Thin BFF pattern</strong> — celine-grid performs no risk calculations. All domain logic lives in the Digital Twin. The BFF's job is routing, authentication, authorization, and persistence of user preferences. <code>/api/grid/{network_id}/shapes</code> is the only exception: it assembles a GeoJSON FeatureCollection from the DT's rows, which is presentation rather than domain logic.</p>
+<h2 id="where-the-rest-is-written-down">Where the rest is written down</h2>
+<table>
+<thead>
+<tr>
+<th>Looking for</th>
+<th>Go to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>what the service must do, stated so a test can name it</td>
+<td><code>docs/specifications/</code></td>
+</tr>
+<tr>
+<td>why a technical choice was made</td>
+<td><code>docs/decisions/</code></td>
+</tr>
+<tr>
+<td>what is true of the code and not visible in it</td>
+<td><code>.agents/knowledge/</code></td>
+</tr>
+<tr>
+<td>how to test a change</td>
+<td><code>.agents/playbooks/testing.md</code></td>
+</tr>
+</tbody>
+</table>
 
 
 

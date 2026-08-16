@@ -3128,6 +3128,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3184,14 +3240,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3296,14 +3352,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4200,27 +4452,34 @@ into a cohesive, entity-scoped API surface.</p>
 <tr>
 <th>Domain</th>
 <th>Route Prefix</th>
-<th>Example Endpoints</th>
+<th>Example value fetchers</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Energy Community</td>
-<td><code>/communities/{community_id}</code></td>
-<td><code>/values/consumption_timeseries</code>, <code>/values/gse_incentive_rates</code>, <code>/simulations/rec-planning/describe</code>, <code>/energy-balance</code>, <code>/summary</code></td>
+<td><code>/communities/it/{community_id}</code></td>
+<td><code>rec_self_consumption</code>, <code>rec_self_consumption_daily</code>, <code>rec_settlement_1h</code>, <code>weather_current</code>, <code>pv_potential_forecast</code></td>
 </tr>
 <tr>
 <td>Participant</td>
 <td><code>/participants/{participant_id}</code></td>
-<td><code>/values/meter_readings</code>, <code>/values/assets</code>, <code>/profile</code>, <code>/flexibility</code></td>
+<td><code>meters_data</code>, <code>meter_forecast</code>, <code>meter_anomalies</code>, <code>rec_participant_points</code>, <code>rec_points_leaderboard</code></td>
 </tr>
 <tr>
 <td>Grid</td>
 <td><code>/grid/{network_id}</code></td>
-<td><code>/values/wind_risks</code>, <code>/values/heat_risks</code>, <code>/values/tile_index</code>, <code>/values/shapes</code>, <code>/values/nowcasting_observations</code>, <code>/values/trendline</code>, <code>/wind/map</code>, <code>/heat/map</code>, <code>/substations/map</code>, <code>/filters</code>, <code>/summary</code></td>
+<td><code>risks</code>, <code>risks_now</code>, <code>tile_index</code>, <code>shapes</code>, <code>trendline</code>, <code>filters</code></td>
 </tr>
 </tbody>
 </table>
+<p>Fetchers are reached at <code>/{route_prefix}/{entity_id}/values/{fetcher_id}</code>, GET or POST,
+with a bearer token. <strong>Don't trust the table</strong> — it is a snapshot, and the authoritative
+list is <code>GET /domains</code>, which reports every domain's fetchers from the live registry.</p>
+<p>Every domain also mounts <code>/info</code>, <code>/summary</code>, <code>/values</code>, <code>/simulations</code> and <code>/ontology</code>
+under its entity scope, plus whatever its <code>routes/</code> package exports. The full surface is
+<a href="docs/domains/">docs/domains.md</a>; what it must do is
+<a href="docs/specifications/">docs/specifications/</a>.</p>
 <p>All domains share common infrastructure:</p>
 <table>
 <thead>
@@ -4388,6 +4647,7 @@ tests/
 └── test_values.py
 </code></pre>
 <h2 id="documentation">Documentation</h2>
+<p><strong>Current</strong>, and describing the domain-driven runtime as it is:</p>
 <table>
 <thead>
 <tr>
@@ -4397,47 +4657,74 @@ tests/
 </thead>
 <tbody>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/concepts">Concepts</a></td>
-<td>Three artifact types (Apps/Components/Simulations), two-phase simulation model, registry</td>
+<td><a href="docs/domains/">Domains</a></td>
+<td>What a domain is, what the runtime mounts for it, and the domains that exist</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/developer-guide">Developer Guide</a></td>
-<td>Tutorial for building apps, components, and simulations</td>
+<td><a href="docs/specifications/">Specifications</a></td>
+<td>What the service must do — requirements, each with a verifying test</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/apps">Apps</a></td>
-<td>DTApp contract, execution flow, input/output models, RunContext, event publishing</td>
+<td><a href="docs/values/">Values</a></td>
+<td>Value fetchers and Jinja2 query templates (surface partly stale; see its banner)</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/values">Values</a></td>
-<td>Value fetchers, Jinja2 query templates, data fetching subsystem</td>
-</tr>
-<tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/simulations">Simulations</a></td>
-<td>Scenario definitions, what-if models, simulation registry</td>
-</tr>
-<tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/subscriptions">Subscriptions</a></td>
+<td><a href="docs/subscriptions/">Subscriptions</a></td>
 <td>Reactive broker event handlers, subscription specs</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/brokers">Brokers</a></td>
+<td><a href="docs/brokers/">Brokers</a></td>
 <td>MQTT broker configuration, authentication, publishing/subscribing</td>
 </tr>
 <tr>
-<td><a href="https://celine-eu.github.io/projects/digital-twin/docs/clients">Clients</a></td>
+<td><a href="docs/clients/">Clients</a></td>
 <td>Client configuration, dependency injection, environment substitution</td>
+</tr>
+<tr>
+<td><a href="docs/decisions/">Decisions</a></td>
+<td>Why a technical choice was made here</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Partly superseded</strong>, kept for the design they explain — each carries a banner saying
+which parts no longer describe the code:</p>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Read it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/concepts/">Concepts</a></td>
+<td>the configuration hierarchy; the Apps/Components/Modules sections are superseded</td>
+</tr>
+<tr>
+<td><a href="docs/developer-guide/">Developer Guide</a></td>
+<td>start at "Building here, today"; Parts 1–6 teach a runtime that no longer exists</td>
+</tr>
+<tr>
+<td><a href="docs/apps/">Apps</a></td>
+<td>the execution model; no <code>/apps</code> route is mounted</td>
+</tr>
+<tr>
+<td><a href="docs/simulations/">Simulations</a></td>
+<td>the two-phase design; only <code>GET /simulations</code> is wired, and it answers 501</td>
+</tr>
+</tbody>
+</table>
+<p>Working on this repository as an agent starts at <code>AGENTS.md</code>, then <code>.agents/</code>.</p>
 <h2 id="running">Running</h2>
-<pre><code class="language-bash">uv sync
+<pre><code class="language-bash">uv sync           # or: task setup
 task run
 # Listens on http://localhost:8002
 </code></pre>
 <h2 id="testing">Testing</h2>
-<pre><code class="language-bash">pytest tests/ -v
+<pre><code class="language-bash">uv run pytest -q   # or: task test
 </code></pre>
+<p>No external service is required — the dataset client and the JWT check are the only things
+faked. Procedures, coverage and the traps are in <code>.agents/playbooks/testing.md</code>.</p>
 <h2 id="what-changed-from-v1">What Changed from v1</h2>
 <table>
 <thead>
@@ -4453,7 +4740,7 @@ task run
 </tr>
 <tr>
 <td><code>/simulations/{key}/scenarios</code></td>
-<td><code>/{prefix}/{id}/simulations/{key}/…</code></td>
+<td>Gone – only <code>GET /{prefix}/{id}/simulations</code> is mounted</td>
 </tr>
 <tr>
 <td><code>/values/{id}</code></td>

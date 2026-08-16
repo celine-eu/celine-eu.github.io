@@ -2941,6 +2941,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -2997,14 +3053,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3109,14 +3165,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -3485,6 +3737,17 @@
     <span class="md-ellipsis">
       
         Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
       
     </span>
   </a>
@@ -4085,6 +4348,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database-migrations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4261,7 +4535,7 @@ task run                             # hot-reload on :8015
 <td>Allowed CORS origins</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_DIR</code></td>
+<td><code>CELINE_POLICIES_POLICIES_DIR</code></td>
 <td><code>./policies</code></td>
 <td>Directory containing <code>.rego</code> policy files</td>
 </tr>
@@ -4271,18 +4545,18 @@ task run                             # hot-reload on :8015
 <td>Prefect flow name to listen for</td>
 </tr>
 <tr>
-<td><code>MQTT__HOST</code></td>
-<td><code>localhost</code></td>
+<td><code>CELINE_MQTT_HOST</code></td>
+<td><code>host.docker.internal</code></td>
 <td>MQTT broker host</td>
 </tr>
 <tr>
-<td><code>MQTT__PORT</code></td>
+<td><code>CELINE_MQTT_PORT</code></td>
 <td><code>1883</code></td>
 <td>MQTT broker port</td>
 </tr>
 <tr>
 <td><code>MQTT_STARTUP_TIMEOUT_SECONDS</code></td>
-<td><code>10.0</code></td>
+<td><code>30.0</code></td>
 <td>Maximum startup wait for the MQTT listener</td>
 </tr>
 <tr>
@@ -4292,6 +4566,29 @@ task run                             # hot-reload on :8015
 </tr>
 </tbody>
 </table>
+<p>Prefixed names come from <code>celine-sdk</code>'s own settings models and are doubly prefixed by
+construction: <code>CELINE_POLICIES_</code> + <code>policies_dir</code>. Three rows of this table named
+variables that do not exist until 2026-08-15 — <code>CELINE_POLICIES_DIR</code> and <code>MQTT__HOST</code> are
+both silently ignored, so following the old table left the service on its permissive
+policy fallback with no indication. <code>.env.example</code> was correct throughout and is the
+reference if the two ever disagree again.</p>
+<p>The default policies path is <strong>relative</strong>, so the bundle loads only when the process's
+working directory is the repository root. See
+<code>.agents/knowledge/the-policy-engine-fails-open.md</code>.</p>
+<h2 id="tests">Tests</h2>
+<pre><code class="language-bash">task test                            # the whole suite, ~11s
+task test -- -k &quot;network&quot;            # one test
+task test -- tests/unit/test_policy.py
+</code></pre>
+<p>No PostgreSQL, no Digital Twin, no nudging-tool, no MQTT broker and no network. The
+database is real SQLAlchemy on SQLite, and <code>policies/grid.rego</code> is evaluated for real —
+the suite refuses to start if the bundle does not load, because the policy fails open and
+an unloaded bundle would make every authorisation test pass for the wrong reason.</p>
+<ul>
+<li>What the service must do, as numbered requirements: <code>docs/specifications/</code></li>
+<li>Why the suite is shaped this way: <code>docs/decisions/</code></li>
+<li>How to test a change, and what <code>task test</code> cannot see: <code>.agents/playbooks/testing.md</code></li>
+</ul>
 <h2 id="database-migrations">Database migrations</h2>
 <pre><code class="language-bash">task alembic:upgrade               # apply all pending migrations
 task alembic:create -- &quot;my change&quot; # autogenerate a new migration

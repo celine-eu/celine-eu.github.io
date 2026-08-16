@@ -2941,6 +2941,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -2997,14 +3053,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3109,14 +3165,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -3356,6 +3608,17 @@
     <span class="md-ellipsis">
       
         Mapper usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ontology-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ontology profiles
       
     </span>
   </a>
@@ -4036,6 +4299,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ontology-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ontology profiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cli" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4181,8 +4455,39 @@ mapper = OutputMapper.from_yaml_path(
 )
 nodes = mapper.map_many(rows)
 </code></pre>
+<h3 id="ontology-profiles">Ontology profiles</h3>
+<p>A <strong>profile</strong> is one vocabulary at one version — the four artifacts above, addressed by
+name and version rather than by path:</p>
+<pre><code class="language-python">from celine.mapper import GraphBuilder, MappingSpecLoader, available_profiles
+
+available_profiles()          # {'celine': ['v0.8', 'v0.9', 'v0.10']}
+
+spec = MappingSpecLoader().load_by_name(&quot;obs_rec_energy&quot;)
+builder = GraphBuilder.for_spec(spec)          # validates against the spec's pin
+builder.profile.version                        # 'v0.10'
+
+GraphBuilder(profile=&quot;celine&quot;, version=&quot;v0.8&quot;) # a deliberate cross-version check
+</code></pre>
+<p>The wheel ships the <strong>last three</strong> spec versions, so a mapping pinned to an older one
+still resolves and a cold start reaches no network. <code>CelineGraphBuilder</code> remains as an
+alias defaulting to the CELINE profile.</p>
+<p>A mapping spec declares its pin:</p>
+<pre><code class="language-yaml">profile:
+  name: celine
+  version: v0.10
+</code></pre>
+<p>Pinning is the point: a dataset asserts conformance against the ontology version its
+mapping was written for, and a later release must not decide retroactively that it
+stopped conforming. An unpinned spec resolves to the newest packaged version and every
+report says which version actually ran, so the two cases stay distinguishable.</p>
+<p>A pin outside the packaged window fails loudly and names what is available. That is the
+cost of the three-version policy, and it is deliberate — silently validating against
+different shapes than the ones claimed is worse.</p>
 <h3 id="cli">CLI</h3>
-<pre><code class="language-bash"># Validate a mapping spec
+<pre><code class="language-bash"># What can a spec pin to?
+celine-ontologies mapper profiles
+
+# Validate a mapping spec
 celine-ontologies mapper validate-spec path/to/spec.yaml
 
 # Map data to JSON-LD
@@ -4190,6 +4495,9 @@ celine-ontologies mapper map spec.yaml input.json
 
 # Map + SHACL validation (requires [mapper])
 celine-ontologies mapper shacl-check spec.yaml input.json
+
+# ...against a version other than the spec's pin — &quot;would this still conform?&quot;
+celine-ontologies mapper shacl-check spec.yaml input.json --profile-version v0.9
 
 # Ontology utilities
 celine-ontologies fetch

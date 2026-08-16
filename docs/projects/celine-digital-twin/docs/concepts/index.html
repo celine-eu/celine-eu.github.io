@@ -3200,6 +3200,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3256,14 +3312,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3368,14 +3424,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4335,6 +4587,23 @@
 
 <h1 id="concepts">Concepts</h1>
 <p>This document explains the <strong>core architectural concepts</strong> of the CELINE Digital Twin runtime. Read this first to understand the mental model before diving into implementation details.</p>
+<blockquote>
+<p><strong>Status, verified against the code on 2026-08-15.</strong> Parts of this document describe an
+artifact/module generation of the runtime that the <strong>domain</strong>-based runtime replaced, and
+they were not updated with it. Verified against <code>src/celine/dt/main.py</code>:</p>
+<ul>
+<li><strong>No <code>/apps</code> route is mounted.</strong> The application mounts the discovery router and one
+  router per domain, and nothing else. The <code>DTApp</code> and <code>DTComponent</code> contracts still exist
+  under <code>src/celine/dt/contracts/</code>, but no API exposes them.</li>
+<li><strong>There is no module registry.</strong> No <code>DTRegistry</code>, no <code>register_app</code>, and no loader reads
+  a <em>config/modules.yaml</em>.</li>
+<li><strong>Values and subscriptions are not YAML-configured.</strong> See <em>Configuration Hierarchy</em>
+  below for what is actually loaded.</li>
+</ul>
+<p>The current organising unit is the <strong>domain</strong> — see <code>domains.md</code>. What should happen to the
+superseded sections is an open question for the maintainers rather than a mechanical fix,
+so they are marked rather than deleted.</p>
+</blockquote>
 <hr />
 <h2 id="the-three-artifact-types">The Three Artifact Types</h2>
 <p>The Digital Twin runtime is built around three artifact types, each serving a distinct purpose:</p>
@@ -4447,6 +4716,11 @@ registry.register_simulation(MySimulation())
 - Schema introspection
 - Module tracking
 - Ontology management</p>
+<blockquote>
+<p><strong>Superseded.</strong> There is no <code>DTRegistry</code> in the current runtime. Domains are discovered
+from <code>config/domains.yaml</code> by import path, and each one is asked for its own value specs,
+simulations, subscriptions and ontology specs. <code>domains.md</code> is the current account.</p>
+</blockquote>
 <hr />
 <h2 id="runcontext-the-execution-environment">RunContext: The Execution Environment</h2>
 <p><strong>RunContext</strong> carries execution metadata and shared services. Apps, components, and simulations never access infrastructure directly—everything comes through context.</p>
@@ -4489,13 +4763,11 @@ class MyModule:
 
 module = MyModule()
 </code></pre>
-<p>Configure in <code>config/modules.yaml</code>:</p>
-<pre><code class="language-yaml">modules:
-  - name: my-module
-    version: &quot;&gt;=1.0.0&quot;
-    import: celine.dt.modules.my_module.module:module
-    enabled: true
-</code></pre>
+<blockquote>
+<p><strong>Superseded.</strong> The module registry above does not exist in the current runtime: there is
+no <code>DTRegistry</code>, and no loader reads a <em>config/modules.yaml</em>. Packaging a vertical is done
+by writing a <code>DTDomain</code> and declaring it in <code>config/domains.yaml</code> — see <code>domains.md</code>.</p>
+</blockquote>
 <hr />
 <h2 id="clients-data-backend-abstraction">Clients: Data Backend Abstraction</h2>
 <p><strong>Clients</strong> provide data access to external systems. They are configured via YAML and support dependency injection.</p>
@@ -4533,13 +4805,14 @@ values:
         location: { type: string }
         start_date: { type: string, default: &quot;2024-01-01&quot; }
 </code></pre>
-<p>Access via API or code:</p>
-<pre><code class="language-bash"># API
-curl &quot;http://localhost:8000/values/weather_forecast?location=folgaria&quot;
-
-# Code (inside app/simulation)
-data = await context.values.fetch(&quot;weather_forecast&quot;, {&quot;location&quot;: &quot;folgaria&quot;})
-</code></pre>
+<blockquote>
+<p><strong>Superseded.</strong> Values are not declared in YAML. A domain returns <code>ValueFetcherSpec</code>
+objects from <code>get_value_specs()</code>, and the runtime namespaces each id as
+<code>{domain.name}.{id}</code> and mounts it under that domain's prefix — so the path is
+<code>/{route_prefix}/{entity_id}/values/{fetcher_id}</code>, not a global <code>/values/...</code>. The query
+template rules are in <code>values.md</code>, and the two-phase rendering trap is recorded in
+<code>.agents/knowledge/query-templates-are-two-phase.md</code>.</p>
+</blockquote>
 <hr />
 <h2 id="brokers-and-subscriptions-event-system">Brokers and Subscriptions: Event System</h2>
 <p><strong>Brokers</strong> publish events to external systems (MQTT, etc.):</p>
@@ -4562,15 +4835,50 @@ subscriptions:
 </code></pre>
 <hr />
 <h2 id="configuration-hierarchy">Configuration Hierarchy</h2>
-<p>Configuration is loaded in this order:</p>
-<ol>
-<li><strong>Environment variables</strong> - Override settings</li>
-<li><strong>Clients</strong> (<code>config/clients.yaml</code>) - Data backends</li>
-<li><strong>Brokers</strong> (<code>config/brokers.yaml</code>) - Event publishers</li>
-<li><strong>Modules</strong> (<code>config/modules.yaml</code>) - Artifact registration</li>
-<li><strong>Values</strong> (<code>config/values.yaml</code> + module values) - Data fetchers</li>
-<li><strong>Subscriptions</strong> (<code>config/subscriptions.yaml</code>) - Event handlers</li>
-</ol>
+<p><strong>The runtime loads exactly three YAML families</strong>, and each is a <em>list of glob patterns</em>
+overridable from the environment, not a fixed filename:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default pattern</th>
+<th>Declares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domains_config_paths</code></td>
+<td><code>config/domains.yaml</code></td>
+<td>domains: name, import path, enabled, overrides</td>
+</tr>
+<tr>
+<td><code>clients_config_paths</code></td>
+<td><code>config/clients.yaml</code></td>
+<td>data backends</td>
+</tr>
+<tr>
+<td><code>brokers_config_paths</code></td>
+<td><code>config/brokers.yaml</code></td>
+<td>event publishers</td>
+</tr>
+</tbody>
+</table>
+<p>Three properties follow, and each one bites:</p>
+<ul>
+<li><strong>Opportunistic.</strong> A pattern matching nothing logs at debug level and returns empty.
+  Startup continues. A mistyped pattern is therefore indistinguishable from a feature
+  nobody configured.</li>
+<li><strong>Merged.</strong> Every file matching any pattern is loaded and sorted for determinism, then
+  combined. For domains the merge key is the domain <code>name</code>, so a later file <strong>replaces</strong> an
+  earlier declaration of the same name rather than adding a second one.</li>
+<li><strong>Environment-substituted</strong> on load: <code>${VAR}</code> is required, <code>${VAR:-default}</code> is not.</li>
+</ul>
+<p>Domains are declared <strong>in code</strong> as <code>DTDomain</code> subclasses; the YAML selects and tunes them.</p>
+<p>Values and subscriptions are <strong>not</strong> YAML-configured at all. Value fetchers come from a
+domain's <code>get_value_specs()</code>; subscriptions come from <code>get_subscriptions()</code> and from
+<code>@on_event</code> handlers collected by <code>scan_handlers</code>. Files named <em>config/values.yaml</em>,
+<em>config/subscriptions.yaml</em> and <em>config/modules.yaml</em> appear elsewhere in this document set
+and <strong>do not exist and are read by nothing</strong>.</p>
 <p>Environment variable substitution:</p>
 <table>
 <thead>

@@ -3200,6 +3200,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3256,14 +3312,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3368,14 +3424,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4443,8 +4695,14 @@ OPENLINEAGE_URL=http://marquez-api:5000
 </code></pre>
 <p>Resolution order:
 - Environment variables
-- <code>.env</code> files
+- <code>.env</code> files (<code>.env</code>, <code>.env.dev</code>, <code>.env.prod</code>)
 - Defaults</p>
+<p>Every variable, its default and the traps — including the fact that <code>POSTGRES_*</code>
+has two different default sets depending on which component reads it — are in the
+<a href="../environment/">environment reference</a>.</p>
+<pre><code class="language-bash"># Check what actually resolved, before assuming a variable took effect
+celine-utils pipeline run envs
+</code></pre>
 <h2 id="meltano-ingestion-bronze">Meltano (Ingestion / Bronze)</h2>
 <p>Configure ingestion in <code>meltano/meltano.yml</code>.</p>
 <p>Example job:</p>
@@ -4513,14 +4771,26 @@ sources:
 </code></pre>
 <p>Governance is:</p>
 <ul>
-<li>Pattern-based</li>
+<li>Pattern-based — exact key, then the longest matching glob, then <code>defaults</code></li>
 <li>Automatically resolved</li>
 <li>Emitted as a custom OpenLineage facet</li>
 </ul>
-<p>Generate interactively:</p>
+<p>Generate interactively from the datasets Marquez already knows about:</p>
 <pre><code class="language-bash">celine-utils governance generate marquez --app demo_app
 </code></pre>
-<p><strong>Note</strong> Since governance are openlineage facets, disabling openlineage using <code>OPENLINEAGE_ENABLED=false</code> will exclude the governance tracking capabilities.</p>
+<p>Then validate it — a misspelled key passes schema validation and is silently
+dropped, so the dataset takes the default without anything reporting it:</p>
+<pre><code class="language-python">from pathlib import Path
+from celine.governance import validate_file
+
+validate_file(Path(&quot;governance.yaml&quot;))   # warns on unknown keys
+</code></pre>
+<p>Two fields decide where a dataset is visible, and they are <strong>not</strong> the same: <code>expose</code>
+lists it in the catalogue, <code>dataspace.expose</code> offers it into the dataspace. The
+<a href="../governance/">format reference</a> covers every field, the merge rules, and the
+overlay mechanism for per-environment differences.</p>
+<p><strong>Note</strong> Since governance travels as an OpenLineage facet, disabling OpenLineage with
+<code>OPENLINEAGE_ENABLED=false</code> also disables governance tracking.</p>
 <h2 id="python-prefect-flows">Python / Prefect Flows</h2>
 <p>Example <code>flows/pipeline.py</code>:</p>
 <pre><code class="language-python">from prefect import flow

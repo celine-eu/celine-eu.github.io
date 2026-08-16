@@ -2941,6 +2941,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -2997,14 +3053,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3109,14 +3165,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4340,7 +4592,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> Inverter replacement <em>cost</em> is no longer a config value. It's computed by a power law in <code>engines/finance.py</code> — see section 9 below.
+<p><strong>Note:</strong> Inverter replacement <em>cost</em> is no longer a config value. It's computed by a power law in <code>src/celine/roi/engines/finance.py</code> — see section 9 below.
 | <code>sharing_ratio</code> | 55% | What fraction of energy fed to the grid counts as "shared" for the CER incentive. Depends on other CER members' consumption patterns | 40–70% |</p>
 <h2 id="2-italian-incentives-configincentivesyaml">2. Italian Incentives (<code>config/incentives.yaml</code>)</h2>
 <p>Tariffs and rates set by Italian regulation. Update when new decrees are published.</p>
@@ -4424,7 +4676,7 @@
 </tbody>
 </table>
 <h2 id="4-solar-distribution-curve">4. Solar Distribution Curve</h2>
-<p><strong>File:</strong> <code>celine_roi/pvgis_client.py</code></p>
+<p><strong>File:</strong> <code>src/celine/roi/pvgis_client.py</code></p>
 <p>Used only when the user provides annual production manually (no PVGIS call). Distributes the annual total across 12 months following a typical solar pattern for Northern Italy (46°N latitude).</p>
 <table>
 <thead>
@@ -4785,7 +5037,7 @@
 - Years 16-25: no loan payment
 - DSCR shown for years 1-15 (banks want &gt;= 1.25x)</p>
 <h2 id="9-inverter-replacement-cost-power-law">9. Inverter Replacement Cost (Power Law)</h2>
-<p><strong>File:</strong> <code>celine_roi/engines/finance.py</code> — <code>estimate_inverter_cost(kwp)</code></p>
+<p><strong>File:</strong> <code>src/celine/roi/engines/finance.py</code> — <code>estimate_inverter_cost(kwp)</code></p>
 <p>The inverter replacement cost is NOT a flat percentage of CAPEX. It's computed with a power law that captures economies of scale (larger systems → lower cost per kWp):</p>
 <pre><code>cost = 180 × kWp^0.82
 </code></pre>

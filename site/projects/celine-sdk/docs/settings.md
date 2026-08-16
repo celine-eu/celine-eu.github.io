@@ -1,10 +1,14 @@
 # Settings
 
-The `celine.sdk.settings` module provides typed, environment-driven configuration using `pydantic-settings`.
+`celine.sdk.settings` provides typed, environment-driven configuration using
+`pydantic-settings`. What it must do is stated in
+[specifications/configuration.md](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/configuration.md).
 
-## Settings Classes
+**Every variable is prefixed `CELINE_`.** The prefix is per section:
+`CELINE_OIDC_*`, `CELINE_MQTT_*`, `CELINE_POLICIES_*`. Unknown variables inside a namespace
+are ignored rather than rejected.
 
-### OidcSettings
+## OidcSettings — `CELINE_OIDC_*`
 
 ```python
 from celine.sdk.settings import OidcSettings
@@ -12,14 +16,20 @@ from celine.sdk.settings import OidcSettings
 settings = OidcSettings()
 ```
 
-| Variable | Type | Description |
-|---|---|---|
-| `OIDC_ISSUER` | `str` | OIDC issuer base URL (e.g., `http://keycloak:8080/realms/celine`) |
-| `OIDC_CLIENT_ID` | `str` | Client ID for this service |
-| `OIDC_CLIENT_SECRET` | `str` | Client secret |
-| `OIDC_SCOPE` | `str` | Requested token scopes (space-separated) |
+| Variable | Type | Default | Description |
+|---|---|---|---|
+| `CELINE_OIDC_BASE_URL` | `str` | `http://keycloak.celine.localhost/realms/celine` | Issuer URL; also the expected `iss` |
+| `CELINE_OIDC_JWKS_URI` | `str` | `…/protocol/openid-connect/certs` | Key set used to verify signatures |
+| `CELINE_OIDC_CLIENT_ID` | `str \| None` | `None` | Client id |
+| `CELINE_OIDC_CLIENT_SECRET` | `str \| None` | `None` | Client secret |
+| `CELINE_OIDC_AUDIENCE` | `str \| None` | `None` | Expected `aud`. **Unset means audience is not checked** |
+| `CELINE_OIDC_ALLOWED_AUDIENCES` | `str \| None` | `None` | Extra accepted audiences, comma-separated. Not used by `JwtUser.from_token` |
+| `CELINE_OIDC_INCLUDE_CLIENT_ID_AS_AUDIENCE` | `bool` | `true` | Fold the client id in. Not used by `JwtUser.from_token` |
+| `CELINE_OIDC_SCOPE` | `str \| None` | `None` | Scope requested when obtaining a token |
+| `CELINE_OIDC_TIMEOUT` | `float` | `10.0` | HTTP timeout for token and discovery calls |
+| `CELINE_OIDC_VERIFY_SSL` | `bool` | `true` | Verify TLS certificates |
 
-### MqttSettings
+## MqttSettings — `CELINE_MQTT_*`
 
 ```python
 from celine.sdk.settings import MqttSettings
@@ -27,47 +37,77 @@ from celine.sdk.settings import MqttSettings
 settings = MqttSettings()
 ```
 
-| Variable | Type | Default | Description |
-|---|---|---|---|
-| `MQTT_HOST` | `str` | `localhost` | Broker hostname |
-| `MQTT_PORT` | `int` | `1883` | Broker port |
-| `MQTT_TLS` | `bool` | `false` | Enable TLS |
-| `MQTT_CLIENT_ID` | `str` | auto | MQTT client identifier |
+| Variable | Type | Default |
+|---|---|---|
+| `CELINE_MQTT_HOST` | `str` | `host.docker.internal` |
+| `CELINE_MQTT_PORT` | `int` | `1883` |
+| `CELINE_MQTT_CLIENT_ID` | `str \| None` | `None` (auto-generated) |
+| `CELINE_MQTT_TOPIC_PREFIX` | `str` | `""` |
+| `CELINE_MQTT_USERNAME` / `CELINE_MQTT_PASSWORD` | `str \| None` | `None` |
+| `CELINE_MQTT_USE_TLS` | `bool` | `false` |
+| `CELINE_MQTT_CA_CERTS` / `CERTFILE` / `KEYFILE` | `str \| None` | `None` |
+| `CELINE_MQTT_KEEPALIVE` | `int` | `60` |
+| `CELINE_MQTT_CLEAN_SESSION` | `bool` | `true` |
+| `CELINE_MQTT_RECONNECT_INTERVAL` | `float` | `0.0` |
+| `CELINE_MQTT_MAX_RECONNECT_ATTEMPTS` | `int` | `10` |
+| `CELINE_MQTT_TOKEN_REFRESH_MARGIN` | `float` | `30.0` |
 
-### PoliciesSettings
+`MqttSettings` configures the deployment; `MqttBroker` takes an `MqttConfig` — see
+[Broker](broker), whose defaults differ (`localhost`, unlimited reconnects).
+
+## PoliciesSettings — `CELINE_POLICIES_*`
+
+Policies are evaluated **in process** from the service's own Rego bundle. There is no policy
+service to point at.
 
 ```python
 from celine.sdk.settings import PoliciesSettings
-
-settings = PoliciesSettings()
 ```
 
-| Variable | Type | Description |
-|---|---|---|
-| `POLICIES_URL` | `str` | Base URL of the celine-policies service |
+| Variable | Type | Default | Description |
+|---|---|---|---|
+| `CELINE_POLICIES_POLICIES_DIR` | `Path` | `./policies` | Directory of `.rego` files |
+| `CELINE_POLICIES_POLICIES_DATA_DIR` | `Path \| None` | `None` | Optional directory of policy data JSON |
+| `CELINE_POLICIES_POLICIES_CACHE_ENABLED` | `bool` | `true` | Decision caching |
+| `CELINE_POLICIES_POLICIES_CACHE_TTL` | `int` | `300` | Cache TTL, seconds |
+| `CELINE_POLICIES_POLICIES_CACHE_MAXSIZE` | `int` | `10000` | Maximum entries |
 
-### SdkSettings
+## SdkSettings
 
-Composite settings combining all of the above:
+Composes all three; each section is still read from its own prefix.
 
 ```python
 from celine.sdk.settings import SdkSettings
 
 settings = SdkSettings()
-# settings.oidc: OidcSettings
-# settings.mqtt: MqttSettings
-# settings.policies: PoliciesSettings
+settings.oidc.client_id
+settings.mqtt.host
+settings.policies.policies_dir
 ```
 
-## Environment Variable Naming
+## The optional YAML overlay
 
-All variables follow the `SCREAMING_SNAKE_CASE` pattern. `pydantic-settings` loads them from the process environment and optionally from a `.env` file if present.
+```python
+from celine.sdk.settings import load_settings
 
-```bash
-# Example .env
-OIDC_ISSUER=http://keycloak:8080/realms/celine
-OIDC_CLIENT_ID=my-service
-OIDC_CLIENT_SECRET=secret
-MQTT_HOST=mqtt.celine.local
-POLICIES_URL=http://policies:8009
+settings = load_settings("config.yaml")   # or load_settings() for environment only
 ```
+
+- A path that does not exist is not an error — the environment-derived settings are returned.
+- YAML values override the environment key by key; keys the file does not mention keep their
+  environment values.
+- Values interpolate `${VAR}` and `${VAR:-default}`. An unset *or empty* variable takes the
+  default; with no default the result is an empty string, never the literal `${VAR}`.
+
+```yaml
+# config.yaml
+oidc:
+  audience: ${SERVICE_AUDIENCE:-svc-digital-twin}
+mqtt:
+  host: ${MQTT_HOST:-mqtt.celine.local}
+```
+
+## The defaults are for development, not for production
+
+They point at `*.celine.localhost` and require no audience. A deployment that sets nothing is
+not protected by them.

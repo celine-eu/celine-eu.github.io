@@ -3067,6 +3067,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3123,14 +3179,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3235,14 +3291,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4073,14 +4325,15 @@
 <h2 id="architecture">Architecture</h2>
 <p>The webapp uses the BFF pattern:
 - The frontend (SvelteKit) communicates exclusively with the BFF at <code>/api/*</code>
-- The BFF reads the JWT from the <code>X-Auth-Request-Access-Token</code> header injected by oauth2_proxy
+- The BFF reads the JWT from the <code>X-Auth-Request-Access-Token</code> header injected by oauth2_proxy, and verifies it in full against Keycloak's JWKS
 - The BFF proxies authenticated requests to backend services (Digital Twin, nudging-tool, flexibility-api, rec-registry)
 - No cross-origin requests from the browser</p>
 <h2 id="quick-start">Quick Start</h2>
-<pre><code class="language-bash">uv sync
-uv run alembic upgrade head
-task run
-# Listens on http://localhost:8014
+<pre><code class="language-bash">task setup              # uv sync
+task migrate            # apply migrations (needs PostgreSQL)
+task run                # listens on http://localhost:8014
+</code></pre>
+<pre><code class="language-bash">task test               # the suite needs no database and no running services
 </code></pre>
 <p>For the participant frontend, see <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> <code>apps/webapp</code>.</p>
 <h2 id="features">Features</h2>
@@ -4114,7 +4367,7 @@ task run
 </tr>
 <tr>
 <td>Gamification</td>
-<td>Points, badges, and commitment history from flexibility-api</td>
+<td>Season points and badges from Digital Twin; commitment history from flexibility-api</td>
 </tr>
 <tr>
 <td>CO2</td>
@@ -4134,7 +4387,11 @@ task run
 </tr>
 <tr>
 <td>Settings</td>
-<td>Account settings (language, units), terms acceptance</td>
+<td>Display preferences and notification preferences, terms acceptance</td>
+</tr>
+<tr>
+<td>Data sharing</td>
+<td>A member's own dataspace consents, and their withdrawal (off by default)</td>
 </tr>
 <tr>
 <td>Feedback</td>

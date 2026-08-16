@@ -3056,6 +3056,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3112,14 +3168,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3224,14 +3280,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4080,15 +4332,32 @@
 <td><code>celine.sdk.nudging</code></td>
 <td>Nudging service client</td>
 </tr>
+<tr>
+<td><code>celine.sdk.policies</code></td>
+<td>OPA policy evaluation over a service's own <code>*.rego</code> bundle</td>
+</tr>
+<tr>
+<td><code>celine.sdk.rec_registry</code></td>
+<td>REC registry client helpers</td>
+</tr>
+<tr>
+<td><code>celine.sdk.flexibility</code></td>
+<td>Flexibility service client helpers</td>
+</tr>
+<tr>
+<td><code>celine.sdk.ai_assistant</code></td>
+<td>AI assistant client helpers</td>
+</tr>
 </tbody>
 </table>
+<p><code>celine.sdk.clients</code>, <code>celine.sdk.utils</code> and <code>celine.sdk.cli</code> are internal: they support
+the modules above and the spec-management CLI, and are not part of the public surface.</p>
 <h2 id="installation">Installation</h2>
-<pre><code class="language-bash"># Core SDK
-pip install celine-sdk
-
-# With client generation support
-pip install 'celine-sdk[gen]'
+<pre><code class="language-bash">pip install celine-sdk
 </code></pre>
+<p>Client generation needs the code generators from this repository's <code>dev</code> dependency group
+(Python ≥ 3.11) — <code>uv sync</code> in a checkout. It is a maintainer task performed here, not
+something a consuming service does.</p>
 <h2 id="cli-quick-reference">CLI Quick Reference</h2>
 <pre><code class="language-bash"># Fetch and version OpenAPI specs (writes to ./openapi/)
 celine-sdk spec fetch services.yaml
@@ -4096,8 +4365,11 @@ celine-sdk spec fetch services.yaml
 # List discovered spec versions
 celine-sdk spec list
 
-# Generate typed Python clients (requires [gen] extra)
+# Generate typed Python clients (needs the dev dependency group)
 celine-sdk generate services.yaml
+
+# Both steps, in a checkout
+task gen
 </code></pre>
 <h2 id="servicesyaml-format">services.yaml Format</h2>
 <pre><code class="language-yaml">services:
@@ -4131,6 +4403,10 @@ celine-sdk generate services.yaml
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-sdk/docs/spec-management">Spec Management</a></td>
 <td>services.yaml format, spec fetch, versioning, client generation</td>
+</tr>
+<tr>
+<td><a href="docs/specifications/">Specifications</a></td>
+<td>What the SDK must do, as numbered requirements each named by a test</td>
 </tr>
 </tbody>
 </table>

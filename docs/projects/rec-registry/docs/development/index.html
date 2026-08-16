@@ -3067,6 +3067,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3123,14 +3179,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3235,14 +3291,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4220,6 +4472,16 @@ uv run alembic downgrade -1
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q
 </code></pre>
+<p>Tests marked <code>integration</code> need a real PostgreSQL and <strong>skip when none is reachable</strong>, so
+a green run means different things depending on whether one was up — with no database, the
+write, lookup and self-service tests do not run:</p>
+<pre><code class="language-bash">uv run pytest -q -m integration    # only those; TEST_DATABASE_URL overrides the connection
+</code></pre>
+<p>Each run creates and drops a throwaway <code>rec_registry_test</code> schema, so it needs no
+<code>CREATE DATABASE</code> rights.</p>
+<p>A test declares which requirement it covers with a <code>@verifies REQ-####</code> tag in its
+docstring; see <a href="../specifications/">the requirements</a> and, for the working procedure,
+<code>.agents/playbooks/testing.md</code>.</p>
 <h2 id="project-layout">Project Layout</h2>
 <pre><code>src/celine/rec_registry/
   main.py                    # FastAPI app factory (create_app)
@@ -4233,10 +4495,12 @@ uv run alembic downgrade -1
     user.py                  # Self-service user endpoints
     meta.py                  # Health, version
     admin/
-      communities.py         # Community/member/asset browsing
+      communities.py         # Community/member/asset browsing (reads)
+      writes.py              # Runtime member/asset/area writes
       lookup.py              # Cross-community lookups
       management.py          # Import/export operations
   services/
+    members.py               # Row building, shared by the importer and the write API
     importer.py              # Bundle import logic
     exporter.py              # YAML export logic
   core/
@@ -4249,6 +4513,11 @@ uv run alembic downgrade -1
 policies/                    # OPA .rego policy files
 alembic/
   versions/                  # Migration scripts
+tests/
+  conftest.py                # Fixtures, including the live-database ones
+docs/
+  specifications/            # What the service must do; REQ-#### identifiers
+  decisions/                 # Why a technical choice was made
 </code></pre>
 
 

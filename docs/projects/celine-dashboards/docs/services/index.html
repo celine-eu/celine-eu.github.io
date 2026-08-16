@@ -3101,6 +3101,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3157,14 +3213,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3269,14 +3325,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4139,7 +4391,7 @@
 <h2 id="superset">Superset</h2>
 <h3 id="authentication">Authentication</h3>
 <p>Superset uses <code>AUTH_REMOTE_USER</code> mode. Login and logout are fully delegated to oauth2-proxy — Superset never handles credentials directly.</p>
-<p>The custom <code>OAuth2ProxySecurityManager</code> (in <code>src/celine/superset/</code>) extends Superset's <code>RemoteUserSecurityManager</code>:</p>
+<p>The custom <code>OAuth2ProxySecurityManager</code> (in <code>packages/celine-superset/src/celine/superset/</code>) extends Superset's <code>RemoteUserSecurityManager</code>:</p>
 <ul>
 <li>Reads the <code>X-Auth-Request-Access-Token</code> header on each request</li>
 <li>Validates the JWT signature against the Keycloak JWKS endpoint</li>
@@ -4148,7 +4400,7 @@
 <li>Synchronizes Superset roles on every login based on current group membership</li>
 </ul>
 <h3 id="group-to-role-mapping">Group-to-Role Mapping</h3>
-<p>Keycloak groups are mapped to Superset roles in <code>src/celine/superset/auth/groups.py</code>:</p>
+<p>Keycloak groups are mapped to Superset roles in <code>packages/celine-superset/src/celine/superset/auth/groups.py</code>:</p>
 <pre><code class="language-python">GROUP_TO_SUPERSET_ROLE = {
     &quot;admins&quot;: &quot;Admin&quot;,
     &quot;managers&quot;: &quot;Alpha&quot;,
@@ -4165,7 +4417,7 @@ ghcr.io/celine-eu/superset:latest
 <hr />
 <h2 id="jupyter">Jupyter</h2>
 <h3 id="authentication_1">Authentication</h3>
-<p>Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in <code>src/celine/jupyter/</code>.</p>
+<p>Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in <code>packages/celine-jupyter/src/celine/jupyter/</code>.</p>
 <p>The authorizer:
 - Reads the <code>Authorization: Bearer &lt;token&gt;</code> header (injected by oauth2-proxy via Caddy)
 - Validates the JWT signature against Keycloak JWKS
@@ -4184,7 +4436,7 @@ ghcr.io/celine-eu/jupyter:latest
 <hr />
 <h2 id="caddy">Caddy</h2>
 <p>Caddy handles TLS termination and reverse proxying via virtual hosts and <code>forward_auth</code>.</p>
-<p>Configuration is in <code>config/caddy/Caddyfile</code>. Key patterns:</p>
+<p>Configuration lives in the integration workspace rather than here. Key patterns:</p>
 <ul>
 <li>All <code>*.celine.localhost</code> traffic is routed through oauth2-proxy's <code>forward_auth</code> directive before proxying to the target service.</li>
 <li>The SSO endpoint (<code>sso.celine.localhost</code>) is proxied directly to oauth2-proxy for the login/callback flow.</li>

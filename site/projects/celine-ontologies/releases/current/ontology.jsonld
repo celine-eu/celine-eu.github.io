@@ -3,25 +3,33 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
-      "@id" : "https://purl.org/peco/peco-core#Electric_POD"
-    }, {
-      "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
-    }, {
-      "@id" : "https://w3id.org/celine-eu#CommunityContext"
-    } ]
-  } ]
-}, {
-  "@id" : "_:genid12",
-  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "http://www.w3.org/2002/07/owl#unionOf" : [ {
-    "@list" : [ {
-      "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+      "@id" : "https://purl.org/peco/peco-core#Asset"
     }, {
       "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
     } ]
   } ]
 }, {
-  "@id" : "_:genid15",
+  "@id" : "_:genid11",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/celine-eu#CommunityContext"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#SharingGroup"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid14",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/celine-eu#CommunityContext"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#SharingGroup"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid17",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
@@ -33,7 +41,31 @@
     } ]
   } ]
 }, {
-  "@id" : "_:genid19",
+  "@id" : "_:genid21",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#SharingGroup"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid25",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/celine-eu#DistributionFeeder"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#PowerTransformer"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#Substation"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid29",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
@@ -43,7 +75,19 @@
     } ]
   } ]
 }, {
-  "@id" : "_:genid5",
+  "@id" : "_:genid4",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#CommunityContext"
+    }, {
+      "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid8",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
@@ -53,17 +97,8 @@
     } ]
   } ]
 }, {
-  "@id" : "_:genid8",
-  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "http://www.w3.org/2002/07/owl#unionOf" : [ {
-    "@list" : [ {
-      "@id" : "https://w3id.org/celine-eu#DistributionFeeder"
-    }, {
-      "@id" : "https://w3id.org/celine-eu#PowerTransformer"
-    }, {
-      "@id" : "https://w3id.org/celine-eu#Substation"
-    } ]
-  } ]
+  "@id" : "http://qudt.org/schema/qudt#hasQuantityKind",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
 }, {
   "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
@@ -108,7 +143,7 @@
   } ],
   "http://purl.org/dc/terms/modified" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2026-05-14"
+    "@value" : "2026-08-09"
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@value" : "CELINE Core Ontology"
@@ -120,7 +155,7 @@
     "@value" : "https://w3id.org/celine-eu#"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Version 0.6 adds REC-registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), and member modeling (hasMember linkage, MemberRole and MemberStatus\n    vocabularies). CIM alignment via skos:closeMatch to IEC 61968 profile;\n    SAREF alignment via skos:closeMatch only — no new owl:imports. Asset technical\n    attributes are intentionally omitted; specs live in the external rec-registry catalogue,\n    addressed by celine:hasLocalIdentifier."
+    "@value" : "Version 0.6 adds registry-aligned grid topology (Substation,\n    PrimarySubstation, SecondarySubstation, PowerTransformer, DistributionFeeder),\n    regulatory zones, the GridOperator actor, a generalised ConnectionPoint superclass\n    for PECO Electric_POD, a presence-only asset inventory (PVSystem, BatteryStorage,\n    ElectricityMeter, EVCharger, HeatPump), member modeling (hasMember linkage, MemberRole\n    and MemberStatus vocabularies, hasDeliveryPoint for member-to-POD linkage), and\n    SharingGroup — a community partition for shared self-consumption accounting within a\n    regulatory zone, aligned with the RED II (2018/2001) double-counting prohibition.\n    CIM alignment via skos:closeMatch to IEC 61968 profile; SAREF alignment via\n    skos:closeMatch only — no new owl:imports. Asset technical attributes are intentionally\n    omitted; specs live in an external catalogue, addressed by celine:hasLocalIdentifier.\n    Version 0.7 adds hasDataset (asset/connection-point → DatasetReference) as the\n    operational counterpart to the SimulationRun-scoped usesDataset/producesDataset;\n    clarifies DatasetReference self-description via DCAT/DCT terms; generalises\n    external-catalogue wording to remove implementation-specific naming.\n    Version 0.8 is a conformance fix, no new terms: the CommitmentMode,\n    FlexibilityDirection, CostType and ConstraintType schemes gain the\n    skos:hasTopConcept assertions their SHACL shapes require — the concepts already\n    declared skos:inScheme and skos:topConceptOf, so only the scheme-side statement\n    was missing. All four schemes are flat, so every member is a top concept. Their\n    labels, prefLabels, descriptions and comments also gain the @en tag the other\n    nine schemes already carry.\n    Version 0.9 is a conformance fix, no new terms: the cim: prefix bound to\n    https://ontology.tno.nl/IEC_CIM/ — where TNO hosts a copy of CIM, not where CIM\n    mints its terms — so every skos:closeMatch to CIM resolved to nothing. It now\n    binds the IEC CIM100 namespace, http://iec.ch/TC57/CIM100#. Those alignments are\n    checked against the CIM100 class documentation rather than dereferenced: IEC CIM\n    is a paid standard and its namespace IRIs answer HTTP 403, so this is the one\n    external vocabulary CELINE references on documentary rather than resolvable\n    authority. celine:GridOperator also moves from cim:Company, which exists in no\n    CIM version, to cim:Organisation — note cim:Operator is a control-room person,\n    not the company.\n    Version 0.10 adds the observable properties a REC energy dataset actually\n    reports — grid import and export, self-consumed, collectively shared and\n    virtual consumed energy, and the self-consumption ratio — as\n    sosa:ObservableProperty individuals carrying qudt:hasQuantityKind. They exist\n    because no standard names them: quantitykind:Energy does not distinguish\n    import from export, and SAREF's saref:Energy is deprecated as of v3.2.1.\n    They give sosa:observedProperty a target that resolves. The energy mapping\n    specs previously pointed it at https://w3id.org/celine/property/* IRIs, which\n    are in neither this namespace (note celine-eu, not celine) nor any other, and\n    which nothing declared; the three forecast specs still do, and the forecast\n    properties they need are not minted here. Where a quantity also has a\n    celine:KPICatalog concept the two are linked with rdfs:seeAlso: the KPI is a\n    period total or rate, the observable property is what one observation\n    measures over one interval."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@value" : "CELINE Core Ontology"
@@ -142,18 +177,19 @@
     "@id" : "https://saref.etsi.org/saref4ener/v1.2.1/saref4ener.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#priorVersion" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.5"
+    "@id" : "https://w3id.org/celine-eu/v0.9"
   } ],
   "http://www.w3.org/2002/07/owl#versionIRI" : [ {
-    "@id" : "https://w3id.org/celine-eu/v0.6"
+    "@id" : "https://w3id.org/celine-eu/v0.10"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "0.6.0"
+    "@value" : "0.10.0"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#AdminCost",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Overhead and management costs for operating the REC."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -163,6 +199,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Administrative Cost"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -172,6 +209,7 @@
   "@id" : "https://w3id.org/celine-eu#Automated",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Commitment fulfilled automatically by a smart device or control system, without manual intervention from the member."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -181,6 +219,7 @@
     "@id" : "https://w3id.org/celine-eu#CommitmentMode"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Automated"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -191,7 +230,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A battery energy storage system. Technical attributes live in the external rec-registry catalogue."
+    "@value" : "A battery energy storage system. Technical attributes live in an external catalogue."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -227,9 +266,37 @@
     "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#CollectivelySharedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The incentivised quantity in an Italian CER: min(grid import, grid export) over coincident members, evaluated per primary substation because sharing cannot cross an unconnected one. Not the sum of any member's self-consumption. Named CollectivelySharedEnergy because celine:SharedEnergy is the period-total KPI over this property and holds that IRI."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Collectively shared energy"
+  }, {
+    "@language" : "it",
+    "@value" : "Energia condivisa"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharedEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Collectively shared energy"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#CommitmentMode",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of how a flexibility commitment is activated."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -239,9 +306,16 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Commitment Mode"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#Automated"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Voluntary"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Commitment Mode"
   } ]
 }, {
@@ -274,7 +348,7 @@
     "@value" : "Connection Point"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/UsagePoint"
+    "@id" : "http://iec.ch/TC57/CIM100#UsagePoint"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#ConnectionPointIdentifierScheme",
@@ -314,6 +388,7 @@
   "@id" : "https://w3id.org/celine-eu#ConstraintType",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of operational constraints on flexibility activation."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -323,9 +398,20 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Constraint Type"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#DurationConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#FrequencyConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#NoticeConstraint"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#RecoveryConstraint"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Constraint Type"
   } ]
 }, {
@@ -347,6 +433,7 @@
   "@id" : "https://w3id.org/celine-eu#CostType",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Classification of cost voices within a SettlementRun."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -356,16 +443,25 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Cost Type"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#AdminCost"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Debt"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#Fee"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Cost Type"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#DatasetReference",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "Reference to an external dataset used as input or produced as output.\n    CELINE does not define dataset schemas."
+    "@value" : "Reference to an external dataset used as input or produced as output.\n    CELINE does not define dataset schemas. Instances SHOULD declare their type or\n    conformance target (via dct:conformsTo), format (via dct:format), and an access\n    location (via dcat:accessURL or dct:source), using DCAT / Dublin Core terms."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -374,12 +470,13 @@
     "@value" : "Dataset Reference"
   } ],
   "http://www.w3.org/2004/02/skos/core#example" : [ {
-    "@value" : "ex:ds_irradiance a celine:DatasetReference ;\n    dct:identifier  \"irradiance-2025-07\" ;\n    dct:source      <https://data.example.org/weather/irradiance> ."
+    "@value" : "ex:ds_irradiance a celine:DatasetReference ;\n    dct:identifier  \"irradiance-2025-07\" ;\n    dct:conformsTo  <https://example.org/some-dataset-profile> ;\n    dct:format      \"application/json\" ;\n    dcat:accessURL  <https://data.example.org/weather/irradiance> ."
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#Debt",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Outstanding obligation carried forward from a previous settlement period."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -389,6 +486,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Debt"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -438,12 +536,13 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Feeder"
+    "@id" : "http://iec.ch/TC57/CIM100#Feeder"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#DurationConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum or maximum duration of a single flexibility activation event."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -453,6 +552,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Duration Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -483,7 +583,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "An electric vehicle charging station. Technical attributes live in the external rec-registry catalogue."
+    "@value" : "An electric vehicle charging station. Technical attributes live in an external catalogue."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -589,6 +689,7 @@
   "@id" : "https://w3id.org/celine-eu#Fee",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Platform, service or regulatory fee charged to the community."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -598,6 +699,7 @@
     "@id" : "https://w3id.org/celine-eu#CostType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Fee"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -607,6 +709,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexDown",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Decrease community net consumption: reduce load or increase local generation."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -616,6 +719,7 @@
     "@id" : "https://w3id.org/celine-eu#FlexibilityDirection"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flex Down"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -625,6 +729,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexUp",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Increase community net consumption: increase load or reduce local generation."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -634,6 +739,7 @@
     "@id" : "https://w3id.org/celine-eu#FlexibilityDirection"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flex Up"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -729,6 +835,7 @@
   "@id" : "https://w3id.org/celine-eu#FlexibilityDirection",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
     "@value" : "Direction of the flexibility commitment relative to the community baseline."
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -738,9 +845,16 @@
     "@id" : "https://w3id.org/celine-eu"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
     "@value" : "Flexibility Direction"
   } ],
+  "http://www.w3.org/2004/02/skos/core#hasTopConcept" : [ {
+    "@id" : "https://w3id.org/celine-eu#FlexDown"
+  }, {
+    "@id" : "https://w3id.org/celine-eu#FlexUp"
+  } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Flexibility Direction"
   } ]
 }, {
@@ -782,6 +896,7 @@
   "@id" : "https://w3id.org/celine-eu#FrequencyConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the maximum number of flexibility activations permitted within a given period."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -791,6 +906,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Frequency Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -981,6 +1097,60 @@
     "@id" : "https://w3id.org/celine-eu#KPITemporalGranularity"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#GridExportEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Electrical energy fed into the distribution grid over the observation interval (IT: immissione). Producers and prosumers only. celine:FedInEnergy is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia immessa"
+  }, {
+    "@language" : "en",
+    "@value" : "Grid export energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#FedInEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Grid export energy"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#GridImportEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Electrical energy drawn from the distribution grid over the observation interval (IT: prelievo). At community scope this is the sum over the members netted together. celine:WithdrawnEnergy is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia prelevata"
+  }, {
+    "@language" : "en",
+    "@value" : "Grid import energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#WithdrawnEnergy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Grid import energy"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#GridOperator",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -998,14 +1168,14 @@
     "@id" : "https://purl.org/peco/peco-core#Agent"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Company"
+    "@id" : "http://iec.ch/TC57/CIM100#Organisation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#HeatPump",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A heat pump for space heating, cooling, or hot water. Technical attributes live in the external rec-registry catalogue."
+    "@value" : "A heat pump for space heating, cooling, or hot water. Technical attributes live in an external catalogue."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -1702,6 +1872,7 @@
   "@id" : "https://w3id.org/celine-eu#NoticeConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum lead time required before activating flexibility."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -1711,6 +1882,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Notice Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -1761,7 +1933,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A photovoltaic system. Technical attributes (rated power, panel type, etc.) live in the external rec-registry catalogue, addressed by celine:hasLocalIdentifier."
+    "@value" : "A photovoltaic system. Technical attributes (rated power, panel type, etc.) live in an external catalogue, addressed by celine:hasLocalIdentifier."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -1803,7 +1975,7 @@
     "@id" : "https://w3id.org/celine-eu#KPICatalog"
   } ],
   "https://w3id.org/celine-eu#hasKPICalculationMethod" : [ {
-    "@id" : "https://w3id.org/celine-eu#MethodTotal"
+    "@id" : "https://w3id.org/celine-eu#MethodDerived"
   } ],
   "https://w3id.org/celine-eu#hasKPIName" : [ {
     "@value" : "Peak Reduction Achieved"
@@ -1835,7 +2007,7 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/PowerTransformer"
+    "@id" : "http://iec.ch/TC57/CIM100#PowerTransformer"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#PrimarySubstation",
@@ -1855,12 +2027,13 @@
     "@id" : "https://w3id.org/celine-eu#Substation"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#RecoveryConstraint",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Constraint on the minimum rest period required between consecutive flexibility activations."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -1870,6 +2043,7 @@
     "@id" : "https://w3id.org/celine-eu#ConstraintType"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Recovery Constraint"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -2307,7 +2481,31 @@
     "@id" : "https://w3id.org/celine-eu#Substation"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#SelfConsumedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Energy produced and consumed behind the same connection point, never reaching the grid. Distinct from celine:CollectivelySharedEnergy, which is a community-level netting of energy that did."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia autoconsumata"
+  }, {
+    "@language" : "en",
+    "@value" : "Self-consumed energy"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Self-consumed energy"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate",
@@ -2349,6 +2547,33 @@
   } ],
   "https://w3id.org/celine-eu#hasKPIUnit" : [ {
     "@id" : "https://w3id.org/celine-eu#Dimensionless"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#SelfConsumptionRatio",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/DimensionlessRatio"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Shared energy over grid export, per substation. Not summable across substations, and not the same figure as shared energy over grid import — both are published under this name elsewhere in CELINE, so a consumer must read the denominator from this definition rather than assume it. Distinct from celine:SelfConsumptionRate, the community-scope period KPI, which uses local production as its denominator."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Quota di autoconsumo"
+  }, {
+    "@language" : "en",
+    "@value" : "Self-consumption ratio"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SelfConsumptionRate"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Self-consumption ratio"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#SelfSufficiencyRate",
@@ -2489,6 +2714,23 @@
     "@id" : "https://w3id.org/celine-eu#KilowattHour"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#SharingGroup",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A subset of community members whose energy flows are accounted together\n    for shared self-consumption within a single regulatory zone. Maps to the Italian\n    'configurazione' under Decreto 199/2021, the French 'périmètre ACC', and analogous\n    groupings in other EU member states. A connection point MUST NOT belong to more than\n    one SharingGroup across all communities — the double-counting prohibition derives from\n    RED II (2018/2001, Art. 22) and the Electricity Market Directive (2019/944, Art. 16)."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Sharing Group"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#example" : [ {
+    "@value" : "ex:group_north a celine:SharingGroup ;\n    rdfs:label              \"Northern area\" ;\n    celine:partitionOf      ex:ctx1 ;\n    celine:inRegulatoryZone ex:zone_cp_nord ;\n    celine:hasTopologyNode  ex:ss_AC221E00020 ;\n    celine:hasMember        ex:member_001 , ex:member_002 ."
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#Simulation",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -2616,7 +2858,7 @@
     "@id" : "https://purl.org/peco/peco-core#Asset"
   } ],
   "http://www.w3.org/2004/02/skos/core#closeMatch" : [ {
-    "@id" : "https://ontology.tno.nl/IEC_CIM/Substation"
+    "@id" : "http://iec.ch/TC57/CIM100#Substation"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#UnitOfMeasure",
@@ -2652,9 +2894,37 @@
     "@value" : "Unit of Measure"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#VirtualConsumedEnergy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/ns/sosa/ObservableProperty" ],
+  "http://qudt.org/schema/qudt#hasQuantityKind" : [ {
+    "@id" : "http://qudt.org/vocab/quantitykind/Energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A member's pro-rata share of celine:CollectivelySharedEnergy, allocated by that member's contribution to community grid import over the same interval. An accounting allocation, not a metered flow. celine:SharedEnergyMemberShare is the period-total KPI over this property."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "it",
+    "@value" : "Energia virtuale consumata"
+  }, {
+    "@language" : "en",
+    "@value" : "Virtual consumed energy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharedEnergyMemberShare"
+  } ],
+  "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
+    "@value" : "Virtual consumed energy"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#Voluntary",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual", "http://www.w3.org/2004/02/skos/core#Concept" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
     "@value" : "Commitment activated manually by the member at their discretion."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
@@ -2664,6 +2934,7 @@
     "@id" : "https://w3id.org/celine-eu#CommitmentMode"
   } ],
   "http://www.w3.org/2004/02/skos/core#prefLabel" : [ {
+    "@language" : "en",
     "@value" : "Voluntary"
   } ],
   "http://www.w3.org/2004/02/skos/core#topConceptOf" : [ {
@@ -2888,7 +3159,7 @@
   "@id" : "https://w3id.org/celine-eu#envelopeFor",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "The POD whose physical and operational flexibility is described by this envelope."
+    "@value" : "The connection point whose physical and operational flexibility is described by this envelope. Accepts any celine:ConnectionPoint subclass (including peco:Electric_POD)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/celine-eu#FlexibilityEnvelope"
@@ -2900,7 +3171,7 @@
     "@value" : "envelope for"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://purl.org/peco/peco-core#Electric_POD"
+    "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#evidencedBy",
@@ -3089,6 +3360,46 @@
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ]
 }, {
+  "@id" : "https://w3id.org/celine-eu#hasDataset",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "Links an asset or connection point to an external, self-describing datasource carrying its data (e.g. metered time-series). CELINE does not define the datasource schema; the referenced dataset declares its own conformance via dct:conformsTo. Operational counterpart to the SimulationRun-scoped usesDataset/producesDataset."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "_:genid1"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has dataset"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#DatasetReference"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasDeliveryPoint",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A connection point (POD, CUPS, PRM, etc.) through which this member withdraws or injects energy. Mirrors the upstream registry's member delivery-points list."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has delivery point"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
+  } ]
+}, {
   "@id" : "https://w3id.org/celine-eu#hasEnvelope",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -3124,7 +3435,7 @@
     "@value" : "has evaluated scope"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "_:genid1"
+    "@id" : "_:genid4"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#hasEvaluationTimeInterval",
@@ -3154,7 +3465,7 @@
     "@value" : "Expected values: celine:FlexDown or celine:FlexUp."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid5"
+    "@id" : "_:genid8"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3465,10 +3776,10 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "Local identifier string. For connection points: the national metering code (POD, CUPS, PRM, etc.). For assets: the registry's local asset key, used as the lookup handle into the external rec-registry catalogue."
+    "@value" : "Local identifier string. For connection points: the national metering code (POD, CUPS, PRM, etc.). For assets: the registry's local asset key, used as the lookup handle into an external catalogue."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid19"
+    "@id" : "_:genid29"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3485,10 +3796,10 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A member participating in this community context. Mirrors the rec-registry's per-community member list. The reciprocal PECO link from the member to the wrapped peco:Energy_community is peco:is_member_of."
+    "@value" : "A member participating in this community context or sharing group. When used on a SharingGroup, enumerates the members whose energy flows are accounted within that partition. The reciprocal PECO link from the member to the wrapped peco:Energy_community is peco:is_member_of. Population rule: every member listed under a SharingGroup SHOULD also be listed under the parent CommunityContext via hasMember; no owl:propertyChainAxiom is asserted — implementors must replicate the membership link explicitly."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+    "@id" : "_:genid11"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3505,7 +3816,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "The participation role of this member within their energy community. Expected values from celine:MemberRole. Following the rec-registry conceptual model, a member has exactly one role per community; cross-community role differences are out of scope for v0.6."
+    "@value" : "The participation role of this member within their energy community. Expected values from celine:MemberRole. Following the upstream registry conceptual model, a member has exactly one role per community; cross-community role differences are out of scope."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
@@ -3525,7 +3836,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "The lifecycle status of this member within their energy community. Expected values from celine:MemberStatus. Following the rec-registry conceptual model, a member has exactly one status per community."
+    "@value" : "The lifecycle status of this member within their energy community. Expected values from celine:MemberStatus. Following the upstream registry conceptual model, a member has exactly one status per community."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://purl.org/peco/peco-core#Energy_community_member"
@@ -3539,6 +3850,26 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#hasPartition",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A sharing group partition within this community context. Each partition covers one regulatory zone and enumerates the members whose energy flows are accounted together for shared self-consumption."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has partition"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharingGroup"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#hasRedistributionResult",
@@ -3672,10 +4003,10 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A grid topology element associated with this community context."
+    "@value" : "A grid topology element associated with this community context or sharing group."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+    "@id" : "_:genid14"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3685,17 +4016,17 @@
     "@value" : "has topology node"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "_:genid8"
+    "@id" : "_:genid17"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#inRegulatoryZone",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "The regulatory zone to which this member or connection point belongs."
+    "@value" : "The regulatory zone to which this member, connection point, or sharing group belongs."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid12"
+    "@id" : "_:genid21"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3898,7 +4229,7 @@
   "@id" : "https://w3id.org/celine-eu#onPOD",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@value" : "One or more delivery points through which the committed flexibility is provided."
+    "@value" : "One or more connection points through which the committed flexibility is provided. Accepts any celine:ConnectionPoint subclass (including peco:Electric_POD)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/celine-eu#FlexibilityCommitment"
@@ -3910,7 +4241,7 @@
     "@value" : "on POD"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://purl.org/peco/peco-core#Electric_POD"
+    "@id" : "https://w3id.org/celine-eu#ConnectionPoint"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#operatedBy",
@@ -3920,7 +4251,7 @@
     "@value" : "The grid operator responsible for this infrastructure element."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid15"
+    "@id" : "_:genid25"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
     "@id" : "https://w3id.org/celine-eu"
@@ -3951,6 +4282,29 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://purl.org/peco/peco-core#Asset"
+  } ]
+}, {
+  "@id" : "https://w3id.org/celine-eu#partitionOf",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "The community context to which this sharing group belongs."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/celine-eu#SharingGroup"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#isDefinedBy" : [ {
+    "@id" : "https://w3id.org/celine-eu"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "partition of"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/celine-eu#CommunityContext"
+  } ],
+  "http://www.w3.org/2002/07/owl#inverseOf" : [ {
+    "@id" : "https://w3id.org/celine-eu#hasPartition"
   } ]
 }, {
   "@id" : "https://w3id.org/celine-eu#producesDataset",

@@ -3078,6 +3078,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3134,14 +3190,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3246,14 +3302,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4108,7 +4360,7 @@ docker compose up -d
 #   SSO:       http://sso.celine.localhost
 #   Keycloak:  http://keycloak.celine.localhost
 </code></pre>
-<p>On first run, Keycloak imports the realm from <code>config/keycloak/</code>. Demo users are provisioned automatically.</p>
+<p>On first run the realm is provisioned by <code>celine-policies</code>, not from a file here. Demo users come with it.</p>
 <h2 id="stopping-and-resetting">Stopping and Resetting</h2>
 <pre><code class="language-bash"># Stop all services
 docker compose down
@@ -4154,13 +4406,13 @@ docker compose build jupyter
 <p>To add a new service behind the SSO boundary:</p>
 <ol>
 <li>Add the service to <code>docker-compose.yaml</code>.</li>
-<li>Add a Caddy virtual host in <code>config/caddy/Caddyfile</code> using <code>forward_auth</code> to oauth2-proxy.</li>
+<li>Add a Caddy virtual host using <code>forward_auth</code> to oauth2-proxy. The Caddyfile belongs to the integration workspace, not to this repository.</li>
 <li>Configure the service to read identity from the injected headers (<code>X-Auth-Request-User</code>, <code>X-Auth-Request-Access-Token</code>).</li>
 <li>Implement authorization logic using the JWT claims (groups, scopes).</li>
 </ol>
 <h2 id="extending-group-to-role-mappings">Extending Group-to-Role Mappings</h2>
-<p>Edit <code>src/celine/superset/auth/groups.py</code> to modify Superset role mappings, then rebuild the Superset image.</p>
-<p>For Jupyter, edit <code>config/jupyter/jupyter_server_config.py</code> to update <code>allowed_groups</code>.</p>
+<p>Edit <code>packages/celine-superset/src/celine/superset/auth/groups.py</code> to modify Superset role mappings, then rebuild the Superset image.</p>
+<p>For Jupyter, edit <code>config/jupyter/jupyterhub_config.py</code> to update <code>allowed_groups</code>.</p>
 <h2 id="ci-and-image-publishing">CI and Image Publishing</h2>
 <p>Docker images are built and published automatically via GitHub Actions when source or configuration files change. Image versions are controlled by <code>version.txt</code> (Superset) and <code>version.jupyter.txt</code> (Jupyter).</p>
 

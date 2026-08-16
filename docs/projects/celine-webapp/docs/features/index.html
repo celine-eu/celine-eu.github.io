@@ -1321,6 +1321,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#settings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3111,6 +3122,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3167,14 +3234,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3279,14 +3346,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4128,6 +4391,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#settings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4157,7 +4431,7 @@
 
 <h1 id="features">Features</h1>
 <h2 id="terms-acceptance">Terms Acceptance</h2>
-<p>Terms acceptance is enforced at the frontend layout level. On every page load, the frontend calls <code>GET /api/me</code>. If the response has <code>terms_accepted: false</code>, the user is redirected to a terms page. Acceptance is persisted via <code>POST /api/terms/accept</code> and checked against the current <code>POLICY_VERSION</code>.</p>
+<p>Terms acceptance is enforced at the frontend layout level. On every page load, the frontend calls <code>GET /api/me</code>. If the response has <code>terms_required: true</code>, the user is redirected to a terms page. Acceptance is persisted via <code>POST /api/terms/accept</code> and checked against the current <code>POLICY_VERSION</code> — raising that version requires every member to accept again.</p>
 <h2 id="overview-and-energy-data">Overview and Energy Data</h2>
 <p>The overview page displays energy data fetched from the Digital Twin service:
 - Community-level production and consumption totals
@@ -4179,17 +4453,21 @@
 </ol>
 <h2 id="gamification">Gamification</h2>
 <p><code>GET /api/gamification</code> aggregates data from multiple services:
-- Points from the flexibility-api based on commitment fulfillment
-- Badges awarded for achievements (checked and awarded automatically)
-- Community ranking from Digital Twin</p>
-<p><code>GET /api/gamification/history</code> returns the user's commitment history from the flexibility-api.</p>
+- <strong>Season points from the Digital Twin</strong> (<code>rec_points_leaderboard</code>, <code>rec_participant_points</code>), not from the flexibility-api — its settlement figure omits the baseline comparison and inflates the value
+- Badges awarded for achievements, stored locally
+- The member's own anonymous season ranking, from the Digital Twin</p>
+<p>Points and the level ladder are scoped to the current season, so the ladder resets each
+season. Where the season data is unavailable — an older Digital Twin, or a device not yet
+in the fleet — the endpoint falls back to an all-time total and shows no ranking at all.
+The response does not say which mode produced it.</p>
+<p><code>GET /api/gamification/history</code> returns the user's commitment history from the flexibility-api, with settled reward points cross-referenced against the Digital Twin's figures.</p>
 <h2 id="co2-reporting">CO2 Reporting</h2>
 <p><code>GET /api/settings/co2</code> returns carbon emission factors and configuration.</p>
 <h2 id="community">Community</h2>
 <p><code>GET /api/community</code> returns community metadata from the rec-registry, including name, description, areas, and links.</p>
 <h2 id="notifications">Notifications</h2>
 <p>The notification system proxies the nudging-tool:
-- List notifications with read/unread filtering
+- List notifications (no filtering is exposed through this API)
 - Mark individual or all notifications as read
 - Enable/disable notifications per user</p>
 <h2 id="web-push-vapid">Web Push (VAPID)</h2>
@@ -4204,8 +4482,29 @@
 <p>Actual push delivery is handled by the nudging-tool service, not the BFF.</p>
 <h2 id="feedback">Feedback</h2>
 <p>Users can submit feedback via <code>POST /api/feedback</code>. Feedback data can be exported using the <code>celine-webapp-export-feedback</code> CLI tool.</p>
+<h2 id="data-sharing">Data Sharing</h2>
+<p>A member's own decisions about sharing their energy data, at <code>GET /api/data-sharing</code> and
+<code>POST /api/data-sharing/{offer_id}</code>, with their history at <code>/api/data-sharing/history</code>.</p>
+<p><strong>Off by default</strong> (<code>DATA_SHARING_ENABLED</code>): while the dataspace is undeployed the routes
+answer 404 and the app hides the section, because a sharing screen that cannot record a
+decision is worse than no screen.</p>
+<p>The offers a member sees are read from the published vocabulary on each request rather
+than from a local copy — two copies of the text somebody agrees to is how the thing
+displayed and the thing recorded drift apart.</p>
+<p><strong>Withdrawal is the point of the surface.</strong> The onboarding wizard can only grant, so
+without these routes a consent could be given and never taken back. Every call is made
+with the member's own credential: it is their act, and an administrator cannot perform it
+for them.</p>
 <h2 id="settings">Settings</h2>
-<p>Users can configure language, units, and notification preferences via <code>GET/PUT /api/settings</code>. Settings are stored in the local database.</p>
+<p><code>GET/PUT /api/settings</code> presents one settings object assembled from two owners:</p>
+<ul>
+<li><strong>This service</strong> stores display preferences — <code>simple_mode</code>, <code>font_scale</code> — and web push
+  enablement.</li>
+<li><strong>The nudging-tool</strong> owns the notification limit, the email channel and the per-kind
+  catalogue.</li>
+</ul>
+<p>The split is invisible to the app, which reads and writes a single object. Some
+notification kinds are marked non-editable and cannot be switched off by a member.</p>
 
 
 

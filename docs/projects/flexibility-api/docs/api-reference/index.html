@@ -2892,6 +2892,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -2948,14 +3004,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3060,14 +3116,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -3784,6 +4036,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#suggestions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3952,37 +4215,127 @@
 
 <h1 id="api-reference">API Reference</h1>
 <p>Interactive OpenAPI docs at <code>http://localhost:8017/docs</code>.</p>
+<p>This page describes the shapes. <strong>What each route must do</strong> is
+<a href="../specifications/"><code>docs/specifications/</code></a>, where every rule carries a <code>REQ-####</code>
+and a test that names it; the requirement is the authority where the two disagree.</p>
+<h2 id="authentication">Authentication</h2>
+<p>Every route below except <code>/health</code> and the documentation needs a JWT, in
+<code>x-auth-request-access-token</code> (forwarded by oauth2-proxy) or <code>Authorization: Bearer</code>.
+Missing or undecodable is a <code>401</code> — except on <code>/api/commitments/pending</code> and
+<code>PATCH …/settle</code>, where it is a <code>403</code> (REQ-0014).</p>
+<p>"Service only" below means a Keycloak client-credentials token. On <code>/api/commitments/pending</code>
+and <code>PATCH …/settle</code> it must also carry <code>flexibility.read</code> or <code>flexibility.admin</code>; without
+one the response is <code>403 missing flexibility scope</code>, straight from the policy bundle
+(REQ-0054). A participant token on either route is <code>403 not-a-service-account</code>.</p>
+<hr />
 <h2 id="suggestions">Suggestions</h2>
 <h3 id="get-apisuggestions"><code>GET /api/suggestions</code></h3>
-<p>List active flexibility window suggestions for the authenticated user. Filters expired windows and returns only currently active opportunities.</p>
+<p>Load-shift windows for the caller's community, ranked and shaped for display. Requires a
+<strong>user</strong> token — the Digital Twin resolves the participant from it, so these cannot be
+fetched on someone's behalf.</p>
+<p>Returns <code>[]</code>, not an error, when the caller has no community or when the Digital Twin is
+unreachable (REQ-0030). At most 8 items. Windows already committed to are omitted; windows
+running past 21:00 community time are not offered.</p>
+<pre><code class="language-json">[
+  {
+    &quot;id&quot;: &quot;0e0f…&quot;,
+    &quot;suggestion_type&quot;: &quot;shift-consumption&quot;,
+    &quot;period_start&quot;: &quot;2026-07-02T09:00:00+00:00&quot;,
+    &quot;period_end&quot;: &quot;2026-07-02T12:00:00+00:00&quot;,
+    &quot;from_period&quot;: &quot;&quot;,
+    &quot;clock_range&quot;: &quot;11:00–14:00&quot;,
+    &quot;to_is_tomorrow&quot;: false,
+    &quot;to_period&quot;: &quot;late_morning&quot;,
+    &quot;to_time&quot;: &quot;11:00&quot;,
+    &quot;impact_kwh_estimated&quot;: 1.8,
+    &quot;reward_points&quot;: 14,
+    &quot;community_kwh&quot;: 120.0,
+    &quot;confidence&quot;: 0.8
+  }
+]
+</code></pre>
+<p><code>period_start</code> / <code>period_end</code> are UTC; <code>clock_range</code>, <code>to_time</code> and <code>to_period</code> are
+community-local (<code>Europe/Rome</code>). <code>impact_kwh_estimated</code>, <code>reward_points</code> and <code>confidence</code>
+are <strong>null when not known</strong> — never 0 (REQ-0015).</p>
 <h3 id="post-apisuggestionssuggestion_idrespond"><code>POST /api/suggestions/{suggestion_id}/respond</code></h3>
-<p>Accept or reject a flexibility suggestion. Accepting creates a commitment.</p>
-<p><strong>Request body:</strong></p>
+<p>Record the participant's answer. Accepting creates a commitment, publishes to MQTT and
+schedules a pre-window reminder; the last two are fire-and-forget and never fail the
+response.</p>
+<p><strong>Request:</strong></p>
 <pre><code class="language-json">{
-  &quot;action&quot;: &quot;accept&quot;
+  &quot;response&quot;: &quot;accepted&quot;,
+  &quot;period_start&quot;: &quot;2026-07-02T09:00:00+00:00&quot;,
+  &quot;period_end&quot;: &quot;2026-07-02T12:00:00+00:00&quot;,
+  &quot;reward_points&quot;: 14
 }
 </code></pre>
+<p><code>response</code> is <code>"accepted"</code> or <code>"declined"</code>. The other three are optional: an omitted
+<code>reward_points</code> defaults to <strong>10</strong>, and window timestamps that are missing or unparseable
+become <strong>now to now + 1 hour</strong> rather than a <code>400</code> (REQ-0033).</p>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{ &quot;commitment_id&quot;: &quot;6f3d…&quot;, &quot;status&quot;: &quot;committed&quot;, &quot;reward_points_estimated&quot;: 14 }
+</code></pre>
+<p>A decline returns <code>commitment_id: null</code>, <code>status: "declined"</code> and
+<code>reward_points_estimated: 0</code> — while storing a <code>rejected</code> row that keeps the estimate that
+was sent (REQ-0035).</p>
 <hr />
 <h2 id="commitments">Commitments</h2>
 <h3 id="post-apicommitments"><code>POST /api/commitments</code></h3>
-<p>Create a commitment directly.</p>
+<p>Create a commitment directly. <code>201</code>.</p>
+<p>A <strong>user</strong> token always writes its own <code>sub</code>; the <code>user_id</code> in the body is ignored, not
+rejected. A <strong>service</strong> token writes the <code>user_id</code> given (REQ-0019, REQ-0020).</p>
+<pre><code class="language-json">{
+  &quot;user_id&quot;: &quot;user-alice&quot;,
+  &quot;suggestion_id&quot;: &quot;0e0f…&quot;,
+  &quot;suggestion_type&quot;: &quot;shift-consumption&quot;,
+  &quot;community_id&quot;: &quot;it-energy-community&quot;,
+  &quot;device_id&quot;: &quot;sensor-alice-1&quot;,
+  &quot;period_start&quot;: &quot;2026-07-02T09:00:00+00:00&quot;,
+  &quot;period_end&quot;: &quot;2026-07-02T12:00:00+00:00&quot;,
+  &quot;reward_points_estimated&quot;: 14
+}
+</code></pre>
 <h3 id="get-apicommitments"><code>GET /api/commitments</code></h3>
-<p>List commitments for the authenticated user. Supports pagination.</p>
+<p>List commitments. A user token sees only its own and the <code>user_id</code> parameter is ignored; a
+service token must name a <code>user_id</code> or it matches nothing (REQ-0021, REQ-0022).</p>
 <p><strong>Query params:</strong>
-- <code>limit</code> — page size
-- <code>offset</code> — pagination offset</p>
+- <code>user_id</code> — service tokens only
+- <code>status</code> — <code>committed</code> | <code>settled</code> | <code>rejected</code> | <code>cancelled</code>
+- <code>limit</code> — default 50, <strong>max 200</strong> (<code>422</code> above that)
+- <code>offset</code></p>
+<p>Ordered by <code>committed_at</code> descending. <strong><code>total</code> is the size of the page returned, not the
+number of matching rows</strong> (REQ-0023).</p>
 <h3 id="delete-apicommitmentscommitment_id"><code>DELETE /api/commitments/{commitment_id}</code></h3>
-<p>Cancel a commitment (sets status to <code>cancelled</code>).</p>
+<p>Cancel. <code>204</code>.</p>
+<p>Owner only — another participant's commitment is a <code>404</code>, not a <code>403</code>. Anything not
+<code>committed</code> is a <code>409</code> (REQ-0024).</p>
 <h3 id="get-apicommitmentspending"><code>GET /api/commitments/pending</code></h3>
-<p>List pending commitments for the authenticated user.</p>
+<p><strong>Service only.</strong> Commitments whose window is open <em>right now</em> and that have not yet been
+reminded — not "the caller's pending commitments".</p>
+<p>Every row returned is stamped <code>reminded_at = now</code> in the same request, so a second call
+returns nothing (REQ-0026).</p>
 <h3 id="patch-apicommitmentscommitment_idsettle"><code>PATCH /api/commitments/{commitment_id}/settle</code></h3>
-<p>Settle a commitment with points calculation. Sets status to <code>settled</code>.</p>
+<p><strong>Service only.</strong> Settle with measured points. Anything not <code>committed</code> is a <code>409</code>.</p>
+<pre><code class="language-json">{ &quot;reward_points_actual&quot;: 9, &quot;actual_kwh&quot;: 0.9 }
+</code></pre>
+<p><code>actual_kwh</code> is accepted and <strong>discarded</strong> — there is no column for it (REQ-0027).</p>
 <h3 id="get-apicommitmentsexport"><code>GET /api/commitments/export</code></h3>
-<p>Export commitments for pipeline-based data mirroring. Used by the <code>rec_flexibility_commitments</code> pipeline.</p>
+<p><strong>Service only.</strong> Every commitment of every participant, in every status, ordered by
+<code>committed_at</code> ascending. Used by the <code>rec_flexibility_commitments</code> pipeline mirror.</p>
+<p><strong>Query params:</strong>
+- <code>created_after</code> — ISO datetime, filters on <code>committed_at</code>. URL-encode it: the <code>+00:00</code>
+  offset decodes to a space otherwise and the request is a <code>422</code>.</p>
+<p>The <code>flexibility.commitments.export</code> scope the policy defines is <strong>not enforced on this
+route</strong> — <code>PolicyMiddleware</code> does not match this path, so any service token reaches every
+commitment in the table (REQ-0028). Unlike <code>/pending</code> and <code>/settle</code>, this one was not
+closed by <a href="https://github.com/celine-eu/flexibility-api/issues/21">#21</a>; it is a routing
+gap, not an evaluation one.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>
-<p>Service health check.</p>
+<p><code>{"status": "ok"}</code>, unauthenticated.</p>
+<p>Liveness only. It does not check the database, the broker, or whether the policy bundle
+loaded — a process that has lost every dependency still reports <code>ok</code> (REQ-0004).</p>
 
 
 

@@ -3161,6 +3161,62 @@
   
   
     <li class="md-nav__item">
+      <a href="docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="docs/development/" class="md-nav__link">
         
   
@@ -3217,14 +3273,14 @@
   
   
     <li class="md-nav__item">
-      <a href="apps/osm/" class="md-nav__link">
+      <a href="apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3329,14 +3385,210 @@
   
   
     <li class="md-nav__item">
-      <a href="apps/mt/" class="md-nav__link">
+      <a href="apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4277,15 +4529,23 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 <tbody>
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/pipeline-overview">Pipeline Overview</a></td>
-<td>Standard pipeline anatomy, data layers, governance.yaml</td>
+<td>Pipeline anatomy, data layers, cross-pipeline contracts, <code>governance.yaml</code></td>
 </tr>
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/pipelines-reference">Pipelines Reference</a></td>
-<td>Per-pipeline reference: om, mt, dwd, owm, copernicus, osm, rec_registry, rec_flexibility_commitments</td>
+<td>Every pipeline: what it consumes, what it publishes, when it runs</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/local-runtime">Local Runtime</a></td>
+<td>Running a pipeline in your terminal with the <code>celine-utils</code> CLI</td>
+</tr>
+<tr>
+<td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/testing">Testing</a></td>
+<td>The test layers, the cross-pipeline cascade, current coverage</td>
 </tr>
 <tr>
 <td><a href="https://celine-eu.github.io/projects/celine-pipelines/docs/development">Development</a></td>
-<td>Prerequisites, task setup, running pipelines, releasing</td>
+<td>Prerequisites, setup, Docker, releasing, adding a pipeline</td>
 </tr>
 </tbody>
 </table>
@@ -4299,11 +4559,21 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 <li>OpenWeatherMap (OWM)</li>
 <li>Deutscher Wetterdienst (DWD — ICON-D2)</li>
 <li>Copernicus Climate &amp; Atmosphere Services (ERA5, CAMS)</li>
+<li>Weather facade — one provider-neutral interface over all of the above</li>
 <li><strong>Geospatial open data</strong></li>
 <li>OpenStreetMap (OSM)</li>
-<li><strong>REC data mirrors</strong></li>
-<li>REC Registry — community/member/asset data mirror</li>
-<li>Flexibility commitments — commitment data mirror from flexibility-api</li>
+<li>Overture Maps — building footprints</li>
+<li>Regional PV siting constraints</li>
+<li><strong>Photovoltaic analysis</strong></li>
+<li>PV estimation — rooftop return on investment and installation planning</li>
+<li>PV detection — existing installations identified from aerial imagery</li>
+<li><strong>Grid</strong></li>
+<li>Wind and heat resilience overlays for the distribution network</li>
+<li><strong>REC and community data</strong></li>
+<li>Metering interface — 15-minute and hourly readings, and the gap report over them</li>
+<li>Italian CER virtual self-consumption settlement</li>
+<li>Flexibility windows, settlement, gamification and CO2 impact</li>
+<li>REC Registry and flexibility commitment mirrors</li>
 </ul>
 <p>Each pipeline follows the same <strong>canonical CELINE structure</strong>:
 - ingestion (Meltano / Singer taps)
@@ -4311,20 +4581,37 @@ Open-source tools &amp; docs: https://celine-eu.github.io/</p>
 - orchestration (Prefect)
 - governance metadata (<code>governance.yaml</code>)
 - containerized execution (Docker / Skaffold)</p>
+<p>Several pipelines read tables produced by <strong>private ingestion pipelines that are not part
+of this repository</strong>. In each case the app's <code>sources.yml</code> is the published contract and
+its <code>README.md</code> states the expected columns, so the pipeline can be run against
+locally-created or synthetic data.</p>
 <hr />
 <h2 id="repository-structure">Repository structure</h2>
 <pre><code class="language-text">celine-pipelines/
 ├── apps/
-│   ├── copernicus/                  # Copernicus Climate &amp; Atmosphere pipelines
-│   ├── dwd/                         # DWD ICON-D2 weather model
-│   ├── mt/                          # MeteoTrentino regional weather
 │   ├── om/                          # Open-Meteo (weather, wind, heat, observations)
+│   ├── mt/                          # MeteoTrentino regional weather
+│   ├── owm/                         # OpenWeatherMap
+│   ├── copernicus/                  # Copernicus Climate &amp; Atmosphere (ERA5, CAMS)
+│   ├── dwd/                         # DWD ICON-D2 weather model (paused)
+│   ├── weather/                     # Provider-neutral weather facade
 │   ├── osm/                         # OpenStreetMap ingestion &amp; curation
-│   ├── owm/                         # OpenWeatherMap pipelines
-│   ├── rec_flexibility_commitments/ # Flexibility commitments mirror
-│   └── rec_registry/                # REC Registry data mirror
+│   ├── overture/                    # Overture Maps building footprints
+│   ├── trentino_rooftops/           # PV siting constraints (regional open data)
+│   ├── pv_estimation/               # Rooftop PV return-on-investment
+│   ├── pv_detection/                # Existing PV detected from aerial imagery
+│   ├── grid/                        # Grid wind &amp; heat resilience overlays
+│   ├── rec_metering/                # 15-min / hourly metering interface
+│   ├── rec_it/                      # Italian CER virtual self-consumption
+│   ├── rec_flexibility/             # Flexibility windows, settlement, gamification
+│   ├── rec_registry/                # REC Registry data mirror
+│   └── rec_flexibility_commitments/ # Flexibility commitments mirror
 │
+├── docs/               # Published documentation (celine-eu.github.io)
+├── .agents/            # Agent knowledge, playbooks and plans
 ├── scripts/            # Release &amp; utility scripts
+├── docker-compose.yaml # Local stack: database, lineage, Prefect, one service per pipeline
+├── Dockerfile.base     # Shared pipeline base image
 ├── skaffold.yaml       # Container build configuration
 ├── taskfile.yaml       # Developer &amp; CI tasks
 ├── pyproject.toml
@@ -4391,14 +4678,26 @@ https://celine-eu.github.io/projects/celine-utils/docs/pipeline-tutorial</p>
 <pre><code class="language-bash">task setup
 </code></pre>
 <h3 id="run-a-pipeline">Run a pipeline</h3>
-<p>Example (OpenWeatherMap):</p>
-<pre><code class="language-bash">task pipeline:owm:run
+<p>Start the database, then run from inside the pipeline's own directory:</p>
+<pre><code class="language-bash">docker compose up datasets-db -d
+
+cd apps/owm
+source &lt;(uv run celine-utils pipeline run envs)
+uv run celine-utils pipeline run prefect
 </code></pre>
+<p><code>pipeline run envs</code> prints the execution context as <code>export</code> lines — source it and bare
+<code>dbt</code> and <code>meltano</code> commands work with no wrapper. See
+<a href="https://celine-eu.github.io/projects/celine-pipelines/docs/local-runtime">Local Runtime</a>
+for the full command set, and
+<a href="https://celine-eu.github.io/projects/celine-pipelines/docs/testing">Testing</a> for how to
+verify a change across the pipelines that depend on it.</p>
 <hr />
 <h2 id="versioning-releases">Versioning &amp; releases</h2>
-<p>Each pipeline is <strong>versioned independently</strong>.</p>
-<p>Example:</p>
-<pre><code class="language-bash">task pipeline:osm:release
+<p>Each pipeline is <strong>versioned independently</strong> in <code>apps/&lt;name&gt;/version.txt</code>. CI watches
+those files and publishes the matching image on change.</p>
+<pre><code class="language-bash">task pipeline:release:app -- osm --commit   # bump one pipeline
+task pipeline:release:all                   # bump every pipeline
+task pipeline:release:base                  # bump the shared base image
 </code></pre>
 <hr />
 <h2 id="governance-licensing">Governance &amp; licensing</h2>
@@ -4438,33 +4737,35 @@ limitations under the License.</p>
 - OpenWeather Ltd.</p>
 <hr />
 <h2 id="pipeline-summary">Pipeline Summary</h2>
+<p>Full detail — sources, layers, outputs, upstream contracts — in the
+<a href="https://celine-eu.github.io/projects/celine-pipelines/docs/pipelines-reference">Pipelines Reference</a>.</p>
 <table>
 <thead>
 <tr>
 <th>Pipeline</th>
 <th>Source</th>
 <th>Schedule</th>
-<th>Key Outputs</th>
+<th>Key outputs</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>om</strong> (weather)</td>
 <td>Open-Meteo</td>
-<td>2x daily</td>
-<td>Weather features for energy forecasting</td>
+<td>Daily 06:00</td>
+<td>29 engineered weather features for energy forecasting</td>
 </tr>
 <tr>
 <td><strong>om</strong> (wind)</td>
 <td>Open-Meteo</td>
-<td>Daily</td>
-<td>Wind risk assessments per grid node</td>
+<td>Every 4h</td>
+<td>Wind speed/gust/direction on a 4.4 km Trentino grid</td>
 </tr>
 <tr>
 <td><strong>om</strong> (heat)</td>
 <td>Open-Meteo</td>
-<td>Daily</td>
-<td>Heat risk assessments (P90 altitude-band)</td>
+<td>Daily 07:30</td>
+<td>Heat risk by altitude band (P90)</td>
 </tr>
 <tr>
 <td><strong>om</strong> (obs)</td>
@@ -4476,31 +4777,85 @@ limitations under the License.</p>
 <td><strong>mt</strong></td>
 <td>MeteoTrentino</td>
 <td>Hourly</td>
-<td>Regional weather stations, forecasts, alerts</td>
+<td>Regional stations, forecasts, alerts; weather contract tables</td>
 </tr>
 <tr>
 <td><strong>owm</strong></td>
 <td>OpenWeatherMap</td>
-<td>Scheduled</td>
-<td>Weather data for specific locations</td>
-</tr>
-<tr>
-<td><strong>dwd</strong></td>
-<td>DWD</td>
-<td>Scheduled</td>
-<td>ICON-D2 weather model data</td>
+<td>Hourly</td>
+<td>Per-location weather, plus a semantic observation view</td>
 </tr>
 <tr>
 <td><strong>copernicus</strong></td>
 <td>Copernicus</td>
-<td>Scheduled</td>
-<td>ERA5/CAMS climate data</td>
+<td>4x daily</td>
+<td>ERA5 reanalysis and CAMS atmospheric composition</td>
+</tr>
+<tr>
+<td><strong>dwd</strong></td>
+<td>DWD</td>
+<td>paused</td>
+<td>ICON-D2 model output (superseded by <code>om</code> wind)</td>
+</tr>
+<tr>
+<td><strong>weather</strong></td>
+<td>provider contract tables</td>
+<td>Hourly</td>
+<td>Deduplicated forecasts, alerts and observations per location</td>
 </tr>
 <tr>
 <td><strong>osm</strong></td>
 <td>OpenStreetMap</td>
-<td>On-demand</td>
-<td>Geospatial layers for REC areas</td>
+<td>4x daily</td>
+<td>Thematic geospatial layers per covered area</td>
+</tr>
+<tr>
+<td><strong>overture</strong></td>
+<td>Overture Maps</td>
+<td>Daily</td>
+<td>Building footprints with stable identifiers</td>
+</tr>
+<tr>
+<td><strong>trentino_rooftops</strong></td>
+<td>Regional open data</td>
+<td>Daily</td>
+<td>Per-building PV siting eligibility</td>
+</tr>
+<tr>
+<td><strong>pv_estimation</strong></td>
+<td>Buildings + <code>celine-roi</code></td>
+<td>Weekly</td>
+<td>Rooftop PV ROI, installation plans and rankings</td>
+</tr>
+<tr>
+<td><strong>pv_detection</strong></td>
+<td>Aerial imagery + vision model</td>
+<td>Weekly</td>
+<td>Buildings with PV already installed</td>
+</tr>
+<tr>
+<td><strong>grid</strong></td>
+<td>Grid topology + <code>om</code> forecasts</td>
+<td>Daily, 15-min nowcast</td>
+<td>Wind and heat risk overlays per line segment</td>
+</tr>
+<tr>
+<td><strong>rec_metering</strong></td>
+<td>Normalised meter readings</td>
+<td>Every 10 min</td>
+<td>15-min and hourly metering interface, gap report</td>
+</tr>
+<tr>
+<td><strong>rec_it</strong></td>
+<td><code>rec_metering</code> + registry + GSE</td>
+<td>Every 15 min</td>
+<td>Virtual self-consumption per device and community</td>
+</tr>
+<tr>
+<td><strong>rec_flexibility</strong></td>
+<td><code>rec_metering</code> + forecasts</td>
+<td>Daily 06:00</td>
+<td>Flexibility windows, settlement, gamification, CO2</td>
 </tr>
 <tr>
 <td><strong>rec_registry</strong></td>
@@ -4512,7 +4867,7 @@ limitations under the License.</p>
 <td><strong>rec_flexibility_commitments</strong></td>
 <td>Flexibility API</td>
 <td>Every 15 min</td>
-<td>Commitment data mirror (90-day window)</td>
+<td>Commitment mirror (90-day sliding window)</td>
 </tr>
 </tbody>
 </table>

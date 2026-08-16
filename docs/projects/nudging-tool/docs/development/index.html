@@ -3078,6 +3078,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
@@ -3134,14 +3190,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Open Street Map
+    MeteoTrentino
   
 
     
@@ -3246,14 +3302,210 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    MeteoTrentino
+    Weather Facade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Street Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PV Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grid Resilience
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Metering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Italy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REC Flexibility
   
 
     
@@ -4153,7 +4405,10 @@ task run                   # start on port 8016
 <p>Rules are stored in <code>seed/rules/&lt;rule_id&gt;/</code> directories, each containing:
 - <code>rule.yaml</code> — rule definition
 - <code>evaluate.py</code> — custom Python evaluator
-- <code>templates/</code> — Jinja2 templates per channel and language</p>
+- <code>templates/&lt;lang&gt;.yaml</code> — one Jinja2 title and body per language. Templates are <strong>not</strong>
+  per channel: web push and email send the same rendered strings.</p>
+<p>The directory name is the rule id, and it is also where the evaluator is looked for — see
+<a href="../specifications/rule-evaluation/">REQ-0028</a> and <a href="../specifications/seeding/">REQ-0068</a>.</p>
 <p>Apply seeds via:</p>
 <pre><code class="language-bash">task seed
 # or directly:
@@ -4166,9 +4421,16 @@ task alembic:sync-model -- &quot;description&quot;      # create new migration
 task alembic:reset                            # reset to base
 </code></pre>
 <h2 id="running-tests">Running Tests</h2>
-<pre><code class="language-bash">task test
-# or: uv run pytest -q
+<pre><code class="language-bash">task test                     # uv run pytest
+uv run pytest tests/unit      # the layer without an app
 </code></pre>
+<p>The suite reaches <strong>no external service</strong> — no PostgreSQL, no Keycloak, no push service,
+no SMTP — so it needs nothing running. The Rego bundle is the exception and is evaluated
+for real, in process; see <a href="../decisions/ADR-0002-the-suite-reaches-no-service/">ADR-0002</a>.</p>
+<p>Every test declares the requirement it covers with <code>@verifies REQ-####</code>, and the
+requirements are in <a href="../specifications/"><code>docs/specifications/</code></a>. Adding behaviour
+means adding a requirement and a test naming it, in the same change.</p>
+<p>The procedure, the fixtures and the traps are in <code>.agents/playbooks/testing.md</code>.</p>
 <h2 id="project-layout">Project Layout</h2>
 <pre><code>src/celine/nudging/
   main.py                         # FastAPI app factory (create_app)
