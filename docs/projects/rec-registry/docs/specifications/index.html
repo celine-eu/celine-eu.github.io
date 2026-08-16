@@ -4167,7 +4167,7 @@ turns them red deliberately rather than leaving a test that passes for the wrong
 <pre><code class="language-python">async def test_a_stranger_is_indistinguishable_from_someone_who_owns_nothing(live_client):
     &quot;&quot;&quot;@verifies REQ-0045&quot;&quot;&quot;
 </code></pre>
-<p>The mapping is a projection of the two and is never written by hand. <code>.agents/harness.toml</code>
+<p>The mapping is a projection of the two and is never written by hand. the harness profile
 names <code>provider = "harness"</code>, so the checker owns it; until that checker is available in
 this checkout the projection is a grep — <code>--include='*.py'</code> because <code>__pycache__</code> matches
 otherwise:</p>
@@ -4178,7 +4178,7 @@ grep -rhoE '^### (REQ-[0-9]{4})' docs/specifications/*.md | sort
 naming a requirement that does not exist is a typo — and a typo in a trace tag is
 indistinguishable from coverage until someone reads the matrix.</p>
 <p>Adding a requirement means adding a <code>REQ-####</code> here <strong>and</strong> a test declaring it, in the
-same change. The procedure is in <code>.agents/playbooks/testing.md</code>.</p>
+same change. The procedure is in the companion's testing playbook.</p>
 <h2 id="the-requirements">The requirements</h2>
 <table>
 <thead>
@@ -4248,7 +4248,7 @@ part that belongs to it.</p>
 <li><strong>Why</strong> a choice was made — <a href="../decisions/"><code>docs/decisions/</code></a>.</li>
 <li>What the system <em>is</em> — <a href="../data-model/"><code>docs/data-model.md</code></a> and
   <a href="../api-reference/"><code>docs/api-reference.md</code></a>.</li>
-<li>A trap that is true of the code and not obvious from reading it — <code>.agents/knowledge/</code>.</li>
+<li>A trap that is true of the code and not obvious from reading it — the companion's knowledge.</li>
 <li>Anything broken — the issue tracker.</li>
 </ul>
 

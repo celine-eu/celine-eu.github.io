@@ -4091,14 +4091,14 @@
 <h2 id="context">Context</h2>
 <p>The harness offers two answers to "is this requirement verified?": its own checker,
 reading <code>docs/specifications/</code> and <code>@verifies</code> tags, or an existing tool declared under
-<code>[traceability]</code> in <code>.agents/harness.toml</code>. This repository had neither — no requirement
+<code>[traceability]</code> in the harness profile. This repository had neither — no requirement
 identifiers, no traceability provider, and until 2026-08-15 no tests.</p>
 <p>Delegating is the right answer for a repository that already has a requirement universe.
 This one had nothing to delegate to.</p>
 <h2 id="decision">Decision</h2>
 <p>Adopt the harness convention. Requirements are <code>REQ-####</code> in <code>docs/specifications/</code>,
 grouped by area. A test declares what it covers with <code>@verifies REQ-####</code> in its
-docstring. <code>.agents/harness.toml</code> stays at its defaults, which is what selects the
+docstring. the harness profile stays at its defaults, which is what selects the
 harness as the provider.</p>
 <p>A new requirement and a test that declares it land in the same change.</p>
 <h2 id="consequences">Consequences</h2>

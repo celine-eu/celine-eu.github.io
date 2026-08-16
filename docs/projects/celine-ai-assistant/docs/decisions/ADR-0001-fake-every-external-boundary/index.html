@@ -4115,10 +4115,9 @@ baseline first" a rule people follow rather than one they skip.</p>
 <p>It cannot see three things, and each is stated where it will be read rather than only
 here:</p>
 <ul>
-<li><strong>SDK drift.</strong> A <code>celine-sdk</code> bump can leave the suite green and the service broken.
-  <code>.agents/knowledge/faking-the-sdk-boundary.md</code>.</li>
+<li><strong>SDK drift.</strong> A <code>celine-sdk</code> bump can leave the suite green and the service broken.</li>
 <li><strong>SQL.</strong> <code>HistoryStore</code>'s ordering, subqueries and delete cascade are executed by
-  nothing. <code>.agents/playbooks/testing.md</code> says not to report a change to <code>history.py</code> as
+  nothing. the companion's testing playbook says not to report a change to <code>history.py</code> as
   verified by <code>task test</code>.</li>
 <li><strong>Prompts.</strong> A faked model tests the loop and not what the model does with the words.</li>
 </ul>

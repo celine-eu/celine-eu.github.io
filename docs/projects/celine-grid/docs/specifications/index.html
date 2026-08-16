@@ -4125,7 +4125,7 @@ same change as the suite that found them:</p>
 <pre><code class="language-python">async def test_an_operator_may_not_read_another_dso_s_network(policy):
     &quot;&quot;&quot;@verifies REQ-0006&quot;&quot;&quot;
 </code></pre>
-<p>The mapping is a projection of the two and is never written by hand. <code>.agents/harness.toml</code>
+<p>The mapping is a projection of the two and is never written by hand. the harness profile
 names no traceability provider, so until the harness checker is available in this
 checkout the projection is a grep — <code>--include='*.py'</code> because <code>__pycache__</code> matches
 otherwise:</p>
@@ -4176,7 +4176,7 @@ same change.</p>
 <ul>
 <li><strong>Why</strong> a choice was made — <code>docs/decisions/</code>.</li>
 <li>What the system <em>is</em> — <code>docs/architecture.md</code>.</li>
-<li>A trap that is true of the code and not obvious from it — <code>.agents/knowledge/</code>.</li>
+<li>A trap that is true of the code and not obvious from it — the companion's knowledge.</li>
 <li>Anything broken — the issue tracker.</li>
 </ul>
 

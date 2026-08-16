@@ -4758,8 +4758,7 @@ source &lt;(uv run celine-utils pipeline run envs)
 dbt build
 </code></pre>
 <p>Requires PostGIS and the private silver topology tables. A missing-column error on
-<code>strike_tree_*</code> is an upstream staleness, not a grid regression — see
-<a href="https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/grid-strike-tree-columns-are-upstream.md"><code>.agents/knowledge/grid-strike-tree-columns-are-upstream.md</code></a>.</p>
+<code>strike_tree_*</code> is an upstream staleness, not a grid regression.</p>
 <h3 id="chain-4-photovoltaic">Chain 4 — photovoltaic</h3>
 <pre><code class="language-text">overture  →  pv_overture_buildings  ─┬→  pv_estimation  (also reads rec_it gold)
                                      └→  pv_detection

@@ -4442,7 +4442,7 @@ constraints apply to redistribution.</p>
 </table>
 <p>The <code>rdf_weather_observations_unpivoted</code> model is the SOSA-shaped projection: one row per
 observed property. See
-<a href="https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/semantic-measurement-views.md"><code>.agents/knowledge/semantic-measurement-views.md</code></a>
+the companion's knowledge
 for why the unpivot is required rather than optional.</p>
 <h2 id="copernicus-era5-and-cams"><code>copernicus</code> — ERA5 and CAMS</h2>
 <p>Reanalysis from the Copernicus Climate Change Service and Atmosphere Monitoring Service.
@@ -4724,8 +4724,7 @@ in <code>apps/grid/dbt/models/sources.yml</code>, which is the contract; <code>R
 pipeline can be run against locally-created tables.</p>
 <blockquote>
 <p>A <code>column "strike_tree_*" does not exist</code> error means the local silver table predates an
-upstream change, <strong>not</strong> a bug in this pipeline. See
-<a href="https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/grid-strike-tree-columns-are-upstream.md"><code>.agents/knowledge/grid-strike-tree-columns-are-upstream.md</code></a>.</p>
+upstream change, <strong>not</strong> a bug in this pipeline.</p>
 </blockquote>
 <hr />
 <h1 id="rec-and-community">REC and community</h1>
@@ -4827,7 +4826,7 @@ substation reference layer.</p>
 is <code>least()</code> per <code>(ts, rec_id, substation_id)</code> <strong>and then</strong> summed. Sharing cannot cross
 an unconnected <em>cabina primaria</em>; netting community-wide would invent energy that
 physically cannot flow. See
-<a href="https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/rec-virtual-consumption.md"><code>.agents/knowledge/rec-virtual-consumption.md</code></a>,
+the companion's knowledge,
 which also records the known defect in the hourly model.</p>
 </blockquote>
 <h2 id="rec_flexibility-flexibility-and-gamification"><code>rec_flexibility</code> — flexibility and gamification</h2>
@@ -4861,9 +4860,7 @@ and the pipeline succeeds with an empty result. That is the expected local behav
 a failure.</p>
 <blockquote>
 <p><strong>The flexibility signal is netted across substations.</strong> There is no join path from this
-app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cancels a surplus on another.
-See
-<a href="https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/flexibility-is-substation-blind.md"><code>.agents/knowledge/flexibility-is-substation-blind.md</code></a>.</p>
+app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cancels a surplus on another.</p>
 </blockquote>
 <h2 id="rec_registry-registry-mirror"><code>rec_registry</code> — registry mirror</h2>
 <p>Full-replace mirror of the CELINE REC Registry API into <code>raw.rec_registry_mirror</code>, every

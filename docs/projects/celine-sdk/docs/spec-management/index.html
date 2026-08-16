@@ -4369,7 +4369,7 @@
 <p>The <code>celine-sdk</code> CLI snapshots the OpenAPI specifications of CELINE services and generates
 typed Python clients from them. What it must do is stated in
 <a href="../specifications/spec-management/">specifications/spec-management.md</a>; the procedure for
-doing it in this repository, with its traps, is <code>.agents/playbooks/regenerating-clients.md</code>.</p>
+doing it in this repository, with its traps, is the companion's playbook for regenerating the clients.</p>
 <p>Fetching and generating are <strong>two steps on purpose</strong>: what is generated is always
 reproducible from the specs committed under <code>openapi/</code>, without the services running.</p>
 <h2 id="servicesyaml">services.yaml</h2>
@@ -4458,7 +4458,7 @@ carrying the status code and the raw body.</p>
 <li>Commit <code>openapi/</code> and <code>src/celine/sdk/openapi/</code> <strong>in their own commit</strong>: the diff is
    large and reviewers skim it, which is exactly where an unrelated change hides.</li>
 </ol>
-<p><code>.agents/playbooks/regenerating-clients.md</code> covers what to check afterwards — the wrappers
+<p>the companion's playbook for regenerating the clients covers what to check afterwards — the wrappers
 that reference renamed operations, and the consumers this repository cannot test.</p>
 
 

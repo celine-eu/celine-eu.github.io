@@ -4151,8 +4151,7 @@ either; the notification says the window is open <em>now</em>.</p>
 <p>Only <code>committed</code> rows. A participant who cancelled must not be reminded of a commitment
 they withdrew.</p>
 <p>The times are formatted from <strong>UTC</strong>. That is not the community-local clock the suggestion
-list labels windows with (REQ-0016), so the two surfaces disagree by two hours in summer —
-see <code>.agents/knowledge/two-clocks-label-the-same-window.md</code>.</p>
+list labels windows with (REQ-0016), so the two surfaces disagree by two hours in summer.</p>
 <h3 id="req-0045-reminded_at-is-committed-before-the-nudges-are-sent">REQ-0045 — <code>reminded_at</code> is committed before the nudges are sent</h3>
 <p>The stamp is written and committed first, then the loop dispatches.</p>
 <p>The order bounds the damage when nudging-tool is down: the reminder is lost, and it is

@@ -4134,7 +4134,7 @@
 bundling values, simulations, broker subscriptions and custom routes into one entity-scoped
 API surface.</p>
 <p>This document describes what a domain is and what the runtime does with it. The procedure
-for adding one is <code>.agents/playbooks/extending-a-domain.md</code>.</p>
+for adding one is the companion's playbook for adding a domain.</p>
 <h2 id="what-the-service-is">What the service is</h2>
 <p>The Digital Twin is a domain-driven FastAPI service exposing entity-scoped APIs for the
 CELINE verticals. It is <strong>not</strong> a CRUD application — it is a read-through runtime that
@@ -4296,7 +4296,7 @@ bearer token answers 401 and never reaches entity resolution.</p>
 <p><code>{fetcher_id}</code> is the <strong>domain-local</strong> identifier — <code>rec_self_consumption</code>, not
 <code>it-energy-community.rec_self_consumption</code> — on both verbs. The <code>/values</code> listing and
 <code>/describe</code> report the namespaced registry key, which is <em>not</em> the form the path takes;
-<code>.agents/knowledge/a-fetcher-id-is-local-in-the-path-namespaced-in-the-registry.md</code> has the
+the companion's knowledge has the
 full mapping.</p>
 <p>Modules under <code>domains/{name}/routes/</code> are discovered and mounted alongside these, inside
 the same entity scope. Globally, the service exposes <code>GET /health</code> and <code>GET /domains</code>,
@@ -4355,7 +4355,7 @@ module-level <code>domain</code> instance.</p>
 <li><code>simulations.md</code> — the two-phase what-if model (<strong>largely unimplemented</strong>; see its status note)</li>
 <li><code>subscriptions.md</code> — broker subscriptions and topic patterns</li>
 <li><code>clients.md</code> — data client configuration and adding one</li>
-<li><code>.agents/playbooks/extending-a-domain.md</code> — the procedure for adding one</li>
+<li>the companion's playbook for adding a domain — the procedure for adding one</li>
 </ul>
 
 

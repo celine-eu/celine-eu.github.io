@@ -4089,8 +4089,8 @@
 <p><strong>Date:</strong> 2026-08-15
 <strong>Status:</strong> accepted</p>
 <h2 id="context">Context</h2>
-<p>Until 2026-08-15 this repository had no requirements. <code>.agents/harness.toml</code> named no
-traceability provider, no requirement identifiers existed, and <code>.agents/playbooks/testing.md</code>
+<p>Until 2026-08-15 this repository had no requirements. the harness profile named no
+traceability provider, no requirement identifiers existed, and the companion's testing playbook
 recorded that state explicitly. "Is this behaviour verified?" had no answer beyond reading
 the suite — and the suite itself was not running, so it had no answer at all.</p>
 <p>Adding requirements forced two choices.</p>
@@ -4100,7 +4100,7 @@ means the checker derives the matrix from <code>docs/specifications/</code> and 
 There was no existing tool to delegate to: no conformance target, no requirement universe,
 no evidence syntax. Delegation would have named a tool that did not exist.</p>
 <p><strong>Which numbers.</strong> The harness's default pattern is <code>REQ-[0-9]{4}</code>. But <code>AGENTS.md</code> and
-<code>.agents/README.md</code> — both issued by the harness, both present in this repository — cite
+the harness rulebook — both issued by the harness, both present in this repository — cite
 the harness's <em>own</em> rule identifiers in exactly that form: REQ-0003 for the closed
 directory set, REQ-0012 for an altered standard file, REQ-0102 for a missing work
 directory, REQ-0303 for a home path in committed material. Those constrain this
@@ -4111,7 +4111,7 @@ has been altered" and whatever the twelfth service requirement happened to be.</
 form for no benefit that a disjoint number range does not also provide, and every tool,
 reader and future harness upgrade then has to know about the local variant.</p>
 <h2 id="decision">Decision</h2>
-<p>Declare <code>provider = "harness"</code> in <code>.agents/harness.toml</code>. Requirements live in
+<p>Declare <code>provider = "harness"</code> in the harness profile. Requirements live in
 <code>docs/specifications/</code>, carry <code>REQ-####</code> identifiers in the harness's default form, and are
 verified by <code>@verifies REQ-####</code> tags placed next to the assertions.</p>
 <p><strong>Allocate this repository's numbers from REQ-1000 upward</strong>, in blocks: <code>REQ-10xx</code> runtime,

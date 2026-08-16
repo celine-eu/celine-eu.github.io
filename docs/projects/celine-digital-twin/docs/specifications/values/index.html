@@ -4377,7 +4377,7 @@
 <h1 id="specification-values">Specification — values</h1>
 <p>Value fetcher registration, execution, validation and pagination.</p>
 <p>How to write a fetcher is <code>docs/values.md</code> and
-<code>.agents/playbooks/extending-a-domain.md</code>. This document says only what must hold.</p>
+the companion's playbook for adding a domain. This document says only what must hold.</p>
 <hr />
 <h2 id="registration">Registration</h2>
 <h3 id="req-1100-every-fetcher-a-domain-declares-must-be-registered-under-domainnamespecid">REQ-1100 — Every fetcher a domain declares MUST be registered under <code>{domain.name}.{spec.id}</code>.</h3>
@@ -4422,8 +4422,7 @@ fetcher's defaults into the next fetcher's input.</p>
 <h3 id="req-1121-the-request-context-must-be-passed-to-the-client-with-the-query">REQ-1121 — The request context MUST be passed to the client with the query.</h3>
 <blockquote>
 <p>This is what carries the caller's identity to <code>dataset-api</code>. It was threaded through the
-executor in a refactor that the test doubles did not follow — see
-<code>.agents/plans/the-suite-has-not-followed-the-code.md</code>.</p>
+executor in a refactor that the test doubles did not follow.</p>
 </blockquote>
 <h3 id="req-1122-when-a-fetcher-declares-an-output_mapper-it-must-be-applied-to-every-returned-row">REQ-1122 — When a fetcher declares an <code>output_mapper</code>, it MUST be applied to every returned row.</h3>
 <h3 id="req-1123-a-failing-output-mapper-must-propagate-rather-than-yield-partial-results">REQ-1123 — A failing output mapper MUST propagate rather than yield partial results.</h3>
@@ -4444,7 +4443,7 @@ today — with a 200 and no error.</p>
 <p>This requirement is <strong>not currently satisfied</strong> by
 <code>it-energy-community.rec_self_consumption</code>. The sizing arithmetic behind it, and why
 watching the displayed numbers cannot verify a fix, is
-<code>.agents/knowledge/rec-fetcher-row-limits.md</code>. Tracked as an issue; see that entry.</p>
+the companion's knowledge. Tracked as an issue; see that entry.</p>
 </blockquote>
 
 

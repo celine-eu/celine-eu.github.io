@@ -4125,7 +4125,7 @@ piece of work, and much of what it tests belongs to <code>celine-sdk</code>.</p>
 fakes describe what this repository <em>assumes</em>, written from this repository. If the SDK
 renames a field or returns models where it returned <code>to_dict()</code>-able rows, every test
 still passes and the affected call fails in production. This is the stated cost, not an
-oversight — <code>.agents/knowledge/faking-the-sdk-boundary.md</code> says what to do after an SDK
+oversight — the companion's knowledge says what to do after an SDK
 bump, and <code>test_grid_proxy.py</code> pins the one place a shape change surfaces as an unhandled
 <code>500</code> rather than a handled error.</p>
 <p>The cheapest thing that would close it: build the fakes' return values from the SDK's own
