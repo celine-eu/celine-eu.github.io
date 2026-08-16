@@ -4093,7 +4093,7 @@ does and what consumers therefore depend on. Where the extraction found the publ
 documentation disagreeing with the code, the code won and <code>docs/</code> was corrected — the
 disagreements are listed at the end of this file.</p>
 <p>Twelve repositories import <code>celine.sdk.auth</code> and ten import <code>celine.sdk.settings</code>
-(<code>.agents/knowledge/what-this-repository-depends-on.md</code>). A requirement here is therefore
+(the companion's knowledge). A requirement here is therefore
 a promise to those repositories, and changing one is a platform change, not a local one.</p>
 <table>
 <thead>
@@ -4128,7 +4128,7 @@ a promise to those repositories, and changing one is a platform change, not a lo
 <h2 id="identifiers">Identifiers</h2>
 <p><code>REQ-</code> followed by four digits, the harness default. A test declares what it covers with
 <code>@verifies REQ-####</code> in its docstring, and the mapping between the two is generated —
-never written by hand. <code>.agents/playbooks/testing.md</code> states how.</p>
+never written by hand. the companion's testing playbook states how.</p>
 <p>Numbers are allocated in blocks per document so a new requirement can be appended without
 renumbering: configuration <code>0001–0019</code>, identity <code>0020–0049</code>, policy evaluation
 <code>0050–0069</code>, messaging <code>0070–0099</code>, spec management <code>0100–0119</code>.</p>
@@ -4141,7 +4141,7 @@ renumbering: configuration <code>0001–0019</code>, identity <code>0020–0049<
 <li><strong>The service APIs themselves.</strong> Those belong to the services. This SDK requires only
   that a spec is fetched, versioned and turned into a client.</li>
 <li><strong>Compatibility with the repositories that import this one.</strong> Nothing in this repository
-  can answer it; see the plan <code>.agents/plans/test-coverage-for-the-shared-surface.md</code>.</li>
+  can answer it.</li>
 </ul>
 <h2 id="where-the-documentation-disagreed-with-the-code">Where the documentation disagreed with the code</h2>
 <p>Found while extracting, and corrected in <code>docs/</code> in the same change. Listed because a

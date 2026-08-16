@@ -4207,7 +4207,7 @@ reads as foreign in an exported bundle — the bundle is a file people edit.</p>
 along with whatever history elsewhere in the platform still references that key.</p>
 <p>The bound on that guarantee is honest and narrow — the <em>highest</em> number is the only state
 consulted, so purging the highest-numbered member does let the next mint reuse their key.
-See <code>.agents/knowledge/</code>. <code>member-00001</code> and its five-digit padding are arbitrary defaults
+See the companion's knowledge. <code>member-00001</code> and its five-digit padding are arbitrary defaults
 rather than chosen ones.</p>
 <h3 id="req-0022-creating-refuses-a-duplicate-key-or-a-duplicate-user_id">REQ-0022 — creating refuses a duplicate key or a duplicate <code>user_id</code></h3>
 <p>Either conflict answers <code>409</code>, naming the existing key or <code>user_id</code> so the caller can
