@@ -3181,39 +3181,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tier-0-no-dependency-on-another-app-here" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 0 — no dependency on another app here
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-1-one-hop" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 1 — one hop
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 2
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#the-shape-of-one-apps-build" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4565,39 +4532,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tier-0-no-dependency-on-another-app-here" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 0 — no dependency on another app here
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-1-one-hop" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 1 — one hop
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 2
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#the-shape-of-one-apps-build" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4948,83 +4882,48 @@ not telling you the pipeline is broken. See
 <a href="../pipeline-overview/#reading-a-source-failure">Reading a source failure</a>.</p>
 <h2 id="populating-the-database-from-scratch">Populating the database from scratch</h2>
 <p>There is no single command that builds everything. Pipelines depend on each other's gold
-tables, and <strong>nothing in the repository declares that order</strong> — it is reconstructed below
-from each app's <code>sources.yml</code>. Run the tiers in sequence; within a tier, order does not
-matter.</p>
-<h3 id="tier-0-no-dependency-on-another-app-here">Tier 0 — no dependency on another app here</h3>
-<table>
-<thead>
-<tr>
-<th>App</th>
-<th>Populate with</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>om</code>, <code>mt</code>, <code>owm</code>, <code>copernicus</code>, <code>osm</code>, <code>overture</code></td>
-<td><code>pipeline run meltano</code>, then <code>pipeline run dbt staging</code> / <code>silver</code> / <code>gold</code></td>
-</tr>
-<tr>
-<td><code>rec_registry</code>, <code>rec_flexibility_commitments</code></td>
-<td><code>pipeline run prefect</code> — API mirrors, no dbt</td>
-</tr>
-<tr>
-<td><code>rec_metering</code></td>
-<td>dbt only, but needs the private <code>meters_data_normalized</code></td>
-</tr>
-</tbody>
-</table>
-<p><code>dwd</code> is paused; skip it unless you specifically need raw GRIB fields.</p>
-<h3 id="tier-1-one-hop">Tier 1 — one hop</h3>
-<table>
-<thead>
-<tr>
-<th>App</th>
-<th>Needs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>weather</code></td>
-<td><code>mt</code> (the <code>weather__*</code> contract tables)</td>
-</tr>
-<tr>
-<td><code>trentino_rooftops</code></td>
-<td><code>overture</code> (<code>pv_overture_buildings</code>)</td>
-</tr>
-<tr>
-<td><code>pv_detection</code></td>
-<td><code>overture</code>, plus a vision-model endpoint for the raw layer</td>
-</tr>
-<tr>
-<td><code>rec_it</code></td>
-<td><code>rec_metering</code>, <code>rec_registry</code></td>
-</tr>
-<tr>
-<td><code>rec_flexibility</code></td>
-<td><code>rec_metering</code>, <code>rec_flexibility_commitments</code>, and private meter forecasts</td>
-</tr>
-<tr>
-<td><code>grid</code></td>
-<td><code>om</code>, <code>mt</code>, and the private CIM silver tables. Needs PostGIS</td>
-</tr>
-</tbody>
-</table>
-<h3 id="tier-2">Tier 2</h3>
-<table>
-<thead>
-<tr>
-<th>App</th>
-<th>Needs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>pv_estimation</code></td>
-<td><code>overture</code>, <code>rec_it</code> (<code>gse_cabine_primarie</code>), <code>trentino_rooftops</code> (<code>pv_building_suitability</code>), and optionally <code>pv_detection</code></td>
-</tr>
-</tbody>
-</table>
+tables, and the order comes from what each app declares: <code>depends_on:</code> in its
+<code>governance.yaml</code> names the datasets it reads, <code>sources:</code> names what it produces, and
+<code>celine-utils</code> resolves one against the other.</p>
+<p><strong>Ask for the order rather than reading it here</strong> — it is generated from the files, so it
+cannot go stale the way a table in a document does:</p>
+<pre><code class="language-bash">uv run celine-utils governance graph 'apps/*'            # tiers, and anything inconsistent
+uv run celine-utils governance graph 'apps/*' -f order   # the same, flattened to a sequence
+</code></pre>
+<p>Everything in one tier may run in any order, or in parallel; a tier needs the one before
+it. <code>--strict</code> exits non-zero if any pipeline declares an input nothing here produces,
+which is the form to run in CI. Requires <code>celine-utils</code> 2.4 or later; on an older
+install, the tiers below are the same graph as of 2026-08-18.</p>
+<details>
+<summary>The tiers, as the command prints them today</summary>
+
+
+<pre><code class="language-text">tier 0   copernicus  dwd  mt  om  osm  overture  owm
+         rec_flexibility_commitments  rec_metering  rec_registry
+tier 1   grid  pv_detection  rec_flexibility  rec_it  trentino_rooftops  weather
+tier 2   pv_estimation
+</code></pre>
+
+
+Seven declare `active: false`, meaning they are on no schedule anywhere and the tiers
+above include them only for completeness:
+
+| | |
+|---|---|
+| retired | `copernicus`, `dwd`, `owm` — each superseded by another pipeline |
+| local only | `overture`, `trentino_rooftops`, `pv_detection`, `pv_estimation` — run on demand against a local database |
+
+The four local-only ones form a connected subtree, so building any of them means building
+the ones above it. Skip all seven unless you specifically need what they produce.
+
+</details>
+
+<p><strong>Five tables come from outside this repository</strong>, so the pipelines that read them cannot
+be built from here alone: <code>rec_metering</code> needs <code>meters_data_normalized</code>, <code>grid</code> needs
+<code>silver_grid_ac_line_segment</code> and <code>silver_grid_substation</code>, and <code>rec_flexibility</code> needs
+<code>meters_energy_forecast</code> and <code>total_meters_forecast</code>. Each is declared <code>external: true</code>
+in the consuming app's <code>depends_on:</code>, and the graph lists them under <em>satisfied outside
+this scan</em>. See the companion's knowledge for how to obtain them.</p>
 <h3 id="the-shape-of-one-apps-build">The shape of one app's build</h3>
 <pre><code class="language-bash">cd apps/&lt;name&gt;
 source &lt;(uv run celine-utils pipeline run envs)
