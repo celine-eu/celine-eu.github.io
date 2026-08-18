@@ -2850,6 +2850,45 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#governance-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        governance graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="governance graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-deployed-schedules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the deployed schedules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2886,6 +2925,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="pipeline run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-dbt-spec-grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The dbt spec grammar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4249,6 +4305,45 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#governance-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        governance graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="governance graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-deployed-schedules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the deployed schedules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4285,6 +4380,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="pipeline run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-dbt-spec-grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The dbt spec grammar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4324,10 +4436,11 @@
 <h1 id="cli-reference">CLI reference</h1>
 <pre><code class="language-text">celine-utils
 ├── governance
-│   └── generate marquez
+│   ├── generate marquez
+│   └── graph
 └── pipeline
     ├── init app
-    └── run  (envs | meltano | dbt | prefect)
+    └── run  (envs | meltano | seed | dbt | build | prefect)
 </code></pre>
 <p>Installed as the <code>celine-utils</code> entry point. From a checkout of this repository,
 <code>task cli -- &lt;args&gt;</code> runs the same CLI from the working tree.</p>
@@ -4399,6 +4512,116 @@ it.</p>
 <code>KEYCLOAK_*</code> variables when Marquez requires authentication — see
 <a href="../environment/">environment</a>.</p>
 <hr />
+<h3 id="governance-graph"><code>governance graph</code></h3>
+<p>Show which pipelines feed which, resolved from the <code>depends_on</code> and <code>sources</code> blocks of
+every <code>governance.yaml</code> matched.</p>
+<pre><code class="language-bash">celine-utils governance graph [PATHS...] [--format tree|order|json|mermaid]
+                              [--schedules FILE] [--strict]
+</code></pre>
+<p><code>PATHS</code> are shell globs naming pipelines or governance files. A directory contributes
+the <code>governance.yaml</code> inside it, so <code>apps/*</code> and <code>apps/*/governance.yaml</code> are
+equivalent; <code>governance.&lt;name&gt;.yaml</code> is a deployer overlay and is skipped with a note.
+The default is <code>apps/*</code>.</p>
+<pre><code class="language-bash"># one repository
+celine-utils governance graph 'apps/*'
+
+# a deployment and the open-source pipelines together
+celine-utils governance graph 'apps/*' '/path/to/deployment/pipelines/apps/*'
+
+# the run order, flattened — what to run, in sequence
+celine-utils governance graph 'apps/*' --format order
+
+# a diagram, or something to feed a scheduler
+celine-utils governance graph 'apps/*' --format mermaid
+celine-utils governance graph 'apps/*' --format json
+</code></pre>
+<p>The tree output is a topological ordering: everything in tier <em>N</em> may run in parallel
+once tier <em>N-1</em> is done. Findings and the summary go to <strong>stderr</strong>, so the graph itself
+stays pipeable.</p>
+<p><strong>Which trees you glob is a judgement, not a detail.</strong> A deployment repository may hold
+unmaintained copies of open-source apps, and including them reports every dataset those
+copies declare as having two producers.</p>
+<h4 id="findings">Findings</h4>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unresolved</code></td>
+<td>No scanned pipeline produces the dataset and it is not marked <code>external: true</code> — a typo, or a tree you did not glob</td>
+</tr>
+<tr>
+<td><code>multiple-producers</code></td>
+<td>Two governance files declare the same dataset: two answers to who owns it, and an ambiguous producer for anything depending on it</td>
+</tr>
+<tr>
+<td><code>cycle</code></td>
+<td>No run order exists for the pipelines named</td>
+</tr>
+<tr>
+<td><code>self-dependency</code></td>
+<td>A pipeline depends on a dataset it also declares as its own output</td>
+</tr>
+<tr>
+<td><code>inactive-producer</code></td>
+<td>An active pipeline reads from one marked <code>active: false</code> — whatever it reads is as old as the last time that pipeline ran</td>
+</tr>
+<tr>
+<td><code>external-satisfied</code></td>
+<td>An entry marked <code>external: true</code> that a producer in this scan satisfies. Informational — it means a wider scan closed the graph</td>
+</tr>
+</tbody>
+</table>
+<p><code>--strict</code> exits 1 when anything other than <code>external-satisfied</code> or
+<code>schedule-unverified</code> is reported, which is the form for CI.</p>
+<h4 id="checking-the-deployed-schedules">Checking the deployed schedules</h4>
+<p>Pass a deployment's scheduled flows and the crons are checked against the graph:</p>
+<pre><code class="language-bash">celine-utils governance graph 'apps/*' --schedules staging-flows.yaml
+</code></pre>
+<pre><code class="language-yaml">flows:
+  - name: weather
+    path: /pipelines/apps/weather/flows/pipeline.py   # or: app: weather
+    schedule:
+      cron: &quot;15 * * * *&quot;
+</code></pre>
+<p><code>app</code> may be given directly or derived from <code>path</code>, which is the shape a Prefect
+deployment manifest already has. An entry with no cron is skipped — a flow triggered by
+hand has no ordering to check.</p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schedule-inversion</code></td>
+<td>Both fire hourly, never in the same minute, and the consumer is always earlier in the hour. It succeeds every time, on the previous run's output</td>
+</tr>
+<tr>
+<td><code>schedule-collision</code></td>
+<td>Producer and consumer can start in the same minute; which run the consumer sees depends on which starts first</td>
+</tr>
+<tr>
+<td><code>schedule-unverified</code></td>
+<td>The same two problems, on a pair where an app deploys several flows. Governance is per app and cannot say which flow produces which dataset, so the pairing may not be the one that moves the data. Advisory, and excluded from <code>--strict</code></td>
+</tr>
+<tr>
+<td><code>not-deployed</code></td>
+<td>A pipeline marked active that no scheduled flow in this deployment runs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Schedules are not read from <code>governance.yaml</code>, deliberately.</strong> A cron is a deployment
+fact: one app runs several flows on independent schedules, and the same pipeline runs on
+different schedules in different deployments. A governance file is one per app and is
+shared by every deployment that installs it, so it is the wrong place for either.</p>
+<hr />
 <h2 id="pipeline">pipeline</h2>
 <h3 id="pipeline-init-app"><code>pipeline init app</code></h3>
 <p>Scaffold a new pipeline application.</p>
@@ -4437,8 +4660,16 @@ these from inside the app.</p>
 <td>Run a Meltano command in the app's <code>meltano/</code>. Default: <code>run import</code></td>
 </tr>
 <tr>
-<td><code>pipeline run dbt &lt;tag&gt;</code></td>
-<td><code>dbt run</code> then <code>dbt test</code>, both <code>--select tag:&lt;tag&gt;</code>, in the app's <code>dbt/</code></td>
+<td><code>pipeline run seed</code></td>
+<td><code>dbt seed</code> in the app's <code>dbt/</code></td>
+</tr>
+<tr>
+<td><code>pipeline run dbt &lt;spec&gt;</code></td>
+<td>One dbt stage in the app's <code>dbt/</code> — see the spec grammar below</td>
+</tr>
+<tr>
+<td><code>pipeline run build [select]</code></td>
+<td><code>dbt build</code> — every model followed immediately by its own tests</td>
 </tr>
 <tr>
 <td><code>pipeline run prefect</code></td>
@@ -4452,12 +4683,61 @@ source &lt;(celine-utils pipeline run envs)
 celine-utils pipeline run meltano
 celine-utils pipeline run meltano &quot;run import --select my_stream&quot;
 
+celine-utils pipeline run seed
 celine-utils pipeline run dbt staging
-celine-utils pipeline run dbt gold
+celine-utils pipeline run dbt &quot;test -s tag:meters&quot;
+celine-utils pipeline run build silver
 
 celine-utils pipeline run prefect
 celine-utils pipeline run prefect --flow pipeline --function om_flow
 </code></pre>
+<h4 id="the-dbt-spec-grammar">The dbt spec grammar</h4>
+<p><code>pipeline run dbt</code> takes <strong>one string</strong>, not a bare tag, and the same string that a
+flow passes to <code>dbt_run()</code>. It may open with a dbt subcommand — <code>run</code>, <code>build</code>,
+<code>test</code>, <code>seed</code>, <code>snapshot</code> — and defaults to <code>run</code> when it does not:</p>
+<table>
+<thead>
+<tr>
+<th>Spec</th>
+<th>Runs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>silver</code></td>
+<td><code>dbt run --select silver</code></td>
+</tr>
+<tr>
+<td><code>staging --exclude tag:meters</code></td>
+<td><code>dbt run --select staging --exclude tag:meters</code></td>
+</tr>
+<tr>
+<td><code>-s gold,tag:wind</code></td>
+<td><code>dbt run -s gold,tag:wind</code></td>
+</tr>
+<tr>
+<td><code>build -s silver</code></td>
+<td><code>dbt build -s silver</code></td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td><code>dbt test</code></td>
+</tr>
+<tr>
+<td><code>test -s tag:meters</code></td>
+<td><code>dbt test -s tag:meters</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>--select</code> is injected only when the spec names nodes without a selection flag of
+its own. A consequence of the leading-subcommand rule: a model actually <em>named</em>
+<code>run</code>, <code>build</code>, <code>test</code>, <code>seed</code> or <code>snapshot</code> is shadowed, and has to be named
+through an explicit <code>-s</code>.</p>
+<p><strong>Which verb.</strong> <code>build</code> is the one to use when the point is to populate the
+database: it interleaves each model's tests with the model, so a layer that
+populated badly fails where it broke rather than several layers downstream. <code>run</code>
+is for iterating on a single model, where the tests are noise until the model is
+right.</p>
 <p><code>pipeline run prefect</code> auto-detects both the flow module and the decorated function
 when <code>--flow</code> / <code>--function</code> are omitted. Pass them explicitly when a module holds
 more than one flow.</p>

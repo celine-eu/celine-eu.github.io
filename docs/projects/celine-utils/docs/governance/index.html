@@ -2794,6 +2794,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#depends_on-what-a-pipeline-consumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        depends_on — what a pipeline consumes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="depends_on — what a pipeline consumes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#it-names-datasets-not-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        It names datasets, not pipelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glob-the-schema-segment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glob the schema segment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#absent-is-not-empty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Absent is not empty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading-the-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#active-whether-the-pipeline-is-meant-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        active — whether the pipeline is meant to run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4381,6 +4453,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#depends_on-what-a-pipeline-consumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        depends_on — what a pipeline consumes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="depends_on — what a pipeline consumes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#it-names-datasets-not-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        It names datasets, not pipelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glob-the-schema-segment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glob the schema segment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#absent-is-not-empty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Absent is not empty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading-the-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#active-whether-the-pipeline-is-meant-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        active — whether the pipeline is meant to run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4616,16 +4760,132 @@ about what the same file meant; see
 </ol>
 <hr />
 <h2 id="shape">Shape</h2>
-<p>Two top-level sections, both optional:</p>
-<pre><code class="language-yaml">defaults:            # baseline applied to every dataset
+<p>Four top-level keys, all optional:</p>
+<pre><code class="language-yaml">active: true         # whether this pipeline is meant to run at all
+
+defaults:            # baseline applied to every dataset
   &lt;field&gt;: &lt;value&gt;
 
-sources:             # per-dataset or per-pattern overrides
+depends_on:          # datasets this pipeline CONSUMES
+  - dataset: &lt;dataset-name-or-glob&gt;
+
+sources:             # per-dataset or per-pattern overrides — what it PRODUCES
   &lt;dataset-name-or-glob&gt;:
     &lt;field&gt;: &lt;value&gt;
 </code></pre>
 <p>A <code>sources</code> entry may also nest its fields under a <code>governance:</code> key; the parser
 accepts both spellings and treats them identically.</p>
+<p>Nothing else may appear at the root. A key that is not one of the four is reported
+by <code>validate</code>, on the same terms as an unknown key inside a block — otherwise a
+misspelled <code>depends-on:</code> validates against the schema, is skipped by the parser, and
+the graph comes out empty with nothing connecting the two.</p>
+<hr />
+<h2 id="depends_on-what-a-pipeline-consumes"><code>depends_on</code> — what a pipeline consumes</h2>
+<p><code>sources</code> says what a pipeline produces. <code>depends_on</code> says what it reads, and the two
+together are what make the ordering <em>between</em> pipelines derivable. Each app is its own
+dbt project, so <code>ref()</code> never crosses an app boundary and <code>dbt build</code> can only order
+models within one pipeline; across pipelines there is otherwise no graph at all.</p>
+<pre><code class="language-yaml">depends_on:
+  - dataset: datasets.*_gold.weather__forecast_hourly
+    description: &gt;
+      Provider-neutral contract table. Any provider pipeline publishing this alias
+      satisfies it, and adding a provider needs no change here.
+
+  - dataset: datasets.*_silver.meters_data_normalized
+    external: true
+
+  - dataset: datasets.*_gold.pv_detected_installations
+    optional: true
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dataset</code></td>
+<td>string, <strong>required</strong></td>
+<td>—</td>
+<td>The dataset, in the same <code>&lt;database&gt;.&lt;schema&gt;.&lt;table&gt;</code> vocabulary as a <code>sources</code> key. Literal or glob</td>
+</tr>
+<tr>
+<td><code>external</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>No pipeline in the scanned set produces it; it is satisfied elsewhere</td>
+</tr>
+<tr>
+<td><code>optional</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>A soft edge — order after the producer where it exists, but do not require it</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>—</td>
+<td>Why this pipeline needs it</td>
+</tr>
+</tbody>
+</table>
+<p>Unlike a governance block, an entry rejects any other key outright. This part of the
+grammar has no files predating validation, so there is no migration to trade against.</p>
+<h3 id="it-names-datasets-not-pipelines">It names datasets, not pipelines</h3>
+<p>Deliberately, and it matters in three places. Several producers can satisfy one dataset
+through a shared alias — <code>weather</code> reads <code>weather__forecast_hourly</code> precisely so that it
+need not know which provider pipeline ran. A deployment may substitute its own producer
+for a contract table. And an entry that resolves to nothing is simply satisfied
+somewhere that was not scanned, which lets an open-source file declare an upstream
+without naming the repository that provides it.</p>
+<h3 id="glob-the-schema-segment">Glob the schema segment</h3>
+<p><code>ds_dev_*</code> is the platform default and stays the default everywhere — environments
+are separated by infrastructure, not by renaming schemas. But a consumer resolves the
+schema through <code>CELINE_SILVER_SCHEMA</code> / <code>CELINE_GOLD_SCHEMA</code>, which a deployment may
+point anywhere. Matching is applied in <strong>both</strong> directions, so writing</p>
+<pre><code class="language-yaml">- dataset: datasets.*_gold.pv_overture_buildings
+</code></pre>
+<p>resolves against a producer whichever schema either side names, instead of binding
+the declaration to one deployment's configuration. A missing edge is worse than missing
+metadata: metadata falls back to a default, an ordering is read as an instruction.</p>
+<h3 id="absent-is-not-empty">Absent is not empty</h3>
+<p>Omitting <code>depends_on</code> means <em>this file has not declared its inputs</em>. Writing
+<code>depends_on: []</code> means <em>this pipeline has no upstream</em>. Keeping the two apart is what
+lets a report separate a genuine root — an ingestion pipeline fed by its own extractors
+— from a file that has not yet adopted the field, so declare <code>[]</code> explicitly where it
+is true.</p>
+<p>In a deployer overlay, <code>depends_on</code> is <strong>whole replacement</strong> where the overlay states
+one, on the same rule as <code>ownership</code> and <code>row_filters</code>: a partial input list is not a
+meaningful statement, and substituting a producer is exactly what an overlay is for. An
+overlay that does not mention it inherits; one that says <code>[]</code> withdraws.</p>
+<h3 id="reading-the-graph">Reading the graph</h3>
+<pre><code class="language-bash">celine-utils governance graph 'apps/*'
+</code></pre>
+<p>See <a href="../cli/#governance-graph">the CLI reference</a> for the output formats and what each
+finding means.</p>
+<hr />
+<h2 id="active-whether-the-pipeline-is-meant-to-run"><code>active</code> — whether the pipeline is meant to run</h2>
+<pre><code class="language-yaml">active: false
+</code></pre>
+<p>Defaults to <code>true</code>. <code>false</code> says the pipeline is not on a schedule anywhere — either
+<strong>retired</strong>, superseded by another pipeline, or <strong>local only</strong>, run on demand against a
+local database. The two are not distinguished, because for the graph they are the same
+statement: the datasets it already produced stay catalogued, and nothing new arrives
+unless someone acts.</p>
+<p>An active pipeline reading from an inactive one is reported, because whatever it reads is
+as old as the last time that pipeline ran.</p>
+<p><strong>App-level, and that is a real limit rather than an oversight.</strong> One app can host
+several flows on independent schedules, and a deployment can pause one of them — <code>om</code>
+deploys four flows and its observations flow is paused while the other three run. This
+field cannot express that and must not be read as if it could. What it does say honestly
+is that an app has no deployed flow at all, which is the case that leaves a whole subtree
+of the graph dormant with nothing recording why.</p>
+<p>Whether a pipeline runs <em>in one deployment</em> is that deployment's fact, so a deployer
+overlay is the place to withdraw one. This key states the repository's own intent.</p>
 <hr />
 <h2 id="resolution">Resolution</h2>
 <p><code>resolve("db.schema.table")</code> picks exactly one <code>sources</code> entry, then overlays it on
