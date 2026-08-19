@@ -4167,6 +4167,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#local-charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Charts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local Charts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontends
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#related-projects" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4458,6 +4519,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#local-charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Charts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local Charts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontends
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#related-projects" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4619,6 +4741,54 @@ sops -d secrets.enc.yaml
 - Platform operators
 - CI/CD automation</p>
 <p>It is not intended as a general developer quickstart.</p>
+<hr />
+<h2 id="local-charts">Local Charts</h2>
+<p>Charts under <code>charts/</code> are deployed from the working tree by <code>helmfile.d/</code>.
+<code>defaults/</code> is the integration point between <code>envs/**/values.yaml</code> and each chart's
+<code>values.yaml</code>, so environment variables stay simple and are reused across charts.</p>
+<h3 id="shared">Shared</h3>
+<ul>
+<li><code>celine-services</code> — library chart (<code>type: library</code>) providing the shared deployment,
+  service, ingress, secret and env templates every <code>celine-*</code> service chart includes</li>
+<li><code>api-gateway</code> — exposes all CELINE APIs under a single ingress, <code>api.domain.tld/&lt;service&gt;</code></li>
+</ul>
+<h3 id="services">Services</h3>
+<ul>
+<li><code>celine-dataset-api</code> — Dataset API</li>
+<li><code>celine-dataset-api-shell</code> — Dataset API CLI to manage datasets</li>
+<li><code>celine-digital-twin</code> — Digital Twin API</li>
+<li><code>celine-flexibility-api</code> — Flexibility API</li>
+<li><code>celine-mqtt-auth</code> — mosquitto-go-auth compatible API endpoint for MQTT auth/ACL</li>
+<li><code>celine-nudging</code> — Nudging API</li>
+<li><code>celine-policies-shell</code> — Policies CLI to manage Keycloak</li>
+<li><code>celine-rec-registry</code> — REC Registry API</li>
+<li><code>celine-rec-registry-shell</code> — REC Registry CLI to manage REC organizations and asset metadata</li>
+<li><code>celine-ai-assistant</code> — AI Assistant API</li>
+<li><code>celine-roi</code> — ROI API</li>
+<li><code>celine-webapp</code> — Participant webapp API</li>
+<li><code>celine-grid</code> — Grid resilience API</li>
+</ul>
+<h3 id="frontends">Frontends</h3>
+<ul>
+<li><code>celine-frontend-assistant</code> — AI Assistant webapp</li>
+<li><code>celine-frontend-roi</code> — ROI webapp</li>
+<li><code>celine-frontend-webapp</code> — Participant webapp</li>
+<li><code>celine-frontend-grid</code> — Grid webapp</li>
+</ul>
+<h3 id="platform">Platform</h3>
+<ul>
+<li><code>auth-setup</code> — secrets and configmaps for <code>oauth2-proxy</code> and <code>keycloak</code></li>
+<li><code>mqtt-setup</code> — MQTT access for services</li>
+<li><code>mqtt-ingestor</code> — ingests every MQTT message on the configured topics into a database</li>
+<li><code>marquez</code> — Marquez OpenLineage endpoints and UI</li>
+<li><code>mosquitto-go-auth</code> — mosquitto with the mosquitto-go-auth module</li>
+<li><code>pg-freezer</code> — cold storage service mirroring table records to minio/s3 as parquet, then cleaning the tables</li>
+<li><code>postgres-db</code> — CNPG-specific configuration for the database/user maps</li>
+<li><code>prefect-pipelines</code> — collects and deploys the CELINE data pipelines</li>
+<li><code>registry-accounts</code> — docker/ghcr.io secrets for image pulling</li>
+<li><code>s3-accounts</code> — minio/s3 access credentials</li>
+<li><code>tls-setup</code> — TLS for local (self-signed) and production (Let's Encrypt) environments</li>
+</ul>
 <hr />
 <h2 id="related-projects">Related Projects</h2>
 <ul>
