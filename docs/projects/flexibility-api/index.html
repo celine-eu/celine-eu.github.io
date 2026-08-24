@@ -4477,8 +4477,12 @@ task run
 <td>Apply pending migrations</td>
 </tr>
 <tr>
-<td><code>task alembic:revision</code></td>
+<td><code>task alembic:sync-model</code></td>
 <td>Generate new migration</td>
+</tr>
+<tr>
+<td><code>task alembic:check</code></td>
+<td>Fail if the models have drifted from the migrations</td>
 </tr>
 <tr>
 <td><code>task alembic:reset</code></td>
