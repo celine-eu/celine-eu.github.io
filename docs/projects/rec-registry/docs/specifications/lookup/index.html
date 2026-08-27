@@ -4091,10 +4091,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-unbounded" class="md-nav__link">
+  <a href="#req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-bounded" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0043 — sensor ids can be resolved in a batch, and that batch is unbounded
+        REQ-0043 — sensor ids can be resolved in a batch, and that batch is bounded
       
     </span>
   </a>
@@ -4148,8 +4148,10 @@ a user id, a sensor id or a delivery point.</p>
 and nothing else; a dataset request arrives carrying a user id. The caller cannot map
 either to a community without asking, and six repositories ask.</p>
 <p>Two of these requirements are security properties wearing the clothes of ordinary
-behaviour: the batch form is <strong>bounded</strong> (REQ-0045), and none of it is an <strong>enumeration
-oracle</strong> (REQ-0045). Both are easy to undo while making the endpoint more useful.</p>
+behaviour: <strong>both</strong> batch forms are bounded, at one shared number (REQ-0043, REQ-0045), and
+none of it is an <strong>enumeration oracle</strong> (REQ-0045). Both properties are easy to undo while
+making the endpoint more useful, and one of them already was — <code>assets-by-sensor-ids</code>
+carried no bound at all until the two were made to read the same constant.</p>
 <hr />
 <h3 id="req-0038-a-user-id-resolves-to-its-community-and-the-member-row-within-it">REQ-0038 — a user id resolves to its community and the member row within it</h3>
 <p><code>GET /admin/lookup/community-by-user-id/{user_id}</code> answers the community reference and the
@@ -4177,21 +4179,25 @@ points, and names the community it belongs to. Unknown is <code>404</code>.</p>
 <p><code>GET /admin/lookup/asset-by-sensor-id/{sensor_id}</code> answers the asset with its properties,
 device and relationships, plus <code>owner_key</code>, <code>owner_user_id</code> and the community. Unknown is
 <code>404</code>.</p>
-<h3 id="req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-unbounded">REQ-0043 — sensor ids can be resolved in a batch, and that batch is unbounded</h3>
+<h3 id="req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-bounded">REQ-0043 — sensor ids can be resolved in a batch, and that batch is bounded</h3>
 <p><code>POST /admin/lookup/assets-by-sensor-ids</code> resolves many sensor ids in one request,
-answering one record per asset found.</p>
+answering one record per asset found. An empty list answers an empty list without querying.</p>
 <p>A sensor id that matches nothing <strong>contributes no row</strong> rather than failing the request:
 the caller asked about a set, and one absent member of it does not make the rest
 unanswerable.</p>
-<p><strong>The request carries no bound at all</strong>, unlike its sibling REQ-0045 which caps at 500.
-The asymmetry is accidental — the bound arrived with the newer endpoint and was not
-applied to this one — and it is a defect,
-<a href="https://github.com/celine-eu/rec-registry/issues/37">#37</a>. Sensor ids are less guessable
-than usernames, which makes this weaker as an enumeration path but not as a bulk
-extraction one: a caller holding a list of sensor ids can resolve all of them, with their
-owners and communities, in one request of unlimited size.</p>
-<p>Stated as current behaviour so that adding the bound is a visible three-part change —
-code, this requirement, its test — rather than a silent one.</p>
+<p><strong>Bounded:</strong> at most 500 sensor ids in one request; 501 is <code>422</code> and 500 is accepted. The
+same number as REQ-0045, from the same constant — <code>MAX_BATCH_LOOKUP_IDS</code>, which both
+request models read. This route carried no bound at all while its sibling capped at 500,
+and the asymmetry was accidental: the bound arrived with the newer endpoint and was not
+applied to this one. Two literals would have let that happen again.</p>
+<p>Sensor ids are less guessable than usernames, which made this the weaker <em>enumeration</em>
+path — but not the weaker <em>bulk extraction</em> one, and extraction is what a bound is for: a
+caller holding a list of sensor ids resolves every owner and community behind them in one
+request.</p>
+<p><strong>A bound on one request is not a bound on extraction.</strong> Nothing rate-limits this route and
+nothing counts what one caller has resolved over an hour, so a caller who wants the
+registry can still page through it 500 at a time. What the bound removes is the single
+request that takes all of it.</p>
 <h3 id="req-0044-assets-can-be-resolved-for-a-set-of-members-and-every-row-names-its-owner">REQ-0044 — assets can be resolved for a set of members, and every row names its owner</h3>
 <p><code>POST /admin/lookup/assets-by-user-ids</code> is the mirror of REQ-0043: that one starts from a
 device and finds its owner, this one starts from owners and finds their devices. An empty
