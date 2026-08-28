@@ -4080,10 +4080,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0005-import-export-and-lookup-keep-their-own-actions" class="md-nav__link">
+  <a href="#req-0005-import-export-and-lookup-keep-their-own-actions-and-one-lookup-is-named-apart" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0005 — import, export and lookup keep their own actions
+        REQ-0005 — import, export and lookup keep their own actions, and one lookup is named apart
       
     </span>
   </a>
@@ -4208,10 +4208,19 @@ every caller during development.</p>
 <p><code>PATCH /admin/communities/{ck}</code> and any write on <code>…/areas/{key}</code> derive <code>community.write</code>.
 Areas are community structure rather than membership, so they are authorised with the
 community and not with the members who reference them.</p>
-<h3 id="req-0005-import-export-and-lookup-keep-their-own-actions">REQ-0005 — import, export and lookup keep their own actions</h3>
+<h3 id="req-0005-import-export-and-lookup-keep-their-own-actions-and-one-lookup-is-named-apart">REQ-0005 — import, export and lookup keep their own actions, and one lookup is named apart</h3>
 <p><code>/admin/import</code> and <code>/admin/import/yaml</code> derive <code>import</code>; <code>/admin/export</code> derives
-<code>export</code>; anything under <code>/admin/lookup/</code> derives <code>lookup</code>, including its batch routes.</p>
-<p>These three are separable because they are the ones a service account most often should
+<code>export</code>; anything under <code>/admin/lookup/</code> derives <code>lookup</code>.</p>
+<p><strong>With two exceptions, and they are the same exception twice.</strong>
+<code>/admin/lookup/assets-by-user-ids</code> and <code>/admin/lookup/members-by-dids</code> derive
+<strong><code>assets.lookup</code></strong>. Both start from an identifier that names a <em>person</em> and answer what
+that person holds; the rest answer which community a user, a sensor or a supply point sits
+in. That is a different disclosure, so it gets a different name.</p>
+<p>Both are granted by <code>rec-registry.lookup</code> today and nothing changes for a caller — naming
+them apart is what lets a policy separate them later without an API change. Anything else
+under <code>/admin/lookup/</code> falls through to <code>lookup</code>, so a new person-shaped batch route has to
+be added here deliberately rather than inheriting the broader action by default.</p>
+<p>These are separable because they are the ones a service account most often should
 <em>not</em> have. A service that registers approved participants needs <code>members.write</code> and
 <code>assets.write</code>, and has no business importing, exporting or purging.</p>
 <h3 id="req-0006-erasing-a-member-is-authorised-apart-from-writing-one">REQ-0006 — erasing a member is authorised apart from writing one</h3>
@@ -4234,8 +4243,8 @@ that have no such operation.</p>
 <h3 id="req-0009-serviceadmin-satisfies-every-action">REQ-0009 — <code>{service}.admin</code> satisfies every action</h3>
 <p>The shared scope matcher in <code>../celine-sdk</code> treats a held scope ending <code>.admin</code> as
 covering every action of that service, so <code>rec-registry.admin</code> satisfies <code>read</code>,
-<code>members.write</code>, <code>members.purge</code>, <code>assets.write</code>, <code>community.write</code>, <code>import</code>, <code>export</code>
-and <code>lookup</code>.</p>
+<code>members.write</code>, <code>members.purge</code>, <code>assets.write</code>, <code>community.write</code>, <code>import</code>, <code>export</code>,
+<code>lookup</code> and <code>assets.lookup</code>.</p>
 <p>This is what made the fine-grained actions backwards compatible: every token that worked
 before they existed still works. The property is pinned by reading
 <code>policies/celine/scopes.rego</code> directly, because its absence would be silent until
@@ -4243,12 +4252,14 @@ deployment — and would then revoke access for every existing admin token at on
 <p><strong>It is compatibility, not a recommendation.</strong> Do not grant <code>rec-registry.admin</code> to a
 service account; grant the actions it calls.</p>
 <h3 id="req-0010-every-action-name-has-a-rule-in-the-rego-bundle">REQ-0010 — every action name has a rule in the Rego bundle</h3>
-<p><code>policies/celine/rec_registry/access.rego</code> carries a rule for each of the eight action
-names. An action derived by the middleware with no corresponding rule would be denied by
-default — a fail-closed outcome, but one that presents as an unexplained <code>403</code> in
-production rather than as anything a test would catch.</p>
-<p>So the bundle is read and checked for all eight, rather than the actions being exercised
-one at a time.</p>
+<p><code>policies/celine/rec_registry/access.rego</code> carries a rule for each of the nine action
+names <code>_get_admin_action</code> can return. An action derived by the middleware with no
+corresponding rule would be denied by default — a fail-closed outcome, but one that
+presents as an unexplained <code>403</code> in production rather than as anything a test would catch.</p>
+<p>So the bundle is read and checked for all nine, rather than the actions being exercised
+one at a time. <code>assets.lookup</code> is the one that shows why this is checked as a set: it was
+added to the middleware and to the bundle together but left out of the list being checked,
+so for a while the check passed while covering eight of nine.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>

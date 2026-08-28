@@ -4393,7 +4393,12 @@
 <tr>
 <td><code>user_id</code></td>
 <td><code>str</code></td>
-<td>Identity provider user ID</td>
+<td>Keycloak <strong>username</strong> the participant authenticates with — not a subject UUID</td>
+</tr>
+<tr>
+<td><code>did</code></td>
+<td><code>str?</code></td>
+<td>Dataspace decentralised identifier. Optional, unique across the whole registry</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -4427,6 +4432,12 @@
 </tr>
 </tbody>
 </table>
+<p>A member carries three identifiers and each answers a different question: <code>key</code> is what
+this community calls them, <code>user_id</code> is who they authenticate as, and <code>did</code> is who they are
+in the dataspace. <code>user_id</code> matches <code>preferred_username</code> in the token — a row written with
+a subject UUID exports cleanly and locks its owner out. <code>did</code> arrives after registration
+(the identity is minted a step later) and is absent entirely in a deployment with no
+dataspace.</p>
 <h3 id="asset">Asset</h3>
 <p>A physical or virtual energy asset associated with a member and community.</p>
 <table>

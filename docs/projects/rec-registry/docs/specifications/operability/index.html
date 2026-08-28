@@ -4166,6 +4166,13 @@ readiness check that does.</p>
   which matched nothing anywhere.</li>
 </ul>
 <p>The route still answers with no database, for the same reason <code>/health</code> does.</p>
+<p><strong>The OpenAPI document derives both too.</strong> <code>create_app</code> sets <code>info.version</code> from
+<code>api_version()</code> and names the bundle schema from <code>CURRENT_SCHEMA_VERSION</code>; they were the
+literals <code>"1.0.0"</code> and <code>"v0.4 schema"</code>, which is the same defect in a fifth place. It
+matters more here than in a docstring: <code>../celine-sdk</code> snapshots this API under
+<code>openapi/rec-registry/v&lt;info.version&gt;/</code> and generates its client from that directory, so a
+version that does not move while the document does overwrites a snapshot in place — and no
+consumer of the generated client can tell the API changed.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>

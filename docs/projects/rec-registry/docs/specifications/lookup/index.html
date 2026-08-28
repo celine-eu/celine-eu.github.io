@@ -4123,6 +4123,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0061-a-set-of-dids-resolves-to-the-members-holding-them-bounded-and-answering-nothing-about-who-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0061 — a set of DIDs resolves to the members holding them, bounded and answering nothing about who exists
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4224,6 +4235,29 @@ communities, membership is itself the disclosure — knowing that a given person
 energy community is information about them regardless of what they own.</p>
 <p>The temptation to undo this is real and reasonable-sounding: <em>"tell the caller which ids
 were not found, so they can clean their list."</em> That helpfulness is the oracle.</p>
+<h3 id="req-0061-a-set-of-dids-resolves-to-the-members-holding-them-bounded-and-answering-nothing-about-who-exists">REQ-0061 — a set of DIDs resolves to the members holding them, bounded and answering nothing about who exists</h3>
+<p><code>POST /admin/lookup/members-by-dids</code> answers one member record per DID found — key,
+<code>user_id</code>, <code>did</code>, name, role, area, status, <strong>delivery points</strong>, and the community.</p>
+<p><strong>It answers members, not assets</strong>, and that is the part it would be easy to get wrong. The
+obvious move is to mirror REQ-0044 exactly and return assets, and it loses the supply point
+in the common case: <code>../onboarding</code> writes the declared POD into <code>Member.delivery_points</code>
+and registers <strong>no assets</strong>, because a meter's <code>sensor_id</code> is assigned at physical
+installation, long after onboarding. An asset-shaped answer is empty for every participant
+whose meter has not been commissioned. A commissioned meter stays reachable through the
+<code>user_id</code> in the same row and REQ-0044.</p>
+<p><strong>Every row carries its <code>did</code></strong>, which is what lets the caller attribute a row back to the
+DID it asked about — the same job <code>owner_user_id</code> does in REQ-0044.</p>
+<p><strong>Bounded:</strong> at most 500 DIDs in one request; 501 is <code>422</code> and 500 is accepted. The same
+number as REQ-0043 and REQ-0045, from the same <code>MAX_BATCH_LOOKUP_IDS</code>. A DID is the
+identifier a consent record is written in, so the set a caller holds is a set of people who
+consented — and this route turns that into the supply points they hold. The bound is the
+same security decision it is on the other two.</p>
+<p><strong>Not an oracle:</strong> a DID belonging to nobody and a member holding no supply points are
+deliberately indistinguishable — both contribute no rows, and neither is a <code>404</code>. An empty
+list of DIDs answers an empty list without querying.</p>
+<p><strong>It derives <code>assets.lookup</code>, not <code>lookup</code></strong> (REQ-0005). Resolving what a named person
+holds is a different disclosure from resolving which community a sensor sits in, and this
+route does the first.</p>
 
 
 

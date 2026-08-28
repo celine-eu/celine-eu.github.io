@@ -4167,6 +4167,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0060 — the dataspace DID is written by PATCH, and a clash names its holder only within the community
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4315,6 +4326,33 @@ the member count afterwards — <code>tests/test_writes.py::TestNoWriteReducesAS
 is a <strong>registry of writes, not a sample of them</strong>: a new write endpoint must be added to
 it, and one that is missing from it is a write nobody has checked for the single thing the
 write API guarantees.</p>
+<h3 id="req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community">REQ-0060 — the dataspace DID is written by <code>PATCH</code>, and a clash names its holder only within the community</h3>
+<p><code>PATCH …/members/{mk}</code> accepts <code>did</code> alongside the fields of REQ-0024. There is <strong>no
+dedicated route</strong>: the DID is minted a step after the member is registered, so it arrives
+as an update to a row that already exists, and a write endpoint of its own would earn
+nothing <code>PATCH</code> already does while adding one more entry to REQ-0031's registry of writes.</p>
+<p><strong>Re-sending a member the DID it already holds is a <code>200</code> that changes nothing.</strong>
+<code>../onboarding</code> writes it from a retriable step, so the same write arriving twice must not
+be a conflict — the member itself is excluded from the clash check, by row id rather than
+by member key, because keys repeat across communities and the check does not filter by one.</p>
+<p><strong>A DID another member already holds is <code>409</code>, and what the message says depends on where
+that member is:</strong></p>
+<ul>
+<li><strong>Inside the community the caller addressed</strong> — the response names the holding member's
+  key, as the <code>user_id</code> clash does, so the caller can act on it.</li>
+<li><strong>In any other community</strong> — the response says the DID belongs to another member and
+  names nobody. Which member of which community holds a DID is a question about people the
+  caller was not addressing, and answering it is the enumeration disclosure REQ-0045
+  exists to refuse.</li>
+</ul>
+<p><strong>Two writers at once get the same answer</strong>, by the mechanism of REQ-0022: the check cannot
+see an uncommitted row, <code>ix_member_did</code> refuses the loser, and that refusal is translated
+into the same <code>409</code>. The translated message is the community-blind one — by then there is
+no holder in hand to name, which is the honest answer rather than a degraded one.</p>
+<p>Creating a member that carries an already-held DID answers <code>409</code> the same way. It has no
+application-level check of its own: the two checks in <code>create_member</code> read a list of the
+community's own members, and DID uniqueness is registry-wide, so a check would be a second
+query answering exactly what the index answers.</p>
 
 
 
