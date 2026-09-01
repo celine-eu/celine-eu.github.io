@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-utils/docs/governance-library/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0001-merge-in-the-loader/">
       
       
       
@@ -16,16 +16,16 @@
         
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
     
     
       
-        <title>celine.governance — the library - CELINE Project</title>
+        <title>ADR-0001 — A realm declared by several files is merged in the loader, not pre-merged into a file - CELINE Project</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.618322db.min.css">
       
       
 
@@ -44,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#celinegovernance-the-library" class="md-skip">
+        <a href="#adr-0001-a-realm-declared-by-several-files-is-merged-in-the-loader-not-pre-merged-into-a-file" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +76,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              celine.governance — the library
+              ADR-0001 — A realm declared by several files is merged in the loader, not pre-merged into a file
             
           </span>
         </div>
@@ -169,7 +169,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../.." class="md-tabs__link">
+      <a href="../../../../.." class="md-tabs__link">
         
   
   
@@ -197,7 +197,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../celine-ai-assistant/" class="md-tabs__link">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -218,7 +218,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../pipeline-tutorial" class="md-tabs__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -237,7 +237,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../ontologies/" class="md-tabs__link">
+      <a href="../../../../../ontologies/" class="md-tabs__link">
         
   
   
@@ -256,7 +256,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../schema/" class="md-tabs__link">
+      <a href="../../../../../schema/" class="md-tabs__link">
         
   
   
@@ -291,7 +291,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -309,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../../../../.." class="md-nav__link">
         
   
   
@@ -440,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -468,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -496,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -524,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -552,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -640,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -668,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -696,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -724,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -752,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -840,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/" class="md-nav__link">
+      <a href="../../../../rec-registry/" class="md-nav__link">
         
   
   
@@ -868,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/data-model/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/data-model/" class="md-nav__link">
         
   
   
@@ -896,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -924,7 +924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/import-export/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/import-export/" class="md-nav__link">
         
   
   
@@ -952,7 +952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/development/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/development/" class="md-nav__link">
         
   
   
@@ -1040,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/" class="md-nav__link">
+      <a href="../../../../celine-webapp/" class="md-nav__link">
         
   
   
@@ -1068,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1096,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1124,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/features/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/features/" class="md-nav__link">
         
   
   
@@ -1152,7 +1152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/development/" class="md-nav__link">
         
   
   
@@ -1240,7 +1240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/" class="md-nav__link">
+      <a href="../../../../nudging-tool/" class="md-nav__link">
         
   
   
@@ -1268,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/architecture/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1296,7 +1296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/engine/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/engine/" class="md-nav__link">
         
   
   
@@ -1324,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1352,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/development/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/development/" class="md-nav__link">
         
   
   
@@ -1440,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/" class="md-nav__link">
         
   
   
@@ -1468,7 +1468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1496,7 +1496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/authentication/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/authentication/" class="md-nav__link">
         
   
   
@@ -1524,7 +1524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/services/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/services/" class="md-nav__link">
         
   
   
@@ -1552,7 +1552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/development/" class="md-nav__link">
         
   
   
@@ -1640,7 +1640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/" class="md-nav__link">
+      <a href="../../../../celine-frontend/" class="md-nav__link">
         
   
   
@@ -1668,7 +1668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/packages/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/packages/" class="md-nav__link">
         
   
   
@@ -1696,7 +1696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/apps/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/apps/" class="md-nav__link">
         
   
   
@@ -1724,7 +1724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/theming/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/theming/" class="md-nav__link">
         
   
   
@@ -1752,7 +1752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/development/" class="md-nav__link">
         
   
   
@@ -1840,7 +1840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/" class="md-nav__link">
         
   
   
@@ -1868,7 +1868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
         
   
   
@@ -1896,7 +1896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/values/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/values/" class="md-nav__link">
         
   
   
@@ -1924,7 +1924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
         
   
   
@@ -1952,7 +1952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/clients/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/clients/" class="md-nav__link">
         
   
   
@@ -1980,7 +1980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
         
   
   
@@ -2008,7 +2008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
         
   
   
@@ -2036,7 +2036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
         
   
   
@@ -2124,7 +2124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/" class="md-nav__link">
+      <a href="../../../../dataset-api/" class="md-nav__link">
         
   
   
@@ -2152,7 +2152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/architecture/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/architecture/" class="md-nav__link">
         
   
   
@@ -2180,7 +2180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
         
   
   
@@ -2208,7 +2208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/cli-operations/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/cli-operations/" class="md-nav__link">
         
   
   
@@ -2236,7 +2236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/governance-security/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/governance-security/" class="md-nav__link">
         
   
   
@@ -2264,7 +2264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/query-engine/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/query-engine/" class="md-nav__link">
         
   
   
@@ -2352,7 +2352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -2380,7 +2380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   
@@ -2408,7 +2408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -2436,7 +2436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/scopes-and-permissions/" class="md-nav__link">
+      <a href="../../scopes-and-permissions/" class="md-nav__link">
         
   
   
@@ -2464,7 +2464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/mqtt-integration/" class="md-nav__link">
+      <a href="../../mqtt-integration/" class="md-nav__link">
         
   
   
@@ -2492,7 +2492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/api-reference/" class="md-nav__link">
+      <a href="../../api-reference/" class="md-nav__link">
         
   
   
@@ -2520,7 +2520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/deployment/" class="md-nav__link">
+      <a href="../../deployment/" class="md-nav__link">
         
   
   
@@ -2608,7 +2608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -2636,7 +2636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pipeline-tutorial/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
         
   
   
@@ -2664,7 +2664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../governance/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -2692,7 +2692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schemas/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -2720,7 +2720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/cli/" class="md-nav__link">
         
   
   
@@ -2808,7 +2808,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/" class="md-nav__link">
         
   
   
@@ -2836,7 +2836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
         
   
   
@@ -2864,7 +2864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
         
   
   
@@ -2892,7 +2892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
         
   
   
@@ -2920,7 +2920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/testing/" class="md-nav__link">
         
   
   
@@ -2948,7 +2948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
   
@@ -2976,7 +2976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/om/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/om/" class="md-nav__link">
         
   
   
@@ -3004,7 +3004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
@@ -3032,7 +3032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/owm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/owm/" class="md-nav__link">
         
   
   
@@ -3060,7 +3060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
         
   
   
@@ -3088,7 +3088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/dwd/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/dwd/" class="md-nav__link">
         
   
   
@@ -3116,7 +3116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
@@ -3144,7 +3144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/osm/" class="md-nav__link">
         
   
   
@@ -3172,7 +3172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
         
   
   
@@ -3200,7 +3200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
         
   
   
@@ -3228,7 +3228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/grid/" class="md-nav__link">
         
   
   
@@ -3256,7 +3256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
         
   
   
@@ -3284,7 +3284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
         
   
   
@@ -3312,7 +3312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
         
   
   
@@ -3340,7 +3340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
         
   
   
@@ -3368,7 +3368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
         
   
   
@@ -3456,7 +3456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ontologies/" class="md-nav__link">
+      <a href="../../../../celine-ontologies/" class="md-nav__link">
         
   
   
@@ -3544,7 +3544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/" class="md-nav__link">
+      <a href="../../../../celine-grid/" class="md-nav__link">
         
   
   
@@ -3572,7 +3572,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-grid/docs/architecture/" class="md-nav__link">
         
   
   
@@ -3660,7 +3660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/" class="md-nav__link">
+      <a href="../../../../celine-roi/" class="md-nav__link">
         
   
   
@@ -3688,7 +3688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/user-guide/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/user-guide/" class="md-nav__link">
         
   
   
@@ -3716,7 +3716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/variables-reference/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/variables-reference/" class="md-nav__link">
         
   
   
@@ -3804,7 +3804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../flexibility-api/" class="md-nav__link">
+      <a href="../../../../flexibility-api/" class="md-nav__link">
         
   
   
@@ -3892,7 +3892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-infra/" class="md-nav__link">
+      <a href="../../../../celine-infra/" class="md-nav__link">
         
   
   
@@ -3935,7 +3935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pipeline-tutorial" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -3962,7 +3962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../ontologies/" class="md-nav__link">
+      <a href="../../../../../ontologies/" class="md-nav__link">
         
   
   
@@ -3989,7 +3989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../schema/" class="md-nav__link">
+      <a href="../../../../../schema/" class="md-nav__link">
         
   
   
@@ -4036,88 +4036,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-dependency-contract" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The dependency contract
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The dependency contract">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installing-just-the-core" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installing just the core
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#import-path" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Import path
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reading-a-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading a file
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Reading a file">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructors
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parse_rule" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        parse_rule
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Merging
+        Context
       
     </span>
   </a>
@@ -4125,10 +4047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation
+        Decision
       
     </span>
   </a>
@@ -4136,54 +4058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#exposure-gates" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exposure gates
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#building-the-openlineage-facet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Building the OpenLineage facet
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#levels" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Levels
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#models" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Models
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#extending-the-models" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extending the models
+        Consequences
       
     </span>
   </a>
@@ -4207,325 +4085,87 @@
 
 
 
-<h1 id="celinegovernance-the-library"><code>celine.governance</code> — the library</h1>
-<p><code>celine.governance</code> is the one implementation of <code>governance.yaml</code> parsing, merging
-and validation. Every CELINE component that reads a governance file imports it:
-<code>dataset-api</code>, <code>ds</code>, <code>celine-superset</code> and the pipeline runner in this repository.</p>
-<p>This page is for <strong>consumers importing the package</strong>. For the file format itself see
-<a href="../governance/">the format reference</a>; for the CLI see <a href="../cli/">CLI</a>.</p>
-<hr />
-<h2 id="the-dependency-contract">The dependency contract</h2>
-<blockquote>
-<p>Runtime dependencies are <code>pydantic</code>, <code>pyyaml</code> and <code>jsonschema</code>. Nothing else, ever.</p>
-</blockquote>
-<p>This is the feature, not a style preference. The package exists because
-<code>celine-utils</code> once required dbt, Meltano, Prefect and Keycloak in order to parse a
-YAML file — so no API service could import it, four teams wrote their own parser
-instead, and the four then disagreed about what the same file meant.</p>
-<p><code>celine.governance</code> must not import <code>celine.utils</code>, SQLAlchemy, OpenLineage, or
-anything from an optional extra. If a governance module needs something from the fat
-side, the dependency goes the other way round: <code>celine.utils</code> may import
-<code>celine.governance</code>, never the reverse.</p>
-<p>A CI job asserts this rather than trusting review — adding one import line is easy
-and nothing in a diff makes it look expensive. See
-<a href="../decisions/ADR-0001-governance-is-a-thin-core/">ADR-0001</a>.</p>
-<h3 id="installing-just-the-core">Installing just the core</h3>
-<pre><code class="language-bash">uv add celine-utils          # core only — three dependencies
-</code></pre>
-<p>The extras are opt-in and none of them are needed to read governance:</p>
-<table>
-<thead>
-<tr>
-<th>Extra</th>
-<th>Brings</th>
-<th>For</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>(none)</em></td>
-<td>pydantic, pyyaml, jsonschema</td>
-<td>parsing governance</td>
-</tr>
-<tr>
-<td><code>openlineage</code></td>
-<td><code>openlineage-python</code></td>
-<td>the typed <code>GovernanceDatasetFacet</code> class</td>
-</tr>
-<tr>
-<td><code>pipelines</code></td>
-<td>dbt, Meltano, Prefect, pandas, SQLAlchemy, …</td>
-<td>running pipelines</td>
-</tr>
-<tr>
-<td><code>all</code></td>
-<td>everything above</td>
-<td>pipelines plus the typed facet</td>
-</tr>
-</tbody>
-</table>
-<p>There was an <code>admin</code> extra until 2.3.0. It is gone with the command tree it served —
-requesting it now installs successfully and warns <code>does not have an extra named
-'admin'</code>, so check the name rather than trusting the install to complain.</p>
-<p><code>build_facet</code> returns a plain <code>dict</code> and needs none of them, including
-<code>openlineage</code>.</p>
-<h3 id="import-path">Import path</h3>
-<p>The package ships from the <code>celine-utils</code> wheel today and is expected to become its
-own distribution. The import path <code>celine.governance</code> was chosen so that move is a
-directory rename with no consumer editing an import. Do not refer to it as
-<code>celine.utils.governance</code> — that path does not exist, and creating it would make the
-eventual split a breaking change for every downstream repository.</p>
-<hr />
-<h2 id="reading-a-file">Reading a file</h2>
-<pre><code class="language-python">from pathlib import Path
-from celine.governance import GovernanceResolver
-
-resolver = GovernanceResolver.from_file(Path(&quot;governance.yaml&quot;))
-rule = resolver.resolve(&quot;datasets.ds_prod_gold.weather_hourly&quot;)
-
-rule.access_level      # 'restricted'
-rule.tags              # ['gold', 'weather']
-</code></pre>
-<p>A missing file <strong>is</strong> an error: <code>from_file</code> raises <code>FileNotFoundError</code>. Handing over a
-path is already a statement about which file you mean, so absence is <em>what you asked
-for is not there</em> — not <em>nothing was asked for</em>, which is <code>auto_discover</code>'s case and
-still returns an empty configuration.</p>
-<p>It used to warn and return that empty configuration instead. A connector whose
-<code>governance/</code> directory had been renamed then started clean, served an empty dataset
-list and empty sharing offers, and said nothing while the files sat on disk; the first
-symptom was an unrelated end-to-end test failing on a fixture that was right there in
-the file. Catch <code>FileNotFoundError</code> if a missing file is a state your caller supports.</p>
-<h3 id="constructors">Constructors</h3>
-<table>
-<thead>
-<tr>
-<th>Call</th>
-<th>Use</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>GovernanceResolver.from_file(path)</code></td>
-<td>a known path</td>
-</tr>
-<tr>
-<td><code>GovernanceResolver.from_dict(raw)</code></td>
-<td>a document already parsed, e.g. from an API response</td>
-</tr>
-<tr>
-<td><code>GovernanceResolver.from_file_with_override(base, overlay_name=None, *, infer_from_dir=False)</code></td>
-<td>base plus a deployer overlay beside it</td>
-</tr>
-<tr>
-<td><code>GovernanceResolver.auto_discover(app_name=None, project_dir=None)</code></td>
-<td>convention-based lookup — see <a href="../governance/#where-the-file-lives">discovery order</a></td>
-</tr>
-</tbody>
-</table>
-<p><code>infer_from_dir</code> is opt-in rather than default because the two callers this
-consolidated genuinely disagreed: one inferred the overlay name from the parent
-directory, the other returned the base unchanged. Neither default would have been
-correct for both, so each passes what it means.</p>
-<p>A <strong>missing overlay</strong> is not an error, unlike a missing base: the overlay is located by
-convention rather than named by the caller, so its absence is the "nothing was asked
-for" case.</p>
-<h3 id="parse_rule"><code>parse_rule</code></h3>
-<p><code>parse_rule(block)</code> builds a single <code>GovernanceRule</code> from one raw block, accepting
-either a bare block or one nested under a <code>governance:</code> key. <code>parse_rule(block, MyRule)</code>
-builds a subclass of one — see <a href="#extending-the-models">extending the models</a>.</p>
-<p>It goes through <code>model_validate</code> on a dict containing only the keys the block
-actually declared. <strong>That is load-bearing.</strong> Pydantic records those keys in
-<code>model_fields_set</code>, and the whole merge layer reads it to tell <em>unset</em> from <em>set to a
-falsy value</em>. Constructing a <code>GovernanceRule</code> with keyword arguments marks every
-field as set, which silently degrades merging to "override always wins" and makes
-<code>expose: false</code> inexpressible. Build rules with <code>parse_rule</code> or <code>model_validate</code>,
-never with kwargs, if the result will be merged.</p>
-<hr />
-<h2 id="merging">Merging</h2>
-<pre><code class="language-python">from celine.governance import merge_rules, merge_configs
-
-resolved = merge_rules(base_rule, override_rule)
-config   = merge_configs(base_config, overlay_config)
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>Combines</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>merge_rules(base, override, *, model_cls=None)</code></td>
-<td>two <code>GovernanceRule</code>s, with the per-field rules below</td>
-</tr>
-<tr>
-<td><code>merge_configs(base, override, *, model_cls=None)</code></td>
-<td>two whole documents — defaults with defaults, sources rule-wise, overlay-only sources added as-is</td>
-</tr>
-<tr>
-<td><code>merge_dataspace(base, override, *, model_cls=None)</code></td>
-<td>two <code>DataspaceConfig</code>s</td>
-</tr>
-<tr>
-<td><code>merge_models(base, override, cls)</code></td>
-<td>the generic <code>exclude_unset</code> overlay</td>
-</tr>
-</tbody>
-</table>
-<p>The overlay uses <code>exclude_unset</code> — not <code>exclude_defaults</code>, and never truthiness.
-All three drop a field the source never mentioned; they differ on a field the source
-<em>did</em> mention whose value equals the default. <code>exclude_defaults</code> drops it, so it
-cannot tell <em>silent</em> from <em>said no</em>. Truthiness cannot express <em>off</em> at all once the
-base says <em>on</em>.</p>
-<p>The full per-field table is in
-<a href="../governance/#how-a-field-combines-with-the-baseline">the format reference</a>.</p>
-<hr />
-<h2 id="validation">Validation</h2>
-<pre><code class="language-python">from pathlib import Path
-from celine.governance import validate_file, validate, GovernanceValidationError
-
-unknown = validate_file(Path(&quot;governance.yaml&quot;))              # warns
-unknown = validate_file(Path(&quot;governance.yaml&quot;), strict=True) # raises
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>Behaviour</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>validate(data, *, source, strict=False)</code></td>
-<td>schema violations <strong>raise</strong>; unknown keys <strong>warn</strong>, or raise under <code>strict</code>. Returns the unknown keys</td>
-</tr>
-<tr>
-<td><code>validate_file(path, *, strict=False)</code></td>
-<td>the same, loading YAML from a path</td>
-</tr>
-<tr>
-<td><code>schema_errors(data, schema_name)</code></td>
-<td>every violation as a list of strings, sorted by document position. Raises nothing</td>
-</tr>
-<tr>
-<td><code>unknown_keys(data)</code></td>
-<td>keys the grammar does not define, per block</td>
-</tr>
-<tr>
-<td><code>load_schema(name)</code></td>
-<td>a packaged JSON Schema as a dict</td>
-</tr>
-<tr>
-<td><code>validate_owners(data)</code> / <code>validate_owners_file(path)</code></td>
-<td>strict always — see <a href="../governance-owners/">owners</a></td>
-</tr>
-</tbody>
-</table>
-<p><code>schema_errors</code> reports <strong>every</strong> error rather than the first: a governance file is
-edited by hand, and one problem per run turns a five-minute fix into five round
-trips.</p>
-<p><strong>Why unknown keys warn by default.</strong> Seventeen governance files had never been
-schema-checked when validation arrived. Making unknown keys fatal on day one would
-have turned adopting this package into a seventeen-file cleanup discovered at import
-time — in an exporter, in CI, at the worst possible moment. Warn, fix, then flip the
-default.</p>
-<p>Schemas are read from the installed package via <code>importlib.resources</code>, never by
-walking from <code>__file__</code>, so validation works from a wheel and inside a container.</p>
-<hr />
-<h2 id="exposure-gates">Exposure gates</h2>
-<pre><code class="language-python">from celine.governance import effective_expose, dataspace_expose, exposure_conflict
-
-effective_expose(rule)    # listed in the catalogue and served by the API?
-dataspace_expose(rule)    # offered into the dataspace?
-
-if (why := exposure_conflict(rule)) is not None:
-    log.error(&quot;%s: %s&quot;, name, why)
-</code></pre>
-<p><code>effective_expose</code> falls back to <code>dataspace.expose</code> when <code>expose</code> is unstated;
-<code>dataspace_expose</code> has no fallback in either direction. <code>exposure_conflict</code> returns a
-sentence or <code>None</code> — it is <strong>reported rather than raised</strong> so a caller can collect
-every conflict in a run instead of failing on the first.</p>
-<p>Never read <code>rule.expose</code> directly to decide catalogue visibility: it is tri-state,
-and <code>None</code> does not mean <code>False</code>. See
-<a href="../governance/#exposure--two-gates-not-one">the two gates</a>.</p>
-<hr />
-<h2 id="building-the-openlineage-facet">Building the OpenLineage facet</h2>
-<pre><code class="language-python">from celine.governance import build_facet, is_empty, SCHEMA_URL
-
-if not is_empty(rule):
-    facet = build_facet(rule, producer=&quot;https://github.com/celine-eu/celine-utils&quot;)
-</code></pre>
-<p>Returns a plain <code>dict</code> with camelCase keys and imports nothing from OpenLineage, so a
-consumer gets the projection without the dependency. Absent values are omitted rather
-than emitted as <code>null</code>.</p>
-<p><code>include_dataspace</code> defaults to <code>True</code>, which matches the catalogue — the consumer
-that reads those fields back out. The lineage extractors historically did <strong>not</strong>
-project the dataspace block, so events already in Marquez carry no dataspace fields;
-an extractor adopting this function should pass <code>include_dataspace=False</code> to keep
-emitting what it emits today. Widening the payload is a deliberate change, not a side
-effect of deduplication.</p>
-<p><code>SCHEMA_URL</code> is a <strong>contract, not a configuration</strong>. It is embedded in every
-OpenLineage event already sitting in Marquez, so changing it does not break a build —
-it silently invalidates historical lineage.</p>
-<hr />
-<h2 id="levels">Levels</h2>
-<pre><code class="language-python">from celine.governance import normalize_access_level, normalize_classification
-
-normalize_access_level(&quot;SECRET&quot;)   # -&gt; 'restricted'
-normalize_classification(&quot;PII&quot;)    # -&gt; 'pii'
-</code></pre>
-<p>Both accept <code>None</code> and return <code>None</code>. Both raise <code>ValueError</code> on a value outside the
-enum. <code>secret</code> is folded to <code>restricted</code> for compatibility with deployed files; the
-enums are <code>GovernanceAccessLevel</code> (open / internal / restricted), <code>DataClassification</code>
-(green / yellow / red / pii) and <code>AccessRequirement</code> (all / partner / contract).</p>
-<hr />
-<h2 id="models">Models</h2>
-<p><code>GovernanceRule</code> is the resolved block; <code>GovernanceConfig</code> holds <code>defaults</code> and
-<code>sources</code>. Sub-models: <code>DcatConfig</code>, <code>OntologyConfig</code>, <code>DataspaceConfig</code>,
-<code>TemporalCoverage</code>, <code>GovernanceOwner</code>.</p>
-<p>Every model sets <code>extra="ignore"</code>, so a file carrying fields this package does not
-know — the EDC sub-objects <code>ds</code> adds, a new field from a newer release — parses
-rather than failing. Unknown keys at block level are preserved in <code>rule.extra</code>.</p>
-<p><code>KNOWN_KEYS</code> is the frozenset stating which keys the base grammar defines. It is what
-<code>validate</code> checks a block against when reporting unknown keys.</p>
-<p><strong>It is no longer what decides the split.</strong> <code>parse_rule</code> reads that off the model class
-it is given, so a consumer's subclass keeps its own fields instead of watching them land
-in <code>extra</code>. For <code>GovernanceRule</code> the two sets are identical, and a contract test holds
-them there.</p>
-<p>The difference matters when they do drift: a field added to the model and forgotten in
-<code>KNOWN_KEYS</code> now parses correctly and is <em>reported</em> as an unknown key by <code>validate</code> —
-noisy and wrong, rather than the silent permanent absence it used to be. That silence is
-how the <code>ontology</code> block failed on introduction; it can no longer happen that way.</p>
-<hr />
-<h2 id="extending-the-models">Extending the models</h2>
-<p><code>ds</code> extends <code>GovernanceRule</code> with ODRL policy and a richer dataspace spec. Subclass
-rather than adding fields here: what belongs in this package is the surface <em>every</em>
-consumer shares. A field only one component reads is a field the other three carry
-without meaning.</p>
-<pre><code class="language-python">class SpecRule(GovernanceRule):
-    policy: dict | None = None
-
-base     = parse_rule(base_block, SpecRule)
-override = parse_rule(override_block, SpecRule)
-
-merged = merge_rules(base, override)   # -&gt; SpecRule, policy and all
-</code></pre>
-<p><code>parse_rule</code>, <code>merge_rules</code>, <code>merge_dataspace</code> and <code>merge_configs</code> all follow the class
-they are given: <code>parse_rule</code> from its <code>model_cls</code> argument, the merges from their
-operands. Nothing needs <code>model_cls</code> in the ordinary case.</p>
-<p><strong>Both operands must be the same class.</strong> Mixing them raises <code>TypeError</code> rather than
-picking one, because picking the more derived class invents fields the other operand
-never had and picking the base drops the ones it did — either way a silent decision
-about which half of the input survives. Validate both into one class first, or pass
-<code>model_cls</code> to say deliberately what the result is:</p>
-<pre><code class="language-python">merge_rules(base, override, model_cls=GovernanceRule)   # narrow on purpose
-</code></pre>
-<p>Until 3.0 these functions named their class instead. A subclass handed to any of them
-came back as a base-class instance with the subclass's fields dropped — no error, just
-a smaller object.</p>
-<p>The package ships a PEP 561 <code>py.typed</code> marker, so a subclass is type-checkable rather
-than a subclass of <code>Any</code>.</p>
+<h1 id="adr-0001-a-realm-declared-by-several-files-is-merged-in-the-loader-not-pre-merged-into-a-file">ADR-0001 — A realm declared by several files is merged in the loader, not pre-merged into a file</h1>
+<p><strong>Date:</strong> 2026-08-28
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p><code>keycloak sync</code> takes one file and recomputes every client's grants from it. That is
+correct when one file describes the whole realm, and the celine realm is not one of those:
+it carries celine's own services <strong>and</strong> the dataspace services that the <code>ds</code> repository
+owns. Neither repository can write the other's half, and today the ds half is maintained
+here by hand, copied out of a file ds generates for the purpose. On 2026-08-28 that copy
+was measured drifting — a client missing entirely while three others named it as an
+audience, seven scopes missing, five clients whose grants disagreed in both directions.</p>
+<p>Syncing ds's file here instead does not work, because a file describing part of a realm
+does not leave the rest alone:</p>
+<ul>
+<li>a client <strong>absent</strong> from the file is an orphan, and orphans are deleted only under
+  <code>--prune</code>;</li>
+<li>but for every client <strong>present</strong>, the sync diffs the current grants against the desired
+  ones and removes the difference, outside the prune branch.</li>
+</ul>
+<p>So a partial file does not delete a client — it silently narrows one that stays. <code>ds</code> had
+already verified this against this CLI and worked around it by pre-merging its own files
+into a generated <code>clients.effective.yaml</code> (<code>ir-cli keycloak merge</code>) before the sync ever
+sees them. That workaround exists because this option did not.</p>
+<h2 id="decision">Decision</h2>
+<p>Merge in the loader, and take the further files as a repeatable <code>--overlay PATH</code> on
+<code>keycloak sync</code>.</p>
+<p>Not a <code>merge</code> subcommand writing an effective file: a generated intermediate is a third
+artefact to keep current, and the failure it introduces — syncing a stale effective file —
+is the same class of failure as the drift being fixed.</p>
+<p>The merge rule is <strong>ownership, not precedence</strong>. No file is subordinate to another and
+there is no last-wins:</p>
+<ul>
+<li><strong>A client's identity is declared by exactly one file</strong> (<code>name</code>, <code>description</code>,
+  <code>secret</code>, <code>scopes_prefix</code>, <code>service_account_enabled</code>, or any key the model does not
+  recognise). A second file declaring any of them is an error naming both files.</li>
+<li><strong>Any file may add grants</strong> to a client another file declares, by naming <code>client_id</code>
+  plus <code>default_scopes</code> / <code>optional_scopes</code> / <code>extra_audiences</code> and nothing else.</li>
+<li><strong>A scope is declared once, or identically more than once.</strong> A conflicting redefinition
+  is an error.</li>
+<li><strong>A realm-level key</strong> may be stated by any file; two files disagreeing is an error.</li>
+<li><strong>Two clients may not claim one <code>scopes_prefix</code>.</strong> The prefix decides which client every
+  audience mapper for those scopes points at, and a second claimant silently won.</li>
+</ul>
+<p>Interpolation happens once, over the merged document, so that a value substituted into one
+file cannot change how another merges into it — and every guard downstream (the
+placeholder-secret check, the scope-reference check) sees the whole realm.</p>
+<p>A file states what it cannot be synced without (<code>requires: [ds]</code>); the file that answers it
+identifies itself (<code>overlay: ds</code>); a sync missing one fails before authenticating. Matching
+is by name because a deployment mounts a file wherever it likes.</p>
+<h2 id="consequences">Consequences</h2>
+<p><strong>Ownership differs from ds's model deliberately.</strong> ds's merge is core-plus-overlay: the
+core owns every client and an overlay may only widen. That is wrong here, because the ds
+file is not subordinate — it <em>owns</em> the ds clients while this repository owns a few grants
+on them. The name <code>--overlay</code> is kept for shared vocabulary; the semantics are peers.</p>
+<p><strong>An identical scope redeclaration is accepted, where ds's merge refuses any repeat.</strong> The
+two files declare 27 byte-identical scopes today. Refusing outright would make the split a
+single flag-day cut; allowing an identical repeat lets a file shed its copies one release
+at a time. A <em>differing</em> definition is still an error — that is the ambiguity worth failing
+on, and two of them exist today.</p>
+<p><strong>Splitting the declaration creates a trap, and the completeness check is what answers it
+— not <code>requires</code>.</strong> The first design put <code>requires: [ds]</code> on <code>clients.yaml</code>, reasoning that
+once the base file had shed the half another file declares, syncing it alone would strip
+those clients back to their host-side grants. That was wrong twice over. <strong>The dataspace is
+optional</strong>: a celine deployment without one is ordinary, and a <code>requires:</code> on the base file
+makes it mandatory. And the binding was never the keyword — grants-only entries for ds
+clients bind just as hard, because without ds's file they name clients nobody declares and
+the completeness check refuses them regardless.</p>
+<p>So the split is by deployment, not by keyword. <code>clients.yaml</code> declares celine's services and
+nothing about ds; it is a whole realm and syncs alone. <code>clients.ds-host.yaml</code> holds the
+grants celine adds to ds's clients, is mounted only alongside ds's own file, and is refused
+without it by the check that already existed. Neither file carries <code>requires:</code>.</p>
+<p><code>requires:</code> remains right for a file that genuinely cannot be a realm on its own — ds's
+<code>clients.dataspaces.yaml</code> is one, and declares <code>requires: [ds]</code>. It is a statement that a
+file is half a declaration, not a way to pin a deployment topology.</p>
+<p><strong><code>from_yaml</code> stays, and does not enforce completeness.</strong> <code>sync-orgs</code> and <code>sync-users</code> read
+client ids and scopes out of the base file rather than writing a realm, so a declaration
+the file needs in order to be <em>synced</em> is none of their business. <code>from_yaml_files(...,
+complete=True)</code> is what asserts these files are the whole realm, and only a caller about to
+rewrite one may claim it.</p>
+<p><strong>It makes ds's <code>ir-cli keycloak merge</code> redundant.</strong> Its whole justification is this CLI
+taking one file. Retiring it is ds's call.</p>
 
 
 
@@ -4575,10 +4215,10 @@ than a subclass of <code>Any</code>.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
     
   </body>

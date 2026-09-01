@@ -4187,7 +4187,7 @@ documentation of behaviour, which lives in the pages these link to.</p>
 <tr>
 <td>REQ-0005</td>
 <td>An unknown key never silently changes a dataset's governance</td>
-<td><code>tests/test_governance_contract.py</code></td>
+<td><code>tests/test_governance_contract.py</code>, <code>tests/test_governance_subclassing.py</code></td>
 </tr>
 <tr>
 <td>REQ-0006</td>
@@ -4259,16 +4259,21 @@ invalidates historical lineage, and nothing reports it.</p>
 <p>A key the grammar does not define MUST be preserved in <code>rule.extra</code> rather than
 dropped, and MUST be reported by <code>validate</code> — as a warning by default, and as an
 error under <code>strict=True</code>.</p>
-<p><code>KNOWN_KEYS</code> MUST list every field of <code>GovernanceRule</code> that a file may declare. A
-field present in the model and absent from <code>KNOWN_KEYS</code> parses into <code>extra</code> and reads
-as permanently absent.</p>
+<p>The split between a field and <code>extra</code> MUST follow the model class being parsed into,
+including a consumer's subclass. A subclass split against the base grammar's key set
+has the same failure as a forgotten <code>KNOWN_KEYS</code> entry once had: the field reads as its
+default forever, and nothing warns.</p>
+<p><code>KNOWN_KEYS</code> MUST list every field of <code>GovernanceRule</code> that a file may declare. It is
+what <code>validate</code> reports unknown keys against, so a field present in the model and absent
+from it is reported as unknown — a legitimate field called a mistake.</p>
 <p>Parsing MUST go through <code>model_validate</code> on the keys a file actually declared, so
 <code>model_fields_set</code> distinguishes <em>unset</em> from <em>set to a falsy value</em>.</p>
 <p><strong>Consequence if violated:</strong> a misspelled key — <code>access_levl: open</code> — validates
 against the schema, is discarded by the model, and the dataset silently takes the
-default. Under kwargs construction the merge degrades to "override always wins" and
-<code>expose: false</code> becomes inexpressible, which is how a withdrawal that validated clean
-left a dataset in the catalogue.</p>
+default. A model class narrower than the file it is handed does the same thing to
+fields that are spelled correctly. Under kwargs construction the merge degrades to
+"override always wins" and <code>expose: false</code> becomes inexpressible, which is how a
+withdrawal that validated clean left a dataset in the catalogue.</p>
 <p>Behaviour: <a href="../governance/#unknown-keys">unknown keys</a>,
 the companion's knowledge.</p>
 <h2 id="req-0006-a-declared-dependency-resolves-to-a-producer-or-is-reported">REQ-0006 — A declared dependency resolves to a producer, or is reported</h2>

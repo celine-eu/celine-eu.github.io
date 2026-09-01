@@ -4427,21 +4427,25 @@
 <li>Optionally, <code>/superuser</code> is checked — grants bypass if the JWT carries <code>mqtt.admin</code> scope or <code>admin</code> group.</li>
 </ol>
 <h2 id="keycloak-sync-flow">Keycloak Sync Flow</h2>
-<pre><code>clients.yaml ──&gt; celine-policies keycloak sync ──&gt; Keycloak Admin API
-                       │
-                 compute diff
-                 (scopes to create/update,
-                  clients to create/update,
-                  scope assignments,
-                  audience mappers)
-                       │
-                 apply changes
-                       │
-                 .client.secrets.yaml
+<pre><code>clients.yaml ─────────┐   celine's own services — a whole realm on its own
+clients.ds-host.yaml ─┤   the grants celine adds to ds's clients   ┐ only where a
+&lt;ds&gt;/clients.yaml ────┘   ds's own declaration of those clients    ┘ dataspace runs
+          │
+          └─ merge (--overlay, repeatable)
+                 │
+                 ├─ compute diff
+                 │    scopes to create/update
+                 │    clients to create/update
+                 │    scope assignments
+                 │    audience mappers
+                 │
+                 ├─ apply changes ──&gt; Keycloak Admin API
+                 │
+                 └─ .client.secrets.yaml
 </code></pre>
 <p>The <code>sync</code> command:</p>
 <ol>
-<li>Loads <code>clients.yaml</code> (scopes + clients with <code>default_scopes</code> and <code>scopes_prefix</code>)</li>
+<li>Loads <code>clients.yaml</code> (scopes + clients with <code>default_scopes</code> and <code>scopes_prefix</code>), merged with every <code>--overlay</code> file into one declaration — a realm may be declared by more than one party, and syncing half of it silently narrows the clients it mentions</li>
 <li>Fetches current state from Keycloak (existing scopes, clients, assignments)</li>
 <li>Computes a diff (plan): scopes to create/update, clients to create/update, scope assignments to add/remove</li>
 <li>Applies changes idempotently</li>
