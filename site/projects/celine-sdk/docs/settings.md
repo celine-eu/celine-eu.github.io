@@ -2,7 +2,7 @@
 
 `celine.sdk.settings` provides typed, environment-driven configuration using
 `pydantic-settings`. What it must do is stated in
-[specifications/configuration.md](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/configuration.md).
+[specifications/configuration.md](specifications/configuration.md).
 
 **Every variable is prefixed `CELINE_`.** The prefix is per section:
 `CELINE_OIDC_*`, `CELINE_MQTT_*`, `CELINE_POLICIES_*`. Unknown variables inside a namespace
@@ -53,7 +53,7 @@ settings = MqttSettings()
 | `CELINE_MQTT_TOKEN_REFRESH_MARGIN` | `float` | `30.0` |
 
 `MqttSettings` configures the deployment; `MqttBroker` takes an `MqttConfig` — see
-[Broker](broker), whose defaults differ (`localhost`, unlimited reconnects).
+[broker.md](broker.md), whose defaults differ (`localhost`, unlimited reconnects).
 
 ## PoliciesSettings — `CELINE_POLICIES_*`
 

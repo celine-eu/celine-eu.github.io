@@ -1,7 +1,7 @@
 # Broker
 
 `celine.sdk.broker` provides an MQTT client for CELINE services, built on `aiomqtt`. What it
-must do is stated in [specifications/messaging.md](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/messaging.md).
+must do is stated in [specifications/messaging.md](specifications/messaging.md).
 
 It handles the parts that are easy to get wrong in a long-lived, token-authenticated
 connection: reconnection, resubscription, refreshing credentials before they expire, and

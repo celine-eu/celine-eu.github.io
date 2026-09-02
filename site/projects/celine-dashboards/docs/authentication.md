@@ -2,7 +2,7 @@
 
 ## Keycloak Realm Configuration
 
-The repository ships a ready-to-import Keycloak realm definition at `config/keycloak/`.
+The Keycloak realm is **not defined in this repository**. Realm, clients and scopes are reconciled by the `celine-policies` CLI from its own declarations; this repository only consumes the resulting identity.
 
 **Realm:** `celine`
 
@@ -28,7 +28,7 @@ Demo users for each group are included in the realm export for local development
 
 oauth2-proxy is the single authentication gateway for all browser sessions.
 
-Key configuration (`config/oauth2-proxy/`):
+Key configuration, which lives with the deployment rather than in this repository:
 
 | Setting | Value |
 |---|---|

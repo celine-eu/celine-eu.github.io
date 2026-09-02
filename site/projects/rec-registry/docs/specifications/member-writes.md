@@ -1,0 +1,209 @@
+# Member and community writes
+
+How a community changes at runtime — one member at a time, as a manager approves somebody
+at 14:32 on a Tuesday.
+
+Everything on this page rests on one rule, stated last because everything else is an
+instance of it: **no write reduces a sibling** (REQ-0031). Before these routes existed the
+entire write surface was a replacement import, and every one of these requirements exists
+to stop a piece of that wholesale behaviour leaking into a route that should touch one row.
+
+---
+
+### REQ-0020 — creating a member returns the member, with everything it arrived with
+
+`POST /admin/communities/{ck}/members` answers `201` with the member: its key, `user_id`,
+role, area, status and delivery points. A supplied `key` is honoured as given.
+
+### REQ-0021 — an omitted key is minted from the community's own numbering
+
+`key` is optional. When absent it is taken from the highest-numbered existing key, with
+that key's prefix and zero-padding preserved: `gl-00001`, `gl-00002` → `gl-00003`;
+`ab-007` → `ab-008`. Keys that are not numbered are ignored when reading the pattern, and
+a community with no members at all starts at `member-00001`.
+
+A caller with no opinion should get the next key in the series rather than a UUID that
+reads as foreign in an exported bundle — the bundle is a file people edit.
+
+**A gap below the maximum is never reused.** `gl-00001`, `gl-00009` mints `gl-00010`, not
+`gl-00002`: reusing a freed number would hand a new person the identity of one who left,
+along with whatever history elsewhere in the platform still references that key.
+
+The bound on that guarantee is honest and narrow — the *highest* number is the only state
+consulted, so purging the highest-numbered member does let the next mint reuse their key.
+See the companion's knowledge. `member-00001` and its five-digit padding are arbitrary defaults
+rather than chosen ones.
+
+### REQ-0022 — creating refuses a duplicate key or a duplicate `user_id`
+
+Either conflict answers `409`, naming the existing key or `user_id` so the caller can
+switch to `PATCH`.
+
+**Creating must not silently update.** A retry carrying a changed payload — the ordinary
+shape of a client reconnecting — would otherwise rewrite the wrong person's row, and
+`user_id` is the field that would attach one participant's identity to another's meters.
+
+**Two writers at once get the same answer.** The check is application-level and the
+message is its work, but `member` carries unique indexes on `(community_id, key)` and
+`(community_id, user_id)`, so a create that passes the check because the clashing row was
+not committed yet is refused by the index instead — and that refusal is translated back
+into the same `409`. A caller cannot tell a race from an ordinary duplicate, and the loser
+leaves no row behind.
+
+The same holds for `PATCH` reassigning a `user_id` (REQ-0024): its clash check is equally
+blind to an uncommitted row, and equally backed.
+
+The guarantee is per community, not registry-wide — one person may hold the same `user_id`
+in two communities, which is what makes membership of several possible.
+
+### REQ-0023 — a write naming an unknown community is `404`
+
+Rather than creating the community implicitly. A community is seeded deliberately; a
+member arriving for one that does not exist is a caller with a stale key, not an
+instruction to invent it.
+
+### REQ-0024 — a patch leaves absent fields alone, and cannot steal an identity
+
+`PATCH …/members/{mk}` updates only the fields it names. `extra` merges rather than
+replaces, because it accumulates fields from several sources and a caller that knows about
+one must not erase the rest.
+
+**`delivery_points` is deliberately not accepted here.** It is a JSONB list, and a partial
+update that happened to omit it would read as *"this member now has none"*. It has its own
+sub-resource (REQ-0027). Adding the field to the patch model is a data-loss bug, not a
+convenience — the absence is load-bearing.
+
+A patch moving `user_id` to one already held by another member of the community answers
+`409` — including when the holder's row was written concurrently and the clash check could
+not see it yet, which the unique index behind REQ-0022 is what catches.
+
+### REQ-0025 — a status change is its own route, and records why
+
+`POST …/members/{mk}/status` moves a member through `pending`, `active`, `suspended`,
+`inactive`, with an optional `reason` stored at `extra.status_reason`. An unrecognised
+status answers `422`.
+
+Separate from `PATCH` because a status change is the transition an operator reasons about,
+and because it reads clearly in an audit log where a generic field update does not.
+
+### REQ-0026 — deleting deactivates; erasing is a different request and reports what it took
+
+`DELETE …/members/{mk}` sets `status = inactive` and answers a `DeletionReport` with
+`purged: false`. The member remains readable.
+
+`?purge=true` erases the member permanently, answering `purged: true` and `assets_removed`
+counting the assets that went with them. It needs the separate `members.purge` grant
+(REQ-0006).
+
+Deactivation is the default because a member who leaves still has metering history, past
+consents and provenance elsewhere in the platform that reference them — and because
+`Asset` cascades on member delete, so a real delete looks like it affected one row and
+silently takes the member's measurement history with it.
+
+`assets_removed` is in the report for that reason: it is the number the caller did not ask
+about and needs to see.
+
+### REQ-0027 — supply points merge by identity, never by position
+
+`PUT …/members/{mk}/delivery-points/{id}` adds or replaces exactly one point, keeping the
+others; re-sending an existing id updates it rather than duplicating it; `DELETE` removes
+one and keeps the rest. Removing an id the member does not have is `404`. The `id` in the
+body must match the one in the path, or `422`.
+
+The merge is by point id, not by list index, and it does not mutate the list it was given.
+Positional replacement silently drops entries, and a member gaining a second supply point
+must not lose the first.
+
+### REQ-0028 — an asset upsert replaces that asset only, and validates its properties by type
+
+`PUT …/members/{mk}/assets/{ak}` creates the asset or replaces it in place, leaving the
+member's other assets untouched.
+
+`properties` is validated against the model for the declared `asset_type`, so an EV
+charger cannot be stored carrying a heat pump's fields, and an incomplete one answers
+`422`. An `asset_type` that is not one of the six answers `422` **naming the valid ones**
+— the caller's next request depends on knowing them, and a bare rejection makes them read
+the source.
+
+**An asset key is unique per community, not per member.** The lookup behind the upsert
+filters by owner as well, so a key that looks free to this member may already be another
+member's — and the two outcomes behind that are different:
+
+- **The key is already this member's**, including when a concurrent writer created it a
+  moment ago. The upsert is applied to that row and answers `200`. A create-or-replace is
+  idempotent by definition, so a race means only that two writers arrived in an order
+  neither cared about; reporting a conflict the caller cannot act on would push retry logic
+  into six consuming repositories for nothing.
+- **The key is another member's.** `409`. Applying the upsert would move somebody else's
+  meter onto this member, which is not what *replace my asset* asked for — and this is not
+  only a race: two members using one key in sequence takes exactly the same path.
+
+`DELETE` on the same path answers `204`.
+
+### REQ-0029 — patching a community keeps its areas, and upserting an area keeps the others
+
+`PATCH /admin/communities/{ck}` updates `name`, `description`, `legal`, `links`, `contact`
+and `settings`, merging `extra`. It does not touch `areas` or `topology`, which have their
+own routes for the same reason delivery points do — they are collections with their own
+identity, and a patch omitting one would read as emptying it.
+
+`PUT …/areas/{key}` adds or replaces one area and returns the whole community, so the
+caller can see the others are still there.
+
+### REQ-0030 — an area still referenced by a member cannot be deleted
+
+`DELETE …/areas/{key}` answers `409` naming how many members still reference it. An unused
+area is removed and the community returned without it; an area that does not exist is
+`404`.
+
+An orphaned `Member.area` is a dangling reference nothing else in the system checks. It
+would surface much later, and somewhere else, as a member belonging to an area that does
+not exist — and area membership is what the incentive calculation is computed over.
+
+### REQ-0031 — no write reduces a sibling
+
+The invariant the whole write API exists to keep:
+
+> `PUT` on a member replaces **that member**, not the member list. Patching a member does
+> not clear its delivery points. Upserting an area does not drop the others.
+
+**There is no collection-level replace outside the bundle import**, which is the only
+place wholesale replacement is allowed and which announces itself (REQ-0033).
+
+This is verified by exercising **every** write against a two-member community and checking
+the member count afterwards — `tests/test_writes.py::TestNoWriteReducesASibling`. That test
+is a **registry of writes, not a sample of them**: a new write endpoint must be added to
+it, and one that is missing from it is a write nobody has checked for the single thing the
+write API guarantees.
+
+### REQ-0060 — the dataspace DID is written by `PATCH`, and a clash names its holder only within the community
+
+`PATCH …/members/{mk}` accepts `did` alongside the fields of REQ-0024. There is **no
+dedicated route**: the DID is minted a step after the member is registered, so it arrives
+as an update to a row that already exists, and a write endpoint of its own would earn
+nothing `PATCH` already does while adding one more entry to REQ-0031's registry of writes.
+
+**Re-sending a member the DID it already holds is a `200` that changes nothing.**
+`../onboarding` writes it from a retriable step, so the same write arriving twice must not
+be a conflict — the member itself is excluded from the clash check, by row id rather than
+by member key, because keys repeat across communities and the check does not filter by one.
+
+**A DID another member already holds is `409`, and what the message says depends on where
+that member is:**
+
+- **Inside the community the caller addressed** — the response names the holding member's
+  key, as the `user_id` clash does, so the caller can act on it.
+- **In any other community** — the response says the DID belongs to another member and
+  names nobody. Which member of which community holds a DID is a question about people the
+  caller was not addressing, and answering it is the enumeration disclosure REQ-0045
+  exists to refuse.
+
+**Two writers at once get the same answer**, by the mechanism of REQ-0022: the check cannot
+see an uncommitted row, `ix_member_did` refuses the loser, and that refusal is translated
+into the same `409`. The translated message is the community-blind one — by then there is
+no holder in hand to name, which is the honest answer rather than a degraded one.
+
+Creating a member that carries an already-held DID answers `409` the same way. It has no
+application-level check of its own: the two checks in `create_member` read a list of the
+community's own members, and DID uniqueness is registry-wide, so a check would be a second
+query answering exactly what the index answers.

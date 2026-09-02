@@ -2,8 +2,8 @@
 
 The `celine-sdk` CLI snapshots the OpenAPI specifications of CELINE services and generates
 typed Python clients from them. What it must do is stated in
-[specifications/spec-management.md](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/spec-management.md); the procedure for
-doing it in this repository, with its traps, is `.agents/playbooks/regenerating-clients.md`.
+[specifications/spec-management.md](specifications/spec-management.md); the procedure for
+doing it in this repository, with its traps, is the companion's playbook for regenerating the clients.
 
 Fetching and generating are **two steps on purpose**: what is generated is always
 reproducible from the specs committed under `openapi/`, without the services running.
@@ -71,7 +71,7 @@ It needs the code generators, which are declared in this repository's `pyproject
 `dev` dependency group, marked `python_version >= "3.11"`. `uv sync` in a checkout installs
 them; they are not published with the package, because regeneration is a maintainer task
 performed here and a consuming service never does it
-([ADR-0001](https://github.com/celine-eu/celine-sdk/blob/main/docs/decisions/ADR-0001-no-published-generation-extra.md)).
+([ADR-0001](decisions/ADR-0001-no-published-generation-extra.md)).
 
 So one being absent means the environment is wrong — an unsynced group, or a 3.10
 interpreter. Generation says that, rather than dying on a bare "command not found".
@@ -119,5 +119,5 @@ carrying the status code and the raw body.
 4. Commit `openapi/` and `src/celine/sdk/openapi/` **in their own commit**: the diff is
    large and reviewers skim it, which is exactly where an unrelated change hides.
 
-`.agents/playbooks/regenerating-clients.md` covers what to check afterwards — the wrappers
+the companion's playbook for regenerating the clients covers what to check afterwards — the wrappers
 that reference renamed operations, and the consumers this repository cannot test.

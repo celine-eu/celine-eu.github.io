@@ -6,7 +6,7 @@
 
 Superset uses `AUTH_REMOTE_USER` mode. Login and logout are fully delegated to oauth2-proxy — Superset never handles credentials directly.
 
-The custom `OAuth2ProxySecurityManager` (in `src/celine/superset/`) extends Superset's `RemoteUserSecurityManager`:
+The custom `OAuth2ProxySecurityManager` (in `packages/celine-superset/src/celine/superset/`) extends Superset's `RemoteUserSecurityManager`:
 
 - Reads the `X-Auth-Request-Access-Token` header on each request
 - Validates the JWT signature against the Keycloak JWKS endpoint
@@ -16,7 +16,7 @@ The custom `OAuth2ProxySecurityManager` (in `src/celine/superset/`) extends Supe
 
 ### Group-to-Role Mapping
 
-Keycloak groups are mapped to Superset roles in `src/celine/superset/auth/groups.py`:
+Keycloak groups are mapped to Superset roles in `packages/celine-superset/src/celine/superset/auth/groups.py`:
 
 ```python
 GROUP_TO_SUPERSET_ROLE = {
@@ -44,7 +44,7 @@ Version is defined in `version.txt`.
 
 ### Authentication
 
-Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in `src/celine/jupyter/`.
+Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in `packages/celine-jupyter/src/celine/jupyter/`.
 
 The authorizer:
 - Reads the `Authorization: Bearer <token>` header (injected by oauth2-proxy via Caddy)
@@ -76,7 +76,7 @@ Version is defined in `version.jupyter.txt`.
 
 Caddy handles TLS termination and reverse proxying via virtual hosts and `forward_auth`.
 
-Configuration is in `config/caddy/Caddyfile`. Key patterns:
+Configuration lives in the integration workspace rather than here. Key patterns:
 
 - All `*.celine.localhost` traffic is routed through oauth2-proxy's `forward_auth` directive before proxying to the target service.
 - The SSO endpoint (`sso.celine.localhost`) is proxied directly to oauth2-proxy for the login/callback flow.

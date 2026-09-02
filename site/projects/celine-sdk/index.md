@@ -65,7 +65,7 @@ services:
 | [Broker](https://celine-eu.github.io/projects/celine-sdk/docs/broker) | MQTT client, auto-reconnect, JWT auth, subscription handling |
 | [Settings](https://celine-eu.github.io/projects/celine-sdk/docs/settings) | OidcSettings, MqttSettings, PoliciesSettings, env var config |
 | [Spec Management](https://celine-eu.github.io/projects/celine-sdk/docs/spec-management) | services.yaml format, spec fetch, versioning, client generation |
-| [Specifications](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/index.md) | What the SDK must do, as numbered requirements each named by a test |
+| [Specifications](docs/specifications/index.md) | What the SDK must do, as numbered requirements each named by a test |
 
 ## License
 

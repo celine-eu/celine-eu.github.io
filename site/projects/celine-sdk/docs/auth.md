@@ -2,7 +2,7 @@
 
 The `celine.sdk.auth` module provides OIDC token acquisition and verified JWT parsing for
 CELINE services. What it must do is stated in
-[specifications/identity.md](https://github.com/celine-eu/celine-sdk/blob/main/docs/specifications/identity.md); this page is how to use it.
+[specifications/identity.md](specifications/identity.md); this page is how to use it.
 
 ## Verifying a token
 
@@ -154,6 +154,6 @@ Importable as `celine.sdk.auth.AccessToken`, `celine.sdk.auth.models.AccessToken
 
 ## Configuration
 
-See [Settings](settings). The variables this module reads are `CELINE_OIDC_*`:
+See [settings.md](settings.md). The variables this module reads are `CELINE_OIDC_*`:
 `BASE_URL`, `JWKS_URI`, `CLIENT_ID`, `CLIENT_SECRET`, `AUDIENCE`, `SCOPE`, `TIMEOUT`,
 `VERIFY_SSL`.

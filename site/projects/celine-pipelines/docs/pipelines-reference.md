@@ -94,7 +94,7 @@ constraints apply to redistribution.
 
 The `rdf_weather_observations_unpivoted` model is the SOSA-shaped projection: one row per
 observed property. See
-[`.agents/knowledge/semantic-measurement-views.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/semantic-measurement-views.md)
+the companion's knowledge
 for why the unpivot is required rather than optional.
 
 ## `copernicus` — ERA5 and CAMS
@@ -199,7 +199,7 @@ and REC managers at province and primary-substation level.
 | gold | `pv_rooftop_opportunities`, `pv_installation_ranking`, `pv_installation_plan`, `pv_installation_plan_summary`, `rec_building_cabina`, `rec_cabina_opportunities`, `rec_cabina_plan`, `rec_cabina_summary` |
 
 Sources: `pv_overture_buildings` (overture, silver) and `gse_cabine_primarie` (rec_it,
-gold). The ROI computation is a Python task, not dbt — `flows/roi_estimator.py`, run
+gold). The ROI computation is a Python task, not dbt — `apps/pv_estimation/flows/roi_estimator.py`, run
 incrementally with a `--full-refresh` escape hatch.
 
 ## `pv_detection` — existing PV from imagery
@@ -244,12 +244,11 @@ topology with Open-Meteo forecasts. Requires PostGIS. dbt-only; no ingestion of 
 **Upstream (private):** two CIM-normalised silver tables produced by a DSO-specific
 ingestion pipeline that is not part of this repository —
 `silver_grid_ac_line_segment` and the substation table. The expected columns are declared
-in `dbt/models/sources.yml`, which is the contract; `README.md` states the DDL so the
+in `apps/grid/dbt/models/sources.yml`, which is the contract; `README.md` states the DDL so the
 pipeline can be run against locally-created tables.
 
 > A `column "strike_tree_*" does not exist` error means the local silver table predates an
-> upstream change, **not** a bug in this pipeline. See
-> [`.agents/knowledge/grid-strike-tree-columns-are-upstream.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/grid-strike-tree-columns-are-upstream.md).
+> upstream change, **not** a bug in this pipeline.
 
 ---
 
@@ -314,7 +313,7 @@ substation reference layer.
 > is `least()` per `(ts, rec_id, substation_id)` **and then** summed. Sharing cannot cross
 > an unconnected *cabina primaria*; netting community-wide would invent energy that
 > physically cannot flow. See
-> [`.agents/knowledge/rec-virtual-consumption.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/rec-virtual-consumption.md),
+> the companion's knowledge,
 > which also records the known defect in the hourly model.
 
 ## `rec_flexibility` — flexibility and gamification
@@ -335,8 +334,6 @@ a failure.
 
 > **The flexibility signal is netted across substations.** There is no join path from this
 > app to `substation_id` at all; a deficit on one *cabina* cancels a surplus on another.
-> See
-> [`.agents/knowledge/flexibility-is-substation-blind.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/flexibility-is-substation-blind.md).
 
 ## `rec_registry` — registry mirror
 

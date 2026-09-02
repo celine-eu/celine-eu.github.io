@@ -21,7 +21,7 @@ docker compose up -d
 #   Keycloak:  http://keycloak.celine.localhost
 ```
 
-On first run, Keycloak imports the realm from `config/keycloak/`. Demo users are provisioned automatically.
+On first run the realm is provisioned by `celine-policies`, not from a file here. Demo users come with it.
 
 ## Stopping and Resetting
 
@@ -57,15 +57,15 @@ docker compose build jupyter
 To add a new service behind the SSO boundary:
 
 1. Add the service to `docker-compose.yaml`.
-2. Add a Caddy virtual host in `config/caddy/Caddyfile` using `forward_auth` to oauth2-proxy.
+2. Add a Caddy virtual host using `forward_auth` to oauth2-proxy. The Caddyfile belongs to the integration workspace, not to this repository.
 3. Configure the service to read identity from the injected headers (`X-Auth-Request-User`, `X-Auth-Request-Access-Token`).
 4. Implement authorization logic using the JWT claims (groups, scopes).
 
 ## Extending Group-to-Role Mappings
 
-Edit `src/celine/superset/auth/groups.py` to modify Superset role mappings, then rebuild the Superset image.
+Edit `packages/celine-superset/src/celine/superset/auth/groups.py` to modify Superset role mappings, then rebuild the Superset image.
 
-For Jupyter, edit `config/jupyter/jupyter_server_config.py` to update `allowed_groups`.
+For Jupyter, edit `config/jupyter/jupyterhub_config.py` to update `allowed_groups`.
 
 ## CI and Image Publishing
 

@@ -183,8 +183,8 @@ A consumer should not paper over a missing upstream column with a defensive `coa
 pipeline that tolerates a broken contract loses the ability to report that it is broken.
 
 The triage sequence and the full producer map are in
-[`.agents/knowledge/upstream-tables-have-external-producers.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/upstream-tables-have-external-producers.md);
-[`.agents/knowledge/grid-strike-tree-columns-are-upstream.md`](https://github.com/celine-eu/celine-pipelines/blob/main/.agents/knowledge/grid-strike-tree-columns-are-upstream.md)
+the companion's knowledge;
+the companion's knowledge
 is one case written up in full.
 
 ### Contract tables (provider-neutral aliases)
@@ -238,7 +238,7 @@ Two rules are load-bearing:
   that dropped the column would be served **unfiltered** rather than failing.
 
 The full schema is published at
-[`celine-utils/schema/governance.schema.json`](https://celine-eu.github.io/schema/) and
+[the `governance.schema.json` published by `celine-utils`](https://celine-eu.github.io/schema/) and
 the field reference in the
 [governance documentation](https://celine-eu.github.io/projects/celine-utils/docs/governance).
 The `ownership` values map to entries in `dataset-api`'s `owners.yaml`.
