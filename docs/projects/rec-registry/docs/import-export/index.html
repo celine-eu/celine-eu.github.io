@@ -1008,10 +1008,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bundle-format-v05" class="md-nav__link">
+  <a href="#bundle-format-v06" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bundle Format (v0.5)
+        Bundle Format (v0.6)
       
     </span>
   </a>
@@ -4299,10 +4299,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bundle-format-v05" class="md-nav__link">
+  <a href="#bundle-format-v06" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bundle Format (v0.5)
+        Bundle Format (v0.6)
       
     </span>
   </a>
@@ -4466,10 +4466,10 @@
 
 
 <h1 id="import-export">Import &amp; Export</h1>
-<h2 id="bundle-format-v05">Bundle Format (v0.5)</h2>
+<h2 id="bundle-format-v06">Bundle Format (v0.6)</h2>
 <p>The registry uses a YAML/JSON bundle format for import and export. A bundle encodes a full community graph:</p>
 <pre><code class="language-yaml">version: &quot;1.0&quot;
-schema_version: &quot;0.5&quot;
+schema_version: &quot;0.6&quot;
 
 community:
   id: example_rec
@@ -4510,6 +4510,11 @@ community:
 
 members:
   member-001:
+    user_id: alice
+    # Optional. Minted a step after the member is registered, so it is usually
+    # written by `PATCH` at runtime rather than authored here — and omitted from
+    # an export entirely when the member has none.
+    did: &quot;did:web:dataspace.example%3A30005:alice&quot;
     name: Alice Rossi
     role: prosumer
     area: northern
@@ -4535,7 +4540,11 @@ members:
 - <code>members</code> is a dict keyed by member key (not a list)
 - Assets are nested under members as typed dicts (<code>assets.pv</code>, <code>assets.meter</code>, <code>assets.storage</code>, etc.)
 - Community has <code>areas</code>, <code>topology</code>, <code>legal</code>, <code>links</code>, <code>contact</code>, <code>settings</code>, <code>operators</code>
-- Schema version is <code>"0.5"</code> with bundle version <code>"1.0"</code></p>
+- Schema version is <code>"0.6"</code> with bundle version <code>"1.0"</code></p>
+<p>v0.6 adds <code>member.did</code> and changes nothing else, so a v0.5 file is a valid v0.6 one. See
+<a href="../schemas/community/v0.6/README.md"><code>schemas/community/v0.6/README.md</code></a> for the field, and
+note that import reports an unmatched <code>schema_version</code> rather than refusing it — restoring a
+backup is the path a refusal would break.</p>
 <h2 id="import">Import</h2>
 <h3 id="json-import-post-adminimport">JSON Import — <code>POST /admin/import</code></h3>
 <p>Import a single community from a JSON request body. Full replace: deletes the existing community and all related entities, then recreates from the bundle. Atomic operation.</p>

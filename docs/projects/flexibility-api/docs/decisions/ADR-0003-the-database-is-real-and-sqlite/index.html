@@ -4112,13 +4112,8 @@ PostgreSQL DSN pointing at a closed port: <code>settings.db_schema</code> is rea
 the metadata, and the tests override the session dependency rather than the URL.</p>
 <h2 id="consequences">Consequences</h2>
 <p>Every isolation and selection test in the suite runs the SQL that ships.</p>
-<p>Four things it does not prove:</p>
+<p>Three things it does not prove:</p>
 <ul>
-<li><strong>That the migrations produce this schema.</strong> The tables come from the models;
-  <code>alembic upgrade head</code> is a separate path exercised by nothing. A model that has
-  drifted from its migrations passes the whole suite. Tracked as
-  <a href="https://github.com/celine-eu/flexibility-api/issues/23">#23</a>; <code>alembic check</code> is the
-  half that matters, and it needs a real PostgreSQL.</li>
 <li><strong>Timezone behaviour.</strong> <code>DateTime(timezone=True)</code> is <code>TIMESTAMPTZ</code> on PostgreSQL and a
   naive string on SQLite, so an aware datetime written in a test comes back naive. Every
   comparison in this service is UTC-on-both-sides, so nothing depends on the difference
@@ -4129,10 +4124,24 @@ the metadata, and the tests override the session dependency rather than the URL.
   a test that expected them to hold independent transactions would be testing SQLite's
   behaviour, not the service's.</li>
 </ul>
-<p>Closing the first needs a CI job with a real PostgreSQL service container.
-<code>../celine-ai-assistant</code> has one; doing the same here is the obvious next step, and it is
-deliberately <strong>not</strong> part of the default <code>pytest</code> run — the property that this suite needs
-nothing running is what keeps the baseline cheap enough that nobody skips it.</p>
+<p>A fourth was closed rather than lived with. <strong>That the migrations produce this schema</strong>
+was proven by nothing at all — the tables come from the models, <code>alembic upgrade head</code> is
+a separate path, and a model that had drifted from its revisions passed all 177 tests and
+failed at deploy time against a real database. The <code>migrations</code> job in
+<code>.github/workflows/test.yaml</code> now runs <code>upgrade head</code>, <code>alembic check</code> and
+<code>downgrade base</code> against a <code>postgres:17</code> service container, on the same pushes and pull
+requests as the suite (<a href="https://github.com/celine-eu/flexibility-api/issues/23">#23</a>).
+<code>alembic check</code> is the half that matters: <code>upgrade head</code> proves the revisions run, and
+<code>check</code> proves they arrive at the schema the models describe.</p>
+<p>It is a <strong>separate job</strong>, and deliberately not part of <code>pytest</code>. The property that the
+default run needs nothing running is what keeps the baseline cheap enough that nobody
+skips it, and that property is the whole reason this ADR chose SQLite.</p>
+<p>The database tests themselves were <strong>not</strong> given a PostgreSQL leg. <code>db_sessionmaker</code>
+builds its engine directly, so a second dialect means a new fixture contract rather than
+an environment variable, and this service's SQL is <code>select().where()</code> with an <code>order_by</code> —
+nothing whose behaviour divides the two engines. The three gaps above are properties of
+this fixture and remain unproven; the day a query needs the real dialect, adding the leg
+is a decision with its own record.</p>
 
 
 

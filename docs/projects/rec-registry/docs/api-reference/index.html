@@ -1311,6 +1311,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-adminlookupassets-by-user-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/assets-by-user-ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminlookupmembers-by-dids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/members-by-dids
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5011,6 +5033,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-adminlookupassets-by-user-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/assets-by-user-ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-adminlookupmembers-by-dids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/lookup/members-by-dids
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5364,7 +5408,24 @@ service that registers approved participants needs <code>members.write</code> an
 <p>Lookup asset details by sensor ID across communities.</p>
 <h3 id="post-adminlookupassets-by-sensor-ids"><code>POST /admin/lookup/assets-by-sensor-ids</code></h3>
 <p>Batch lookup: resolve multiple sensor IDs to assets in a single request.</p>
-<p><strong>Request body:</strong> list of sensor ID strings.</p>
+<p><strong>Request body:</strong> <code>{sensor_ids: [...]}</code>, at most 500.</p>
+<h3 id="post-adminlookupassets-by-user-ids"><code>POST /admin/lookup/assets-by-user-ids</code></h3>
+<p>Batch lookup: resolve the assets owned by a set of members, across communities.
+Every row carries <code>owner_user_id</code>, so the caller can attribute it back to the
+member it asked about.</p>
+<p><strong>Request body:</strong> <code>{user_ids: [...]}</code>, at most 500.</p>
+<h3 id="post-adminlookupmembers-by-dids"><code>POST /admin/lookup/members-by-dids</code></h3>
+<p>Batch lookup: resolve the members holding a set of dataspace DIDs, across
+communities. Every row carries its <code>did</code>, plus the member's <code>user_id</code>, delivery
+points and community.</p>
+<p><strong>Members, not assets</strong> — deliberately. A participant is registered with a
+declared supply point and no asset at all, because a meter's <code>sensor_id</code> is
+assigned at physical installation. An asset-shaped answer would be empty for
+everyone whose meter is not commissioned yet; a commissioned meter stays
+reachable through <code>assets-by-user-ids</code> and the <code>user_id</code> in the same row.</p>
+<p><strong>Request body:</strong> <code>{dids: [...]}</code>, at most 500.</p>
+<p>All three batch routes share one bound, and none of them is an enumeration
+oracle: an identifier matching nothing contributes no row and is never a <code>404</code>.</p>
 <hr />
 <h2 id="admin-routes-management">Admin Routes — Management</h2>
 <p>Import/export operations. Prefix: <code>/admin</code>.</p>
@@ -5392,15 +5453,26 @@ endpoint that deletes what it was not given is the bundle import above.</p>
 <p><code>key</code> is optional — when omitted it is minted from the community's own
 numbering (<code>gl-00001</code> → <code>gl-00002</code>), so a caller with no opinion still gets a key
 that reads correctly in an exported bundle.</p>
+<p><code>did</code> is optional and unique across the whole registry, unlike <code>key</code> and
+<code>user_id</code>, which are unique per community. It is usually written afterwards
+rather than here — see <code>PATCH</code> below.</p>
 <p><strong>Responses:</strong> <code>201</code> with the member; <code>409</code> when the key or <code>user_id</code> is already
-taken, naming the existing key so the caller can switch to <code>PATCH</code>; <code>404</code> for an
+taken, naming the existing key so the caller can switch to <code>PATCH</code>, or when the
+<code>did</code> is already held by another member anywhere in the registry; <code>404</code> for an
 unknown community.</p>
 <h3 id="patch-admincommunitiescommunity_keymembersmember_key"><code>PATCH /admin/communities/{community_key}/members/{member_key}</code></h3>
 <p>Partial update. Absent fields are left alone, never cleared.</p>
 <p><code>delivery_points</code> is deliberately not accepted here — it is a JSONB list, and a
 patch that happened to omit it would read as "this member now has none". Use the
 delivery-point routes.</p>
-<p><strong>Responses:</strong> <code>200</code>; <code>409</code> if the new <code>user_id</code> belongs to another member.</p>
+<p><strong>This is how a member's dataspace <code>did</code> is written</strong>, because the identity is
+minted a step after the member is registered. Re-sending a member the DID it
+already holds is a <code>200</code> that changes nothing, so the write is safe to retry.</p>
+<p><strong>Responses:</strong> <code>200</code>; <code>409</code> if the new <code>user_id</code> belongs to another member of the
+community, or if the new <code>did</code> belongs to any other member in the registry. A DID
+clash inside the addressed community names the holding member; one in another
+community does not, because which member of which other community holds a DID is
+not the caller's question.</p>
 <h3 id="post-admincommunitiescommunity_keymembersmember_keystatus"><code>POST /admin/communities/{community_key}/members/{member_key}/status</code></h3>
 <p>Move a member through <code>pending → active → suspended → inactive</code>, with an optional
 <code>reason</code> recorded on the member.</p>

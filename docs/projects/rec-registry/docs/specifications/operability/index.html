@@ -4080,10 +4080,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0058-version-reporting-is-decorative" class="md-nav__link">
+  <a href="#req-0058-version-answers-what-is-deployed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0058 — version reporting is decorative
+        REQ-0058 — /version answers what is deployed
       
     </span>
   </a>
@@ -4153,21 +4153,26 @@ recover because restarting was never the fix.</p>
 <p>That independence is the requirement, and it is also the limitation — <strong>this endpoint
 becoming green says nothing about the service being able to serve a request.</strong> There is no
 readiness check that does.</p>
-<h3 id="req-0058-version-reporting-is-decorative">REQ-0058 — version reporting is decorative</h3>
-<p><code>GET /version</code> answers <code>api_version</code> and <code>schema_version</code>. Both are string literals in
-<code>api/meta.py</code>, and neither is derived from anything:</p>
+<h3 id="req-0058-version-answers-what-is-deployed">REQ-0058 — <code>/version</code> answers what is deployed</h3>
+<p><code>GET /version</code> answers <code>api_version</code> and <code>schema_version</code>, and both are derived:</p>
 <ul>
-<li><strong><code>api_version</code> is <code>"1.0.0"</code></strong> while the package is on 1.5.0. It has not moved in five
-  minor releases, so comparing it across two environments cannot tell you they differ.</li>
-<li><strong><code>schema_version</code> is <code>"0.4"</code></strong>, which matches nothing that exists — the documents and
-  the example bundle say <code>0.5</code>, the bundle model defaults to <code>1.0</code>, and the exporter emits
-  <code>1.0</code> (REQ-0018).</li>
+<li><strong><code>api_version</code></strong> is the installed distribution's version, from <code>importlib.metadata</code>. It
+  was the literal <code>"1.0.0"</code> while the package was on 1.5.0, so comparing it across two
+  environments could not tell you they differed — which is the only thing the field is for.
+  A distribution that cannot be found answers <code>0.0.0+unknown</code> rather than raising: this
+  route is reached for when something is already wrong.</li>
+<li><strong><code>schema_version</code></strong> is <code>CURRENT_SCHEMA_VERSION</code> from <code>core/versions.py</code>, the same
+  constant the bundle model, the exporter and the importer read (REQ-0018). It was <code>"0.4"</code>,
+  which matched nothing anywhere.</li>
 </ul>
-<p>So the one route whose job is to answer <em>"what is deployed?"</em> answers <em>"what was typed
-into a file"</em>. This is a defect —
-<a href="https://github.com/celine-eu/rec-registry/issues/38">#38</a> — and it is described here as
-it behaves. Its tests assert the <strong>mismatch</strong>, so closing it turns them red deliberately,
-and fixing it means changing the code, this requirement and those tests together.</p>
+<p>The route still answers with no database, for the same reason <code>/health</code> does.</p>
+<p><strong>The OpenAPI document derives both too.</strong> <code>create_app</code> sets <code>info.version</code> from
+<code>api_version()</code> and names the bundle schema from <code>CURRENT_SCHEMA_VERSION</code>; they were the
+literals <code>"1.0.0"</code> and <code>"v0.4 schema"</code>, which is the same defect in a fifth place. It
+matters more here than in a docstring: <code>../celine-sdk</code> snapshots this API under
+<code>openapi/rec-registry/v&lt;info.version&gt;/</code> and generates its client from that directory, so a
+version that does not move while the document does overwrites a snapshot in place — and no
+consumer of the generated client can tell the API changed.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
@@ -4178,9 +4183,11 @@ and fixing it means changing the code, this requirement and those tests together
 <li><strong>Startup.</strong> <code>create_app</code> wiring, settings loading, and the policy engine's bundle load
   at boot. A service that starts with an unloadable Rego bundle is not something any test
   here would notice.</li>
-<li><strong>The migrations.</strong> Alembic is not exercised by any test — the suite builds its schema
-  from <code>Base.metadata</code> — so a model that has drifted from <code>alembic/versions/</code> passes
-  everything and fails on deployment.</li>
+<li><strong><code>downgrade</code>, and migrating a database that holds rows.</strong>
+  <code>tests/test_migrations.py</code> runs <code>alembic upgrade head</code> into a throwaway schema and
+  compares it to <code>Base.metadata</code>, so a model that has drifted from <code>alembic/versions/</code> no
+  longer passes. It builds an empty schema and never goes back down, so what a revision
+  does to existing rows is still nobody's test.</li>
 </ul>
 
 

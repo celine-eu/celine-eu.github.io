@@ -2512,6 +2512,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#one-realm-more-than-one-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One realm, more than one file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-files-this-repository-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which files this repository ships
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4337,6 +4359,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#one-realm-more-than-one-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One realm, more than one file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-files-this-repository-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which files this repository ships
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4546,6 +4590,100 @@ then plain <code>ENV</code>; <code>dev</code>, <code>development</code>, <code>l
 check, and <strong>anything else — including a typo or nothing at all — is production</strong>.
 Declaring no <code>secret:</code> at all is always accepted: Keycloak then generates one,
 which is the recommended production shape.</p>
+<h3 id="one-realm-more-than-one-file">One realm, more than one file</h3>
+<p><code>sync</code> recomputes the grants of every client <strong>present</strong> in the file it is given. A file
+that describes only part of a realm therefore does not leave the rest alone: an absent
+client is an orphan and survives without <code>--prune</code>, but a client that stays is narrowed to
+whatever grants that file declares — silently, with nothing deleted and no flag involved.</p>
+<p>So when a realm is declared by more than one party, pass every file and let the loader
+merge them:</p>
+<pre><code class="language-bash">celine-policies keycloak sync clients.yaml \
+    --overlay clients.ds-host.yaml \
+    --overlay /path/to/ds/clients.yaml
+</code></pre>
+<p><code>--overlay</code> is repeatable. Merging happens before anything else, so the placeholder-secret
+guard and the scope-reference check see the whole realm rather than one file's view of it.</p>
+<p>The rule is <strong>ownership, not precedence</strong> — no file is subordinate and there is no
+last-wins:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a client's identity</td>
+<td>declared by <strong>exactly one</strong> file: <code>name</code>, <code>description</code>, <code>secret</code>, <code>scopes_prefix</code>, <code>service_account_enabled</code></td>
+</tr>
+<tr>
+<td>a client's grants</td>
+<td>added by <strong>any</strong> file, with <code>client_id</code> plus <code>default_scopes</code> / <code>optional_scopes</code> / <code>extra_audiences</code> and nothing else</td>
+</tr>
+<tr>
+<td>a scope</td>
+<td>declared once, or identically more than once; a conflicting redefinition is an error</td>
+</tr>
+<tr>
+<td><code>realm</code>, <code>oauth2_proxy_client</code></td>
+<td>stated by any file; two files disagreeing is an error</td>
+</tr>
+<tr>
+<td>a <code>scopes_prefix</code></td>
+<td>claimed by one client only — it decides where every audience mapper for those scopes points</td>
+</tr>
+</tbody>
+</table>
+<h3 id="which-files-this-repository-ships">Which files this repository ships</h3>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>declares</th>
+<th>mounted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clients.yaml</code></td>
+<td>celine's own services</td>
+<td>always — it is a whole realm on its own</td>
+</tr>
+<tr>
+<td><code>clients.ds-host.yaml</code></td>
+<td>the grants celine adds to the dataspace's clients</td>
+<td>only where a dataspace is deployed, and only with ds's file</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The dataspace is optional, so the base file does not require it.</strong> <code>clients.yaml</code>
+declares nothing about ds — no client, no scope family — and syncing it alone produces a
+correct celine realm. Where a dataspace is deployed, its clients are declared by ds's own
+file and celine adds grants to them from <code>clients.ds-host.yaml</code>.</p>
+<p>Forgetting ds's file is refused rather than survived, and no keyword is needed for it:
+every entry in the host overlay is grants-only, so without ds's declaration they name
+clients nobody owns, and the sync stops before authenticating rather than creating eight
+clients with no name and generated secrets.</p>
+<p>A file that genuinely cannot be synced on its own may still say so, and the file that
+answers it identifies itself by name — not by path, because a deployment mounts a file
+wherever it likes:</p>
+<pre><code class="language-yaml"># a base file that is only ever half a realm
+requires: [ds]        # refuse to sync without the declaration called 'ds'
+
+# the file that answers it
+overlay: ds           # this is that declaration
+</code></pre>
+<p>Use it only where the base file is genuinely incomplete without the other. Putting
+<code>requires:</code> on a file that describes a working realm makes an optional component
+mandatory — which is why neither file above carries one.</p>
+<p>A grant naming a scope <strong>no</strong> file declares is refused the same way, in every environment
+and with no flag to accept it: the scope would never be created, so the grant would be
+skipped and the service would get a 403 the first time it needed it. This used to be a
+warning that synced anyway and failed at the end, with the realm already rewritten — see
+<a href="docs/decisions/ADR-0002-undefined-scope-grants-are-fatal/">ADR-0002</a>. See
+<a href="docs/decisions/ADR-0001-merge-in-the-loader/">ADR-0001</a> for why this is merged in the
+loader rather than pre-merged into a generated file.</p>
 <h2 id="dataspace-integration">Dataspace Integration</h2>
 <p>The CLI manages Keycloak resources for the CELINE dataspace layer (identity
 registry, onboarding, portal).</p>
@@ -4557,15 +4695,28 @@ tokens). The scope is assigned as a default scope on the <code>oauth2_proxy</cod
 so every user JWT automatically carries the claim when the attribute is set.</p>
 <h3 id="identity-registryadmin-scope"><code>identity-registry.admin</code> scope</h3>
 <p>A standard OAuth scope granting admin access to the dataspace identity-registry
-API. It follows the <code>{service}.admin</code> naming convention.</p>
+API. It follows the <code>{service}.admin</code> naming convention, and is declared in
+<code>clients.ds-host.yaml</code> because celine is the only party that grants it: ds omits
+every <code>*.admin</code> from what it carries into a host realm, on the grounds that a
+long-lived process should not hold a superset over every permission of a service.</p>
 <h3 id="dataspace-service-clients">Dataspace service clients</h3>
-<p>All three follow the <code>svc-ds-*</code> naming convention to distinguish dataspace
-services from platform services (<code>svc-*</code>).</p>
+<p>They follow the <code>svc-ds-*</code> naming convention to distinguish dataspace services
+from platform services (<code>svc-*</code>), and <strong>they are declared by ds, not here</strong> —
+ds owns their identity and the <code>identity-registry.*</code>, <code>connector.*</code>,
+<code>provenance.*</code> and <code>catalog.*</code> vocabularies. This repository used to carry a
+hand-pasted copy of that declaration; it drifted, and the copy is gone. See
+<a href="docs/decisions/ADR-0001-merge-in-the-loader/">ADR-0001</a>.</p>
+<p>What celine decides about them is in <code>clients.ds-host.yaml</code>, one grants-only
+entry per client:</p>
 <ul>
-<li><strong><code>svc-ds-identity-registry</code></strong> -- Identity Registry backend. Owns the <code>identity-registry</code> scope prefix.</li>
-<li><strong><code>svc-ds-onboarding</code></strong> -- Onboarding service. Gets <code>identity-registry.admin</code> scope and uses <code>extra_audiences: [svc-ds-identity-registry]</code> for token forwarding.</li>
-<li><strong><code>svc-ds-portal</code></strong> -- User-facing OIDC client (<code>service_account_enabled: false</code>). Default scopes: <code>dataset.query</code>, <code>dataset.read</code>.</li>
+<li><strong><code>svc-ds-identity-registry</code></strong> — <code>identity-registry.admin</code>. ds drops every <code>*.admin</code> from what it carries into a host realm; this realm drives the registry as an operator surface, so it grants the superset and declares it.</li>
+<li><strong><code>svc-ds-onboarding</code></strong> — <code>rec-registry.members.write</code>. rec-registry is celine's own service, so ds's file cannot carry this grant.</li>
+<li><strong><code>svc-ds-portal</code></strong> — the host-side console grants, including <code>dataset.query</code> / <code>dataset.read</code> against celine's dataset-api.</li>
+<li><strong><code>svc-ds-dataset-api</code></strong> — <code>dataset.admin</code> and the <code>svc-dataset-api</code> audience. <code>dataset.*</code> is celine's vocabulary on celine's data plane; this client is the dataset API's outbound identity (<a href="https://github.com/spindoxlabs/ds/issues/14">spindoxlabs/ds#14</a>).</li>
 </ul>
+<p>The other four ds clients — <code>svc-ds-connector</code>, <code>svc-ds-provenance</code>,
+<code>svc-ds-federated-catalog</code>, <code>svc-edc</code> — need nothing from celine and appear in
+neither file.</p>
 <h2 id="development">Development</h2>
 <pre><code class="language-bash"># Run MQTT auth dev server
 task run

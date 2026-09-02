@@ -4167,6 +4167,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0060 — the dataspace DID is written by PATCH, and a clash names its holder only within the community
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4215,11 +4226,16 @@ switch to <code>PATCH</code>.</p>
 <p><strong>Creating must not silently update.</strong> A retry carrying a changed payload — the ordinary
 shape of a client reconnecting — would otherwise rewrite the wrong person's row, and
 <code>user_id</code> is the field that would attach one participant's identity to another's meters.</p>
-<p>Both checks are <strong>application-level, not database constraints</strong>: <code>member</code> carries no
-unique index on <code>key</code> or <code>user_id</code>, within a community or across the registry. Two
-concurrent creates naming the same key can therefore both pass the check and both insert.
-The window is small and the writers are few — <code>../onboarding</code> and an operator — but the
-guarantee is "refused when observed", not "impossible".</p>
+<p><strong>Two writers at once get the same answer.</strong> The check is application-level and the
+message is its work, but <code>member</code> carries unique indexes on <code>(community_id, key)</code> and
+<code>(community_id, user_id)</code>, so a create that passes the check because the clashing row was
+not committed yet is refused by the index instead — and that refusal is translated back
+into the same <code>409</code>. A caller cannot tell a race from an ordinary duplicate, and the loser
+leaves no row behind.</p>
+<p>The same holds for <code>PATCH</code> reassigning a <code>user_id</code> (REQ-0024): its clash check is equally
+blind to an uncommitted row, and equally backed.</p>
+<p>The guarantee is per community, not registry-wide — one person may hold the same <code>user_id</code>
+in two communities, which is what makes membership of several possible.</p>
 <h3 id="req-0023-a-write-naming-an-unknown-community-is-404">REQ-0023 — a write naming an unknown community is <code>404</code></h3>
 <p>Rather than creating the community implicitly. A community is seeded deliberately; a
 member arriving for one that does not exist is a caller with a stale key, not an
@@ -4233,7 +4249,8 @@ update that happened to omit it would read as <em>"this member now has none"</em
 sub-resource (REQ-0027). Adding the field to the patch model is a data-loss bug, not a
 convenience — the absence is load-bearing.</p>
 <p>A patch moving <code>user_id</code> to one already held by another member of the community answers
-<code>409</code>.</p>
+<code>409</code> — including when the holder's row was written concurrently and the clash check could
+not see it yet, which the unique index behind REQ-0022 is what catches.</p>
 <h3 id="req-0025-a-status-change-is-its-own-route-and-records-why">REQ-0025 — a status change is its own route, and records why</h3>
 <p><code>POST …/members/{mk}/status</code> moves a member through <code>pending</code>, <code>active</code>, <code>suspended</code>,
 <code>inactive</code>, with an optional <code>reason</code> stored at <code>extra.status_reason</code>. An unrecognised
@@ -4268,6 +4285,19 @@ charger cannot be stored carrying a heat pump's fields, and an incomplete one an
 <code>422</code>. An <code>asset_type</code> that is not one of the six answers <code>422</code> <strong>naming the valid ones</strong>
 — the caller's next request depends on knowing them, and a bare rejection makes them read
 the source.</p>
+<p><strong>An asset key is unique per community, not per member.</strong> The lookup behind the upsert
+filters by owner as well, so a key that looks free to this member may already be another
+member's — and the two outcomes behind that are different:</p>
+<ul>
+<li><strong>The key is already this member's</strong>, including when a concurrent writer created it a
+  moment ago. The upsert is applied to that row and answers <code>200</code>. A create-or-replace is
+  idempotent by definition, so a race means only that two writers arrived in an order
+  neither cared about; reporting a conflict the caller cannot act on would push retry logic
+  into six consuming repositories for nothing.</li>
+<li><strong>The key is another member's.</strong> <code>409</code>. Applying the upsert would move somebody else's
+  meter onto this member, which is not what <em>replace my asset</em> asked for — and this is not
+  only a race: two members using one key in sequence takes exactly the same path.</li>
+</ul>
 <p><code>DELETE</code> on the same path answers <code>204</code>.</p>
 <h3 id="req-0029-patching-a-community-keeps-its-areas-and-upserting-an-area-keeps-the-others">REQ-0029 — patching a community keeps its areas, and upserting an area keeps the others</h3>
 <p><code>PATCH /admin/communities/{ck}</code> updates <code>name</code>, <code>description</code>, <code>legal</code>, <code>links</code>, <code>contact</code>
@@ -4296,6 +4326,33 @@ the member count afterwards — <code>tests/test_writes.py::TestNoWriteReducesAS
 is a <strong>registry of writes, not a sample of them</strong>: a new write endpoint must be added to
 it, and one that is missing from it is a write nobody has checked for the single thing the
 write API guarantees.</p>
+<h3 id="req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community">REQ-0060 — the dataspace DID is written by <code>PATCH</code>, and a clash names its holder only within the community</h3>
+<p><code>PATCH …/members/{mk}</code> accepts <code>did</code> alongside the fields of REQ-0024. There is <strong>no
+dedicated route</strong>: the DID is minted a step after the member is registered, so it arrives
+as an update to a row that already exists, and a write endpoint of its own would earn
+nothing <code>PATCH</code> already does while adding one more entry to REQ-0031's registry of writes.</p>
+<p><strong>Re-sending a member the DID it already holds is a <code>200</code> that changes nothing.</strong>
+<code>../onboarding</code> writes it from a retriable step, so the same write arriving twice must not
+be a conflict — the member itself is excluded from the clash check, by row id rather than
+by member key, because keys repeat across communities and the check does not filter by one.</p>
+<p><strong>A DID another member already holds is <code>409</code>, and what the message says depends on where
+that member is:</strong></p>
+<ul>
+<li><strong>Inside the community the caller addressed</strong> — the response names the holding member's
+  key, as the <code>user_id</code> clash does, so the caller can act on it.</li>
+<li><strong>In any other community</strong> — the response says the DID belongs to another member and
+  names nobody. Which member of which community holds a DID is a question about people the
+  caller was not addressing, and answering it is the enumeration disclosure REQ-0045
+  exists to refuse.</li>
+</ul>
+<p><strong>Two writers at once get the same answer</strong>, by the mechanism of REQ-0022: the check cannot
+see an uncommitted row, <code>ix_member_did</code> refuses the loser, and that refusal is translated
+into the same <code>409</code>. The translated message is the community-blind one — by then there is
+no holder in hand to name, which is the honest answer rather than a degraded one.</p>
+<p>Creating a member that carries an already-held DID answers <code>409</code> the same way. It has no
+application-level check of its own: the two checks in <code>create_member</code> read a list of the
+community's own members, and DID uniqueness is registry-wide, so a check would be a second
+query answering exactly what the index answers.</p>
 
 
 

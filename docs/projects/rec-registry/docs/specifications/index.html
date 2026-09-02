@@ -4047,10 +4047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#two-of-them-describe-defects" class="md-nav__link">
+  <a href="#none-of-them-describes-a-defect" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Two of them describe defects
+        None of them describes a defect
       
     </span>
   </a>
@@ -4134,11 +4134,12 @@ nothing downstream can tell.</p>
 through SDK wrappers that are not in a published release yet. <code>../dataset-api</code> uses
 membership to decide access — so a member wrongly deactivated here is a member who cannot
 see their own data there, and the error surfaces three repositories away from its cause.</p>
-<h2 id="two-of-them-describe-defects">Two of them describe defects</h2>
-<p>They are written as behaviour anyway. A requirement describing the <em>intended</em> behaviour
-would be an unverified wish, and the trace matrix would report it as covered. Each names
-its issue, and fixing one means changing the code, its requirement and its test in the
-same change.</p>
+<h2 id="none-of-them-describes-a-defect">None of them describes a defect</h2>
+<p>For a while two did, and then one. They were written as behaviour anyway — a requirement
+describing <em>intended</em> behaviour would be an unverified wish, and the trace matrix would
+report it as covered — with tests asserting the <strong>mismatch</strong>, so that closing each one
+turned its tests red deliberately rather than leaving them passing for the wrong reason.</p>
+<p>All three are closed:</p>
 <table>
 <thead>
 <tr>
@@ -4150,18 +4151,20 @@ same change.</p>
 <tbody>
 <tr>
 <td>REQ-0043</td>
-<td><code>assets-by-sensor-ids</code> carries no bound, while its sibling caps at 500</td>
+<td><code>assets-by-sensor-ids</code> carried no bound while its sibling capped at 500</td>
 <td><a href="https://github.com/celine-eu/rec-registry/issues/37">#37</a></td>
 </tr>
 <tr>
 <td>REQ-0018, REQ-0058</td>
-<td>version reporting is decorative — four places, three values, nothing validated</td>
+<td>version reporting was decorative — four places, three values, nothing reading the field</td>
 <td><a href="https://github.com/celine-eu/rec-registry/issues/38">#38</a></td>
 </tr>
 </tbody>
 </table>
-<p>Their tests assert the <strong>mismatch</strong>, not the intended value, so closing either defect
-turns them red deliberately rather than leaving a test that passes for the wrong reason.</p>
+<p>Each now describes what the code does, and the mechanism is kept here rather than deleted:
+<strong>a requirement may describe a defect, provided it says so and its test asserts the defect
+rather than the wish.</strong> That is what made these three closable as visible three-part
+changes — code, requirement, test — instead of silent ones.</p>
 <h2 id="how-a-requirement-is-verified">How a requirement is verified</h2>
 <p>A test declares what it covers with a <code>@verifies REQ-####</code> tag in its docstring:</p>
 <pre><code class="language-python">async def test_a_stranger_is_indistinguishable_from_someone_who_owns_nothing(live_client):
@@ -4193,11 +4196,11 @@ same change. The procedure is in the companion's testing playbook.</p>
 <td><a href="identity-and-authorisation/">identity and authorisation</a> — who the caller is and what they may do</td>
 </tr>
 <tr>
-<td>REQ-0011 – REQ-0019</td>
+<td>REQ-0011 – REQ-0019, REQ-0059</td>
 <td><a href="registry-model/">the registry model</a> — what a community, member and asset are</td>
 </tr>
 <tr>
-<td>REQ-0020 – REQ-0031</td>
+<td>REQ-0020 – REQ-0031, REQ-0060</td>
 <td><a href="member-writes/">member and community writes</a> — how a community changes at runtime</td>
 </tr>
 <tr>
@@ -4205,7 +4208,7 @@ same change. The procedure is in the companion's testing playbook.</p>
 <td><a href="import-and-export/">import and export</a> — the destructive path, and its guard</td>
 </tr>
 <tr>
-<td>REQ-0038 – REQ-0045</td>
+<td>REQ-0038 – REQ-0045, REQ-0061</td>
 <td><a href="lookup/">cross-community lookup</a> — which community is this in</td>
 </tr>
 <tr>
@@ -4218,6 +4221,9 @@ same change. The procedure is in the companion's testing playbook.</p>
 </tr>
 </tbody>
 </table>
+<p>Each page's own block was full and contiguous when the dataspace DID arrived, so
+REQ-0059 – REQ-0061 append to the end of the universe and are listed against the page they
+belong to rather than renumbering three ranges to keep them tidy.</p>
 <h2 id="what-is-not-covered">What is not covered</h2>
 <p>Unverified by any suite here, whatever this document says. Each area's own page repeats the
 part that belongs to it.</p>
@@ -4231,8 +4237,12 @@ part that belongs to it.</p>
   directly. JWT parsing and verification, the decision cache, and the <code>401</code>/<code>403</code> a real
   request would receive are not exercised — the suite runs with <code>AUTH_ENABLED=false</code> and
   <code>POLICIES_ENABLED=false</code>.</li>
-<li><strong>The migrations.</strong> The suite builds its schema from <code>Base.metadata</code>, so a model that has
-  drifted from <code>alembic/versions/</code> passes everything.</li>
+<li><strong>The migrations, beyond the shape they build.</strong> <code>tests/test_migrations.py</code> runs
+  <code>alembic upgrade head</code> into a throwaway schema and asserts it matches <code>Base.metadata</code>, so
+  a model that drifts from <code>alembic/versions/</code> no longer passes. What that does not cover:
+  <code>downgrade</code>, which drops the three tables and has never been run; and what a migration
+  does to a database that already holds rows — the check builds an empty schema, so
+  locking, backfill and anything a revision does to existing data are unexercised.</li>
 <li><strong>The Keycloak realm.</strong> Operator authorisation depends on organizations and groups that
   <code>../celine-policies</code> syncs, and nothing here would notice a rename.</li>
 <li><strong>Read pagination.</strong> <code>limit</code>, <code>cursor</code> and the filters on the community, member, asset
@@ -4240,8 +4250,11 @@ part that belongs to it.</p>
   <code>MAX_PAGE_SIZE</code> is not exercised at all.</li>
 <li><strong>The exporter, directly.</strong> It is covered only through the round trip (REQ-0037), which
   means its output is verified as <em>re-importable</em> and never as <em>correct</em>.</li>
-<li><strong>Concurrency.</strong> Uniqueness of a member key and <code>user_id</code> is checked in application code
-  with no database constraint behind it (REQ-0022); nothing tests two writers at once.</li>
+<li><strong>Concurrency, beyond member uniqueness.</strong> Two writers racing on a member <code>key</code> or
+  <code>user_id</code> are covered (REQ-0022) — constraint, translation and test. No other overlapping
+  write is. <code>asset</code> carries the same unique index on <code>(community_id, key)</code> and nothing
+  translates it, so two callers creating one asset key at once still answer <code>500</code>; two
+  upserting an area resolve by last-writer-wins, unchecked.</li>
 </ul>
 <h2 id="what-is-not-here">What is not here</h2>
 <ul>

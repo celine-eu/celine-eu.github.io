@@ -4120,6 +4120,10 @@ a promise to those repositories, and changing one is a platform change, not a lo
 <td><code>celine.sdk.broker</code> — MQTT lifecycle, topics, dispatch</td>
 </tr>
 <tr>
+<td><a href="rec-registry-client/">REC registry client</a></td>
+<td><code>celine.sdk.rec_registry</code> — the batch asset lookups</td>
+</tr>
+<tr>
 <td><a href="spec-management/">Spec management</a></td>
 <td>the CLI, spec versioning, generated-client conversion</td>
 </tr>
@@ -4131,7 +4135,8 @@ a promise to those repositories, and changing one is a platform change, not a lo
 never written by hand. the companion's testing playbook states how.</p>
 <p>Numbers are allocated in blocks per document so a new requirement can be appended without
 renumbering: configuration <code>0001–0019</code>, identity <code>0020–0049</code>, policy evaluation
-<code>0050–0069</code>, messaging <code>0070–0099</code>, spec management <code>0100–0119</code>.</p>
+<code>0050–0069</code>, messaging <code>0070–0099</code>, spec management <code>0100–0119</code>, REC registry client
+<code>0120–0139</code>.</p>
 <h2 id="what-is-deliberately-not-specified-here">What is deliberately not specified here</h2>
 <ul>
 <li><strong>The generated tree.</strong> <code>src/celine/sdk/openapi</code> is 454 files produced by <code>task gen</code>;

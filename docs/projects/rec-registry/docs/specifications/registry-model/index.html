@@ -4113,10 +4113,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0018-the-schema-version-is-carried-never-checked-and-disagreed-about" class="md-nav__link">
+  <a href="#req-0018-the-schema-version-is-read-and-reported-and-never-refuses" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0018 — the schema version is carried, never checked, and disagreed about
+        REQ-0018 — the schema version is read and reported, and never refuses
       
     </span>
   </a>
@@ -4128,6 +4128,17 @@
     <span class="md-ellipsis">
       
         REQ-0019 — a bundle missing a required field is refused rather than defaulted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0059-a-member-may-hold-one-dataspace-did-and-no-two-members-hold-the-same-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0059 — a member may hold one dataspace DID, and no two members hold the same one
       
     </span>
   </a>
@@ -4180,6 +4191,10 @@ structure and cannot be duplicated within a bundle.</p>
 <code>pending</code>, <code>active</code>, <code>suspended</code>, <code>inactive</code>.</p>
 <p><strong><code>user_id</code> holds a Keycloak <em>username</em>, not a subject UUID</strong> — see REQ-0053, which is
 where that becomes visible and costly.</p>
+<p>A member carries three identifiers and each answers a different question: <code>key</code> is what
+this community calls them, <code>user_id</code> is who they authenticate as, and <code>did</code> (REQ-0059) is
+who they are in the dataspace. Two of the three are wrong for any given use, which is why
+they are documented together at the column.</p>
 <h3 id="req-0013-a-member-declares-what-kind-of-thing-it-is-as-a-schemaorg-curie">REQ-0013 — a member declares what kind of thing it is, as a schema.org CURIE</h3>
 <p><code>type</code> carries <code>schema:Person</code>, <code>schema:GovernmentOrganization</code>, <code>schema:LocalBusiness</code>
 or another CURIE, and is stored under <code>extra.type</code>.</p>
@@ -4208,45 +4223,33 @@ keys resolve, so a relationship naming an absent asset is stored as given.</p>
 <p>They live in one JSONB column on the member, which is the reason every write touching them
 merges by identity rather than replacing the field (REQ-0027) — and the reason they are
 absent from the patch model entirely.</p>
-<h3 id="req-0018-the-schema-version-is-carried-never-checked-and-disagreed-about">REQ-0018 — the schema version is carried, never checked, and disagreed about</h3>
-<p><code>version</code> and <code>schema_version</code> are accepted on a bundle, defaulted to <code>"1.0"</code> when absent,
-and <strong>read by nothing</strong>. A bundle declaring <code>0.4</code>, <code>0.5</code> or <code>not-a-version</code> imports
-identically.</p>
-<p>Four places hold three opinions about what the current version is:</p>
-<table>
-<thead>
-<tr>
-<th>Place</th>
-<th>Says</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>GET /version</code></td>
-<td><code>0.4</code></td>
-</tr>
-<tr>
-<td><code>recs/rec-example.yaml</code>, and every document under <code>docs/</code></td>
-<td><code>0.5</code></td>
-</tr>
-<tr>
-<td><code>RegistryBundleIn</code>'s default</td>
-<td><code>1.0</code></td>
-</tr>
-<tr>
-<td>what <code>src/celine/rec_registry/services/exporter.py</code> emits</td>
-<td><code>1.0</code></td>
-</tr>
-</tbody>
-</table>
-<p>They drifted freely <em>because</em> nothing reads the field. One consequence is worth stating
-separately: <strong>an export does not preserve the version its import declared</strong> — a <code>0.5</code>
-bundle exports as <code>1.0</code> — so an export is not a faithful backup in the one field whose job
-is to describe the shape of the rest.</p>
-<p>This is a defect — <a href="https://github.com/celine-eu/rec-registry/issues/38">#38</a> — and it is
-stated here as behaviour rather than as the intended version gate, because the gate does
-not exist and a requirement describing it would report coverage for something nobody
-verified. Fixing it means changing the code, this requirement and its tests together.</p>
+<h3 id="req-0018-the-schema-version-is-read-and-reported-and-never-refuses">REQ-0018 — the schema version is read and reported, and never refuses</h3>
+<p><code>schema_version</code> says which schema under <code>schemas/community/</code> a bundle conforms to;
+<code>version</code> says the format of the envelope around it. They are different questions, and
+conflating them is how <code>1.0</code> — an envelope version — came to sit in the <code>schema_version</code>
+slot.</p>
+<p><strong>One place holds the current value.</strong> <code>core/versions.py</code> carries <code>MANIFEST_VERSION</code>,
+<code>CURRENT_SCHEMA_VERSION</code> and <code>KNOWN_SCHEMA_VERSIONS</code>; <code>GET /version</code>, the bundle model's
+defaults, the exporter and the importer all read it. They used to hold four literals, which
+is how they came to hold three different opinions — a value nobody reads has nothing
+holding its copies to each other.</p>
+<p><strong>Import reports, and does not refuse.</strong> A bundle declaring an older published version, an
+unpublished one, or none at all is imported, and the caller is told in the <code>warnings</code> of
+its <code>ImportReport</code>. The warning is produced before the <code>dry_run</code> return, so a dry run shows
+it — that is where a caller looks to find out whether the file is the one they think it is.</p>
+<p>This is deliberately <strong>not</strong> a compatibility gate: an incompatible bundle is still accepted
+and partially applied. Refusing would break restoring a backup, and a backup is restored
+when something has already gone wrong. What changed is that it is no longer silent.</p>
+<p><strong>An export declares the version it emits</strong>, not the version its rows arrived under. An
+export is built from today's model, so it conforms to today's schema whatever it was
+imported as; stamping the older number on a document written in the newer shape would be a
+more convincing lie than the <code>1.0</code> it used to carry. A round trip of a current bundle
+therefore comes back declaring exactly what it declared going in.</p>
+<p><strong>The published schemas are not enforced.</strong> <code>schemas/community/v0.4/</code>, <code>v0.5/</code> and
+<code>v0.6/community.schema.json</code> are documentation: there is no <code>jsonschema</code> dependency and nothing in <code>src/</code>
+reads them. <code>CURRENT_SCHEMA_VERSION</code> is written down rather than derived from that
+directory, because <code>schemas/</code> does not ship in the Docker image — <code>tests/test_versions.py</code>
+holds the constant to the directory in the repository instead.</p>
 <h3 id="req-0019-a-bundle-missing-a-required-field-is-refused-rather-than-defaulted">REQ-0019 — a bundle missing a required field is refused rather than defaulted</h3>
 <p>A bundle with no <code>community</code>, and a member with no <code>role</code> or no <code>area</code>, raise a validation
 error at parse time.</p>
@@ -4254,6 +4257,33 @@ error at parse time.</p>
 apply. That property matters more here than in most services because import is
 destructive (REQ-0032): a bundle that parsed halfway and then failed would have already
 deleted the community it was replacing.</p>
+<h3 id="req-0059-a-member-may-hold-one-dataspace-did-and-no-two-members-hold-the-same-one">REQ-0059 — a member may hold one dataspace DID, and no two members hold the same one</h3>
+<p><code>did</code> is optional on <code>MemberIn</code> and stored in its <strong>own column</strong> beside <code>user_id</code>, not
+under <code>extra</code>. It is the identifier the member is known by in the dataspace, and the join
+key between the connector's answer to <em>who consents</em> — which is stated in DIDs — and this
+registry's answer to <em>what they hold</em>.</p>
+<p>Its own column because it is a join key, resolved by an <code>IN</code> over a set of DIDs on every
+consent-gated export. Burying an identifier in JSONB makes it look like a declaration, and
+<code>MemberIn</code> is <code>extra="allow"</code>, so a <code>did</code> the row-building code did not know about would
+validate, import, and land in <code>extra</code> while the column stayed <code>NULL</code> — one member holding
+two records of its DID that disagree.</p>
+<p><strong>Optional.</strong> The DID is minted a step <em>after</em> the member is registered — <code>../onboarding</code>
+registers at <code>rec_registry_member</code> and mints the identity at <code>dataspace_identity</code> — and a
+deployment with no dataspace never populates it at all. A bundle written before this field
+existed still parses, and exports omit the field entirely rather than writing <code>did: null</code>.</p>
+<p><strong>Unique registry-wide, not per community</strong>, unlike <code>key</code> and <code>user_id</code>. <code>ix_member_did</code> is
+a unique index on <code>did</code> alone, and because Postgres treats NULLs as distinct it permits any
+number of members holding none while refusing a second holder of one.</p>
+<p>The global scope rests on a domain assumption, stated here as one: a person cannot be a
+member of two RECs, because the same supply point settled twice is double billing. If
+multi-REC membership ever arrives, this constraint is the first thing that has to be
+revisited.</p>
+<p><strong>Both write paths carry it.</strong> A member created through the admin API and one that arrived
+in a YAML bundle hold the DID in the same column, and a community exports the same either
+way — the property REQ-0037 pins.</p>
+<p>It is published as <strong>schema v0.6</strong>, which adds this field and changes nothing else — so a
+v0.5 file is a valid v0.6 one. Like every schema under <code>schemas/community/</code>, that document
+is documentation and is not enforced (REQ-0018).</p>
 
 
 

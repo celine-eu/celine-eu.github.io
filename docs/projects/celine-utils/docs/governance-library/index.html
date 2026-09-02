@@ -4286,9 +4286,15 @@ rule = resolver.resolve(&quot;datasets.ds_prod_gold.weather_hourly&quot;)
 rule.access_level      # 'restricted'
 rule.tags              # ['gold', 'weather']
 </code></pre>
-<p>A missing file is <strong>not</strong> an error: <code>from_file</code> logs a warning and returns a resolver
-over an empty configuration, so every dataset resolves to empty defaults. Check the
-path yourself if absence should fail.</p>
+<p>A missing file <strong>is</strong> an error: <code>from_file</code> raises <code>FileNotFoundError</code>. Handing over a
+path is already a statement about which file you mean, so absence is <em>what you asked
+for is not there</em> — not <em>nothing was asked for</em>, which is <code>auto_discover</code>'s case and
+still returns an empty configuration.</p>
+<p>It used to warn and return that empty configuration instead. A connector whose
+<code>governance/</code> directory had been renamed then started clean, served an empty dataset
+list and empty sharing offers, and said nothing while the files sat on disk; the first
+symptom was an unrelated end-to-end test failing on a fixture that was right there in
+the file. Catch <code>FileNotFoundError</code> if a missing file is a state your caller supports.</p>
 <h3 id="constructors">Constructors</h3>
 <table>
 <thead>
@@ -4320,9 +4326,13 @@ path yourself if absence should fail.</p>
 consolidated genuinely disagreed: one inferred the overlay name from the parent
 directory, the other returned the base unchanged. Neither default would have been
 correct for both, so each passes what it means.</p>
+<p>A <strong>missing overlay</strong> is not an error, unlike a missing base: the overlay is located by
+convention rather than named by the caller, so its absence is the "nothing was asked
+for" case.</p>
 <h3 id="parse_rule"><code>parse_rule</code></h3>
 <p><code>parse_rule(block)</code> builds a single <code>GovernanceRule</code> from one raw block, accepting
-either a bare block or one nested under a <code>governance:</code> key.</p>
+either a bare block or one nested under a <code>governance:</code> key. <code>parse_rule(block, MyRule)</code>
+builds a subclass of one — see <a href="#extending-the-models">extending the models</a>.</p>
 <p>It goes through <code>model_validate</code> on a dict containing only the keys the block
 actually declared. <strong>That is load-bearing.</strong> Pydantic records those keys in
 <code>model_fields_set</code>, and the whole merge layer reads it to tell <em>unset</em> from <em>set to a
@@ -4346,15 +4356,15 @@ config   = merge_configs(base_config, overlay_config)
 </thead>
 <tbody>
 <tr>
-<td><code>merge_rules(base, override)</code></td>
+<td><code>merge_rules(base, override, *, model_cls=None)</code></td>
 <td>two <code>GovernanceRule</code>s, with the per-field rules below</td>
 </tr>
 <tr>
-<td><code>merge_configs(base, override)</code></td>
+<td><code>merge_configs(base, override, *, model_cls=None)</code></td>
 <td>two whole documents — defaults with defaults, sources rule-wise, overlay-only sources added as-is</td>
 </tr>
 <tr>
-<td><code>merge_dataspace(base, override)</code></td>
+<td><code>merge_dataspace(base, override, *, model_cls=None)</code></td>
 <td>two <code>DataspaceConfig</code>s</td>
 </tr>
 <tr>
@@ -4477,17 +4487,45 @@ enums are <code>GovernanceAccessLevel</code> (open / internal / restricted), <co
 <p>Every model sets <code>extra="ignore"</code>, so a file carrying fields this package does not
 know — the EDC sub-objects <code>ds</code> adds, a new field from a newer release — parses
 rather than failing. Unknown keys at block level are preserved in <code>rule.extra</code>.</p>
-<p><code>KNOWN_KEYS</code> is the frozenset deciding which keys reach the model and which land in
-<code>extra</code>. <strong>Adding a field to <code>GovernanceRule</code> without adding it to <code>KNOWN_KEYS</code>
-makes that field read as permanently absent</strong> — the key parses into <code>extra</code>, the
-schema still validates the file, and nothing reports it. That is exactly how the
-<code>ontology</code> block failed on introduction.</p>
+<p><code>KNOWN_KEYS</code> is the frozenset stating which keys the base grammar defines. It is what
+<code>validate</code> checks a block against when reporting unknown keys.</p>
+<p><strong>It is no longer what decides the split.</strong> <code>parse_rule</code> reads that off the model class
+it is given, so a consumer's subclass keeps its own fields instead of watching them land
+in <code>extra</code>. For <code>GovernanceRule</code> the two sets are identical, and a contract test holds
+them there.</p>
+<p>The difference matters when they do drift: a field added to the model and forgotten in
+<code>KNOWN_KEYS</code> now parses correctly and is <em>reported</em> as an unknown key by <code>validate</code> —
+noisy and wrong, rather than the silent permanent absence it used to be. That silence is
+how the <code>ontology</code> block failed on introduction; it can no longer happen that way.</p>
 <hr />
 <h2 id="extending-the-models">Extending the models</h2>
 <p><code>ds</code> extends <code>GovernanceRule</code> with ODRL policy and a richer dataspace spec. Subclass
 rather than adding fields here: what belongs in this package is the surface <em>every</em>
 consumer shares. A field only one component reads is a field the other three carry
 without meaning.</p>
+<pre><code class="language-python">class SpecRule(GovernanceRule):
+    policy: dict | None = None
+
+base     = parse_rule(base_block, SpecRule)
+override = parse_rule(override_block, SpecRule)
+
+merged = merge_rules(base, override)   # -&gt; SpecRule, policy and all
+</code></pre>
+<p><code>parse_rule</code>, <code>merge_rules</code>, <code>merge_dataspace</code> and <code>merge_configs</code> all follow the class
+they are given: <code>parse_rule</code> from its <code>model_cls</code> argument, the merges from their
+operands. Nothing needs <code>model_cls</code> in the ordinary case.</p>
+<p><strong>Both operands must be the same class.</strong> Mixing them raises <code>TypeError</code> rather than
+picking one, because picking the more derived class invents fields the other operand
+never had and picking the base drops the ones it did — either way a silent decision
+about which half of the input survives. Validate both into one class first, or pass
+<code>model_cls</code> to say deliberately what the result is:</p>
+<pre><code class="language-python">merge_rules(base, override, model_cls=GovernanceRule)   # narrow on purpose
+</code></pre>
+<p>Until 3.0 these functions named their class instead. A subclass handed to any of them
+came back as a base-class instance with the subclass's fields dropped — no error, just
+a smaller object.</p>
+<p>The package ships a PEP 561 <code>py.typed</code> marker, so a subclass is type-checkable rather
+than a subclass of <code>Any</code>.</p>
 
 
 

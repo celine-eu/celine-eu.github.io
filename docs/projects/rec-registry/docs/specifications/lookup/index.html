@@ -4091,10 +4091,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-unbounded" class="md-nav__link">
+  <a href="#req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-bounded" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0043 — sensor ids can be resolved in a batch, and that batch is unbounded
+        REQ-0043 — sensor ids can be resolved in a batch, and that batch is bounded
       
     </span>
   </a>
@@ -4117,6 +4117,17 @@
     <span class="md-ellipsis">
       
         REQ-0045 — the member batch is bounded, and answers nothing about who exists
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0061-a-set-of-dids-resolves-to-the-members-holding-them-bounded-and-answering-nothing-about-who-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0061 — a set of DIDs resolves to the members holding them, bounded and answering nothing about who exists
       
     </span>
   </a>
@@ -4148,8 +4159,10 @@ a user id, a sensor id or a delivery point.</p>
 and nothing else; a dataset request arrives carrying a user id. The caller cannot map
 either to a community without asking, and six repositories ask.</p>
 <p>Two of these requirements are security properties wearing the clothes of ordinary
-behaviour: the batch form is <strong>bounded</strong> (REQ-0045), and none of it is an <strong>enumeration
-oracle</strong> (REQ-0045). Both are easy to undo while making the endpoint more useful.</p>
+behaviour: <strong>both</strong> batch forms are bounded, at one shared number (REQ-0043, REQ-0045), and
+none of it is an <strong>enumeration oracle</strong> (REQ-0045). Both properties are easy to undo while
+making the endpoint more useful, and one of them already was — <code>assets-by-sensor-ids</code>
+carried no bound at all until the two were made to read the same constant.</p>
 <hr />
 <h3 id="req-0038-a-user-id-resolves-to-its-community-and-the-member-row-within-it">REQ-0038 — a user id resolves to its community and the member row within it</h3>
 <p><code>GET /admin/lookup/community-by-user-id/{user_id}</code> answers the community reference and the
@@ -4177,21 +4190,25 @@ points, and names the community it belongs to. Unknown is <code>404</code>.</p>
 <p><code>GET /admin/lookup/asset-by-sensor-id/{sensor_id}</code> answers the asset with its properties,
 device and relationships, plus <code>owner_key</code>, <code>owner_user_id</code> and the community. Unknown is
 <code>404</code>.</p>
-<h3 id="req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-unbounded">REQ-0043 — sensor ids can be resolved in a batch, and that batch is unbounded</h3>
+<h3 id="req-0043-sensor-ids-can-be-resolved-in-a-batch-and-that-batch-is-bounded">REQ-0043 — sensor ids can be resolved in a batch, and that batch is bounded</h3>
 <p><code>POST /admin/lookup/assets-by-sensor-ids</code> resolves many sensor ids in one request,
-answering one record per asset found.</p>
+answering one record per asset found. An empty list answers an empty list without querying.</p>
 <p>A sensor id that matches nothing <strong>contributes no row</strong> rather than failing the request:
 the caller asked about a set, and one absent member of it does not make the rest
 unanswerable.</p>
-<p><strong>The request carries no bound at all</strong>, unlike its sibling REQ-0045 which caps at 500.
-The asymmetry is accidental — the bound arrived with the newer endpoint and was not
-applied to this one — and it is a defect,
-<a href="https://github.com/celine-eu/rec-registry/issues/37">#37</a>. Sensor ids are less guessable
-than usernames, which makes this weaker as an enumeration path but not as a bulk
-extraction one: a caller holding a list of sensor ids can resolve all of them, with their
-owners and communities, in one request of unlimited size.</p>
-<p>Stated as current behaviour so that adding the bound is a visible three-part change —
-code, this requirement, its test — rather than a silent one.</p>
+<p><strong>Bounded:</strong> at most 500 sensor ids in one request; 501 is <code>422</code> and 500 is accepted. The
+same number as REQ-0045, from the same constant — <code>MAX_BATCH_LOOKUP_IDS</code>, which both
+request models read. This route carried no bound at all while its sibling capped at 500,
+and the asymmetry was accidental: the bound arrived with the newer endpoint and was not
+applied to this one. Two literals would have let that happen again.</p>
+<p>Sensor ids are less guessable than usernames, which made this the weaker <em>enumeration</em>
+path — but not the weaker <em>bulk extraction</em> one, and extraction is what a bound is for: a
+caller holding a list of sensor ids resolves every owner and community behind them in one
+request.</p>
+<p><strong>A bound on one request is not a bound on extraction.</strong> Nothing rate-limits this route and
+nothing counts what one caller has resolved over an hour, so a caller who wants the
+registry can still page through it 500 at a time. What the bound removes is the single
+request that takes all of it.</p>
 <h3 id="req-0044-assets-can-be-resolved-for-a-set-of-members-and-every-row-names-its-owner">REQ-0044 — assets can be resolved for a set of members, and every row names its owner</h3>
 <p><code>POST /admin/lookup/assets-by-user-ids</code> is the mirror of REQ-0043: that one starts from a
 device and finds its owner, this one starts from owners and finds their devices. An empty
@@ -4218,6 +4235,29 @@ communities, membership is itself the disclosure — knowing that a given person
 energy community is information about them regardless of what they own.</p>
 <p>The temptation to undo this is real and reasonable-sounding: <em>"tell the caller which ids
 were not found, so they can clean their list."</em> That helpfulness is the oracle.</p>
+<h3 id="req-0061-a-set-of-dids-resolves-to-the-members-holding-them-bounded-and-answering-nothing-about-who-exists">REQ-0061 — a set of DIDs resolves to the members holding them, bounded and answering nothing about who exists</h3>
+<p><code>POST /admin/lookup/members-by-dids</code> answers one member record per DID found — key,
+<code>user_id</code>, <code>did</code>, name, role, area, status, <strong>delivery points</strong>, and the community.</p>
+<p><strong>It answers members, not assets</strong>, and that is the part it would be easy to get wrong. The
+obvious move is to mirror REQ-0044 exactly and return assets, and it loses the supply point
+in the common case: <code>../onboarding</code> writes the declared POD into <code>Member.delivery_points</code>
+and registers <strong>no assets</strong>, because a meter's <code>sensor_id</code> is assigned at physical
+installation, long after onboarding. An asset-shaped answer is empty for every participant
+whose meter has not been commissioned. A commissioned meter stays reachable through the
+<code>user_id</code> in the same row and REQ-0044.</p>
+<p><strong>Every row carries its <code>did</code></strong>, which is what lets the caller attribute a row back to the
+DID it asked about — the same job <code>owner_user_id</code> does in REQ-0044.</p>
+<p><strong>Bounded:</strong> at most 500 DIDs in one request; 501 is <code>422</code> and 500 is accepted. The same
+number as REQ-0043 and REQ-0045, from the same <code>MAX_BATCH_LOOKUP_IDS</code>. A DID is the
+identifier a consent record is written in, so the set a caller holds is a set of people who
+consented — and this route turns that into the supply points they hold. The bound is the
+same security decision it is on the other two.</p>
+<p><strong>Not an oracle:</strong> a DID belonging to nobody and a member holding no supply points are
+deliberately indistinguishable — both contribute no rows, and neither is a <code>404</code>. An empty
+list of DIDs answers an empty list without querying.</p>
+<p><strong>It derives <code>assets.lookup</code>, not <code>lookup</code></strong> (REQ-0005). Resolving what a named person
+holds is a different disclosure from resolving which community a sensor sits in, and this
+route does the first.</p>
 
 
 

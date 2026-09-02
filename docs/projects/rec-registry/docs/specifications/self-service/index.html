@@ -4058,10 +4058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0048-the-member-detail-is-the-callers-own-and-omits-what-they-already-know" class="md-nav__link">
+  <a href="#req-0048-the-member-detail-is-the-callers-own-omits-what-they-already-know-and-carries-what-they-do-not" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0048 — the member detail is the caller's own, and omits what they already know
+        REQ-0048 — the member detail is the caller's own, omits what they already know, and carries what they do not
       
     </span>
   </a>
@@ -4165,19 +4165,28 @@ route added without it would look exactly like the others.</strong></p>
 <p><code>GET /user</code> answers the caller's JWT profile — <code>sub</code>, email, name, <code>preferred_username</code> —
 together with their membership: the member summary, the community summary, how many
 delivery points they have, and their assets counted by type.</p>
-<p>The counts are of the caller's own assets. This is the route an application loads first,
-and it is shaped to make a second request unnecessary for the common case.</p>
+<p>The member summary carries <code>did</code> (REQ-0059), <code>null</code> for a member who holds none. This is
+the route an application loads first and it is shaped to make a second request unnecessary
+for the common case, so the caller's dataspace identity belongs in it.</p>
+<p>The counts are of the caller's own assets.</p>
 <h3 id="req-0047-a-caller-who-is-a-member-of-nothing-is-answered-not-refused">REQ-0047 — a caller who is a member of nothing is answered, not refused</h3>
 <p><code>GET /user</code> answers <code>200</code> with <code>membership: null</code>. The other five routes answer <code>403</code>.</p>
 <p>The asymmetry is deliberate. <code>GET /user</code> is the route an onboarding application calls <em>to
 find out</em> whether somebody is a member yet, so it must be answerable before the answer is
 yes. The rest have nothing to return, and <code>403</code> says why rather than pretending an empty
 result.</p>
-<h3 id="req-0048-the-member-detail-is-the-callers-own-and-omits-what-they-already-know">REQ-0048 — the member detail is the caller's own, and omits what they already know</h3>
-<p><code>GET /user/member</code> answers key, name, role, area, status, delivery points, <code>extra</code> and
-timestamps — and <strong>not <code>user_id</code></strong>.</p>
+<h3 id="req-0048-the-member-detail-is-the-callers-own-omits-what-they-already-know-and-carries-what-they-do-not">REQ-0048 — the member detail is the caller's own, omits what they already know, and carries what they do not</h3>
+<p><code>GET /user/member</code> answers key, name, role, area, status, <code>did</code>, delivery points, <code>extra</code>
+and timestamps — and <strong>not <code>user_id</code></strong>.</p>
 <p>Every field not returned is a field that cannot leak. The caller already knows their own
 identifier, so returning it buys nothing and puts an identity into one more response body.</p>
+<p><strong><code>did</code> is returned, and the difference from <code>user_id</code> is the point.</strong> A participant knows
+the username they authenticated with; they do not know the dataspace DID, because an
+onboarding service minted it on their behalf a step after registration — and it is the
+identifier their consent records are written in. Withholding it would mean a participant
+cannot see, in the one place that is theirs, which dataspace identity acts for them.</p>
+<p>It is <code>null</code> for a member who holds none, which is every member of a deployment with no
+dataspace and every member between registration and minting.</p>
 <h3 id="req-0049-the-community-detail-carries-the-callers-place-in-it-and-not-its-member-list">REQ-0049 — the community detail carries the caller's place in it, and not its member list</h3>
 <p><code>GET /user/community</code> answers the community — name, description, legal, links, contact,
 settings, areas and topology — plus <code>your_area</code> and <code>your_role</code>.</p>
