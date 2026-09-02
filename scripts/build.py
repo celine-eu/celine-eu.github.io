@@ -150,49 +150,96 @@ def _generate_listing_index(
     index.write_text("\n".join(lines))
 
 
+_LANDING_PAGE_NAMES = {"readme.md", "index.md"}
+
+
+def _finalize_link_target(target: Path, link: dict) -> None:
+    """Give a freshly materialized link target its landing page."""
+    # Widoco output: use readme.md as landing page with a link to the HTML docs
+    if (target / "index-en.html").exists():
+        readme = target / "readme.md"
+        if readme.exists():
+            content = readme.read_text(encoding="utf-8")
+            widoco_link = "\n[Full ontology documentation →](index-en.html)\n"
+            # Insert after the first paragraph break (after the heading block)
+            idx = content.find("\n\n")
+            if idx != -1:
+                content = content[:idx] + widoco_link + content[idx:]
+            else:
+                content += widoco_link
+            (target / "index.md").write_text(content, encoding="utf-8")
+            readme.unlink()
+        elif not (target / "index.md").exists():
+            (target / "index.md").write_text(
+                '[Full ontology documentation →](index-en.html)\n'
+            )
+    # Other links: promote readme.md → index.md (copy_paths convention)
+    elif (target / "readme.md").exists() and not (target / "index.md").exists():
+        (target / "readme.md").rename(target / "index.md")
+
+    list_cfg = link.get("list")
+    if list_cfg:
+        _generate_listing_index(
+            folder=target,
+            title=link.get("name"),
+            config=list_cfg,
+        )
+
+
+def _copy_link(source: Path, target: Path, merge: bool) -> None:
+    """Copy one source tree onto one target.
+
+    Replacing is the default. `merge` copies a second tree into a target another link
+    already produced — used to land `specs/` beside `releases/` in one directory per
+    ontology version, which is safe only because the two trees share no filenames.
+    The landing page belongs to whichever link got there first, so a merge never
+    overwrites an existing index.md and never brings its own readme.md along.
+    """
+    if not merge:
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.copytree(source, target)
+        return
+
+    def ignore(directory: str, names: list[str]) -> list[str]:
+        if Path(directory) != source:
+            return []
+        return [n for n in names if n.lower() in _LANDING_PAGE_NAMES]
+
+    keep_landing_page = (target / "index.md").exists()
+    shutil.copytree(
+        source,
+        target,
+        dirs_exist_ok=True,
+        ignore=ignore if keep_landing_page else None,
+    )
+
+
 def materialize_links(repos: list[dict]) -> None:
     for repo in repos:
         for link in repo.get("links", []):
-            source = SITE_DIR / link["source"]
             target = SITE_DIR / link["target"]
+            merge = bool(link.get("merge", False))
 
+            # `glob`: the source is a pattern, and each directory it matches is
+            # materialized as target/<match name>. This is what publishes every
+            # ontology version under /ontologies/vX.Y/ without an entry per version.
+            if link.get("glob"):
+                matches = sorted(
+                    m for m in SITE_DIR.glob(link["source"]) if m.is_dir()
+                )
+                for match in matches:
+                    child = target / match.name
+                    _copy_link(match, child, merge)
+                    _finalize_link_target(child, link)
+                continue
+
+            source = SITE_DIR / link["source"]
             if not source.exists():
                 continue
 
-            if target.exists():
-                shutil.rmtree(target)
-
-            shutil.copytree(source, target)
-
-            # Widoco output: use readme.md as landing page with a link to the HTML docs
-            if (target / "index-en.html").exists():
-                readme = target / "readme.md"
-                if readme.exists():
-                    content = readme.read_text(encoding="utf-8")
-                    widoco_link = "\n[Full ontology documentation →](index-en.html)\n"
-                    # Insert after the first paragraph break (after the heading block)
-                    idx = content.find("\n\n")
-                    if idx != -1:
-                        content = content[:idx] + widoco_link + content[idx:]
-                    else:
-                        content += widoco_link
-                    (target / "index.md").write_text(content, encoding="utf-8")
-                    readme.unlink()
-                else:
-                    (target / "index.md").write_text(
-                        '[Full ontology documentation →](index-en.html)\n'
-                    )
-            # Other links: promote readme.md → index.md (copy_paths convention)
-            elif (target / "readme.md").exists() and not (target / "index.md").exists():
-                (target / "readme.md").rename(target / "index.md")
-
-            list_cfg = link.get("list")
-            if list_cfg:
-                _generate_listing_index(
-                    folder=target,
-                    title=link.get("name"),
-                    config=list_cfg,
-                )
+            _copy_link(source, target, merge)
+            _finalize_link_target(target, link)
 
 
 # ---------------------------------------------------------------------------

@@ -233,9 +233,30 @@ repos:
       - README
 
     links:
-      - name: ontologies
+      # One directory per ontology version, each holding both artifact trees:
+      # releases/ (WIDOCO documentation and serializations) and specs/ (celine.*).
+      # The two share no filenames, which is what makes merging them safe, and it
+      # is what lets https://w3id.org/celine-eu/v0.10/<anything> resolve under a
+      # path that does not encode this site's projects/<slug> layout.
+      #
+      # Order is load-bearing: a replacing copy removes its target first, so the
+      # two replacing entries must come before the two merging ones.
+      - name: ontology (current release)
         source: projects/celine-ontologies/releases/current
         target: ontologies
+      - name: ontology (current specs)
+        source: projects/celine-ontologies/specs/current
+        target: ontologies
+        merge: true
+      - name: ontology (released versions)
+        source: projects/celine-ontologies/releases/v*
+        target: ontologies
+        glob: true
+      - name: ontology (versioned specs)
+        source: projects/celine-ontologies/specs/v*
+        target: ontologies
+        glob: true
+        merge: true
 
   - name: Grid
     slug: celine-grid
