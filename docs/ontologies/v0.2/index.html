@@ -4068,6 +4068,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#corrected-2026-09-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Corrected 2026-09-03
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4087,8 +4098,8 @@
 
 <h1 id="celine-ontology-v02">CELINE Ontology v0.2</h1>
 <p><a href="index-en.html">Full ontology documentation →</a></p>
-<p><strong>Namespace</strong>: <code>https://w3id.org/celine/ontology#</code></p>
-<p><strong>IRI</strong>: <code>https://w3id.org/celine/ontology#CELINEOntology</code></p>
+<p><strong>Namespace</strong>: <code>https://w3id.org/celine-eu#</code></p>
+<p><strong>IRI</strong>: <code>https://w3id.org/celine-eu</code></p>
 <p>Major redesign. Replaced broad domain subclassing with a <strong>thin orchestration layer</strong> that connects established standards without redefining their semantics. Introduced the simulation/scenario model and PECO integration.</p>
 <h2 id="changes-from-v01">Changes from v0.1</h2>
 <ul>
@@ -4139,6 +4150,22 @@
 <li>SOSA (W3C, via <code>refs/heads/gh-pages</code> — unstable ref, fixed in v0.3)</li>
 <li>BIGG ontology + bigg4kpi (via <code>refs/heads/main</code> — unstable ref, fixed in v0.3)</li>
 </ul>
+<h2 id="corrected-2026-09-03">Corrected 2026-09-03</h2>
+<p><strong>This version was released under a namespace that never resolved.</strong> It minted its terms
+in <code>https://w3id.org/celine/ontology#</code> and named the ontology itself
+<code>https://w3id.org/celine/ontology#CELINEOntology</code> — a fragment, used as the document base,
+which WIDOCO then turned into the malformed <code>…#CELINEOntology#</code> in the RDF/XML. No
+<code>celine</code> namespace was ever registered on w3id.org, so every term IRI in this release
+answered 404, and v0.3 had already renamed the namespace to <code>https://w3id.org/celine-eu#</code>
+without anything going back to fix v0.2.</p>
+<p>The artifacts have been rewritten in place to the namespace this ontology has used since
+v0.3, and <code>owl:versionIRI &lt;https://w3id.org/celine-eu/v0.2&gt;</code> has been added — without it
+this release and the current one would both claim <code>https://w3id.org/celine-eu</code> with
+nothing to tell them apart.</p>
+<p><strong>Only the identifiers changed.</strong> No term was added, removed or redefined, and the
+<code>owl:imports</code> set is untouched. The documentation HTML was not regenerated: this version
+has no <code>widoco.conf</code>, and WIDOCO falls back to placeholder prose rather than failing, so
+regenerating would have replaced a historical document with a worse one.</p>
 
 
 
