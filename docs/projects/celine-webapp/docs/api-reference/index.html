@@ -5345,23 +5345,41 @@ are not exposed here and its defaults apply. <code>severity</code> is normalised
 <p>Remove a push subscription.</p>
 <hr />
 <h2 id="data-sharing">Data sharing</h2>
-<p>Behind <code>DATA_SHARING_ENABLED</code>, <strong>off by default</strong>. While the flag is off — or while the
-identity registry or connector URL is unset — every route here answers <code>404</code> and the app
-hides the section, so nothing half-working is exposed.</p>
-<p>Every call is made with the <strong>member's own verifiable credential</strong>. This service only
-resolves which credential is theirs; it cannot act on their behalf, and neither can an
-administrator.</p>
+<p>Behind <code>DATA_SHARING_ENABLED</code>, <strong>off by default</strong>. While the flag is off — or while
+<code>ONBOARDING_API_URL</code> is unset — every route here answers <code>404</code> and the app hides the
+section, so nothing half-working is exposed.</p>
+<p><strong>These routes are proxies.</strong> Onboarding owns the member's dataspace identity, resolves
+their credential and holds the connector grants; this service forwards the member's own
+token to <code>/api/me/data-sharing</code> and passes the answer back. It holds no credential and no
+service account, so it cannot act on a member's behalf — and neither can an administrator.</p>
+<p>The browser talks only to this service: onboarding is not same-origin.</p>
 <h3 id="get-apidata-sharing"><code>GET /api/data-sharing</code></h3>
-<p>Every published offer, merged with this member's decision on it.</p>
+<p>Every offer this member's community publishes, merged with their decision on it.</p>
 <p>Offers are read from the published vocabulary on each request and never cached or
 vendored: two copies of the text somebody agrees to is how the thing displayed and the
-thing recorded drift apart. If the vocabulary is unreachable the call fails rather than
-serving a stale copy.</p>
+thing recorded drift apart. The merge happens in onboarding, beside the credential that
+reads both.</p>
 <ul>
-<li><code>has_identity: false</code> with an empty list — a member with no dataspace identity. A normal
-  state, not an error.</li>
-<li><code>503</code> — the dataspace is unreachable.</li>
+<li><code>has_identity: false</code> with an empty list — a normal state, not an error.</li>
+<li><code>state</code> — why, in one word: <code>ok</code>, <code>no_dataspace</code> (the community does not take part),
+  <code>no_identity</code> (no credential yet), <code>identity_conflict</code> (an operator's to clear), or
+  <code>ambiguous_community</code>. Additive; <code>has_identity</code> has not moved.</li>
+<li><code>503</code> — onboarding, or the dataspace behind it, is unreachable.</li>
+<li><code>502</code> — onboarding answered something this service cannot pass on. A deployment fault,
+  deliberately distinct from the <code>404</code> that means the feature is off.</li>
 </ul>
+<p><strong>The prompt.</strong> Two further fields say whether the app should ask:</p>
+<ul>
+<li><code>asked</code> — false only for a member who has neither dismissed the banner nor decided
+  anything, including in onboarding's own funnel. That is the first-run sequence.</li>
+<li><code>review_due</code> — true when the newest of their dismissal and their decisions is older
+  than <code>DATA_SHARING_REVIEW_AFTER_DAYS</code>. That is the "you are sharing data, review your
+  settings" reminder.</li>
+</ul>
+<p>Being asked is this service's state, not onboarding's: onboarding holds no session with
+the member. It is recorded by <code>POST /api/onboarding/seen</code> with <code>{"page_key":
+"data-sharing"}</code>, the same route every in-app tour uses, and marking it again moves the
+timestamp forward so the reminder can be dismissed more than once.</p>
 <h3 id="post-apidata-sharingoffer_id"><code>POST /api/data-sharing/{offer_id}</code></h3>
 <p>Grant or withdraw one offer. Body: <code>{"enabled": true | false}</code>.</p>
 <p><strong>Withdrawal is the reason this route exists.</strong> The onboarding wizard can only grant, so
@@ -5369,13 +5387,15 @@ without it a consent could be given and never taken back — a compliance defect
 a missing feature. Anything that reworks this surface must keep withdrawal reachable
 independently of the wizard.</p>
 <ul>
-<li><code>409</code> — the account has no dataspace identity, or the offer is contract-based and
-  therefore disclosed rather than toggled.</li>
-<li><code>503</code> — the dataspace is unreachable.</li>
+<li><code>409</code> — there is no decision here to make: no dataspace identity yet, an offer this REC
+  does not publish, or one disclosed under a contract rather than consented to. The
+  detail onboarding gave is forwarded and names which.</li>
+<li><code>503</code> — onboarding, or the dataspace behind it, is unreachable.</li>
 </ul>
 <h3 id="get-apidata-sharinghistory"><code>GET /api/data-sharing/history</code></h3>
 <p>What has happened with this member's data, served by provenance under their own
-credential. Absent provenance returns an empty history rather than an error.</p>
+credential. Absent provenance returns an empty history rather than an error — decided in
+onboarding, where the credential is.</p>
 <hr />
 <h2 id="feedback">Feedback</h2>
 <h3 id="post-apifeedback"><code>POST /api/feedback</code></h3>

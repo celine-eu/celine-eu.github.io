@@ -4524,6 +4524,11 @@
 <td>rec-registry service URL</td>
 </tr>
 <tr>
+<td><code>ONBOARDING_API_URL</code></td>
+<td><code>http://host.docker.internal:8040</code></td>
+<td>onboarding service URL — reached with the member's own token</td>
+</tr>
+<tr>
 <td><code>SMART_METER_API_URL</code></td>
 <td>—</td>
 <td>Optional smart meter API URL</td>
@@ -4574,39 +4579,19 @@ than no screen.</p>
 <td>Master switch for the whole surface</td>
 </tr>
 <tr>
-<td><code>IDENTITY_REGISTRY_URL</code></td>
-<td><code>http://host.docker.internal:30005</code></td>
-<td>Resolves the member's DID and credential</td>
-</tr>
-<tr>
-<td><code>DS_CONNECTOR_URL</code></td>
-<td><code>http://host.docker.internal:30001</code></td>
-<td>Holds the consent records</td>
-</tr>
-<tr>
-<td><code>DS_PROVENANCE_URL</code></td>
-<td><code>http://host.docker.internal:30000</code></td>
-<td>Serves the member's own history</td>
-</tr>
-<tr>
-<td><code>DS_NS_URL</code></td>
-<td>—</td>
-<td>Vocabulary namespace</td>
-</tr>
-<tr>
-<td><code>DS_RESOLVE_CLIENT_ID</code></td>
-<td><code>svc-celine-webapp</code></td>
-<td>Service account, used <em>only</em> to resolve a credential</td>
-</tr>
-<tr>
-<td><code>DS_RESOLVE_CLIENT_SECRET</code></td>
-<td>—</td>
-<td>Secret for the above</td>
+<td><code>DATA_SHARING_REVIEW_AFTER_DAYS</code></td>
+<td><code>180</code></td>
+<td>How long a decision stands before the member is asked to review it. <code>0</code> or less asks once and never again</td>
 </tr>
 </tbody>
 </table>
-<p>The routes stay off unless <code>DATA_SHARING_ENABLED</code> is true <strong>and</strong> both
-<code>IDENTITY_REGISTRY_URL</code> and <code>DS_CONNECTOR_URL</code> are set.</p>
+<p>The routes stay off unless <code>DATA_SHARING_ENABLED</code> is true <strong>and</strong> <code>ONBOARDING_API_URL</code>
+is set.</p>
+<p>The dataspace is not reached from here. Onboarding resolves the member's credential,
+speaks to the connector and serves their history; this service forwards the member's own
+token to <code>/api/me/data-sharing</code> and passes the answer back. There is no identity-registry
+URL, no connector URL and no service account in this repository — a credential that never
+leaves the service that resolved it cannot leak from the one that did not need it.</p>
 <h2 id="backend-setup">Backend Setup</h2>
 <pre><code class="language-bash">uv sync
 uv run alembic upgrade head
