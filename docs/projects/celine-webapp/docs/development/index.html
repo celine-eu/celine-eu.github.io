@@ -4682,6 +4682,9 @@ in it.</p>
 Twin, rec-registry, flexibility-api and nudging-tool through <code>celine-sdk</code>, then compose
 the results. Those four are replaced by fakes in <code>tests/fakes.py</code>, which reproduce the
 shape the SDK returned when they were written.</p>
+<p>Onboarding, the fifth, is stubbed differently: <code>celine.sdk.onboarding</code> builds its own
+<code>httpx.AsyncClient</code>, so the <code>mock_upstream_http</code> fixture replaces the socket and lets the
+wrapper, the generated client and the schema conversion all run for real.</p>
 <p>So a green suite says the composition logic is correct against that shape.
 <code>tests/test_sdk_contract.py</code> checks the fakes against the installed <code>celine-sdk</code> models,
 which catches drift in the package — but <strong>not</strong> that a deployed upstream serves what its
@@ -4719,7 +4722,11 @@ dependency maintenance.</p>
 </tr>
 <tr>
 <td><code>tests/test_data_sharing.py</code></td>
-<td>the data-sharing surface, dataspace stubbed</td>
+<td>the data-sharing surface, onboarding stubbed at the socket</td>
+</tr>
+<tr>
+<td><code>tests/test_onboarding_dep.py</code></td>
+<td>that the onboarding client is built per request from the caller's token</td>
 </tr>
 <tr>
 <td><code>tests/test_api.py</code>, <code>tests/test_forecast.py</code></td>
