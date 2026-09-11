@@ -4218,6 +4218,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-0040-an-organization-membership-carries-its-keycloak-id-and-the-groups-held-inside-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0040 — an organization membership carries its Keycloak id and the groups held inside it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0041-realm-groups-and-organization-groups-can-be-read-apart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0041 — realm groups and organization groups can be read apart
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4401,6 +4423,23 @@ wrong shape, because the claim set is the identity provider's to change.</p>
 not expired — the verification step has already refused an expired one, so these serve
 callers holding a token they intend to reuse.</p>
 <hr />
+<h3 id="req-0040-an-organization-membership-carries-its-keycloak-id-and-the-groups-held-inside-it">REQ-0040 — an organization membership carries its Keycloak id and the groups held inside it</h3>
+<p><code>Organization</code> exposes <code>id</code> (the KC organization UUID) and <code>groups</code> (the groups the caller
+holds <strong>inside that organization</strong>, leading slashes stripped) alongside <code>alias</code>, <code>type</code> and
+<code>attributes</code>. Both are absent from the claim on a realm whose mapper does not emit them, and
+are then an empty value rather than an error.</p>
+<p><code>type</code> is read from the flattened <code>type</code> key first and from <code>attributes.type</code> second.
+Keycloak's own organization mapper emits the flattened shape; the nested one is what a
+differently configured mapper produces, and both must parse.</p>
+<h3 id="req-0041-realm-groups-and-organization-groups-can-be-read-apart">REQ-0041 — realm groups and organization groups can be read apart</h3>
+<p><code>realm_groups(claims)</code> returns the top-level <code>groups</code> claim alone.
+<code>organization_groups(claims, alias)</code> returns one organization's groups alone.
+<code>organization_aliases(claims)</code> returns every alias, sorted. All three normalise as
+REQ-0030 does and tolerate a claim of the wrong shape.</p>
+<p>These exist because REQ-0030's merge is unsafe for a multi-tenant service, and a service
+that must not merge should not have to re-implement the reading. A caller authorising
+<code>(subject, action, tenant)</code> uses these; a single-tenant caller asking "is this user a
+viewer?" uses <code>extract_groups</code>.</p>
 <h2 id="obtaining-a-token">Obtaining a token</h2>
 <h3 id="req-0034-an-access-token-carries-its-expiry-and-answers-whether-it-is-still-usable">REQ-0034 — an access token carries its expiry and answers whether it is still usable</h3>
 <p><code>AccessToken(access_token, expires_at, refresh_token=None, token_type="Bearer")</code>.</p>

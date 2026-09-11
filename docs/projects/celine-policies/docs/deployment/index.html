@@ -4684,7 +4684,7 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <tr>
 <td><code>CELINE_KEYCLOAK_REALM</code></td>
 <td><code>celine</code></td>
-<td>Target realm</td>
+<td>Target realm. Outranks <code>realm:</code> in <code>clients.yaml</code>, and is outranked by <code>--realm</code></td>
 </tr>
 <tr>
 <td><code>CELINE_KEYCLOAK_ADMIN_USER</code></td>

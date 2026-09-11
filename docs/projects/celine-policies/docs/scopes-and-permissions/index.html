@@ -2878,6 +2878,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#realm-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realm administration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Realm administration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scopes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scopes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-sync-does-with-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What sync does with it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-sync-users-does-with-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What sync-users does with it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clientsyaml-format" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4834,6 +4895,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#realm-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realm administration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Realm administration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scopes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scopes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-sync-does-with-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What sync does with it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-sync-users-does-with-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What sync-users does with it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clientsyaml-format" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5221,12 +5343,19 @@ default_scopes:
 <strong>and</strong> so oauth2-proxy mints <code>aud: svc-onboarding</code> on user JWTs — without that, a REC
 operator's browser token is rejected on audience validation before any policy runs.</p>
 <pre><code class="language-yaml">scopes_prefix: onboarding
+admin_permissions:
+  groups:
+    - path: /participants
+      scopes: [manage-members, manage-membership, view-members, view]
 default_scopes:
   - onboarding.admin
 </code></pre>
 <p>Not the same client as <code>svc-ds-onboarding</code>, which is the onboarding service's <em>outbound</em>
 identity for the dataspace. One service, two clients: this one validates inbound
 audiences, that one authenticates outbound M2M.</p>
+<p>It is also the only client that administers the realm — it provisions a participant's
+login — and the <code>admin_permissions</code> block is where that is declared rather than granted by
+hand. See <a href="#realm-administration">Realm administration</a> below.</p>
 <h3 id="svc-onboarding-cli">svc-onboarding-cli</h3>
 <p>Service account for the <code>onboarding-cli</code> review and enablement commands. No
 <code>scopes_prefix</code> — it owns nothing, it only calls:</p>
@@ -5367,6 +5496,103 @@ groups = extract_groups(user.claims)
 </li>
 </ol>
 <hr />
+<h2 id="realm-administration">Realm administration</h2>
+<p>Scopes say what a client may <strong>ask for</strong>. They say nothing about what its service account
+may <strong>do to the realm</strong> — create a user, reset a password, disable an account. That is a
+separate mechanism, and it is declared with <code>admin_permissions</code>:</p>
+<pre><code class="language-yaml">  - client_id: svc-onboarding
+    admin_permissions:
+      groups:
+        - path: /participants
+          scopes: [manage-members, manage-membership, view-members, view]
+</code></pre>
+<p>The grant is scoped to the members of one group. A service account holding the block above
+may create a user <strong>into</strong> <code>/participants</code> and read, update, disable and password-reset a
+member of it — and may do none of those things to anybody else, including operator
+accounts. Keycloak's realm-wide <code>manage-users</code> role would have reached every account in the
+realm to do the same job; there is deliberately no way to ask for it from this file.</p>
+<h3 id="the-scopes">The scopes</h3>
+<p>Keycloak defines these on its <code>Groups</code> resource type. A name not on this list is refused
+when the file is loaded, before anything is authenticated.</p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>view-members</code></td>
+<td>read the group's members, and search within them</td>
+</tr>
+<tr>
+<td><code>manage-members</code></td>
+<td>create, update, disable and password-reset a member</td>
+</tr>
+<tr>
+<td><code>manage-membership</code></td>
+<td>add and remove members of the group</td>
+</tr>
+<tr>
+<td><code>view</code> / <code>manage</code></td>
+<td>read and modify the group itself</td>
+</tr>
+<tr>
+<td><code>manage-membership-of-members</code></td>
+<td>change members' membership of <em>other</em> groups</td>
+</tr>
+<tr>
+<td><code>impersonate-members</code></td>
+<td>impersonate a member</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>manage-members</code> and <code>manage-membership</code> are a pair.</strong> Creating a user in a group needs
+both: one authorises making the user, the other authorises putting them in the group.
+Granted either alone, Keycloak creates the permission without complaint and refuses every
+creation with a <code>403</code>. <code>sync</code> warns when it sees one without the other.</p>
+<p><strong>Any member scope needs <code>view</code> beside it.</strong> The member scopes do not let a service account
+name the group they are about: holding them and nothing else, <code>group-by-path</code>,
+<code>GET /groups?search=</code> and even <code>GET /groups/{id}</code> on the administered group all answer
+<code>403</code>. Every member call is addressed by that id, so such a grant can create a member and
+can never find one again — and a service that resolves its group lazily keeps provisioning
+and fails only later, on a lookup. <code>sync</code> warns when a member scope appears without <code>view</code>.
+Adding <code>view</code> does not widen the grant beyond the group: <code>GET /groups</code>, which lists the
+realm's groups, stays <code>403</code>.</p>
+<p><strong>One client per group.</strong> Two clients granted the same group deny <em>each other</em>: the
+admin-permissions resource server decides <code>UNANIMOUS</code>, so a permission whose client policy
+does not name you votes against you, and both clients end up with <code>403</code> on everything —
+including the one that was working before the second declaration was added. Keycloak
+creates both permissions with a <code>201</code> and reports nothing, so the declaration is refused
+when the file is loaded instead.</p>
+<h3 id="what-sync-does-with-it">What sync does with it</h3>
+<p>On a realm that declares nothing, nothing — no request is made and no action is planned.
+Where a client does declare it, <code>sync</code> enables fine-grained admin permissions on the realm
+(which leaves existing <code>realm-management</code> role grants working exactly as before), ensures
+the group exists, and creates one policy and one permission per declared group.</p>
+<p>It converges in both directions without <code>--prune</code>: narrowing the scope list rewrites the
+permission, and removing a group from the declaration revokes it. Only permissions named
+with the <code>celine-policies:</code> prefix are ever read or written, so anything created by hand in
+the admin console survives a sync untouched. A group that <code>sync</code> created is never deleted —
+revoking a permission leaves the group and its members alone.</p>
+<h3 id="what-sync-users-does-with-it">What sync-users does with it</h3>
+<p><code>sync-users</code> reads the same block and adds every participant it processes to the groups it
+declares, so a grant over a group is a grant over the participants this tool creates. It
+applies to accounts that already exist as well as new ones, which makes a re-run the
+backfill for participants provisioned before the group was declared:</p>
+<pre><code class="language-console">$ celine-policies keycloak sync-users greenland.yaml
+Admin groups: /participants (declared by svc-onboarding)
+</code></pre>
+<p>The group must already exist — <code>sync</code> creates it when it grants the permission, and
+<code>sync-users</code> fails before touching any user rather than creating realm structure of its
+own. <code>--no-admin-groups</code> turns the behaviour off.</p>
+<h3 id="requirements">Requirements</h3>
+<p>Keycloak 26.2 or later with <code>ADMIN_FINE_GRAINED_AUTHZ_V2</code>, which is a default-enabled
+feature on the 26.6 image this repository ships. An <strong>organization's</strong> group cannot be
+targeted — only realm groups; see
+<a href="../decisions/ADR-0003-declare-realm-administration-as-a-group-scoped-permission/">ADR-0003</a>
+for what was measured.</p>
 <h2 id="clientsyaml-format">clients.yaml Format</h2>
 <pre><code class="language-yaml">realm: celine
 oauth2_proxy_client: oauth2_proxy
@@ -5383,6 +5609,11 @@ clients:
     default_scopes:
       - service-name.admin
       - other-service.scope
+    # Optional — what this client's service account may administer.
+    admin_permissions:
+      groups:
+        - path: /some-group
+          scopes: [manage-members, manage-membership, view]
 </code></pre>
 <p>Client secrets support environment variable substitution with <code>${VAR:-default}</code> syntax.</p>
 

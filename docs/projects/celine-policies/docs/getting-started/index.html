@@ -4520,6 +4520,7 @@
 <pre><code class="language-bash">celine-policies keycloak bootstrap --admin-user admin --admin-password admin
 </code></pre>
 <p>This writes the client secret to <code>.client.secrets.yaml</code>. Subsequent commands auto-load credentials from this file.</p>
+<p>The file is the store of the credentials the CLI authenticates with, not a log of the last run: <code>bootstrap</code> and <code>sync</code> both merge into it, so neither deletes what the other wrote. It holds one realm's credentials — pointing a command at a different realm replaces its contents, and says so.</p>
 <h3 id="step-3-sync-scopes-and-clients">Step 3: Sync Scopes and Clients</h3>
 <pre><code class="language-bash">celine-policies keycloak sync
 </code></pre>
@@ -4535,6 +4536,10 @@
     --password &quot;demo&quot; --mock
 </code></pre>
 <p>The <code>--mock</code> flag fills placeholder email/name fields for development.</p>
+<p>Participants are also added to any group <code>clients.yaml</code> declares under
+<code>admin_permissions</code>, so the service account granted over that group can see them — run
+<code>keycloak sync</code> first, which is what creates the group. <code>--no-admin-groups</code> turns that off.
+See <a href="../scopes-and-permissions/#realm-administration">Realm administration</a>.</p>
 <h3 id="step-5-sync-organizations-optional">Step 5: Sync Organizations (optional)</h3>
 <p>Import organizations from an <code>owners.yaml</code> file:</p>
 <pre><code class="language-bash">celine-policies keycloak sync-orgs ../dataset-api/owners.yaml
@@ -4655,6 +4660,12 @@ celine-policies keycloak sync --help
 </tr>
 </tbody>
 </table>
+<p><code>sync</code> has a third input for the realm — <code>realm:</code> in the declaration it is applying — and it is the lowest-ranked one:</p>
+<pre><code class="language-text">--realm  &gt;  CELINE_KEYCLOAK_REALM  &gt;  realm: in clients.yaml  &gt;  celine
+</code></pre>
+<p>The declaration aims a run nobody aimed, and nothing more. <code>sync</code> prints which input won, because the value alone does not say:</p>
+<pre><code class="language-console">Syncing to Keycloak: http://keycloak.celine.localhost realm=e2e-throwaway (from CELINE_KEYCLOAK_REALM)
+</code></pre>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash"># Run the full test suite
 uv run pytest
