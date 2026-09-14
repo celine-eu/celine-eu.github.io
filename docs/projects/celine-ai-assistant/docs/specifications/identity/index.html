@@ -4125,6 +4125,12 @@ ignored rather than rejected.</p>
 trusted headers. The headers are an identity for a request carrying no token at all —
 otherwise an expired or forged token would be indistinguishable from no token, and with
 <code>OAUTH2_TRUST_HEADERS</code> on that is whatever the caller asserted.</p>
+<p>Verification is bound to a <strong>configured</strong> trust anchor. The key set comes from
+<code>OAUTH2_JWKS_URL</code> (which falls back to the platform's <code>CELINE_OIDC_JWKS_URI</code>), or from
+the OIDC discovery of <code>OAUTH2_ISSUER</code>; with neither set the token is refused rather than
+verified against the issuer it names for itself. When <code>OAUTH2_ISSUER</code> is set, a token
+whose <code>iss</code> differs is refused. The signature algorithm is taken from
+<code>OAUTH2_ALGORITHMS</code> (default <code>RS256</code>), never from the token header.</p>
 <h3 id="req-0003-trusted-headers-are-an-accepted-identity">REQ-0003 — trusted headers are an accepted identity</h3>
 <p>With <code>OAUTH2_TRUST_HEADERS</code> enabled, <code>x-auth-request-user</code> (or <code>x-auth-request-email</code>)
 identifies the caller and <code>x-auth-request-groups</code> carries their groups, comma-separated,

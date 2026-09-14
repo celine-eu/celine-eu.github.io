@@ -4398,12 +4398,17 @@ task run
 <tr>
 <td><code>OAUTH2_JWKS_URL</code></td>
 <td>—</td>
-<td>JWKS endpoint (auto-discovered if not set)</td>
+<td>JWKS endpoint (falls back to <code>CELINE_OIDC_JWKS_URI</code>); required unless <code>OAUTH2_ISSUER</code> is set</td>
 </tr>
 <tr>
 <td><code>OAUTH2_ISSUER</code></td>
 <td>—</td>
-<td>OAuth2 issuer URL</td>
+<td>Expected issuer; JWKS discovered from it, and a mismatching token <code>iss</code> is refused</td>
+</tr>
+<tr>
+<td><code>OAUTH2_ALGORITHMS</code></td>
+<td><code>["RS256"]</code></td>
+<td>Accepted signature algorithms (pinned, not from the token header)</td>
 </tr>
 <tr>
 <td><code>OAUTH2_AUDIENCE</code></td>
