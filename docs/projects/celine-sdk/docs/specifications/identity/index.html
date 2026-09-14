@@ -4410,7 +4410,10 @@ such a service must read the two levels apart and not call this function.</p>
 authoritative (Keycloak's client-credentials convention) and <code>gty=client-credentials</code> as an
 equivalent signal from other providers. An email, any group, or any other
 <code>preferred_username</code> marks a human. Failing all of those, a token carrying a client id and
-no email is a service.</p>
+no email is a service, and so is a token whose Keycloak grant marker (the <code>jti</code> prefix Keycloak
+26 writes, e.g. <code>trrtcc:</code>) names client credentials. A realm that does not assign Keycloak's
+built-in <code>service_account</code> scope issues such tokens with neither <code>preferred_username</code> nor
+<code>client_id</code>.</p>
 <p>The platform authorises services by scope and users by group membership; this is the
 function that decides which of the two a caller is.</p>
 <h3 id="req-0032-claims-are-reachable-by-name-role-and-scope">REQ-0032 — claims are reachable by name, role and scope</h3>

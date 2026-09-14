@@ -4087,7 +4087,13 @@
 
 <h1 id="adr-0003-a-service-accounts-realm-administration-is-declared-and-scoped-to-one-group">ADR-0003 — A service account's realm administration is declared, and scoped to one group</h1>
 <p><strong>Date:</strong> 2026-09-10
-<strong>Status:</strong> accepted</p>
+<strong>Status:</strong> superseded by
+<a href="../ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
+<p>The grant this record describes no longer exists: <code>svc-onboarding</code> administers nothing, and
+<code>svc-provisioning</code> writes participant accounts instead. What stands is everything measured
+here about <strong>how</strong> a group-scoped grant behaves — the mechanism is unchanged and still the
+right shape if one is ever needed again. What is superseded is the conclusion that the
+onboarding console should hold one, and the refusal of a <code>realm_management_roles</code> field.</p>
 <h2 id="context">Context</h2>
 <p><code>clients.yaml</code> could declare a client's scopes, audiences and whether it has a service
 account. It could not declare <strong>what that service account may do in the realm</strong>. There was

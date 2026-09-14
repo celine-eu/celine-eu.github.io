@@ -601,6 +601,14 @@
          <lastmod>2026-09-14</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0006-the-registry-is-the-source-of-members/</loc>
+         <lastmod>2026-09-14</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/</loc>
+         <lastmod>2026-09-14</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-roi/</loc>
          <lastmod>2026-09-14</lastmod>
     </url>

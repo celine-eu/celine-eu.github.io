@@ -2647,6 +2647,56 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-provisioning-service-has-no-published-port-and-that-is-the-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The provisioning service has no published port, and that is the guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#email-invitations-and-password-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email: invitations and password recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Email: invitations and password recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-realm-needs-and-who-owns-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a realm needs, and who owns it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locally
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2705,6 +2755,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Sync Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-source-a-run-reconciles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which source a run reconciles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4354,6 +4421,56 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-provisioning-service-has-no-published-port-and-that-is-the-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The provisioning service has no published port, and that is the guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#email-invitations-and-password-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email: invitations and password recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Email: invitations and password recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-realm-needs-and-who-owns-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a realm needs, and who owns it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locally
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4412,6 +4529,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Sync Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-source-a-run-reconciles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which source a run reconciles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4549,7 +4683,7 @@
 <td><code>keycloak</code></td>
 <td>Custom (from <code>keycloak/Dockerfile</code>)</td>
 <td>8080</td>
-<td>Identity provider with <code>rec</code> login theme</td>
+<td>Identity provider with <code>rec</code> login and email themes</td>
 </tr>
 <tr>
 <td><code>keycloak-sync</code></td>
@@ -4570,6 +4704,12 @@
 <td>MQTT auth HTTP backend</td>
 </tr>
 <tr>
+<td><code>provisioning</code></td>
+<td>Same as <code>mqtt_auth</code></td>
+<td>8010, <strong>not published</strong></td>
+<td>The only writer of participant accounts</td>
+</tr>
+<tr>
 <td><code>mosquitto</code></td>
 <td><code>ghcr.io/lhns/mosquitto-go-auth:3.3.0-mosquitto_2.0.22</code></td>
 <td>1883, 1884</td>
@@ -4587,6 +4727,12 @@
 <td>4180</td>
 <td>OAuth2 reverse proxy</td>
 </tr>
+<tr>
+<td><code>mailpit</code></td>
+<td><code>axllent/mailpit:v1.31.1</code></td>
+<td>1025 (SMTP), 8025 (UI)</td>
+<td>Keycloak's outgoing mail in dev: kept, not delivered</td>
+</tr>
 </tbody>
 </table>
 <h3 id="startup-order">Startup Order</h3>
@@ -4595,8 +4741,83 @@
 <li><strong>keycloak-sync</strong> runs bootstrap + sync, then exits</li>
 <li><strong>sync-users</strong> imports example users, then exits</li>
 <li><strong>mqtt_auth</strong> starts after keycloak-sync and sync-users complete</li>
+<li><strong>provisioning</strong> starts after keycloak-sync completes — it authenticates as
+   <code>svc-provisioning</code>, a client <code>sync</code> creates, so it cannot bootstrap the realm it
+   authenticates against</li>
 <li><strong>mosquitto</strong> starts after redis is up and mqtt_auth is healthy</li>
 </ol>
+<h3 id="the-provisioning-service-has-no-published-port-and-that-is-the-guard">The provisioning service has no published port, and that is the guard</h3>
+<p><code>provisioning</code> is declared with <code>expose</code> and not <code>ports</code>. It holds realm-wide Keycloak
+administration, and the whole argument for that grant being acceptable is that nothing
+outside the network reaches it — see
+<a href="../decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
+<p><strong>Publishing the port, or adding a route to it in the ingress, converts <code>manage-realm</code> into
+an internet-facing credential.</strong> It would still check scopes on the token, because it
+authorises by <code>provisioning.*</code> like every other service — but that is defence in depth, not
+the control, and it is not what the grant was justified by. The corresponding guard lives
+in <code>../celine-dev</code>'s Caddyfile, where somebody adding a route will read it.</p>
+<h2 id="email-invitations-and-password-recovery">Email: invitations and password recovery</h2>
+<p><strong>Keycloak sends every email</strong>; the provisioning service only asks it to, through
+<code>execute-actions-email</code>. The templates are the <code>rec</code> email theme
+(<code>keycloak/themes/rec/email/</code>, <code>it</code>, <code>en</code> and <code>es</code>), and no password is ever generated or
+put into an email. What each route sends is in the
+<a href="../api-reference/#provisioning-service">API reference</a>.</p>
+<h3 id="what-a-realm-needs-and-who-owns-it">What a realm needs, and who owns it</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Owner</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>internationalizationEnabled: true</code>, <code>supportedLocales: [it, en, es]</code>, <code>defaultLocale: it</code></td>
+<td><code>keycloak bootstrap</code> (planned, not built yet)</td>
+<td><strong>Must be on before the provisioning service writes <code>locale</code></strong>: without it Keycloak answers <code>201</code> and drops the value</td>
+</tr>
+<tr>
+<td><code>emailTheme: rec</code>, <code>resetPasswordAllowed: true</code>, <code>actionTokenGeneratedByAdminLifespan: 604800</code>, <code>actionTokenGeneratedByUserLifespan: 3600</code></td>
+<td><code>keycloak bootstrap</code> (planned, not built yet)</td>
+<td>Until then, set by hand on each realm</td>
+</tr>
+<tr>
+<td><code>smtpServer</code></td>
+<td>infra, and only infra, outside dev</td>
+<td>A credential. The realm template reaches new realms only; an existing realm gets it once, by hand. The local dev import points it at <code>mailpit</code> (requester, 2026-09-14)</td>
+</tr>
+</tbody>
+</table>
+<p><code>bootstrap</code> does not own these yet: that waits on <code>bootstrap</code> gaining its platform
+settings. <strong>Until it does, an operator sets them on each realm</strong>, for example with <code>kcadm</code>:</p>
+<pre><code class="language-bash">kcadm.sh update realms/celine \
+  -s internationalizationEnabled=true -s 'supportedLocales=[&quot;it&quot;,&quot;en&quot;,&quot;es&quot;]' -s defaultLocale=it \
+  -s emailTheme=rec -s resetPasswordAllowed=true \
+  -s actionTokenGeneratedByAdminLifespan=604800 -s actionTokenGeneratedByUserLifespan=3600
+</code></pre>
+<p><code>verifyEmail</code> is deliberately <strong>not</strong> set: the invitation already carries <code>VERIFY_EMAIL</code>,
+and turning it on would stop every existing account with <code>emailVerified: false</code> at its next
+sign-in. <code>passwordPolicy</code> stays at Keycloak's default.</p>
+<h3 id="locally">Locally</h3>
+<p><code>mailpit</code> keeps every message in its UI at <a href="http://localhost:8025">http://localhost:8025</a> and delivers none.
+The dev import (<code>config/keycloak/import/realm-celine.json</code>) points <code>smtpServer</code> at
+<code>mailpit:1025</code>, which reaches <strong>a realm created from it only</strong> — <code>--import-realm</code> skips a
+realm that already exists. On an existing local realm, set it once:</p>
+<pre><code class="language-bash">kcadm.sh update realms/celine -s 'smtpServer.host=mailpit' -s 'smtpServer.port=1025' \
+  -s 'smtpServer.from=noreply@celine.localhost' -s 'smtpServer.fromDisplayName=CELINE'
+</code></pre>
+<p>Other workspace services can send through it too: SMTP is published on the host's 1025, so
+a container uses <code>172.17.0.1:1025</code> (the same host-gateway convention as the registry URL) and
+a process on the host uses <code>localhost:1025</code>.</p>
+<p>To let real mail reach a few addresses, set both <code>EMAIL_DEV_RECIPIENTS</code> (comma-separated) and
+<code>MAILPIT_RELAY_HOST</code> (with <code>MAILPIT_RELAY_PORT</code>, <code>_USERNAME</code>, <code>_PASSWORD</code> as needed). Mailpit
+then relays only those addresses, through an anchored, escaped match built by
+<code>config/mailpit/start.sh</code>, and the provisioning service invites only those addresses.
+Everyone else gets a <code>WARNING</code> in the service log and <code>invitation: not_on_dev_list</code>. An
+account with no email address is <code>no_email</code> in every mode, not <code>not_on_dev_list</code>.</p>
+<p>Outside dev, set <code>CELINE_PROVISIONING_EMAIL_MODE=deliver</code> and
+<code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code> to the webapp root.</p>
 <h2 id="dockerfile">Dockerfile</h2>
 <p>The MQTT auth service image (<code>Dockerfile</code>) is a multi-stage build:</p>
 <ol>
@@ -4749,10 +4970,63 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <td><code>false</code></td>
 <td>Preview mode</td>
 </tr>
+<tr>
+<td><code>CELINE_SYNC_USERS_REGISTRY_URL</code></td>
+<td>—</td>
+<td>rec-registry base URL. Setting it selects the live registry instead of a file</td>
+</tr>
+<tr>
+<td><code>CELINE_SYNC_USERS_REGISTRY_CLIENT_ID</code></td>
+<td><code>celine-cli</code></td>
+<td>Keycloak client the registry is read as</td>
+</tr>
+<tr>
+<td><code>CELINE_SYNC_USERS_REGISTRY_CLIENT_SECRET</code></td>
+<td>—</td>
+<td>Its secret. Falls back to that client's entry in the secrets file</td>
+</tr>
+<tr>
+<td><code>CELINE_SYNC_USERS_COMMUNITIES</code></td>
+<td>(empty)</td>
+<td>Space-separated community keys. Empty → every community</td>
+</tr>
 </tbody>
 </table>
+<h4 id="which-source-a-run-reconciles">Which source a run reconciles</h4>
+<p>A <strong>file</strong> is a picture of the community at export time, so a run against one
+leaves out everybody <code>onboarding</code> has approved since it was taken. A run against
+the <strong>registry</strong> reconciles what is true. Both are supported and neither is
+deprecated: bootstrap runs before the registry holds anything, and an offline run
+is a real case.</p>
+<pre><code class="language-bash"># the file path, unchanged
+celine-policies keycloak sync-users greenland.yaml
+
+# the live registry, every community it holds
+celine-policies keycloak sync-users --from-registry \
+  --registry-url http://api.celine.localhost/rec-registry
+
+# one community, and report divergence without writing anything
+celine-policies keycloak sync-users --from-registry \
+  --registry-url http://api.celine.localhost/rec-registry \
+  --community gr-renewable-community --check
+</code></pre>
+<p>Passing both a path and <code>--from-registry</code> is refused rather than resolved.</p>
+<p><code>--check</code> writes nothing and exits non-zero when a member of the source has no
+Keycloak account, is outside their REC organization, or is outside a group
+<code>clients.yaml</code> declares under <code>admin_permissions</code>. It exists because none of
+those is visible to a health probe: the failure they produce is a person who logs
+in and cannot see their own community.</p>
+<p><strong>Only <code>active</code> members are provisioned.</strong> The registry keys a member <code>pending</code>
+before approval and <code>suspended</code> or <code>inactive</code> after withdrawal; those are skipped
+with a log line. A member carrying no <code>status</code> at all is treated as active, which
+is what keeps hand-authored seed files working. Nothing is ever disabled —
+skipping provisioning and revoking access are different acts.</p>
+<p>The registry client needs <code>rec-registry.export</code>. The default, <code>celine-cli</code>, holds
+<code>rec-registry.admin</code>, which is wider than that: see
+<a href="../decisions/ADR-0006-the-registry-is-the-source-of-members/">ADR-0006</a> for why,
+and what to change to narrow it.</p>
 <h3 id="keycloak">Keycloak</h3>
-<p>The Keycloak service uses the custom image from <code>keycloak/Dockerfile</code> (KC 26.6.0 + rec theme). Key environment variables:</p>
+<p>The Keycloak service uses the custom image from <code>keycloak/Dockerfile</code> (KC 26.7.3 + rec theme). Key environment variables:</p>
 <table>
 <thead>
 <tr>
@@ -4804,10 +5078,10 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <h2 id="keycloak-custom-image">Keycloak Custom Image</h2>
 <p>The <code>keycloak/</code> directory builds a custom Keycloak image:</p>
 <ul>
-<li>Base: <code>quay.io/keycloak/keycloak:26.6.0</code></li>
-<li>Adds the <code>rec</code> login theme (see <a href="../keycloak/README.md"><code>keycloak/README.md</code></a>)</li>
+<li>Base: <code>quay.io/keycloak/keycloak:26.7.3</code></li>
+<li>Adds the <code>rec</code> login and email themes (see <a href="../keycloak/README.md"><code>keycloak/README.md</code></a>)</li>
 <li>Pre-builds Keycloak at image build time for faster startup</li>
-<li>Version tracked in <code>keycloak/version.txt</code> (<code>26.6.0-1.0.3</code>)</li>
+<li>Version tracked in <code>keycloak/version.txt</code> (<code>26.7.3-1.1.0</code>)</li>
 </ul>
 <p>A GitHub Actions workflow (<code>.github/workflows/build-keycloak.yaml</code>) detects changes to <code>keycloak/version.txt</code> and publishes an updated image.</p>
 <h2 id="cicd">CI/CD</h2>

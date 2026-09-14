@@ -8,28 +8,24 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-policies/docs/api-reference/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0006-the-registry-is-the-source-of-members/">
       
       
-        <link rel="prev" href="../mqtt-integration/">
-      
-      
-        <link rel="next" href="../deployment/">
       
       
         
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
     
     
       
-        <title>API reference - CELINE Project</title>
+        <title>ADR-0006 — the REC registry is the source of members, and a YAML file is a seed - CELINE Project</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.618322db.min.css">
       
       
 
@@ -48,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#adr-0006-the-rec-registry-is-the-source-of-members-and-a-yaml-file-is-a-seed" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +76,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -100,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API reference
+              ADR-0006 — the REC registry is the source of members, and a YAML file is a seed
             
           </span>
         </div>
@@ -173,7 +169,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../.." class="md-tabs__link">
+      <a href="../../../../.." class="md-tabs__link">
         
   
   
@@ -190,8 +186,6 @@
   
   
   
-    
-  
   
     
     
@@ -199,13 +193,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../../celine-ai-assistant/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -226,7 +218,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -245,7 +237,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../ontologies/" class="md-tabs__link">
+      <a href="../../../../../ontologies/" class="md-tabs__link">
         
   
   
@@ -264,7 +256,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../schema/" class="md-tabs__link">
+      <a href="../../../../../schema/" class="md-tabs__link">
         
   
   
@@ -299,7 +291,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -317,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../../../../.." class="md-nav__link">
         
   
   
@@ -341,31 +333,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -383,7 +370,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -407,20 +394,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
         
           
-          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
             
   
   
@@ -456,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -484,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -512,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -540,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -568,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -610,20 +594,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   
@@ -659,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -687,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -715,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -743,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -771,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -813,20 +794,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   
@@ -862,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/" class="md-nav__link">
+      <a href="../../../../rec-registry/" class="md-nav__link">
         
   
   
@@ -890,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/data-model/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/data-model/" class="md-nav__link">
         
   
   
@@ -918,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -946,7 +924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/import-export/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/import-export/" class="md-nav__link">
         
   
   
@@ -974,7 +952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/development/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/development/" class="md-nav__link">
         
   
   
@@ -1016,20 +994,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
             
   
   
@@ -1065,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/" class="md-nav__link">
+      <a href="../../../../celine-webapp/" class="md-nav__link">
         
   
   
@@ -1093,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1121,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1149,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/features/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/features/" class="md-nav__link">
         
   
   
@@ -1177,7 +1152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/development/" class="md-nav__link">
         
   
   
@@ -1219,20 +1194,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
             
   
   
@@ -1268,7 +1240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/" class="md-nav__link">
+      <a href="../../../../nudging-tool/" class="md-nav__link">
         
   
   
@@ -1296,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/architecture/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1324,7 +1296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/engine/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/engine/" class="md-nav__link">
         
   
   
@@ -1352,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1380,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/development/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/development/" class="md-nav__link">
         
   
   
@@ -1422,20 +1394,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   
@@ -1471,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/" class="md-nav__link">
         
   
   
@@ -1499,7 +1468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1527,7 +1496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/authentication/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/authentication/" class="md-nav__link">
         
   
   
@@ -1555,7 +1524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/services/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/services/" class="md-nav__link">
         
   
   
@@ -1583,7 +1552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/development/" class="md-nav__link">
         
   
   
@@ -1625,20 +1594,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   
@@ -1674,7 +1640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/" class="md-nav__link">
+      <a href="../../../../celine-frontend/" class="md-nav__link">
         
   
   
@@ -1702,7 +1668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/packages/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/packages/" class="md-nav__link">
         
   
   
@@ -1730,7 +1696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/apps/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/apps/" class="md-nav__link">
         
   
   
@@ -1758,7 +1724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/theming/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/theming/" class="md-nav__link">
         
   
   
@@ -1786,7 +1752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/development/" class="md-nav__link">
         
   
   
@@ -1828,20 +1794,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
             
   
   
@@ -1877,7 +1840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/" class="md-nav__link">
         
   
   
@@ -1905,7 +1868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
         
   
   
@@ -1933,7 +1896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/values/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/values/" class="md-nav__link">
         
   
   
@@ -1961,7 +1924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
         
   
   
@@ -1989,7 +1952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/clients/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/clients/" class="md-nav__link">
         
   
   
@@ -2017,7 +1980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
         
   
   
@@ -2045,7 +2008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
         
   
   
@@ -2073,7 +2036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
         
   
   
@@ -2115,20 +2078,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_9" >
         
           
-          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
             
   
   
@@ -2164,7 +2124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/" class="md-nav__link">
+      <a href="../../../../dataset-api/" class="md-nav__link">
         
   
   
@@ -2192,7 +2152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/architecture/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/architecture/" class="md-nav__link">
         
   
   
@@ -2220,7 +2180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
         
   
   
@@ -2248,7 +2208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/cli-operations/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/cli-operations/" class="md-nav__link">
         
   
   
@@ -2276,7 +2236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/governance-security/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/governance-security/" class="md-nav__link">
         
   
   
@@ -2304,7 +2264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/query-engine/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/query-engine/" class="md-nav__link">
         
   
   
@@ -2337,31 +2297,26 @@
                 
   
   
-    
   
   
-  
     
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
             
   
   
@@ -2379,7 +2334,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_10">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2397,7 +2352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -2425,7 +2380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   
@@ -2453,7 +2408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -2481,7 +2436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scopes-and-permissions/" class="md-nav__link">
+      <a href="../../scopes-and-permissions/" class="md-nav__link">
         
   
   
@@ -2509,7 +2464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mqtt-integration/" class="md-nav__link">
+      <a href="../../mqtt-integration/" class="md-nav__link">
         
   
   
@@ -2534,37 +2489,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API reference
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../api-reference/" class="md-nav__link">
         
   
   
@@ -2580,125 +2508,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Base URL
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-user" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /user
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-acl" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /acl
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-superuser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /superuser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-health" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /health
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-docs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /docs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-redoc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /redoc
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-responses" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error Responses
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2711,7 +2520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../deployment/" class="md-nav__link">
+      <a href="../../deployment/" class="md-nav__link">
         
   
   
@@ -2753,20 +2562,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
         
           
-          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
             
   
   
@@ -2802,7 +2608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/" class="md-nav__link">
+      <a href="../../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -2830,7 +2636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
         
   
   
@@ -2858,7 +2664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -2886,7 +2692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -2914,7 +2720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/cli/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/cli/" class="md-nav__link">
         
   
   
@@ -2956,20 +2762,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_12" >
         
           
-          <label class="md-nav__link" for="__nav_2_12" id="__nav_2_12_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_12" id="__nav_2_12_label" tabindex="0">
             
   
   
@@ -3005,7 +2808,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/" class="md-nav__link">
         
   
   
@@ -3033,7 +2836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
         
   
   
@@ -3061,7 +2864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
         
   
   
@@ -3089,7 +2892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
         
   
   
@@ -3117,7 +2920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/testing/" class="md-nav__link">
         
   
   
@@ -3145,7 +2948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
   
@@ -3173,7 +2976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/om/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/om/" class="md-nav__link">
         
   
   
@@ -3201,7 +3004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
@@ -3229,7 +3032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/owm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/owm/" class="md-nav__link">
         
   
   
@@ -3257,7 +3060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
         
   
   
@@ -3285,7 +3088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/dwd/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/dwd/" class="md-nav__link">
         
   
   
@@ -3313,7 +3116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
@@ -3341,7 +3144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/osm/" class="md-nav__link">
         
   
   
@@ -3369,7 +3172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
         
   
   
@@ -3397,7 +3200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
         
   
   
@@ -3425,7 +3228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/grid/" class="md-nav__link">
         
   
   
@@ -3453,7 +3256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
         
   
   
@@ -3481,7 +3284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
         
   
   
@@ -3509,7 +3312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
         
   
   
@@ -3537,7 +3340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
         
   
   
@@ -3565,7 +3368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
         
   
   
@@ -3607,20 +3410,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_13" >
         
           
-          <label class="md-nav__link" for="__nav_2_13" id="__nav_2_13_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_13" id="__nav_2_13_label" tabindex="0">
             
   
   
@@ -3656,7 +3456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ontologies/" class="md-nav__link">
+      <a href="../../../../celine-ontologies/" class="md-nav__link">
         
   
   
@@ -3698,20 +3498,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_14" >
         
           
-          <label class="md-nav__link" for="__nav_2_14" id="__nav_2_14_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_14" id="__nav_2_14_label" tabindex="0">
             
   
   
@@ -3747,7 +3544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/" class="md-nav__link">
+      <a href="../../../../celine-grid/" class="md-nav__link">
         
   
   
@@ -3775,7 +3572,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-grid/docs/architecture/" class="md-nav__link">
         
   
   
@@ -3817,20 +3614,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_15" >
         
           
-          <label class="md-nav__link" for="__nav_2_15" id="__nav_2_15_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_15" id="__nav_2_15_label" tabindex="0">
             
   
   
@@ -3866,7 +3660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/" class="md-nav__link">
+      <a href="../../../../celine-roi/" class="md-nav__link">
         
   
   
@@ -3894,7 +3688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/user-guide/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/user-guide/" class="md-nav__link">
         
   
   
@@ -3922,7 +3716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/variables-reference/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/variables-reference/" class="md-nav__link">
         
   
   
@@ -3964,20 +3758,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_16" >
         
           
-          <label class="md-nav__link" for="__nav_2_16" id="__nav_2_16_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_16" id="__nav_2_16_label" tabindex="0">
             
   
   
@@ -4013,7 +3804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../flexibility-api/" class="md-nav__link">
+      <a href="../../../../flexibility-api/" class="md-nav__link">
         
   
   
@@ -4055,20 +3846,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_17" >
         
           
-          <label class="md-nav__link" for="__nav_2_17" id="__nav_2_17_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_17" id="__nav_2_17_label" tabindex="0">
             
   
   
@@ -4104,7 +3892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-infra/" class="md-nav__link">
+      <a href="../../../../celine-infra/" class="md-nav__link">
         
   
   
@@ -4147,7 +3935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -4174,7 +3962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../ontologies/" class="md-nav__link">
+      <a href="../../../../../ontologies/" class="md-nav__link">
         
   
   
@@ -4201,7 +3989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../schema/" class="md-nav__link">
+      <a href="../../../../../schema/" class="md-nav__link">
         
   
   
@@ -4248,10 +4036,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Base URL
+        Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-defect-the-switch-would-have-fired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The defect the switch would have fired
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision
       
     </span>
   </a>
@@ -4259,10 +4075,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
+  <a href="#the-registry-is-read-as-celine-cli-which-is-wider-than-this-needs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authentication
+        The registry is read as celine-cli, which is wider than this needs
       
     </span>
   </a>
@@ -4270,76 +4086,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#post-user" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /user
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-acl" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /acl
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#post-superuser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        POST /superuser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-health" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /health
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-docs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /docs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-redoc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /redoc
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-responses" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error Responses
+        Consequences
       
     </span>
   </a>
@@ -4363,649 +4113,114 @@
 
 
 
-<h1 id="api-reference">API Reference</h1>
-<p>HTTP endpoints exposed by this repository's two services — the MQTT auth service
-(<code>celine.mqtt_auth</code>) and the provisioning service (<code>celine.provisioning</code>).</p>
-<h2 id="base-url">Base URL</h2>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Environment</th>
-<th>URL</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MQTT auth</td>
-<td>Development</td>
-<td><code>http://localhost:8009</code></td>
-</tr>
-<tr>
-<td>MQTT auth</td>
-<td>Docker Compose</td>
-<td><code>http://mqtt_auth:8009</code></td>
-</tr>
-<tr>
-<td>Provisioning</td>
-<td>Docker Compose</td>
-<td><code>http://provisioning:8010</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>The provisioning service has no public URL and must not be given one.</strong> It is reachable
-only from inside the network; see
-<a href="../decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
-<h2 id="authentication">Authentication</h2>
-<p>All endpoints (except <code>/health</code>) require a JWT in the <code>Authorization</code> header:</p>
-<pre><code>Authorization: Bearer &lt;jwt-token&gt;
+<h1 id="adr-0006-the-rec-registry-is-the-source-of-members-and-a-yaml-file-is-a-seed">ADR-0006 — the REC registry is the source of members, and a YAML file is a seed</h1>
+<p><strong>Date:</strong> 2026-09-12
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p><code>sync-users</code> reconciled the realm against a <strong>file</strong>. <code>load_rec_participants</code> took a
+<code>Path</code>, so whatever snapshot an operator exported was what the realm was made to match.</p>
+<p>That was true when a REC's membership was authored by hand. It is not true now:
+<code>../onboarding</code> writes a member to the registry on every approval, so a file is a picture
+of the community at export time and everybody approved since it was taken is invisible to
+the sync. The registry's own import endpoint says as much — <em>"members now arrive at runtime
+through the member API, so re-importing a stale export is the most likely way to lose
+them"</em>.</p>
+<p>The cost was measured on the demo3 deployment, 2026-09-11: <strong>10 of 45 <code>/participants</code>
+members were in their REC organization.</strong> The other 35 carried no <code>organization</code> claim, so
+no org-scoped policy could resolve them to their community. Nothing reconciled what was
+true, because nothing read what was true.</p>
+<p><strong>The registry already serves the identical artefact.</strong> <code>GET /admin/export</code> returns exactly
+the bundle YAML these loaders parse, and with no <code>community</code> parameter it returns every
+community as a multidocument stream. So this is not a new contract, a new schema or a new
+client.</p>
+<h3 id="the-defect-the-switch-would-have-fired">The defect the switch would have fired</h3>
+<p><code>sync_users</code> loaded <code>user_id</code> for every participant, used it only to decide whether to skip
+the row, and then named the account after the member <strong>key</strong> instead:</p>
+<pre><code class="language-python">username = derive_username(key)      # the key, lowercased
 </code></pre>
-<p>The JWT is validated using the OIDC configuration from <code>celine-sdk</code> (<code>OidcSettings</code>).</p>
-<hr />
-<h2 id="post-user">POST /user</h2>
-<p>Authenticate an MQTT client. Called by mosquitto-go-auth on client connect.</p>
-<p>Extracts the JWT from the <code>Authorization</code> header, validates it, and returns success if the token is valid.</p>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: true, &quot;reason&quot;: &quot;authenticated&quot;}
-</code></pre>
-<p><strong>Response (403):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;missing token&quot;}
-</code></pre>
-<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;invalid credentials&quot;}
-</code></pre>
-<hr />
-<h2 id="post-acl">POST /acl</h2>
-<p>Authorize MQTT topic access. Called by mosquitto-go-auth on every publish/subscribe.</p>
-<p>Validates the JWT, converts the mosquitto <code>acc</code> bitmask to action names, and evaluates the <code>celine.mqtt.acl</code> Rego policy for each action.</p>
-<p><strong>Request Body (JSON):</strong></p>
-<pre><code class="language-json">{
-  &quot;clientid&quot;: &quot;my-client&quot;,
-  &quot;topic&quot;: &quot;celine/digital-twin/events/pump/pump-001&quot;,
-  &quot;acc&quot;: 2
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>clientid</code></td>
-<td>string</td>
-<td>MQTT client ID</td>
-</tr>
-<tr>
-<td><code>topic</code></td>
-<td>string</td>
-<td>MQTT topic being accessed</td>
-</tr>
-<tr>
-<td><code>acc</code></td>
-<td>int</td>
-<td>Access bitmask: 1=read, 2=publish, 4=subscribe</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Access bitmask values:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Value</th>
-<th>Permission</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Read</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Publish</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Subscribe</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Read + Publish</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Read + Subscribe</td>
-</tr>
-<tr>
-<td>7</td>
-<td>All</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: true, &quot;reason&quot;: &quot;authorized&quot;}
-</code></pre>
-<p><strong>Response (403):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;denied&quot;}
-</code></pre>
-<hr />
-<h2 id="post-superuser">POST /superuser</h2>
-<p>Check if a client has MQTT superuser access. Superusers bypass all ACL checks.</p>
-<p>Grants superuser if the JWT contains:
-- The <code>mqtt.admin</code> scope, OR
-- The <code>admin</code> group, OR
-- The <code>mqtt.admin</code> group</p>
-<p><strong>Request Body (JSON):</strong></p>
-<pre><code class="language-json">{
-  &quot;username&quot;: &quot;client-id-or-jwt&quot;
-}
-</code></pre>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: true, &quot;reason&quot;: &quot;superuser&quot;}
-</code></pre>
-<p><strong>Response (403):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;not superuser&quot;}
-</code></pre>
-<hr />
-<h2 id="get-health">GET /health</h2>
-<p>Liveness check. No authentication required.</p>
-<p><strong>Response:</strong></p>
-<pre><code class="language-json">{
-  &quot;status&quot;: &quot;healthy&quot;,
-  &quot;policies_loaded&quot;: true,
-  &quot;policy_count&quot;: 2,
-  &quot;packages&quot;: [&quot;celine.mqtt.acl&quot;, &quot;celine.scopes&quot;]
-}
-</code></pre>
-<hr />
-<h2 id="get-docs">GET /docs</h2>
-<p>Swagger UI for interactive API exploration.</p>
-<h2 id="get-redoc">GET /redoc</h2>
-<p>ReDoc API documentation.</p>
-<hr />
-<h2 id="error-responses">Error Responses</h2>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>200</td>
-<td>OK (check <code>ok</code> field for auth result)</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Authentication/authorization failed</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal error (e.g. policy parse failure)</td>
-</tr>
-</tbody>
-</table>
-<p>The MQTT auth endpoints always return a <code>MqttResponse</code> body with <code>ok</code> and <code>reason</code> fields. HTTP status 403 is set alongside <code>ok: false</code> to satisfy mosquitto-go-auth's expected behavior.</p>
-<hr />
-<h1 id="provisioning-service">Provisioning service</h1>
-<p><code>celine.provisioning</code> — the only thing that writes a participant account into the celine
-realm. Stateless: a retry is another call, and idempotency comes from the keys.</p>
-<h2 id="authentication_1">Authentication</h2>
-<p>A bearer token, as everywhere else. A token that does not verify is <code>401</code>; a token without
-the scope is <code>403</code>. <code>provisioning.admin</code> satisfies any of the scopes below.</p>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Scope</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>PUT /participants/{community}/{key}</code></td>
-<td><code>provisioning.participants.write</code></td>
-</tr>
-<tr>
-<td><code>POST /participants/{community}/{key}/invitation</code></td>
-<td><code>provisioning.participants.write</code></td>
-</tr>
-<tr>
-<td><code>POST /participants/{community}/{key}/disable</code></td>
-<td><code>provisioning.participants.write</code></td>
-</tr>
-<tr>
-<td><code>POST /reconcile/{community}</code></td>
-<td><code>provisioning.reconcile</code></td>
-</tr>
-</tbody>
-</table>
-<p>Scope checks are <strong>not</strong> what keeps this service safe — its lack of a route is. The scope
-check is defence in depth, for a caller already inside the network.</p>
-<p><strong><code>svc-onboarding</code> is the only client granted a <code>provisioning.*</code> scope.</strong> Onboarding is the
-single point of access to this service; see
-<a href="../scopes-and-permissions/#provisioning">scopes-and-permissions.md</a>.</p>
-<h2 id="put-participantscommunitykey">PUT /participants/{community}/{key}</h2>
-<p>Ensure the account exists, is in the REC organization, and is in its org group.</p>
-<p><strong>Request:</strong></p>
-<pre><code class="language-json">{
-  &quot;email&quot;: &quot;a.person@example.org&quot;,
-  &quot;first_name&quot;: &quot;A&quot;,
-  &quot;last_name&quot;: &quot;Person&quot;,
-  &quot;locale&quot;: &quot;it&quot;,
-  &quot;invite&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Required</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>email</code></td>
-<td>yes</td>
-<td>Finds the account, or names a new one</td>
-</tr>
-<tr>
-<td><code>first_name</code>, <code>last_name</code></td>
-<td>no</td>
-<td>Written on a new account. <strong>Pass both</strong>: an account without them meets Keycloak's "update your profile" form after setting its password (measured on 26.7.3)</td>
-</tr>
-<tr>
-<td><code>locale</code></td>
-<td>no</td>
-<td><code>it</code>, <code>en</code> or <code>es</code>; anything else is <code>422</code>. The language of Keycloak's emails. Written on a new account, and on an existing one only if it has none</td>
-</tr>
-<tr>
-<td><code>invite</code></td>
-<td>no, default <code>false</code></td>
-<td>Have Keycloak email an <strong>invitation</strong> to set a password, <strong>only</strong> if the account was created in this call or has no password. Never a reset: that is <code>POST …/invitation</code> with intent <code>password_reset</code></td>
-</tr>
-</tbody>
-</table>
-<p>The address <strong>transits and is stored nowhere</strong> — not in this service, which keeps no
-state, and not in the registry, which has no email column. It is on the Keycloak account,
-which is where an address somebody logs in with belongs.</p>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{
-  &quot;user_id&quot;: &quot;3f1c…&quot;,
-  &quot;username&quot;: &quot;a.person@example.org&quot;,
-  &quot;created&quot;: true,
-  &quot;invitation&quot;: &quot;sent&quot;,
-  &quot;invited&quot;: true
-}
-</code></pre>
-<p><code>user_id</code> is the <strong>Keycloak uuid</strong>, which <code>../onboarding</code> needs for its dataspace step.
-<code>username</code> is what the account authenticates as, <strong>read back from Keycloak</strong> rather than
-computed — an account that already existed may authenticate under a convention nobody here
-chose — and it is the value that becomes the registry's <code>Member.user_id</code>. Note the name
-collision: the registry's <code>user_id</code> column holds a <em>username</em>.</p>
-<p>Always <code>200</code>. A create and a no-op are the same request with the same meaning; <code>created</code>
-says which happened.</p>
-<p><strong><code>invite</code> never fails the upsert.</strong> What happened is in <code>invitation</code>, a reason code to show
-the operator who approved, and <code>invited</code> is true only for <code>sent</code>:</p>
-<table>
-<thead>
-<tr>
-<th><code>invitation</code></th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>not_requested</code></td>
-<td><code>invite</code> was false</td>
-</tr>
-<tr>
-<td><code>sent</code></td>
-<td>Keycloak was asked to email an invitation: <code>UPDATE_PASSWORD</code> + <code>VERIFY_EMAIL</code>, valid <code>CELINE_PROVISIONING_INVITE_LIFESPAN</code> (7 days)</td>
-</tr>
-<tr>
-<td><code>has_password</code></td>
-<td>The account already has a password; nothing was sent. A retry after the person set their password lands here</td>
-</tr>
-<tr>
-<td><code>no_email</code></td>
-<td>The account has no email address, in every email mode; nothing was sent. Keycloak sends to the account's own address, so the body's <code>email</code> does not stand in for it. Typically an account <code>sync-users</code> made from the registry</td>
-</tr>
-<tr>
-<td><code>not_on_dev_list</code></td>
-<td><code>CELINE_PROVISIONING_EMAIL_MODE=dev</code> and the address is not on <code>EMAIL_DEV_RECIPIENTS</code>; a <code>WARNING</code> names the member</td>
-</tr>
-<tr>
-<td><code>account_disabled</code></td>
-<td>The account is disabled; nothing was sent, and it is not re-enabled</td>
-</tr>
-<tr>
-<td><code>cooldown</code></td>
-<td>The account was emailed within <code>CELINE_PROVISIONING_INVITE_COOLDOWN</code>, by an upsert or by <code>…/invitation</code>; nothing was sent. Ask again after the cooldown</td>
-</tr>
-<tr>
-<td><code>send_failed</code></td>
-<td>Keycloak was asked and did not send it — an SMTP failure (Keycloak's <code>500 Failed to send execute actions email</code>), a refusal such as an unregistered redirect URI, or a timeout. <strong>No cooldown starts</strong>, so a retry may send. The upsert itself succeeded</td>
-</tr>
-</tbody>
-</table>
-<p>New codes may be added. A consumer shows an unknown one raw rather than failing on it.</p>
-<p>The checks run in this order, and the first that applies is the answer: <code>account_disabled</code>,
-<code>has_password</code>, <code>no_email</code>, <code>not_on_dev_list</code>, <code>cooldown</code>, then the send (<code>sent</code> or
-<code>send_failed</code>).</p>
-<p><strong>One send rule for the upsert and the route:</strong> an email goes out only because a caller asked
-(<code>invite: true</code> here, or <code>POST …/invitation</code>); every send is refused within the cooldown of the
-last successful one to that account, whichever call made it; a send that failed starts no
-cooldown; an account with a password is never invited, and one without is never sent a
-reset; and an account with no email address is never sent anything. So a repeat of the
-upsert <strong>before</strong> the person has set a password sends another invitation only once the
-cooldown has passed. Every link sent stays usable until it expires, even after another one
-has been used (measured on 26.7.3).</p>
-<p><strong>Order of deployment:</strong> <code>locale</code> is kept only on a realm with
-<code>internationalizationEnabled</code>. On a realm without it Keycloak answers <code>201</code> and drops the
-value, so internationalization has to be enabled on a realm before this service writes
-<code>locale</code> to it.</p>
-<p>Completing an invitation creates <strong>no session</strong>: the person sees Keycloak's "account
-updated" page with a link back to <code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code>, and then signs
-in once with the password they chose.</p>
-<p><strong>The registry is not written from here.</strong> The caller writes the member row, with the
-username this call returned — which keeps the registry single-writer and the step order
-fail-closed: the login exists before the row that keys on it.</p>
-<h2 id="post-participantscommunitykeyinvitation">POST /participants/{community}/{key}/invitation</h2>
-<p>Email a member an invitation or a password reset, <strong>as the caller names it</strong>. The member is
-resolved through the registry, whose <code>Member.user_id</code> is the username. <strong>No password is
-generated or returned</strong>: Keycloak sends the link and the person chooses their own.</p>
-<p><strong>Request (required):</strong></p>
-<pre><code class="language-json">{&quot;intent&quot;: &quot;invitation&quot;}
-</code></pre>
-<p>The caller names the email, and the service checks it against the account in the same call
-that sends. A mismatch is refused <strong>before any send and before the cooldown</strong>, and is never
-turned into the other email, so the email is always the button a person pressed:</p>
-<table>
-<thead>
-<tr>
-<th><code>intent</code></th>
-<th>Account must</th>
-<th><code>actions</code></th>
-<th><code>lifespan</code></th>
-<th>Otherwise</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>invitation</code></td>
-<td>have no password</td>
-<td><code>UPDATE_PASSWORD</code>, <code>VERIFY_EMAIL</code></td>
-<td><code>CELINE_PROVISIONING_INVITE_LIFESPAN</code>, default 604800 (7 days)</td>
-<td><code>409 has_password</code></td>
-</tr>
-<tr>
-<td><code>password_reset</code></td>
-<td>have a password</td>
-<td><code>UPDATE_PASSWORD</code></td>
-<td><code>CELINE_PROVISIONING_RESET_LIFESPAN</code>, default 3600 (1 hour)</td>
-<td><code>409 no_password</code></td>
-</tr>
-</tbody>
-</table>
-<p>A missing body, or an <code>intent</code> other than these two, is <code>422</code>. A reset is short because
-Keycloak does not revoke earlier links: a reset email must not be a week-long credential.</p>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{
-  &quot;user_id&quot;: &quot;3f1c…&quot;,
-  &quot;username&quot;: &quot;gl-00001&quot;,
-  &quot;invitation&quot;: &quot;sent&quot;,
-  &quot;actions&quot;: [&quot;UPDATE_PASSWORD&quot;, &quot;VERIFY_EMAIL&quot;],
-  &quot;lifespan&quot;: 604800
-}
-</code></pre>
-<p><code>invitation</code> is <code>sent</code>, or <code>not_on_dev_list</code> when dev email mode refused the address (nothing
-was sent).</p>
-<p>The checks run in this order, and the first that applies is the answer: <code>community_not_found</code>,
-<code>member_not_found</code>, <code>account_not_found</code>, <code>account_disabled</code>, <code>has_password</code> / <code>no_password</code>,
-<code>no_email</code>, <code>not_on_dev_list</code> (a <code>200</code>), <code>cooldown</code>, then the send (<code>sent</code> or <code>send_failed</code>).</p>
-<table>
-<thead>
-<tr>
-<th>Status</th>
-<th><code>code</code></th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>404</td>
-<td><code>community_not_found</code></td>
-<td>The registry has no community under <code>{community}</code></td>
-</tr>
-<tr>
-<td>404</td>
-<td><code>member_not_found</code></td>
-<td>The community has no <strong>active</strong> member under <code>{key}</code></td>
-</tr>
-<tr>
-<td>404</td>
-<td><code>account_not_found</code></td>
-<td>The registry has the member, and the realm has no account for it. Provision it first</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>account_disabled</code></td>
-<td>The account is disabled. Checked by this service before Keycloak is asked</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>has_password</code></td>
-<td>Intent <code>invitation</code>, and the account already has a password. Nothing sent, no cooldown: send <code>password_reset</code> instead</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>no_password</code></td>
-<td>Intent <code>password_reset</code>, and the account has no password. Nothing sent, no cooldown: send <code>invitation</code> instead</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>no_email</code></td>
-<td>The account has no email address, in every email mode. Nothing sent</td>
-</tr>
-<tr>
-<td>422</td>
-<td>—</td>
-<td>No body, or an unknown <code>intent</code></td>
-</tr>
-<tr>
-<td>429</td>
-<td><code>cooldown</code></td>
-<td>The same account was emailed within <code>CELINE_PROVISIONING_INVITE_COOLDOWN</code> (default 300 s), by this route or by an upsert. <code>Retry-After</code> says when. In memory and per replica: a double-click guard, not a rate limit</td>
-</tr>
-<tr>
-<td>502</td>
-<td><code>send_failed</code></td>
-<td>Keycloak did not send it. No cooldown starts, so a retry may send</td>
-</tr>
-</tbody>
-</table>
-<h2 id="post-participantscommunitykeydisable">POST /participants/{community}/{key}/disable</h2>
-<p>Revoke access. The account, its memberships and everything keyed on its uuid survive —
-disabling is not deletion, and reversing it is one call.</p>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;user_id&quot;: &quot;3f1c…&quot;, &quot;username&quot;: &quot;gl-00001&quot;, &quot;changed&quot;: true}
-</code></pre>
-<p><code>changed: false</code> means the revocation was already in force, which must not read as one
-that just happened.</p>
-<p><code>404</code> with <code>community_not_found</code>, <code>member_not_found</code> or <code>account_not_found</code>, as for the
-invitation.</p>
-<h2 id="post-reconcilecommunity">POST /reconcile/{community}</h2>
-<p>Provision every <strong>active</strong> member the registry holds for one community, then assert that
-each of them is in the REC's organization. Members that are not active are skipped and not
-disabled — skipping provisioning and revoking access are different acts.</p>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;community&quot;: &quot;greenland&quot;, &quot;members&quot;: 45, &quot;created&quot;: 2, &quot;existing&quot;: 43, &quot;divergences&quot;: []}
-</code></pre>
-<p><strong>Response (500)</strong> when the assertion finds anything: the same body, under <code>detail</code>, with
-the divergences listed, and <code>code: "reconcile_diverged"</code> and a <code>message</code> beside them.
-<code>404</code> <code>community_not_found</code> for a community the registry does not have. Everything checked is something this same call claimed to have
-done, so a finding is a provisioning call that reported success and had not succeeded. It
-fails loudly rather than repairing quietly — a <code>200</code> with a list nobody reads is how 10 of
-45 members ended up outside their own organization with nothing saying so.</p>
-<p>What calls this on a schedule is a deployment concern. The route is an entry point and
-nothing here is a scheduler.</p>
-<h2 id="error-responses_1">Error responses</h2>
-<p>Every error but <code>422</code> has one body:</p>
-<pre><code class="language-json">{&quot;detail&quot;: {&quot;code&quot;: &quot;member_not_found&quot;, &quot;message&quot;: &quot;greenland has no active member 'gl-00099'&quot;}}
-</code></pre>
-<p><code>code</code> is stable and machine-readable; branch on it. <code>message</code> is a sentence for a person
-and not a contract. <code>code</code> is a plain string in the OpenAPI document, not an enum, so a code
-added later does not break a generated client: treat an unknown one by its status. <code>422</code> is
-FastAPI's own validation body, <code>{"detail": [ … ]}</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Status</th>
-<th><code>code</code></th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>401</td>
-<td><code>missing_token</code></td>
-<td>No bearer token — send one</td>
-</tr>
-<tr>
-<td>401</td>
-<td><code>invalid_token</code></td>
-<td>It does not verify — renew the credential</td>
-</tr>
-<tr>
-<td>403</td>
-<td><code>insufficient_scope</code></td>
-<td>Verified, but the caller does not hold the scope — ask for a grant</td>
-</tr>
-<tr>
-<td>404</td>
-<td><code>community_not_found</code></td>
-<td>The registry has no such community</td>
-</tr>
-<tr>
-<td>404</td>
-<td><code>member_not_found</code></td>
-<td>The community has no active member under that key</td>
-</tr>
-<tr>
-<td>404</td>
-<td><code>account_not_found</code></td>
-<td>The member exists, and the realm has no account for it</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>account_disabled</code></td>
-<td>An invitation for a disabled account</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>has_password</code></td>
-<td>Intent <code>invitation</code> for an account that has a password</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>no_password</code></td>
-<td>Intent <code>password_reset</code> for an account that has none</td>
-</tr>
-<tr>
-<td>409</td>
-<td><code>no_email</code></td>
-<td>A send to an account with no email address</td>
-</tr>
-<tr>
-<td>422</td>
-<td>—</td>
-<td>The upsert's body is missing the address, or <code>locale</code> is not <code>it</code>, <code>en</code> or <code>es</code>; the invitation's body is missing, or its <code>intent</code> is unknown</td>
-</tr>
-<tr>
-<td>429</td>
-<td><code>cooldown</code></td>
-<td>An invitation within the cooldown; <code>Retry-After</code> says when</td>
-</tr>
-<tr>
-<td>500</td>
-<td><code>reconcile_diverged</code></td>
-<td>A reconcile ended with divergences; the report is in <code>detail</code></td>
-</tr>
-<tr>
-<td>502</td>
-<td><code>registry_unavailable</code></td>
-<td>The registry could not be read, or is not configured</td>
-</tr>
-<tr>
-<td>502</td>
-<td><code>send_failed</code></td>
-<td>Keycloak did not send the email: SMTP failure, a refusal such as <code>Invalid redirect uri.</code> for a <code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code> not registered on <code>oauth2_proxy</code>, or a timeout. Starts no cooldown</td>
-</tr>
-<tr>
-<td>502</td>
-<td><code>provisioning_failed</code></td>
-<td>Any other dependency failure — a dependency, not this service refusing</td>
-</tr>
-</tbody>
-</table>
-<p>A registry <code>404</code> counts as <code>community_not_found</code> only when the registry names the community.
-Its unrouted <code>{"detail": "Not Found"}</code> — a wrong <code>CELINE_PROVISIONING_REGISTRY_URL</code> — stays
-<code>registry_unavailable</code>, because a consumer may read a <code>404</code> as "nothing left to do".</p>
-<h2 id="configuration">Configuration</h2>
-<p><code>CELINE_PROVISIONING_*</code>, besides the registry and OIDC settings:</p>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Default</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code></td>
-<td>unset</td>
-<td>Where "back to the application" points after an invitation or reset: the webapp root. Must be registered on the client below. Unset, the final page has no link back</td>
-</tr>
-<tr>
-<td><code>CELINE_PROVISIONING_INVITE_CLIENT_ID</code></td>
-<td><code>oauth2_proxy</code></td>
-<td>The client the redirect is registered on</td>
-</tr>
-<tr>
-<td><code>CELINE_PROVISIONING_INVITE_LIFESPAN</code></td>
-<td><code>604800</code></td>
-<td>Seconds an invitation link lasts</td>
-</tr>
-<tr>
-<td><code>CELINE_PROVISIONING_RESET_LIFESPAN</code></td>
-<td><code>3600</code></td>
-<td>Seconds an operator reset link lasts</td>
-</tr>
-<tr>
-<td><code>CELINE_PROVISIONING_INVITE_COOLDOWN</code></td>
-<td><code>300</code></td>
-<td>Seconds after a successful send during which any further send to that account is refused: <code>429</code> on <code>…/invitation</code>, <code>invitation: cooldown</code> on the upsert. <code>0</code> disables it</td>
-</tr>
-<tr>
-<td><code>CELINE_PROVISIONING_EMAIL_MODE</code></td>
-<td><code>dev</code></td>
-<td><code>deliver</code> emails anyone; <code>dev</code> emails only <code>EMAIL_DEV_RECIPIENTS</code> and logs a <code>WARNING</code> for everyone else</td>
-</tr>
-<tr>
-<td><code>EMAIL_DEV_RECIPIENTS</code></td>
-<td>empty</td>
-<td>Comma-separated addresses that may be emailed in <code>dev</code> mode. Also read as <code>CELINE_PROVISIONING_EMAIL_DEV_RECIPIENTS</code>. The local Mailpit relays the same list</td>
-</tr>
-</tbody>
-</table>
-<p><code>dev</code> is the default on purpose: its failure is an invitation that did not go out and says
-so. Every non-dev deployment sets <code>deliver</code>.</p>
+<p>Against a hand-maintained file that is invisible — the same hand wrote both columns.
+Against the registry it is not. <code>../onboarding</code> writes <code>key = submission.ref</code>
+(<code>20260912-a3f9c2</code>) and <code>user_id</code> = the username Keycloak returned. So the first
+registry-backed run would have created a second account named <code>20260912-a3f9c2</code> beside the
+one the participant already signs in with, once per onboarded participant.</p>
+<p>Verified on the dev realm, 2026-09-12, before the repair: <code>a.person@example.org</code> and
+<code>a.member@example.org</code> exist; <code>20260910-1a2b3c4d</code> and <code>20260911-5e6f7a8b</code> — the keys
+their member rows carry — do not. Two duplicates, on the first run.</p>
+<h2 id="decision">Decision</h2>
+<p><strong>The registry row is authoritative for the username.</strong> <code>sync-users</code> provisions
+<code>p["user_id"]</code> and derives nothing. <code>Member.user_id</code> is a Keycloak <em>username</em> — every
+self-service route in the registry matches it against the token's <code>preferred_username</code> —
+so the row that owns the value is what names the account. <code>derive_username(key)</code> survives
+only as the fallback for a row carrying no <code>user_id</code>, which the registry cannot produce
+(the column is non-nullable) and only a hand-authored seed file has.</p>
+<p>The two conventions are <strong>not converged</strong>, and do not need to be. The username is a
+<strong>static handle the participant neither chooses nor changes</strong> — it is what an account is
+matched by, with email as a fallback where a lookup offers one. Its shape therefore carries
+no meaning: <code>gl-00001</code> from a seed and <code>a.person@example.org</code> from onboarding are equally
+correct, and the second is <strong>not an email</strong> — it is a string onboarding happened to take
+from one, and it would still be the username if that convention changed tomorrow.</p>
+<p><strong>So nothing may parse, normalise or infer from it.</strong> The only correct operation on a
+<code>user_id</code> is to use it verbatim. What matters is that neither writer is guessing.</p>
+<p><strong>Dual source, one parser.</strong> The positional path keeps working and is not deprecated —
+bootstrap runs before the registry holds anything, and an offline run is real.
+<code>--from-registry</code> / <code>--registry-url</code> selects the live source. The three loaders take a
+parsed document instead of a <code>Path</code>, so <strong>nothing below them can tell which source it
+got</strong>; that indistinguishability is the property to keep, because the moment the two
+sources produce different plans this is two code paths wearing one name.</p>
+<p><strong>Only <code>active</code> members are provisioned.</strong> The bundle carries <code>status</code>, mandatory in the
+registry's schema, and <code>pending</code> / <code>suspended</code> / <code>inactive</code> are not people who should be
+handed a login. A row with no <code>status</code> is treated as active: hand-authored files predate
+the field, and reading absent as pending would have stopped provisioning every seed REC.
+Nothing is disabled — skipping provisioning and revoking access are different acts with
+different owners, and this command has never written <code>enabled: false</code>.</p>
+<p><strong>A run with no community named reconciles every community.</strong> The tenant list comes from
+the registry in the same artefact as the members, which is what makes a scheduled reconcile
+possible without a list of REC slugs maintained somewhere else. <code>--community</code> narrows it,
+and a name the source does not hold is refused rather than ignored — a typo that reconciles
+nothing while reporting success would make the run that was supposed to catch drift the
+thing that hides it. The realm-level work — claim scopes, realm groups, the oauth2-proxy
+audience mapper — runs once per run, not once per community.</p>
+<p><strong><code>--check</code> reports divergence and writes nothing.</strong> It walks the source and asks whether
+Keycloak agrees: no account, outside the REC organization, outside a declared
+<code>admin_permissions</code> group. It creates nothing, including a missing organization, which is
+reported once for the community rather than once per member.</p>
+<h2 id="the-registry-is-read-as-celine-cli-which-is-wider-than-this-needs">The registry is read as <code>celine-cli</code>, which is wider than this needs</h2>
+<p><code>celine-cli</code> already holds <code>rec-registry.admin</code> and <code>aud: svc-rec-registry</code>, so nothing in
+<code>clients.yaml</code> changes. <strong>That scope is wider than <code>rec-registry.export</code> in a direction
+that matters:</strong> through the SDK's admin override it also satisfies <code>rec-registry.import</code> —
+a replacement import that deletes a community with every member and asset in it — and
+<code>rec-registry.members.purge</code>. The credential this command carries is therefore capable of
+destroying the registry it reads.</p>
+<p>This was chosen deliberately, over a client declaring <code>rec-registry.export</code> alone, and the
+cost is recorded here rather than mitigated in the realm. Two things keep it honest, and
+both are load-bearing:</p>
+<ul>
+<li><strong><code>export_communities</code> is the only registry method named anywhere in this repository.</strong>
+  <code>src/celine/policies/cli/keycloak/registry.py</code> imports one method and
+  <code>tests/test_registry_source.py</code> fails if a second is touched.</li>
+<li><strong>The client id is configurable</strong> — <code>--registry-client-id</code>,
+  <code>CELINE_SYNC_USERS_REGISTRY_CLIENT_ID</code> — and the secret lookup follows it. Declaring a
+  client with <code>rec-registry.export</code> alone and pointing the flag at it needs no code change.</li>
+</ul>
+<p>If the narrow client is ever declared, this section is what should be deleted.</p>
+<h2 id="consequences">Consequences</h2>
+<p><strong>A member provisioned from the registry path has no email on their Keycloak account.</strong>
+<code>Member</code> has no email column and this change adds none. That is the state today outside
+<code>--mock</code>, and it is acceptable while onboarding is what provisions people who need one —
+but it is the constraint any future "the registry drives provisioning entirely" design has
+to answer first.</p>
+<p><strong><code>--mock</code> no longer appends a domain to a value that already contains one.</strong> The test is
+on the string and not on what it means: <code>f"{username}@celine.localhost"</code> produced
+<code>a.person@example.org@celine.localhost</code>, which Keycloak accepts and nobody can receive
+mail at.</p>
+<p><strong>A row with no <code>user_id</code> is no longer skipped.</strong> It used to be dropped with a warning,
+which silently excluded exactly the seed members the file path exists to provision. The
+warning survives.</p>
+<p><strong><code>keycloak sync</code> is unchanged.</strong> Realm structure — clients, scopes, audiences, admin
+permissions — stays declaration-driven from <code>clients.yaml</code>. Only membership moves.</p>
+<p><strong>This does not make <code>sync-users</code> a service.</strong> Every part of it is equally useful to a CLI
+and to a reconciler with no ingress, and the registry-reading half is what such a service
+would need first. If that is chosen, this is the code it is built from.</p>
 
 
 
@@ -5055,10 +4270,10 @@ so. Every non-dev deployment sets <code>deliver</code>.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
     
   </body>

@@ -4087,7 +4087,13 @@
 
 <h1 id="adr-0005-sync-users-files-participants-in-the-group-the-declaration-administers">ADR-0005 — <code>sync-users</code> files participants in the group the declaration administers</h1>
 <p><strong>Date:</strong> 2026-09-10
-<strong>Status:</strong> accepted</p>
+<strong>Status:</strong> superseded by
+<a href="../ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
+<p><code>sync-users</code> still reads <code>admin_permissions</code> and still files participants into every group
+it names — the behaviour is untouched. Nothing declares one any more, so it files them
+into none, and <code>/participants</code> stops being refilled. The group is left in the realm with
+its existing members; it authorises nothing, and removing it is an operator's deliberate
+act with no deadline.</p>
 <h2 id="context">Context</h2>
 <p><a href="../ADR-0003-declare-realm-administration-as-a-group-scoped-permission/">ADR-0003</a> scopes a
 service account's realm administration to the members of one group. A participant outside

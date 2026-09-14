@@ -4477,12 +4477,17 @@
 
 <h1 id="celine-policies">celine-policies</h1>
 <p>Authentication, authorization, and identity management for the CELINE platform.</p>
-<p>This repository provides two services:</p>
+<p>This repository provides three services:</p>
 <ol>
 <li><strong><code>mqtt_auth</code></strong> — A FastAPI HTTP backend for <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a> that validates JWTs and evaluates OPA (Rego) policies to control MQTT topic access.</li>
+<li><strong><code>provisioning</code></strong> — A FastAPI service that is the <strong>only writer of participant accounts</strong> in the celine realm: it ensures an account, its REC organization and its org group, and it sweeps a community from the registry. It holds realm-wide Keycloak administration and therefore has <strong>no public route</strong> — see <a href="docs/decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</li>
 <li><strong><code>celine-policies</code> CLI</strong> — A typer-based CLI that performs idempotent synchronization of OAuth scopes, service clients, users, and organizations into Keycloak.</li>
 </ol>
-<p>It also ships a custom Keycloak Docker image with the <code>rec</code> login theme (see <a href="keycloak/README.md"><code>keycloak/README.md</code></a>).</p>
+<p>The line between the CLI and the provisioning service is <strong>who drives the state</strong>, not how
+often it changes: clients, scopes, audience mappers and realm groups are driven by
+<code>clients.yaml</code> and belong to <code>keycloak sync</code>; REC organizations, org groups, participants
+and memberships are driven by the registry and belong to the service.</p>
+<p>It also ships a custom Keycloak Docker image with the <code>rec</code> login and email themes (see <a href="keycloak/README.md"><code>keycloak/README.md</code></a>).</p>
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash"># Install dependencies
 uv sync
@@ -4540,6 +4545,16 @@ curl http://localhost:8009/health
 │   │   ├── routes.py       # /user, /acl, /superuser endpoints
 │   │   ├── models.py       # Pydantic request/response models
 │   │   └── config.py       # MqttAuthSettings (pydantic-settings)
+│   ├── provisioning/       # The only writer of participant accounts
+│   │   ├── provisioner.py  # The Admin API sequence; no typer, no FastAPI
+│   │   ├── bundle.py       # Reading a REC bundle (file or registry: same parser)
+│   │   ├── registry.py     # GET /admin/export on the live rec-registry
+│   │   ├── service.py      # What each route does, with no FastAPI in it
+│   │   ├── routes.py       # PUT /participants, invitation, disable, reconcile
+│   │   ├── invitation.py   # Who may be emailed, which actions, shared with sync-users
+│   │   ├── api_models.py   # Wire models; the one place keycloak_id becomes user_id
+│   │   ├── config.py       # ProvisioningSettings
+│   │   └── main.py         # App factory (create_app)
 │   └── policies/cli/       # celine-policies CLI
 │       ├── main.py          # Typer entrypoint
 │       └── keycloak/        # Keycloak management commands
@@ -4552,7 +4567,7 @@ curl http://localhost:8009/health
 │   ├── mqtt/acl.rego       # MQTT topic ACL rules
 │   └── scopes.rego         # Shared scope/group helpers
 ├── clients.yaml            # Platform scopes and service client definitions
-├── keycloak/               # Custom Keycloak image + rec login theme
+├── keycloak/               # Custom Keycloak image + rec login and email themes
 ├── config/
 │   ├── keycloak/import/    # Realm import JSON
 │   ├── mosquitto/          # mosquitto.conf

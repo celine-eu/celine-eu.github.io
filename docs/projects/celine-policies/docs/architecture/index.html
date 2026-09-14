@@ -2536,10 +2536,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-keycloak-cli" class="md-nav__link">
+  <a href="#2-provisioning-service" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Keycloak CLI
+        2. Provisioning Service
       
     </span>
   </a>
@@ -2547,10 +2547,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-rego-policies" class="md-nav__link">
+  <a href="#3-keycloak-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Rego Policies
+        3. Keycloak CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rego-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Rego Policies
       
     </span>
   </a>
@@ -4277,10 +4288,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-keycloak-cli" class="md-nav__link">
+  <a href="#2-provisioning-service" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Keycloak CLI
+        2. Provisioning Service
       
     </span>
   </a>
@@ -4288,10 +4299,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-rego-policies" class="md-nav__link">
+  <a href="#3-keycloak-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Rego Policies
+        3. Keycloak CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rego-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Rego Policies
       
     </span>
   </a>
@@ -4378,25 +4400,52 @@
 <h1 id="architecture">Architecture</h1>
 <p>This document describes the components, authorization model, and design of the celine-policies repository.</p>
 <h2 id="components">Components</h2>
-<p>The repository contains three main pieces:</p>
+<p>The repository contains four main pieces:</p>
 <h3 id="1-mqtt-auth-service">1. MQTT Auth Service</h3>
 <p>A FastAPI application (<code>src/celine/mqtt_auth/</code>) that acts as the HTTP backend for <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a>. Mosquitto delegates authentication and authorization decisions to this service over HTTP.</p>
 <p>The service uses <code>celine-sdk</code>'s <code>PolicyEngine</code> (built on <a href="https://github.com/nicholasgasior/regorus">regorus</a>, a Rust OPA implementation) to evaluate Rego policies at request time. An optional in-memory decision cache (<code>CachedPolicyEngine</code>) reduces repeated evaluations.</p>
 <p><strong>Endpoints:</strong> <code>/user</code> (auth), <code>/acl</code> (topic access), <code>/superuser</code> (admin check), <code>/health</code>.</p>
-<h3 id="2-keycloak-cli">2. Keycloak CLI</h3>
+<h3 id="2-provisioning-service">2. Provisioning Service</h3>
+<p>A FastAPI application (<code>src/celine/provisioning/</code>) that is the <strong>only thing that writes a
+participant account</strong> into the celine realm. <code>keycloak sync-users</code> calls the same package;
+<code>../onboarding</code> calls the service and holds no Keycloak grant of its own. It is the
+<strong>only</strong> client granted a <code>provisioning.*</code> scope: onboarding is the single point of access to
+the provisioner.</p>
+<p><strong>Endpoints:</strong> <code>PUT /participants/{community}/{key}</code> (ensure the account, its REC
+organization and its org group, and optionally invite the person),
+<code>POST /participants/{community}/{key}/invitation</code> (email an invitation or a password
+reset, as the body's <code>intent</code> names), <code>POST /participants/{community}/{key}/disable</code>,
+<code>POST /reconcile/{community}</code>, <code>/health</code>.</p>
+<p><strong>No password is ever generated, returned or emailed.</strong> Keycloak sends every email, through
+<code>execute-actions-email</code>, and the person sets their own password from the link. The service
+decides only whether to ask for one and for how long it lasts — see
+<code>celine.provisioning.invitation</code> and the <a href="../api-reference/#provisioning-service">API reference</a>.</p>
+<p>It is stateless — a retry is another <code>PUT</code>, and idempotency comes from the keys — and it
+authorises by <code>provisioning.*</code> scopes like every other service.</p>
+<p><strong>It holds realm-wide Keycloak administration</strong> (<code>manage-users</code> + <code>manage-realm</code>), which is
+what makes organization membership possible at all: no fine-grained permission expresses
+the Organizations API. The grant is acceptable only because <strong>nothing outside
+the network can reach the service</strong>, and that is a property of the ingress configuration
+rather than of any code here. See
+<a href="../decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
+<p><strong>It cannot bootstrap the realm it authenticates against.</strong> <code>keycloak bootstrap</code> and
+<code>keycloak sync</code> create the client whose credential it presents, so they run first.</p>
+<h3 id="3-keycloak-cli">3. Keycloak CLI</h3>
 <p>A typer CLI (<code>src/celine/policies/cli/</code>) that manages Keycloak configuration. It reads <code>clients.yaml</code> — which defines all platform OAuth scopes and service clients — and idempotently provisions them in Keycloak.</p>
 <p><strong>Commands:</strong>
 - <code>bootstrap</code> — create a <code>celine-admin-cli</code> service account with realm-management roles
 - <code>sync</code> — reconcile scopes, clients, audience mappers and service-account
   administration rights in Keycloak to match <code>clients.yaml</code>
 - <code>sync-users</code> — create Keycloak users from a <code>rec-registry</code> REC definition YAML, and
-  file them in the groups <code>clients.yaml</code> declares a service account may administer
+  file them in the groups <code>clients.yaml</code> declares a service account may administer.
+  <code>--invite</code> creates them with no password and invites each account it created in that
+  run, under the provisioning service's email settings
 - <code>sync-orgs</code> — create Keycloak organizations from an <code>owners.yaml</code>
 - <code>set-password</code> — set a user's password
 - <code>set-user-organization</code> — assign a user to organizations and org-level groups
 - <code>status</code> — show current scopes, clients, and assignments</p>
 <p>Authentication to Keycloak uses either admin user credentials (<code>--admin-user</code>) or a service account client (<code>celine-admin-cli</code>) whose secret is stored in <code>.client.secrets.yaml</code> after bootstrap. Both <code>bootstrap</code> and <code>sync</code> write that file through one merging writer, so a sync cannot delete the credential a bootstrap put there; it holds one realm at a time.</p>
-<h3 id="3-rego-policies">3. Rego Policies</h3>
+<h3 id="4-rego-policies">4. Rego Policies</h3>
 <p>Two policy files under <code>policies/celine/</code>:</p>
 <ul>
 <li>

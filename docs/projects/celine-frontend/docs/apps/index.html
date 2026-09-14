@@ -4339,7 +4339,7 @@
 </tbody>
 </table>
 <p><strong>Key components:</strong> <code>EnergyChart</code>, <code>ForecastCard</code>, <code>WeatherWidget</code>, <code>StatCard</code>, <code>SuggestionCard</code>, <code>GamificationPanel</code>, <code>PointsChart</code></p>
-<p><strong>Layout:</strong> The root layout wraps the app in <code>AssistantProvider</code> (floating assistant widget) and calls <code>GET /api/me</code> to check terms acceptance.</p>
+<p><strong>Layout:</strong> The root layout loads <code>GET /api/me</code> (redirecting to <code>/accept-terms</code> when terms are required, except on <code>/privacy</code>, <code>/terms</code> and <code>/accept-terms</code>), then the community and unread notifications. There is no floating assistant widget: <code>AskAssistantButton</code>s on <code>/</code> and <code>/suggestions</code> navigate to <code>/assistant?prompt=…</code>.</p>
 <p><strong>Backend:</strong> <code>celine-webapp</code> BFF (port 8014)</p>
 <p><strong>Environment:</strong></p>
 <table>
