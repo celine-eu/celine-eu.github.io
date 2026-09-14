@@ -4178,6 +4178,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0062-a-members-extra-is-stored-at-the-same-level-on-create-as-on-patch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0062 — a member's extra is stored at the same level on create as on patch
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4353,6 +4364,18 @@ no holder in hand to name, which is the honest answer rather than a degraded one
 application-level check of its own: the two checks in <code>create_member</code> read a list of the
 community's own members, and DID uniqueness is registry-wide, so a check would be a second
 query answering exactly what the index answers.</p>
+<h3 id="req-0062-a-members-extra-is-stored-at-the-same-level-on-create-as-on-patch">REQ-0062 — a member's <code>extra</code> is stored at the same level on create as on patch</h3>
+<p><code>POST …/members</code> accepts <code>extra</code> as <code>PATCH</code> does (REQ-0024), and merges its keys into the
+member's <code>extra</code> at the top level. Body keys that are neither columns nor <code>extra</code> are still
+copied into <code>extra</code> as they always were; where one clashes with a key of <code>extra</code>, <code>extra</code>
+wins, as it does over <code>type</code> on a patch. So a client sending one body to either route gets
+one stored shape — before, create stored it one level down, at <code>extra.extra</code>.</p>
+<p><strong>A bundle member is not affected.</strong> The bundle model does not declare <code>extra</code>: a bundle
+member's unknown keys already are the top level of <code>extra</code>, and the exporter writes them
+back there, so a literal <code>extra:</code> key in a bundle is kept as it arrived. An API-created
+member therefore exports with those keys flat and re-imports unchanged (REQ-0037).</p>
+<p><strong>Rows written before this are not rewritten.</strong> A member created with <code>extra</code> earlier —
+<code>../onboarding</code>'s <code>declared_at_onboarding</code> among them — still holds it at <code>extra.extra</code>.</p>
 
 
 

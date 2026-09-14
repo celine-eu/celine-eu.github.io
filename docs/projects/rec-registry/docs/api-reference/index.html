@@ -5456,6 +5456,9 @@ that reads correctly in an exported bundle.</p>
 <p><code>did</code> is optional and unique across the whole registry, unlike <code>key</code> and
 <code>user_id</code>, which are unique per community. It is usually written afterwards
 rather than here — see <code>PATCH</code> below.</p>
+<p><code>extra</code> is optional, and its keys are merged into the member's <code>extra</code> at the
+top level — the same place <code>PATCH</code> puts them. Other body keys that are not member
+fields are kept in <code>extra</code> too.</p>
 <p><strong>Responses:</strong> <code>201</code> with the member; <code>409</code> when the key or <code>user_id</code> is already
 taken, naming the existing key so the caller can switch to <code>PATCH</code>, or when the
 <code>did</code> is already held by another member anywhere in the registry; <code>404</code> for an
