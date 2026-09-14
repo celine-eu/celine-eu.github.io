@@ -1651,6 +1651,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dataset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataset Access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4294,6 +4305,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dataset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataset Access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4401,14 +4423,62 @@
 </ul>
 <h3 id="group-to-role-mapping">Group-to-Role Mapping</h3>
 <p>Keycloak groups are mapped to Superset roles in <code>packages/celine-superset/src/celine/superset/auth/groups.py</code>:</p>
-<pre><code class="language-python">GROUP_TO_SUPERSET_ROLE = {
-    &quot;admins&quot;: &quot;Admin&quot;,
-    &quot;managers&quot;: &quot;Alpha&quot;,
-    &quot;editors&quot;: &quot;Beta&quot;,
-    &quot;viewers&quot;: &quot;Gamma&quot;,
-}
-</code></pre>
-<p>Users not in any mapped group receive no roles and cannot access Superset.</p>
+<table>
+<thead>
+<tr>
+<th>Keycloak group</th>
+<th>Superset role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>realm <code>admin(s)</code>, <code>manager(s)</code></td>
+<td><code>Admin</code></td>
+</tr>
+<tr>
+<td>realm <code>editor(s)</code></td>
+<td><code>celine:managers</code> (cross-org)</td>
+</tr>
+<tr>
+<td>any other realm group, including <code>/viewers</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>org <code>admins</code>, <code>managers</code>, <code>editors</code></td>
+<td><code>org:&lt;slug&gt;:&lt;level&gt;</code></td>
+</tr>
+<tr>
+<td>org <code>viewers</code>, any other org group, or org membership alone</td>
+<td><code>org:&lt;slug&gt;:viewers</code></td>
+</tr>
+</tbody>
+</table>
+<p>Users with no mapped role cannot access Superset.</p>
+<h3 id="dataset-access">Dataset Access</h3>
+<p><code>celine-superset governance sync</code> tags every dataset in the synced schema with <code>extra.celine_access</code>, resolved from <code>governance.yaml</code> (file defaults and deployer overlays included):</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Who can read the dataset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>open</code></td>
+<td>any Superset user</td>
+</tr>
+<tr>
+<td><code>org</code></td>
+<td>cross-org roles (<code>celine:*</code>), and <code>org:&lt;slug&gt;:*</code> for a slug in <code>extra.org_slugs</code></td>
+</tr>
+<tr>
+<td><code>operators</code></td>
+<td><code>Admin</code> only</td>
+</tr>
+</tbody>
+</table>
+<p>Datasets classified <code>pii</code>, with <code>row_filters</code> or <code>consent_required</code>, <code>secret</code>, without an owner that has a Keycloak organization, or without a governance entry are tagged <code>operators</code>. A dataset the sync has not tagged is also <code>Admin</code> only.</p>
 <h3 id="docker-image">Docker Image</h3>
 <pre><code>ghcr.io/celine-eu/superset:&lt;version&gt;
 ghcr.io/celine-eu/superset:latest

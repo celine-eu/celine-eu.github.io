@@ -4259,6 +4259,23 @@
 <p><strong>Entry point:</strong> <code>apps/assistant/src/routes/+page.svelte</code></p>
 <p><strong>Backend:</strong> <code>celine-ai-assistant</code> (port 8012)</p>
 <p><strong>Docker image:</strong> <code>ghcr.io/celine-eu/celine-assistant</code></p>
+<p><strong>Environment:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PUBLIC_PRIVACY_POLICY_URL</code></td>
+<td><code>/privacy</code></td>
+<td>Privacy policy linked from the AI notice under the chat input. This app has no <code>/privacy</code> route, so set it in any deployment where that path is not served by another app on the same host</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Dev:</strong></p>
 <pre><code class="language-bash">task dev:assistant
 # http://localhost:3003
@@ -4324,6 +4341,23 @@
 <p><strong>Key components:</strong> <code>EnergyChart</code>, <code>ForecastCard</code>, <code>WeatherWidget</code>, <code>StatCard</code>, <code>SuggestionCard</code>, <code>GamificationPanel</code>, <code>PointsChart</code></p>
 <p><strong>Layout:</strong> The root layout wraps the app in <code>AssistantProvider</code> (floating assistant widget) and calls <code>GET /api/me</code> to check terms acceptance.</p>
 <p><strong>Backend:</strong> <code>celine-webapp</code> BFF (port 8014)</p>
+<p><strong>Environment:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PUBLIC_PRIVACY_POLICY_URL</code></td>
+<td><code>/privacy</code></td>
+<td>Privacy policy linked from the AI notice under the assistant's chat input</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Dev:</strong></p>
 <pre><code class="language-bash">task dev:webapp
 # http://localhost:3005

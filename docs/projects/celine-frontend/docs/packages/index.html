@@ -4657,8 +4657,20 @@
 <td>none</td>
 <td>Pre-fill the composer</td>
 </tr>
+<tr>
+<td><code>privacyPolicyUrl</code></td>
+<td><code>string</code></td>
+<td><code>/privacy</code></td>
+<td>Privacy policy linked from the AI notice</td>
+</tr>
 </tbody>
 </table>
+<p>The composer always shows a one-line AI notice (EU AI Act Art. 50): answers are
+AI-generated through OpenAI and can be wrong, identity documents should not be uploaded,
+and a link to <code>privacyPolicyUrl</code>, opened in a new tab. The text comes from the
+<code>assistant_ui.ai_notice</code> and <code>assistant_ui.privacy_policy</code> translation keys, which every
+consuming app must ship. <code>AssistantWidget</code> and <code>AssistantProvider</code> accept the same
+<code>privacyPolicyUrl</code> prop and pass it through.</p>
 <h3 id="assistantcontext-shape">AssistantContext Shape</h3>
 <pre><code class="language-typescript">interface AssistantContext {
   page?: string;    // Current page identifier
