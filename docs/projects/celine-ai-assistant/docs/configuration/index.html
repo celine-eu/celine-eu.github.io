@@ -4512,8 +4512,8 @@
 <tr>
 <td><code>OAUTH2_TRUST_HEADERS</code></td>
 <td><code>bool</code></td>
-<td><code>true</code></td>
-<td>Trust JWT from proxy headers (oauth2_proxy)</td>
+<td><code>false</code></td>
+<td>Trust unverified <code>x-auth-request-*</code> headers for requests carrying no token. Opt-in; safe only behind a trusted proxy on an isolated network</td>
 </tr>
 <tr>
 <td><code>OAUTH2_JWKS_URL</code></td>

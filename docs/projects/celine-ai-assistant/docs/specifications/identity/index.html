@@ -4134,7 +4134,9 @@ whose <code>iss</code> differs is refused. The signature algorithm is taken from
 <h3 id="req-0003-trusted-headers-are-an-accepted-identity">REQ-0003 — trusted headers are an accepted identity</h3>
 <p>With <code>OAUTH2_TRUST_HEADERS</code> enabled, <code>x-auth-request-user</code> (or <code>x-auth-request-email</code>)
 identifies the caller and <code>x-auth-request-groups</code> carries their groups, comma-separated,
-with blank entries dropped. With the switch off, headers alone are not an identity.</p>
+with blank entries dropped. <strong>The switch is off by default</strong>: unless a deployment opts in,
+headers alone are not an identity and a request carrying no verifiable token is answered
+<code>401</code>.</p>
 <h3 id="req-0004-administrator-status-is-group-membership">REQ-0004 — administrator status is group membership</h3>
 <p>A caller is an administrator exactly when their groups contain <code>ADMIN_GROUP</code>. Groups are
 read from the top-level <code>groups</code> claim and from <code>organization.&lt;alias&gt;.groups</code>, with a

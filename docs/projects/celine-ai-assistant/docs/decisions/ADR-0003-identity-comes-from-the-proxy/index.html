@@ -4097,7 +4097,12 @@ itself, against a JWKS discovered from the issuer, or it can trust the
 <code>x-auth-request-*</code> headers the proxy attaches.</p>
 <h2 id="decision">Decision</h2>
 <p>Do both, token first: verify a token when one is present; otherwise accept the proxy's
-headers when <code>OAUTH2_TRUST_HEADERS</code> is set, which it is by default.</p>
+headers when <code>OAUTH2_TRUST_HEADERS</code> is set.</p>
+<p><strong>The switch is off by default</strong> (changed 2026-09-14; it was on). The default identity is
+a verified JWT and nothing else; trusting the <code>x-auth-request-*</code> headers is an explicit,
+per-deployment opt-in, taken only where the network guarantees the proxy alone can set
+them. A deployment relying on the header path must both turn the switch on and ensure the
+proxy always forwards a verifiable token, or requests carrying none will be refused.</p>
 <p>The caller's own token is forwarded downstream unchanged — this service holds no service
 account and each upstream re-verifies for itself. See ADR-0005.</p>
 <h2 id="consequences">Consequences</h2>
@@ -4105,9 +4110,9 @@ account and each upstream re-verifies for itself. See ADR-0005.</p>
 <code>x-auth-request-groups</code> is whoever it claims to be, including an administrator.</strong> What
 makes that safe is network placement and the proxy stripping those headers from client
 requests. Neither is verifiable from this repository, and no test can assert it.</p>
-<p>A deployment that exposes this service directly is a full authentication bypass. That is
-the cost of the decision, and it is why <code>OAUTH2_TRUST_HEADERS</code> exists as a switch rather
-than being assumed.</p>
+<p>A deployment that exposes this service directly <strong>and turns the switch on</strong> is a full
+authentication bypass. That is the cost of the header path, and it is why
+<code>OAUTH2_TRUST_HEADERS</code> exists as a switch, and now defaults off rather than being assumed.</p>
 <p>Separately, the current implementation <em>falls back</em> to headers when a token is present
 and fails to verify — which is not this decision, and is DEFECT-03. (Fixed: a token that
 fails to verify is now refused.)</p>
