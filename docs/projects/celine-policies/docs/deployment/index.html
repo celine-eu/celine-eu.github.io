@@ -2684,6 +2684,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What a realm needs, and who owns it">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-realm-admin-and-the-browser-login-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The realm admin and the browser login client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4458,6 +4486,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What a realm needs, and who owns it">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-realm-admin-and-the-browser-login-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The realm admin and the browser login client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4738,7 +4794,7 @@
 <h3 id="startup-order">Startup Order</h3>
 <ol>
 <li><strong>keycloak</strong> starts first (health check on port 9000)</li>
-<li><strong>keycloak-sync</strong> runs bootstrap + sync, then exits</li>
+<li><strong>keycloak-sync</strong> runs bootstrap (the platform level, from the mounted <code>platform.yaml</code>) + sync, then exits</li>
 <li><strong>sync-users</strong> imports example users, then exits</li>
 <li><strong>mqtt_auth</strong> starts after keycloak-sync and sync-users complete</li>
 <li><strong>provisioning</strong> starts after keycloak-sync completes — it authenticates as
@@ -4763,49 +4819,159 @@ in <code>../celine-dev</code>'s Caddyfile, where somebody adding a route will re
 put into an email. What each route sends is in the
 <a href="../api-reference/#provisioning-service">API reference</a>.</p>
 <h3 id="what-a-realm-needs-and-who-owns-it">What a realm needs, and who owns it</h3>
+<p>Every setting below is <strong>platform level</strong>, and <code>keycloak bootstrap</code> is its only writer. It
+reaches existing realms on every run, which the realm imports never do (<code>--import-realm</code> and
+infra's <code>IGNORE_EXISTING</code> skip a realm that already exists).</p>
 <table>
 <thead>
 <tr>
 <th>Setting</th>
-<th>Owner</th>
+<th>Declared in</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>internationalizationEnabled: true</code>, <code>supportedLocales: [it, en, es]</code>, <code>defaultLocale: it</code></td>
-<td><code>keycloak bootstrap</code> (planned, not built yet)</td>
-<td><strong>Must be on before the provisioning service writes <code>locale</code></strong>: without it Keycloak answers <code>201</code> and drops the value</td>
+<td><a href="../platform.yaml"><code>platform.yaml</code></a></td>
+<td><strong>Must be on before the provisioning service writes <code>locale</code></strong>: without it Keycloak answers <code>201</code> and drops the value. So <code>bootstrap</code> runs before the new provisioning image reaches a realm</td>
 </tr>
 <tr>
-<td><code>emailTheme: rec</code>, <code>resetPasswordAllowed: true</code>, <code>actionTokenGeneratedByAdminLifespan: 604800</code>, <code>actionTokenGeneratedByUserLifespan: 3600</code></td>
-<td><code>keycloak bootstrap</code> (planned, not built yet)</td>
-<td>Until then, set by hand on each realm</td>
+<td><code>emailTheme: rec</code>, <code>loginTheme: rec</code>, <code>resetPasswordAllowed: true</code>, <code>actionTokenGeneratedByAdminLifespan: 604800</code>, <code>actionTokenGeneratedByUserLifespan: 3600</code></td>
+<td><code>platform.yaml</code></td>
+<td><code>bootstrap</code> refuses a theme the server does not list: Keycloak itself accepts any name and silently sends its own emails</td>
+</tr>
+<tr>
+<td>token and session lifespans, <code>organizationsEnabled</code>, <code>adminPermissionsEnabled</code>, the role groups, brute-force tuning</td>
+<td><code>platform.yaml</code></td>
+<td><code>sync-orgs</code> and <code>sync-users</code> refuse a realm without Organizations; <code>sync</code> refuses to grant <code>admin_permissions</code> without fine-grained admin permissions</td>
+</tr>
+<tr>
+<td><code>bruteForceProtected</code></td>
+<td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code></td>
+<td>Unset: on, and off when <code>ENV</code> is <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> or <code>ci</code></td>
 </tr>
 <tr>
 <td><code>smtpServer</code></td>
-<td>infra, and only infra, outside dev</td>
-<td>A credential. The realm template reaches new realms only; an existing realm gets it once, by hand. The local dev import points it at <code>mailpit</code> (requester, 2026-09-14)</td>
+<td><code>CELINE_KEYCLOAK_SMTP_*</code>, fed from the deployment's secret</td>
+<td>Below. Unset <code>CELINE_KEYCLOAK_SMTP_HOST</code>: left alone</td>
+</tr>
+<tr>
+<td><code>supportedLocales</code>, narrower</td>
+<td>a deployment overlay, <code>bootstrap --overlay &lt;file&gt;</code></td>
+<td>The only key an overlay may change. It must keep <code>defaultLocale</code> (<code>it</code>) and name only <code>it</code>, <code>en</code>, <code>es</code></td>
 </tr>
 </tbody>
 </table>
-<p><code>bootstrap</code> does not own these yet: that waits on <code>bootstrap</code> gaining its platform
-settings. <strong>Until it does, an operator sets them on each realm</strong>, for example with <code>kcadm</code>:</p>
-<pre><code class="language-bash">kcadm.sh update realms/celine \
-  -s internationalizationEnabled=true -s 'supportedLocales=[&quot;it&quot;,&quot;en&quot;,&quot;es&quot;]' -s defaultLocale=it \
-  -s emailTheme=rec -s resetPasswordAllowed=true \
-  -s actionTokenGeneratedByAdminLifespan=604800 -s actionTokenGeneratedByUserLifespan=3600
+<p><code>verifyEmail</code> is deliberately <strong>not</strong> declared, and <code>platform.yaml</code> refuses it: the invitation
+already carries <code>VERIFY_EMAIL</code>, and turning it on would stop every existing account with
+<code>emailVerified: false</code> at its next sign-in. <code>passwordPolicy</code> stays at Keycloak's default.</p>
+<p>A deployment overlay has the same shape as <code>platform.yaml</code>:</p>
+<pre><code class="language-yaml">realm_settings:
+  supportedLocales: [it, en]
 </code></pre>
-<p><code>verifyEmail</code> is deliberately <strong>not</strong> set: the invitation already carries <code>VERIFY_EMAIL</code>,
-and turning it on would stop every existing account with <code>emailVerified: false</code> at its next
-sign-in. <code>passwordPolicy</code> stays at Keycloak's default.</p>
+<p><code>bootstrap</code> prints the file each changed key came from.</p>
+<h4 id="the-realm-admin-and-the-browser-login-client">The realm admin and the browser login client</h4>
+<p>The realm imports used to create both. They now come from declarations, so a realm that
+<code>bootstrap</code> created has them too.</p>
+<ul>
+<li><strong>The operator realm admin</strong> is <code>bootstrap</code>'s, in every environment, when
+  <code>CELINE_KEYCLOAK_REALM_ADMIN_USERNAME</code> is set. It is created once, with
+  <code>CELINE_KEYCLOAK_REALM_ADMIN_PASSWORD</code> (a secret), <code>_EMAIL</code>, and <code>_FIRST_NAME</code>/<code>_LAST_NAME</code>
+  (default <code>Celine</code>/<code>Admin</code>; the realm's user profile requires both, and Keycloak refuses
+  the sign-in without them). It is then kept in <code>CELINE_KEYCLOAK_REALM_ADMIN_GROUP</code>
+  (<code>/admins</code>). Its password is never re-sent.</li>
+<li><strong><code>oauth2_proxy</code></strong> is declared in <code>clients.yaml</code> and created by <code>sync</code>. <code>sync</code> also owns
+  its secret, flows, redirect URIs, web origins, default scopes and audience mappers. Set:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OAUTH2_PROXY_CLIENT_SECRET</code></td>
+<td><code>oauth2_proxy</code> (refused outside dev)</td>
+<td>the secret oauth2-proxy is configured with</td>
+</tr>
+<tr>
+<td><code>CELINE_DOMAIN</code></td>
+<td><code>celine.localhost</code></td>
+<td>redirect URIs: <code>sso</code>, <code>superset</code>, <code>webapp</code> and <code>assistant</code> on it, each <code>/*</code></td>
+</tr>
+<tr>
+<td><code>CELINE_URL_SCHEME</code></td>
+<td><code>http</code></td>
+<td><code>https</code> in a deployment</td>
+</tr>
+</tbody>
+</table>
+<p>On a realm whose <code>oauth2_proxy</code> came from infra's import, the first <code>sync</code> replaces its
+  redirect URIs with those four. The webapp entry is also what the provisioning service's
+  invitation links return through.</p>
+<h4 id="smtp">SMTP</h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_HOST</code></td>
+<td>—</td>
+<td>Unset or empty: <code>smtpServer</code> is not touched</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_PORT</code></td>
+<td><code>587</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_FROM</code></td>
+<td>—</td>
+<td>Required with a host</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_FROM_DISPLAY_NAME</code>, <code>CELINE_KEYCLOAK_SMTP_REPLY_TO</code></td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_SSL</code>, <code>CELINE_KEYCLOAK_SMTP_STARTTLS</code></td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_AUTH</code></td>
+<td>true when a user is set</td>
+<td></td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SMTP_USER</code>, <code>CELINE_KEYCLOAK_SMTP_PASSWORD</code></td>
+<td>—</td>
+<td>Both required with authentication. Pass the password from a secret</td>
+</tr>
+</tbody>
+</table>
+<p>Keycloak never returns the stored SMTP password, so <code>bootstrap</code> cannot compare it. Every other
+field is diffed. The password is <strong>sent on every run</strong> and reported as
+<code>smtpServer.password: write-only</code>, which is not a change: a second run still reports
+<code>no change</code>. <code>bootstrap</code> never prints the password, in any environment.</p>
 <h3 id="locally">Locally</h3>
 <p><code>mailpit</code> keeps every message in its UI at <a href="http://localhost:8025">http://localhost:8025</a> and delivers none.
 The dev import (<code>config/keycloak/import/realm-celine.json</code>) points <code>smtpServer</code> at
-<code>mailpit:1025</code>, which reaches <strong>a realm created from it only</strong> — <code>--import-realm</code> skips a
-realm that already exists. On an existing local realm, set it once:</p>
-<pre><code class="language-bash">kcadm.sh update realms/celine -s 'smtpServer.host=mailpit' -s 'smtpServer.port=1025' \
-  -s 'smtpServer.from=noreply@celine.localhost' -s 'smtpServer.fromDisplayName=CELINE'
+<code>mailpit:1025</code>, which reaches <strong>a realm created from it only</strong>. On an existing local realm,
+let <code>bootstrap</code> set it (the host is as Keycloak's container sees it):</p>
+<pre><code class="language-bash">CELINE_KEYCLOAK_SMTP_HOST=mailpit CELINE_KEYCLOAK_SMTP_PORT=1025 \
+CELINE_KEYCLOAK_SMTP_FROM=noreply@celine.localhost CELINE_KEYCLOAK_SMTP_FROM_DISPLAY_NAME=CELINE \
+  task keycloak:bootstrap
 </code></pre>
 <p>Other workspace services can send through it too: SMTP is published on the host's 1025, so
 a container uses <code>172.17.0.1:1025</code> (the same host-gateway convention as the registry URL) and

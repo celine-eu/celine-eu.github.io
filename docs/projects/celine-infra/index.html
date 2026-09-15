@@ -4084,6 +4084,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#email-smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email (SMTP)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keycloak-realm-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keycloak realm bootstrap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#applying-infrastructure-helmfile" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4436,6 +4458,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#email-smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email (SMTP)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keycloak-realm-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keycloak realm bootstrap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#applying-infrastructure-helmfile" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4710,6 +4754,93 @@ sops -d secrets.enc.yaml
 <p>Helmfile integrates with <code>helm-secrets</code> to decrypt secrets at deploy time.</p>
 <p>Plaintext secrets must never be committed.</p>
 <hr />
+<h2 id="email-smtp">Email (SMTP)</h2>
+<p>Services that send email read one shared <code>smtp</code> block from the environment's values and
+secrets:</p>
+<pre><code class="language-yaml">smtp:
+  host: &quot;&quot;            # empty: no email
+  port: 587
+  ssl: false
+  starttls: true
+  auth: true          # defaults to true when `user` is set
+  user: &quot;&quot;            # keep in secrets
+  password: &quot;&quot;        # keep in secrets
+  from: &quot;&quot;
+  fromDisplayName: &quot;&quot;
+  replyTo: &quot;&quot;
+</code></pre>
+<p>A service can use a different provider through its own block, <code>keycloak.smtp</code> or
+<code>superset.smtp</code>:</p>
+<ul>
+<li><strong>Provider settings</strong> (<code>host</code>, <code>port</code>, <code>ssl</code>, <code>starttls</code>, <code>auth</code>, <code>user</code>, <code>password</code>)
+  are taken as a whole. The service's own block is used when its <code>host</code> is set.
+  Otherwise the shared block is used. Values are never mixed across blocks.</li>
+<li><strong>Sender settings</strong> fall back one at a time. Each field comes from the service's own
+  block when set there, and otherwise from the shared block. The Keycloak fields are
+  <code>from</code>, <code>fromDisplayName</code> and <code>replyTo</code>. Superset's is <code>superset.smtp.mailFrom</code>, which
+  falls back to <code>smtp.from</code>.</li>
+<li>Keycloak email is off when <code>keycloak.smtp.enabled</code> is <code>false</code>, even if a host resolves.</li>
+<li>Superset's image always uses STARTTLS, so it ignores <code>ssl</code> and <code>starttls</code>.</li>
+</ul>
+<p>The Keycloak realm import applies SMTP to a <strong>new</strong> realm only. An existing realm is not
+changed by the import.</p>
+<p>The provisioning service does not send email itself: it asks Keycloak to. Its
+<code>provisioning.email_mode</code> defaults to <code>dev</code>, which emails nobody except the addresses in
+<code>provisioning.email_dev_recipients</code>. Set <code>deliver</code> only in an environment that should
+email participants.</p>
+<hr />
+<h2 id="keycloak-realm-bootstrap">Keycloak realm bootstrap</h2>
+<p>The realm's platform level (Organizations, sign-in settings, languages, themes, lifespans,
+brute force, <code>smtpServer</code>, the realm role groups) is written by <code>celine-policies keycloak
+bootstrap</code>, never by the realm import. It runs in the <code>policies-shell</code> pod's init containers:
+plan (with a realm export first), apply, then a check that must find nothing left to change.
+Only then does the shell run <code>keycloak sync</code>. <code>sync-orgs</code> and <code>sync-users</code> refuse a realm that
+has not been through both.</p>
+<p>The run's export, plan, apply and check output is stored under
+<code>&lt;bucket&gt;/&lt;environment&gt;/&lt;UTC time&gt;-&lt;policies_shell.image_tag&gt;/</code>. Pin <code>policies_shell.image_tag</code>
+to a release: the tag is the version of <code>platform.yaml</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policies_shell.bootstrap.bucket</code>, <code>policies_shell.bootstrap.s3_secret</code></td>
+<td>where the run is stored; a Secret with <code>S3_ACCESS_KEY_ID</code>, <code>S3_SECRET_ACCESS_KEY</code>, <code>S3_ENDPOINT_URL</code>. Unset: logs only</td>
+</tr>
+<tr>
+<td><code>policies_shell.bootstrap.allow_destructive</code></td>
+<td>passes <code>--allow-destructive</code>, for a plan that turns a setting off or removes a list entry. Set for one release only</td>
+</tr>
+<tr>
+<td><code>keycloak.brute_force.enabled</code></td>
+<td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, only when set. Unset: brute-force protection is <strong>on</strong>. The realm import reads <code>keycloak.brute_force.failureFactor</code> (max login failures, default 5); there is no <code>maxLoginFailures</code> in Keycloak, and an import naming one stops Keycloak from starting</td>
+</tr>
+<tr>
+<td><code>keycloak.platform</code></td>
+<td>an overlay on <code>platform.yaml</code>: <code>realm_settings.supportedLocales</code> only</td>
+</tr>
+<tr>
+<td>the resolved <code>smtp</code> block (see <a href="#email-smtp">Email (SMTP)</a>)</td>
+<td><code>CELINE_KEYCLOAK_SMTP_*</code>; user and password through a Secret</td>
+</tr>
+<tr>
+<td><code>auth_setup.realmAdminUser</code>, <code>realmAdminEmail</code>, <code>realmAdminPassword</code></td>
+<td><code>CELINE_KEYCLOAK_REALM_ADMIN_*</code>: the operator realm admin, created once (password through a Secret) and kept in <code>/admins</code></td>
+</tr>
+<tr>
+<td><code>auth_setup.clientSecret</code>, <code>domain</code></td>
+<td><code>OAUTH2_PROXY_CLIENT_SECRET</code>, <code>CELINE_DOMAIN</code>: <code>sync</code> owns the <code>oauth2_proxy</code> client, its secret and its redirect URIs (<code>sso</code>, <code>superset</code>, <code>webapp</code>, <code>assistant</code> on the domain)</td>
+</tr>
+</tbody>
+</table>
+<p><code>task keycloak:bootstrap:check:&lt;env&gt;</code> reports drift (exit 1). Do not run <code>bootstrap</code> by hand while
+the pod is starting. Rolling back is manual: put the platform-level keys back from the stored
+<code>export.json</code>, then pin the previous image tag so the next start does not re-apply.</p>
+<hr />
 <h2 id="applying-infrastructure-helmfile">Applying Infrastructure (Helmfile)</h2>
 <p>From the <code>infra/</code> directory:</p>
 <h3 id="apply-an-environment">Apply an environment</h3>
@@ -4760,7 +4891,10 @@ sops -d secrets.enc.yaml
 <li><code>celine-flexibility-api</code> — Flexibility API</li>
 <li><code>celine-mqtt-auth</code> — mosquitto-go-auth compatible API endpoint for MQTT auth/ACL</li>
 <li><code>celine-nudging</code> — Nudging API</li>
-<li><code>celine-policies-shell</code> — Policies CLI to manage Keycloak</li>
+<li><code>celine-policies-shell</code> — Policies CLI to manage Keycloak. On every start, init containers run
+  <code>keycloak bootstrap</code> (the realm's platform level, from <code>platform.yaml</code> in the image) and store the
+  run, then the shell runs <code>keycloak sync</code>; a failure of either fails the pod. See
+  <a href="#keycloak-realm-bootstrap">Keycloak realm bootstrap</a></li>
 <li><code>celine-rec-registry</code> — REC Registry API</li>
 <li><code>celine-rec-registry-shell</code> — REC Registry CLI to manage REC organizations and asset metadata</li>
 <li><code>celine-ai-assistant</code> — AI Assistant API</li>

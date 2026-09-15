@@ -4141,6 +4141,14 @@ edited to say something else.</p>
 <td><a href="ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a></td>
 <td>Realm-wide administration is declarable, for a holder with no public route</td>
 </tr>
+<tr>
+<td><a href="ADR-0008-each-cli-command-owns-one-level-of-the-realm/">ADR-0008</a></td>
+<td>Each CLI command owns one level of the realm, and checks the levels below it; <code>bootstrap</code> owns the platform level (supersedes ADR-0003's enabling of admin permissions by <code>sync</code>)</td>
+</tr>
+<tr>
+<td><a href="ADR-0009-what-the-realm-import-carried-is-declared/">ADR-0009</a></td>
+<td>What the realm import carried is declared: <code>oauth2_proxy</code> in <code>clients.yaml</code>, the operator realm admin in <code>bootstrap</code>, the dev users in <code>seed-dev-users</code></td>
+</tr>
 </tbody>
 </table>
 

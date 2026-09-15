@@ -4587,7 +4587,10 @@ the scope is <code>403</code>. <code>provisioning.admin</code> satisfies any of 
 check is defence in depth, for a caller already inside the network.</p>
 <p><strong><code>svc-onboarding</code> is the only client granted a <code>provisioning.*</code> scope.</strong> Onboarding is the
 single point of access to this service; see
-<a href="../scopes-and-permissions/#provisioning">scopes-and-permissions.md</a>.</p>
+<a href="../scopes-and-permissions/#provisioning">scopes-and-permissions.md</a>.
+A community manager's "Send invitation" and "Reset password" on the dashboard reach
+<code>POST …/invitation</code> through onboarding's member-keyed routes. <code>svc-community</code> holds
+<code>onboarding.members.invite</code> for that, never a provisioning scope.</p>
 <h2 id="put-participantscommunitykey">PUT /participants/{community}/{key}</h2>
 <p>Ensure the account exists, is in the REC organization, and is in its org group.</p>
 <p><strong>Request:</strong></p>

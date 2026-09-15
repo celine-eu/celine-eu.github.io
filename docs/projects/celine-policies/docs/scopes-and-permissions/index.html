@@ -5366,8 +5366,17 @@ scope at all. These scopes exist for the other subject type — service accounts
 <td><code>onboarding.export</code></td>
 <td>Export submissions or consented supply points</td>
 </tr>
+<tr>
+<td><code>onboarding.members.invite</code></td>
+<td>Email a registry member an invitation or a password reset, on behalf of the manager whose token is forwarded</td>
+</tr>
 </tbody>
 </table>
+<p><strong><code>onboarding.members.invite</code> is delegated, and useless alone.</strong> Onboarding allows it only to a
+service that also forwards a manager's verified access token (<code>X-Acting-User-Token</code>), and only
+when that manager holds <code>admins</code> or <code>managers</code> on the REC. No service sends on its own, not even
+one holding <code>onboarding.admin</code>. The scope is held by <code>svc-community</code> alone, as an optional scope;
+see <a href="#svc-community">svc-community</a>.</p>
 <p><code>onboarding.submissions.purge</code> and <code>onboarding.enablement.revoke</code> are deliberately
 <strong>not</strong> covered by <code>onboarding.submissions.review</code>, mirroring
 <code>rec-registry.members.purge</code>: rejecting somebody is recoverable, erasing them or
@@ -5598,9 +5607,18 @@ default_scopes:
   - community.objectives.write
   - digital-twin.values.read
   - dataset.query
-  - rec-registry.read
+  - rec-registry.read          # aggregate population, and member names for the members page
   - nudging.analytics.read
+optional_scopes:
+  - onboarding.members.invite  # &quot;Send invitation&quot; / &quot;Reset password&quot;, through onboarding
 </code></pre>
+<p><code>rec-registry.read</code> also gives the members page its names. They are read per request and never
+persisted, and no email, user id, DID or supply point leaves the BFF process.</p>
+<p><code>onboarding.members.invite</code> is <strong>optional, not default</strong>. The Digital Twin forwards this
+client's default-scope token to dataset-api, and a send capability must not travel there. The
+BFF requests the scope only for its call to onboarding, and forwards the manager's own token
+beside it. The audience mapper onto <code>svc-onboarding</code> is derived from the scope, and a realm
+has it only after <code>keycloak sync</code>.</p>
 <p>It holds no <code>provisioning.*</code> scope: the provisioning service is reached through onboarding
 only. See <a href="#provisioning">Provisioning</a>.</p>
 <h3 id="svc-onboarding">svc-onboarding</h3>
@@ -5916,9 +5934,11 @@ creates both permissions with a <code>201</code> and reports nothing, so the dec
 when the file is loaded instead.</p>
 <h3 id="what-sync-does-with-it">What sync does with it</h3>
 <p>On a realm that declares nothing, nothing — no request is made and no action is planned.
-Where a client does declare it, <code>sync</code> enables fine-grained admin permissions on the realm
-(which leaves existing <code>realm-management</code> role grants working exactly as before), ensures
-the group exists, and creates one policy and one permission per declared group.</p>
+Where a client does declare it, <code>sync</code> checks that <code>keycloak bootstrap</code> has enabled
+fine-grained admin permissions on the realm (<code>adminPermissionsEnabled</code> in <code>platform.yaml</code>,
+which leaves existing <code>realm-management</code> role grants working exactly as before) and refuses
+otherwise, ensures the group exists, and creates one policy and one permission per declared
+group. See <a href="../decisions/ADR-0008-each-cli-command-owns-one-level-of-the-realm/">ADR-0008</a>.</p>
 <p>It converges in both directions without <code>--prune</code>: narrowing the scope list rewrites the
 permission, and removing a group from the declaration revokes it. Only permissions named
 with the <code>celine-policies:</code> prefix are ever read or written, so anything created by hand in
