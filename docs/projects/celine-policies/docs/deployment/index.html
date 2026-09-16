@@ -2699,6 +2699,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#overriding-a-platform-value-from-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overriding a platform value from the environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#smtp" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4501,6 +4512,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#overriding-a-platform-value-from-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overriding a platform value from the environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#smtp" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4861,6 +4883,11 @@ infra's <code>IGNORE_EXISTING</code> skip a realm that already exists).</p>
 <td>a deployment overlay, <code>bootstrap --overlay &lt;file&gt;</code></td>
 <td>The only key an overlay may change. It must keep <code>defaultLocale</code> (<code>it</code>) and name only <code>it</code>, <code>en</code>, <code>es</code></td>
 </tr>
+<tr>
+<td>themes, languages, lifespans, <code>registrationAllowed</code>, <code>resetPasswordAllowed</code>, brute-force tuning</td>
+<td><code>CELINE_KEYCLOAK_PLATFORM_&lt;KEY&gt;</code></td>
+<td>Overrides <code>platform.yaml</code> and any overlay. Below</td>
+</tr>
 </tbody>
 </table>
 <p><code>verifyEmail</code> is deliberately <strong>not</strong> declared, and <code>platform.yaml</code> refuses it: the invitation
@@ -4913,6 +4940,41 @@ already carries <code>VERIFY_EMAIL</code>, and turning it on would stop every ex
 <p>On a realm whose <code>oauth2_proxy</code> came from infra's import, the first <code>sync</code> replaces its
   redirect URIs with those four. The webapp entry is also what the provisioning service's
   invitation links return through.</p>
+<h4 id="overriding-a-platform-value-from-the-environment">Overriding a platform value from the environment</h4>
+<p>A deployment whose Keycloak differs from what the image assumes overrides a value instead of
+mounting its own <code>platform.yaml</code>. The variable is <code>CELINE_KEYCLOAK_PLATFORM_</code> followed by the
+realm key in upper snake case; the keys it accepts are <code>ENV_OVERRIDABLE_SETTINGS</code> in
+<a href="../src/celine/policies/cli/keycloak/platform.py"><code>platform.py</code></a>.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unset or empty</td>
+<td>the declared value stands</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>the key is not declared: <code>bootstrap</code> leaves the realm's value alone, so a new realm keeps Keycloak's default. Nothing is reset</td>
+</tr>
+<tr>
+<td>anything else</td>
+<td>replaces the declared value, typed like the file: <code>true</code>/<code>false</code>, a non-negative integer, a string, or comma-separated locales</td>
+</tr>
+</tbody>
+</table>
+<p>Every check still runs on the result: a theme must be listed by the server, locales must
+contain <code>defaultLocale</code>. A <code>CELINE_KEYCLOAK_PLATFORM_*</code> variable naming a key that is not
+listed is refused: the features other commands require, <code>internationalizationEnabled</code> and the
+username and email rules stay the image's.</p>
+<p>A stock Keycloak, which ships no <code>rec</code> theme:</p>
+<pre><code class="language-yaml">CELINE_KEYCLOAK_PLATFORM_LOGIN_THEME: &quot;null&quot;
+CELINE_KEYCLOAK_PLATFORM_EMAIL_THEME: &quot;null&quot;
+</code></pre>
 <h4 id="smtp">SMTP</h4>
 <table>
 <thead>
