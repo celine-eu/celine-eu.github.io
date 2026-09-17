@@ -1678,6 +1678,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-apifeedbackmanagercommunity_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/feedback/manager/{community_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apifeedbackmanagercommunity_keyfeedback_idscreenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/feedback/manager/{community_key}/{feedback_id}/screenshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patch-apifeedbackmanagercommunity_keyfeedback_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PATCH /api/feedback/manager/{community_key}/{feedback_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5173,6 +5206,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-apifeedbackmanagercommunity_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/feedback/manager/{community_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apifeedbackmanagercommunity_keyfeedback_idscreenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/feedback/manager/{community_key}/{feedback_id}/screenshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patch-apifeedbackmanagercommunity_keyfeedback_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PATCH /api/feedback/manager/{community_key}/{feedback_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5399,7 +5465,19 @@ onboarding, where the credential is.</p>
 <hr />
 <h2 id="feedback">Feedback</h2>
 <h3 id="post-apifeedback"><code>POST /api/feedback</code></h3>
-<p>Submit user feedback. Returns <code>201</code> on success.</p>
+<p>Submit participant-dashboard feedback. The service resolves the participant's REC from
+the registry using their token; a <code>community_key</code> supplied in diagnostic context is not
+trusted. Returns <code>201</code> on success.</p>
+<h3 id="get-apifeedbackmanagercommunity_key"><code>GET /api/feedback/manager/{community_key}</code></h3>
+<p>List participant feedback for one REC, optionally filtered by <code>status</code> (<code>new</code>, <code>seen</code>, or
+<code>resolved</code>) and paginated with <code>page</code> and <code>pageSize</code>. Requires <code>community.read</code> and either
+the REC's <code>admins</code>/<code>managers</code> organization group or the realm <code>admins</code> group. User identity,
+IP address, user agent, and raw screenshot bytes are not included in the response.</p>
+<h3 id="get-apifeedbackmanagercommunity_keyfeedback_idscreenshot"><code>GET /api/feedback/manager/{community_key}/{feedback_id}/screenshot</code></h3>
+<p>Return the stored PNG, JPEG, or WebP screenshot after the same REC authorization check.</p>
+<h3 id="patch-apifeedbackmanagercommunity_keyfeedback_id"><code>PATCH /api/feedback/manager/{community_key}/{feedback_id}</code></h3>
+<p>Advance a feedback item to <code>seen</code> or <code>resolved</code>. Review state is monotonic and cannot move
+backward.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>
