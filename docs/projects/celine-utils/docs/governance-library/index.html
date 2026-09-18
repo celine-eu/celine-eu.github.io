@@ -4305,15 +4305,15 @@ the file. Catch <code>FileNotFoundError</code> if a missing file is a state your
 </thead>
 <tbody>
 <tr>
-<td><code>GovernanceResolver.from_file(path)</code></td>
+<td><code>GovernanceResolver.from_file(path, *, owners=None, strict_owners=None, placeholders=None)</code></td>
 <td>a known path</td>
 </tr>
 <tr>
-<td><code>GovernanceResolver.from_dict(raw)</code></td>
+<td><code>GovernanceResolver.from_dict(raw, *, owners=None, strict_owners=None, placeholders=None)</code></td>
 <td>a document already parsed, e.g. from an API response</td>
 </tr>
 <tr>
-<td><code>GovernanceResolver.from_file_with_override(base, overlay_name=None, *, infer_from_dir=False)</code></td>
+<td><code>GovernanceResolver.from_file_with_override(base, overlay_name=None, *, infer_from_dir=False, owners=None, strict_owners=None, placeholders=None)</code></td>
 <td>base plus a deployer overlay beside it</td>
 </tr>
 <tr>
@@ -4329,6 +4329,11 @@ correct for both, so each passes what it means.</p>
 <p>A <strong>missing overlay</strong> is not an error, unlike a missing base: the overlay is located by
 convention rather than named by the caller, so its absence is the "nothing was asked
 for" case.</p>
+<p><code>owners=</code> replaces every <code>ownership[].name</code> with the id of the owner it resolves to —
+see <a href="../governance-owners/#resolving-ownership-names">resolving ownership names</a>. It is
+applied <strong>after</strong> the overlay is merged, and <code>strict_owners</code> must then be stated.
+<code>placeholders=</code> is the deployment's own map of generic names to owner ids.
+Without <code>owners</code> names are kept as written, as before.</p>
 <h3 id="parse_rule"><code>parse_rule</code></h3>
 <p><code>parse_rule(block)</code> builds a single <code>GovernanceRule</code> from one raw block, accepting
 either a bare block or one nested under a <code>governance:</code> key. <code>parse_rule(block, MyRule)</code>

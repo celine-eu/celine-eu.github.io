@@ -4879,6 +4879,11 @@ infra's <code>IGNORE_EXISTING</code> skip a realm that already exists).</p>
 <td>Below. Unset <code>CELINE_KEYCLOAK_SMTP_HOST</code>: left alone</td>
 </tr>
 <tr>
+<td>the built-in <code>account-console</code> client's default client scopes (<code>web-origins acr profile roles basic email</code>)</td>
+<td><code>bootstrap</code> itself (<code>ACCOUNT_CONSOLE_DEFAULT_SCOPES</code>)</td>
+<td>What Keycloak gives a realm it creates. A realm imported from <code>config/keycloak/import/realm-celine.json</code> gets none, and the account console answers <code>403</code>. Missing ones are added, none removed; no other client is touched</td>
+</tr>
+<tr>
 <td><code>supportedLocales</code>, narrower</td>
 <td>a deployment overlay, <code>bootstrap --overlay &lt;file&gt;</code></td>
 <td>The only key an overlay may change. It must keep <code>defaultLocale</code> (<code>it</code>) and name only <code>it</code>, <code>en</code>, <code>es</code></td>
@@ -5227,7 +5232,7 @@ the <strong>registry</strong> reconciles what is true. Both are supported and ne
 deprecated: bootstrap runs before the registry holds anything, and an offline run
 is a real case.</p>
 <pre><code class="language-bash"># the file path, unchanged
-celine-policies keycloak sync-users greenland.yaml
+celine-policies keycloak sync-users example-rec.yaml
 
 # the live registry, every community it holds
 celine-policies keycloak sync-users --from-registry \
@@ -5236,7 +5241,7 @@ celine-policies keycloak sync-users --from-registry \
 # one community, and report divergence without writing anything
 celine-policies keycloak sync-users --from-registry \
   --registry-url http://api.celine.localhost/rec-registry \
-  --community gr-renewable-community --check
+  --community example-renewable-community --check
 </code></pre>
 <p>Passing both a path and <code>--from-registry</code> is refused rather than resolved.</p>
 <p><code>--check</code> writes nothing and exits non-zero when a member of the source has no

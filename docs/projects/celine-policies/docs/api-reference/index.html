@@ -4760,7 +4760,7 @@ Keycloak does not revoke earlier links: a reset email must not be a week-long cr
 <p><strong>Response (200):</strong></p>
 <pre><code class="language-json">{
   &quot;user_id&quot;: &quot;3f1c…&quot;,
-  &quot;username&quot;: &quot;gl-00001&quot;,
+  &quot;username&quot;: &quot;ex-00001&quot;,
   &quot;invitation&quot;: &quot;sent&quot;,
   &quot;actions&quot;: [&quot;UPDATE_PASSWORD&quot;, &quot;VERIFY_EMAIL&quot;],
   &quot;lifespan&quot;: 604800
@@ -4836,7 +4836,7 @@ was sent).</p>
 <p>Revoke access. The account, its memberships and everything keyed on its uuid survive —
 disabling is not deletion, and reversing it is one call.</p>
 <p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;user_id&quot;: &quot;3f1c…&quot;, &quot;username&quot;: &quot;gl-00001&quot;, &quot;changed&quot;: true}
+<pre><code class="language-json">{&quot;user_id&quot;: &quot;3f1c…&quot;, &quot;username&quot;: &quot;ex-00001&quot;, &quot;changed&quot;: true}
 </code></pre>
 <p><code>changed: false</code> means the revocation was already in force, which must not read as one
 that just happened.</p>
@@ -4847,7 +4847,7 @@ invitation.</p>
 each of them is in the REC's organization. Members that are not active are skipped and not
 disabled — skipping provisioning and revoking access are different acts.</p>
 <p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;community&quot;: &quot;greenland&quot;, &quot;members&quot;: 45, &quot;created&quot;: 2, &quot;existing&quot;: 43, &quot;divergences&quot;: []}
+<pre><code class="language-json">{&quot;community&quot;: &quot;example-rec&quot;, &quot;members&quot;: 45, &quot;created&quot;: 2, &quot;existing&quot;: 43, &quot;divergences&quot;: []}
 </code></pre>
 <p><strong>Response (500)</strong> when the assertion finds anything: the same body, under <code>detail</code>, with
 the divergences listed, and <code>code: "reconcile_diverged"</code> and a <code>message</code> beside them.
@@ -4859,7 +4859,7 @@ fails loudly rather than repairing quietly — a <code>200</code> with a list no
 nothing here is a scheduler.</p>
 <h2 id="error-responses_1">Error responses</h2>
 <p>Every error but <code>422</code> has one body:</p>
-<pre><code class="language-json">{&quot;detail&quot;: {&quot;code&quot;: &quot;member_not_found&quot;, &quot;message&quot;: &quot;greenland has no active member 'gl-00099'&quot;}}
+<pre><code class="language-json">{&quot;detail&quot;: {&quot;code&quot;: &quot;member_not_found&quot;, &quot;message&quot;: &quot;example-rec has no active member 'ex-00099'&quot;}}
 </code></pre>
 <p><code>code</code> is stable and machine-readable; branch on it. <code>message</code> is a sentence for a person
 and not a contract. <code>code</code> is a plain string in the OpenAPI document, not an enum, so a code

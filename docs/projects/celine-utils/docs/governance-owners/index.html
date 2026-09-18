@@ -4114,6 +4114,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#resolving-ownership-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolving ownership names
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#precedence-and-why-counting-is-separate-from-lookup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4227,7 +4238,7 @@ decides who that is.</p>
 <tr>
 <td><code>aliases</code></td>
 <td>no</td>
-<td>Alternative lookup keys resolving to this owner</td>
+<td>Alternative lookup keys resolving to this owner. Being retired — pass a deployment placeholder map instead, see <a href="#resolving-ownership-names">resolving ownership names</a></td>
 </tr>
 <tr>
 <td><code>organization</code></td>
@@ -4324,6 +4335,75 @@ len(registry)                      # owners, not lookup keys
 <li><code>validate</code> — check against <code>owners.schema.json</code> before parsing. Off by default so
   adopting this loader cannot turn an existing warning into a crash. <strong>Callers that
   provision real identities should turn it on.</strong></li>
+</ul>
+<hr />
+<h2 id="resolving-ownership-names">Resolving ownership names</h2>
+<p>A placeholder such as <code>dso</code> is a lookup key, not an owner. Anything downstream that
+uses the name as written — an asset's owner label, an ODRL assigner, a recipient —
+publishes a string that matches no organisation. Resolve the names before handing
+rules on:</p>
+<pre><code class="language-python">from pathlib import Path
+from celine.governance import GovernanceResolver, load_owners_yaml
+
+owners = load_owners_yaml(Path(&quot;owners.yaml&quot;), validate=True)
+placeholders = {&quot;rec&quot;: &quot;example-rec&quot;, &quot;dso&quot;: &quot;example-dso&quot;}  # the deployment's local config
+resolver = GovernanceResolver.from_file_with_override(
+    Path(&quot;governance.yaml&quot;),
+    &quot;deploy&quot;,
+    owners=owners,
+    strict_owners=True,
+    placeholders=placeholders,
+)
+rule = resolver.resolve(&quot;datasets.ds_dev_gold.grid_substations&quot;)
+rule.ownership[0].name                         # -&gt; 'example-dso', not 'dso'
+owners.canonical_uri(rule.ownership[0].name)   # -&gt; its DID, else its URL
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>resolve_ownership(rule, owners, *, strict, placeholders=None)</code></td>
+<td>one rule, returned as a copy; the input is not modified</td>
+</tr>
+<tr>
+<td><code>resolve_config_ownership(config, owners, *, strict, placeholders=None)</code></td>
+<td><code>defaults</code> and every <code>sources</code> rule</td>
+</tr>
+<tr>
+<td><code>unresolved_owners(config, owners, *, placeholders=None)</code></td>
+<td><code>{name: [where, ...]}</code> for every name that resolves to nothing — reports, never raises</td>
+</tr>
+<tr>
+<td><code>from_file*(…, owners=, strict_owners=, placeholders=)</code></td>
+<td>resolves after the overlay is merged</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Each name is looked up in order: an owner id, then the <strong>placeholder map</strong>, then the
+  registry's <code>aliases</code>. It is replaced by the entry's <code>id</code>; <code>type</code> is kept as written.
+  A name that is already an id stays, and an id wins over a placeholder of the same
+  name.</li>
+<li><strong>The placeholder map is the deployment's, not the owners file's.</strong> Public governance
+  files keep generic names (<code>rec</code>, <code>dso</code>); each deployment maps them to its own
+  organisation ids in its local configuration and passes the map as <code>placeholders</code>.
+  The owners file then lists organisations only. <code>aliases:</code> still resolves while
+  files carry it, and is being retired in favour of the map.</li>
+<li><code>owners</code> is anything with <code>by_id(name)</code> returning an object with an <code>id</code>, or
+  <code>None</code> (<code>OwnerLookup</code>); <code>OwnersRegistry</code> is one.</li>
+<li><strong>After the merge, never per file.</strong> An overlay may replace <code>ownership</code> outright, and
+  resolving the base alone would fail on a placeholder the deployment has already
+  withdrawn.</li>
+<li><code>strict=True</code> raises <code>UnresolvedOwnerError</code> (a <code>ValueError</code>) listing <strong>every</strong>
+  unresolved name and where it was declared. <code>strict=False</code> keeps the name as written
+  and logs a warning. There is no default yet: the caller says which it means.</li>
+<li>A placeholder listed beside the id it stands for collapses to one owner; the same
+  organisation under two different <code>type</code>s is kept twice.</li>
 </ul>
 <hr />
 <h2 id="precedence-and-why-counting-is-separate-from-lookup">Precedence, and why counting is separate from lookup</h2>
