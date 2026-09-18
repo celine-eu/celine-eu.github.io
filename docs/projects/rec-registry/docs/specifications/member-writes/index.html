@@ -4219,13 +4219,13 @@ to stop a piece of that wholesale behaviour leaking into a route that should tou
 role, area, status and delivery points. A supplied <code>key</code> is honoured as given.</p>
 <h3 id="req-0021-an-omitted-key-is-minted-from-the-communitys-own-numbering">REQ-0021 — an omitted key is minted from the community's own numbering</h3>
 <p><code>key</code> is optional. When absent it is taken from the highest-numbered existing key, with
-that key's prefix and zero-padding preserved: <code>gl-00001</code>, <code>gl-00002</code> → <code>gl-00003</code>;
+that key's prefix and zero-padding preserved: <code>ex-00001</code>, <code>ex-00002</code> → <code>ex-00003</code>;
 <code>ab-007</code> → <code>ab-008</code>. Keys that are not numbered are ignored when reading the pattern, and
 a community with no members at all starts at <code>member-00001</code>.</p>
 <p>A caller with no opinion should get the next key in the series rather than a UUID that
 reads as foreign in an exported bundle — the bundle is a file people edit.</p>
-<p><strong>A gap below the maximum is never reused.</strong> <code>gl-00001</code>, <code>gl-00009</code> mints <code>gl-00010</code>, not
-<code>gl-00002</code>: reusing a freed number would hand a new person the identity of one who left,
+<p><strong>A gap below the maximum is never reused.</strong> <code>ex-00001</code>, <code>ex-00009</code> mints <code>ex-00010</code>, not
+<code>ex-00002</code>: reusing a freed number would hand a new person the identity of one who left,
 along with whatever history elsewhere in the platform still references that key.</p>
 <p>The bound on that guarantee is honest and narrow — the <em>highest</em> number is the only state
 consulted, so purging the highest-numbered member does let the next mint reuse their key.

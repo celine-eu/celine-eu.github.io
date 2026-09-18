@@ -4820,6 +4820,10 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 <td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, only when set. Unset: brute-force protection is <strong>on</strong>. The realm import reads <code>keycloak.brute_force.failureFactor</code> (max login failures, default 5); there is no <code>maxLoginFailures</code> in Keycloak, and an import naming one stops Keycloak from starting</td>
 </tr>
 <tr>
+<td><code>keycloak.admin_mfa</code></td>
+<td><code>true</code>/<code>false</code>, or <code>{enabled: true\|false}</code>; anything else stops the render. The realm import only (new realms): members of <code>/admins</code> (realm role <code>admin</code>) who sign in with a password need TOTP or a recovery code, and one with neither enrols both; a passkey sign-in needs nothing more. <code>task test:auth-setup</code> checks the render</td>
+</tr>
+<tr>
 <td><code>keycloak.platform</code></td>
 <td>an overlay on <code>platform.yaml</code>: <code>realm_settings.supportedLocales</code> only</td>
 </tr>
