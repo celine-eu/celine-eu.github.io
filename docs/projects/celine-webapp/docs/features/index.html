@@ -4499,7 +4499,10 @@ connector holds, and serves their history. These routes forward the member's own
 it and pass the answer back, because the browser talks only to this service.</p>
 <p>The offers a member sees are read from the published vocabulary on each request rather
 than from a local copy — two copies of the text somebody agrees to is how the thing
-displayed and the thing recorded drift apart.</p>
+displayed and the thing recorded drift apart. An offer may carry <code>text</code>, the community's
+own wording per locale, which onboarding attaches only when it was written for the
+offer's current version (onboarding's <code>docs/data-sharing.md</code>). It is forwarded unchanged;
+the page shows it in the member's language and falls back to the generic label.</p>
 <p><strong>Withdrawal is the point of the surface.</strong> The onboarding wizard can only grant, so
 without these routes a consent could be given and never taken back. Every call is made
 with the member's own credential: it is their act, and an administrator cannot perform it
@@ -4508,8 +4511,12 @@ for them. This service holds no credential and no service account of its own.</p
 <code>review_due</code>, so the app can show a first-run sequence to somebody who has never been
 asked and a "review your settings" reminder to somebody whose decision has gone stale
 (<code>DATA_SHARING_REVIEW_AFTER_DAYS</code>, 180 by default). A dismissal is recorded through
-<code>POST /api/onboarding/seen</code> under the <code>data-sharing</code> key — the same table every in-app
-tour uses, and no new one.</p>
+<code>POST /api/data-sharing/seen</code> under the <code>data-sharing</code> key of the table every in-app tour
+uses, together with the offers (ids and versions) that were on offer; a decision records
+the same. The reminder is also due, whatever the date, when an offer is new or its version
+moved since the member was shown it — here, or in the onboarding form, which onboarding
+reports as <code>presented_version</code>. An offer shown at its current version and not granted was
+declined, and is not asked about again.</p>
 <h2 id="settings">Settings</h2>
 <p><code>GET/PUT /api/settings</code> presents one settings object assembled from two owners:</p>
 <ul>
