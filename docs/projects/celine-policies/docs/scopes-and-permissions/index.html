@@ -2911,6 +2911,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#hardcoded-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardcoded Claims
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mqtt-authorization-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5022,6 +5033,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#hardcoded-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardcoded Claims
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mqtt-authorization-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5796,6 +5818,27 @@ groups = extract_groups(user.claims)
 <p>The <code>oauth2_proxy_client</code> field in <code>clients.yaml</code> identifies the oauth2-proxy Keycloak client. The sync tool adds audience mappers for every service client that has a <code>scopes_prefix</code>, so that user JWTs issued through oauth2-proxy carry all service audiences and pass audience validation on each service.</p>
 <p>Clients without <code>scopes_prefix</code> (like <code>celine-cli</code>) can declare <code>extra_audiences</code> explicitly.</p>
 <hr />
+<h2 id="hardcoded-claims">Hardcoded Claims</h2>
+<p><code>hardcoded_claims</code> pins a claim in this client's tokens to a fixed string, overriding
+whatever Keycloak would otherwise emit. Each entry becomes one
+<code>oidc-hardcoded-claim-mapper</code> named <code>claim-&lt;claim&gt;</code>, on the access token and on
+introspection — never on the id token or userinfo, where a pinned <code>sub</code> would misreport
+who is signed in.</p>
+<pre><code class="language-yaml">clients:
+  - client_id: svc-ds-example-rec
+    hardcoded_claims:
+      sub: ${EXAMPLE_REC_DID:-did:web:example-rec.localhost}
+</code></pre>
+<p><strong>It exists for <code>sub</code>.</strong> Eclipse EDC's management API takes the participant context
+straight from the access token's <code>sub</code>, and Keycloak's <code>sub</code> for a service account is that
+account's UUID — so without this the connector resolves a participant nobody declared.</p>
+<p><code>sync</code> converges on the declaration: a changed value is rewritten in place, and a claim
+dropped from the file has its mapper removed. Only mappers named <code>claim-*</code> <em>and</em> of type
+<code>oidc-hardcoded-claim-mapper</code> are ever read or written, so one added by hand in the admin
+console is left alone.</p>
+<p>Like <code>secret</code> and <code>scopes_prefix</code>, it is part of a client's <strong>identity</strong>: the one file
+that declares the client declares this, and an overlay carrying it is refused.</p>
+<hr />
 <h2 id="mqtt-authorization-model">MQTT Authorization Model</h2>
 <p>For MQTT specifically, topic access is controlled by Rego policies (see <a href="../mqtt-integration/">MQTT Integration</a>). The policies check:</p>
 <ol>
@@ -6050,8 +6093,12 @@ clients:
       groups:
         - path: /some-group
           scopes: [manage-members, manage-membership, view]
+    # Optional — claims pinned into this client's tokens.
+    hardcoded_claims:
+      sub: ${PARTICIPANT_DID:-did:web:example.localhost}
 </code></pre>
-<p>Client secrets support environment variable substitution with <code>${VAR:-default}</code> syntax.</p>
+<p>Client secrets support environment variable substitution with <code>${VAR:-default}</code> syntax,
+and so does every other string in the file — <code>hardcoded_claims</code> values included.</p>
 
 
 

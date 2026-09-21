@@ -4601,6 +4601,7 @@ locally-created or synthetic data.</p>
 │   ├── pv_estimation/               # Rooftop PV return-on-investment
 │   ├── pv_detection/                # Existing PV detected from aerial imagery
 │   ├── grid/                        # Grid wind &amp; heat resilience overlays
+│   ├── dso_metering/                # Grid operator meter readings, released on consent
 │   ├── rec_metering/                # 15-min / hourly metering interface
 │   ├── rec_it/                      # Italian CER virtual self-consumption
 │   ├── rec_flexibility/             # Flexibility windows, settlement, gamification
@@ -4838,6 +4839,12 @@ limitations under the License.</p>
 <td>Grid topology + <code>om</code> forecasts</td>
 <td>Daily, 15-min nowcast</td>
 <td>Wind and heat risk overlays per line segment</td>
+</tr>
+<tr>
+<td><strong>dso_metering</strong></td>
+<td>A grid operator's own export</td>
+<td>Daily</td>
+<td>15-min readings per supply point, released under consent</td>
 </tr>
 <tr>
 <td><strong>rec_metering</strong></td>

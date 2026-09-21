@@ -4816,7 +4816,10 @@
 <h3 id="startup-order">Startup Order</h3>
 <ol>
 <li><strong>keycloak</strong> starts first (health check on port 9000)</li>
-<li><strong>keycloak-sync</strong> runs bootstrap (the platform level, from the mounted <code>platform.yaml</code>) + sync, then exits</li>
+<li><strong>keycloak-sync</strong> runs bootstrap (the platform level, from the mounted <code>platform.yaml</code>) + sync, then exits.
+   A sync that runs on every start and may be handed an incomplete file set can pass
+   <code>--additive</code>: it adds and updates, removes nothing, and lists what it held back
+   (README, "Adding without removing"). A declared removal then needs a plain <code>sync</code>.</li>
 <li><strong>sync-users</strong> imports example users, then exits</li>
 <li><strong>mqtt_auth</strong> starts after keycloak-sync and sync-users complete</li>
 <li><strong>provisioning</strong> starts after keycloak-sync completes — it authenticates as

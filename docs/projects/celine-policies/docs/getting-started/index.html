@@ -4563,7 +4563,9 @@ does not list it: use this repository's <code>keycloak</code> image, not the sto
 - Creates missing service clients with generated secrets
 - Assigns default scopes to clients
 - Adds audience mappers for cross-service JWT validation</p>
-<p>Use <code>--dry-run</code> to preview changes without applying them.</p>
+<p>Use <code>--dry-run</code> to preview changes without applying them. Use <code>--additive</code> to apply
+creates and updates only: every removal is held back and listed instead (see the README,
+"Adding without removing").</p>
 <h3 id="step-4-sync-users-optional">Step 4: Sync Users (optional)</h3>
 <p>Import users from a <code>rec-registry</code> REC definition YAML:</p>
 <pre><code class="language-bash">celine-policies keycloak sync-users ../rec-registry/recs/rec-example.yaml \

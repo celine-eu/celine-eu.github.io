@@ -2524,6 +2524,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#adding-without-removing-additive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding without removing: --additive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#which-files-this-repository-ships" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4371,6 +4382,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#adding-without-removing-additive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding without removing: --additive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#which-files-this-repository-ships" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4659,7 +4681,7 @@ last-wins:</p>
 <tbody>
 <tr>
 <td>a client's identity</td>
-<td>declared by <strong>exactly one</strong> file: <code>name</code>, <code>description</code>, <code>secret</code>, <code>scopes_prefix</code>, <code>service_account_enabled</code></td>
+<td>declared by <strong>exactly one</strong> file: <code>name</code>, <code>description</code>, <code>secret</code>, <code>scopes_prefix</code>, <code>service_account_enabled</code>, <code>hardcoded_claims</code></td>
 </tr>
 <tr>
 <td>a client's grants</td>
@@ -4679,6 +4701,59 @@ last-wins:</p>
 </tr>
 </tbody>
 </table>
+<h3 id="adding-without-removing-additive">Adding without removing: <code>--additive</code></h3>
+<p>A run that is not handed the complete file set narrows the clients it declares. Where
+that risk cannot be ruled out — an init container that runs <code>sync</code> on every pod start,
+with overlays that may be missing or stale — pass <code>--additive</code>:</p>
+<pre><code class="language-bash">celine-policies keycloak sync clients.yaml --overlay clients.ds-host.yaml --additive
+</code></pre>
+<p>It applies every create and update and <strong>no removal</strong>. Each removal a full run would
+have made is <strong>held back</strong> and listed under <code>Held back by --additive</code>, marked <code>=</code>, in the
+plan and in the result:</p>
+<table>
+<thead>
+<tr>
+<th>a full run would</th>
+<th>under <code>--additive</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remove a scope assignment no file grants</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>move a scope between default and optional</td>
+<td>both halves kept; reported as one move</td>
+</tr>
+<tr>
+<td>delete a stale <code>aud-</code> mapper (the oauth2-proxy client's included) or <code>claim-</code> mapper</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>revoke an admin permission for a group no longer named</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>drop a scope from an admin permission</td>
+<td>the scope is kept; scopes the file adds are still granted</td>
+</tr>
+<tr>
+<td>switch off a login flow (or <code>publicClient</code>) on a client that declares no <code>browser</code> block, while updating it</td>
+<td>the flow is left on</td>
+</tr>
+<tr>
+<td>take <code>organization</code>, <code>groups</code>, <code>dataspace</code> off the realm default/optional scope lists</td>
+<td>left on the lists; the scopes are still created and assigned to the oauth2-proxy client</td>
+</tr>
+</tbody>
+</table>
+<p><code>--additive --dry-run</code> lists the same held-back items without writing anything.
+<code>--additive</code> cannot be combined with <code>--prune</code>, and the pair exits 2 before connecting.</p>
+<p>The trade is real: <strong>a grant dropped from the files is not taken away until a run without
+the flag.</strong> A deployment that only ever runs additive syncs never narrows a client,
+including when it means to. Run a plain <code>sync</code> (after a <code>--dry-run</code>) to apply a declared
+removal.</p>
 <h3 id="which-files-this-repository-ships">Which files this repository ships</h3>
 <table>
 <thead>
