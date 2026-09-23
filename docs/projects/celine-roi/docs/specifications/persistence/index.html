@@ -4169,9 +4169,9 @@
 
 
 <h1 id="specifications-persistence">Specifications — persistence</h1>
-<p>Storing computed estimates is the only thing this service does that is not a computation,
-and it is <strong>optional</strong>. See <a href="../">index.md</a> for what these requirements are and are
-not.</p>
+<p>Storing computed estimates and ROI-screen feedback are the only things this service does that are
+not computations. Persistence remains <strong>optional for calculations</strong>. See <a href="../">index.md</a> for
+what these requirements are and are not.</p>
 <p>Everything here is about what happens when the database is absent, unreachable or
 misconfigured, because that is where the design intent lives. The happy path is the easy
 part.</p>
@@ -4179,7 +4179,8 @@ part.</p>
 <h2 id="req-04xx">REQ-04xx</h2>
 <h3 id="req-0401-the-service-computes-with-no-database">REQ-0401 — the service computes with no database</h3>
 <p>With persistence disabled, the application starts, serves its documentation, and answers
-computation requests normally. No connection pool is created.</p>
+computation requests normally. No connection pool is created. Feedback collection and review
+answer 503 because they cannot honestly succeed without a store.</p>
 <p>Persistence is a place to put results, not a dependency of producing them. A code path
 that assumes a connection exists breaks this.</p>
 <p><em>Verified by</em> <code>tests/test_persistence_optional.py::TestServiceRunsWithoutADatabase</code></p>

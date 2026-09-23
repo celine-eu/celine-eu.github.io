@@ -4748,8 +4748,42 @@ plan and in the result:</p>
 </tr>
 </tbody>
 </table>
+<p>A client's declared <code>browser</code> block is an update, not a removal: its <code>redirectUris</code> and
+<code>webOrigins</code> are written as declared, so a URI dropped from the file is dropped from the
+client under <code>--additive</code> too.</p>
 <p><code>--additive --dry-run</code> lists the same held-back items without writing anything.
 <code>--additive</code> cannot be combined with <code>--prune</code>, and the pair exits 2 before connecting.</p>
+<p>Where the command cannot be handed an argument, set the environment instead:</p>
+<table>
+<thead>
+<tr>
+<th>input</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_KEYCLOAK_SYNC_ADDITIVE=true</code> (or <code>1</code>, <code>yes</code>, <code>on</code>)</td>
+<td>the run is additive</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_SYNC_ADDITIVE=false</code> (or <code>0</code>, <code>no</code>, <code>off</code>), empty, or unset</td>
+<td>the run is not additive (the default)</td>
+</tr>
+<tr>
+<td><code>--additive</code></td>
+<td>additive, whatever the variable says</td>
+</tr>
+<tr>
+<td><code>--no-additive</code></td>
+<td>not additive, whatever the variable says</td>
+</tr>
+</tbody>
+</table>
+<p>The flag overrides the variable either way. <code>--prune</code> is refused with an additive run
+from either source (exit 2); <code>--no-additive --prune</code> is allowed. An additive run says
+where it came from in its banner (<code>Additive: removals are held back (from …)</code>). Any
+other value of the variable is an error before the command starts.</p>
 <p>The trade is real: <strong>a grant dropped from the files is not taken away until a run without
 the flag.</strong> A deployment that only ever runs additive syncs never narrows a client,
 including when it means to. Run a plain <code>sync</code> (after a <code>--dry-run</code>) to apply a declared

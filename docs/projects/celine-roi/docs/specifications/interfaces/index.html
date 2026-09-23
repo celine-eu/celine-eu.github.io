@@ -4312,6 +4312,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-11xx-roi-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-11xx — ROI feedback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="REQ-11xx — ROI feedback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1101-a-feedback-item-belongs-to-a-verified-rec-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1101 — a feedback item belongs to a verified REC membership
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1102-feedback-retains-its-diagnostics-and-optional-screenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1102 — feedback retains its diagnostics and optional screenshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1103-manager-review-is-authorized-for-the-selected-rec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1103 — manager review is authorized for the selected REC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1104-review-state-advances-monotonically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1104 — review state advances monotonically
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4473,6 +4534,30 @@ exits 1. The exit status is what makes the CLI usable in a script.</p>
 the energy summary and the parameters it was run with. A report that omits the parameters
 cannot be checked against anything later.</p>
 <p><em>Verified by</em> <code>tests/test_cli.py::TestFormatReport</code></p>
+<hr />
+<h2 id="req-11xx-roi-feedback">REQ-11xx — ROI feedback</h2>
+<h3 id="req-1101-a-feedback-item-belongs-to-a-verified-rec-membership">REQ-1101 — a feedback item belongs to a verified REC membership</h3>
+<p>The authenticated browser may list only its own Keycloak organizations of type <code>rec</code>, and a
+submission must name one of them. The backend replaces any community value in diagnostic context
+with that verified key before persistence.</p>
+<p><em>Verified by</em>
+<code>tests/test_feedback.py::test_participant_lists_own_recs_and_submits_only_to_one_of_them</code></p>
+<h3 id="req-1102-feedback-retains-its-diagnostics-and-optional-screenshot">REQ-1102 — feedback retains its diagnostics and optional screenshot</h3>
+<p>A submission stores its rating, comment, page diagnostics, authenticated subject and optional
+screenshot. The screenshot is served separately rather than embedded in list responses.</p>
+<p><em>Verified by</em>
+<code>tests/test_feedback.py::test_participant_lists_own_recs_and_submits_only_to_one_of_them</code></p>
+<h3 id="req-1103-manager-review-is-authorized-for-the-selected-rec">REQ-1103 — manager review is authorized for the selected REC</h3>
+<p>Review requires <code>community.read</code> plus <code>admins</code> or <code>managers</code> in the matching REC organization.
+Realm <code>admins</code> may review every REC. A participant or a manager of another REC is denied before a
+feedback row or screenshot is read.</p>
+<p><em>Verified by</em>
+<code>tests/test_feedback.py::test_manager_reviews_only_feedback_from_the_authorized_rec</code></p>
+<h3 id="req-1104-review-state-advances-monotonically">REQ-1104 — review state advances monotonically</h3>
+<p>Manager workflow state is <code>new</code> → <code>seen</code> → <code>resolved</code>; it cannot move backward. List responses
+contain per-state counts, and stored subject, IP and user-agent diagnostics are not returned.</p>
+<p><em>Verified by</em>
+<code>tests/test_feedback.py::test_manager_reviews_only_feedback_from_the_authorized_rec</code></p>
 
 
 

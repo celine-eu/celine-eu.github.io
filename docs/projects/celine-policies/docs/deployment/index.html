@@ -4818,8 +4818,10 @@
 <li><strong>keycloak</strong> starts first (health check on port 9000)</li>
 <li><strong>keycloak-sync</strong> runs bootstrap (the platform level, from the mounted <code>platform.yaml</code>) + sync, then exits.
    A sync that runs on every start and may be handed an incomplete file set can pass
-   <code>--additive</code>: it adds and updates, removes nothing, and lists what it held back
-   (README, "Adding without removing"). A declared removal then needs a plain <code>sync</code>.</li>
+   <code>--additive</code>, or set <code>CELINE_KEYCLOAK_SYNC_ADDITIVE=true</code> where it cannot be handed an
+   argument: it adds and updates, removes nothing, and lists what it held back (README,
+   "Adding without removing"). A declared removal then needs a plain <code>sync</code>
+   (<code>--no-additive</code> overrides the variable for that run).</li>
 <li><strong>sync-users</strong> imports example users, then exits</li>
 <li><strong>mqtt_auth</strong> starts after keycloak-sync and sync-users complete</li>
 <li><strong>provisioning</strong> starts after keycloak-sync completes — it authenticates as
