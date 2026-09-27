@@ -2444,6 +2444,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#row-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Row filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#projection-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4465,6 +4476,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#row-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Row filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#projection-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4692,6 +4714,33 @@
 <li>only allow safe scalar functions</li>
 <li>block functions that can access filesystem, network, or server internals</li>
 </ul>
+<p>Safe means pure and read-only: the construct reaches nothing beyond the rows the
+query already reads, and costs no more than an aggregate, which the statement
+timeout bounds. On that basis the parser admits:</p>
+<ul>
+<li>the functions in <code>ALLOWED_FUNCTIONS</code> (<code>parser.py</code>), whether sqlglot parses them
+  as a typed node (<code>COALESCE</code>, <code>FLOOR</code>, <code>EXTRACT</code>, …) or as an anonymous call. Any
+  of a function's SQL names counts, so <code>IFNULL</code> is <code>COALESCE</code></li>
+<li><code>GREATEST</code>, <code>LEAST</code>, <code>NULLIF</code></li>
+<li><code>CASE</code> expressions</li>
+<li>window functions (<code>… OVER (…)</code>) and the ranking functions <code>ROW_NUMBER</code>, <code>RANK</code>,
+  <code>DENSE_RANK</code>. The function inside a window is still checked on its own</li>
+<li><code>PERCENTILE_CONT</code> / <code>PERCENTILE_DISC</code> with <code>WITHIN GROUP</code>, and <code>BOOL_OR</code> /
+  <code>BOOL_AND</code></li>
+<li>a <code>VALUES</code> list, typically as a CTE of constant rows</li>
+</ul>
+<p>Hash and crypto functions (<code>MD5</code>, <code>SHA256</code>, …) and string concatenation (<code>||</code>)
+are not admitted. No read path needs them, so derive such values in the caller.</p>
+<h3 id="row-filters">Row filters</h3>
+<p>A dataset's governance can declare row filters (<code>rowFilters</code>). They are applied to
+the validated AST after physical table names are substituted, and the query is then
+rendered once, as PostgreSQL. The SQL is never re-parsed from text in between: a
+text round trip changes the dialect (<code>INTERVAL '30 minutes'</code> becomes
+<code>INTERVAL '30' MINUTES</code>) and splits <code>schema.table</code>, so a filter keyed on the
+physical table would stop matching and be dropped.</p>
+<p>On a request arriving through the dataspace the filter comes from ds's decision
+rather than from governance here, and carries the consenting subjects with it —
+see <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <h3 id="projection-safety">Projection safety</h3>
 <ul>
 <li>avoid <code>SELECT *</code> if you want strict contracts (optional)</li>

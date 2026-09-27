@@ -2499,6 +2499,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#row-level-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Row-level filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-policy-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4482,6 +4493,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#row-level-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Row-level filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-policy-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4650,7 +4672,17 @@ They should carry:
 - allow/deny decision
 - validation errors (sanitized)
 - execution time and rows returned</p>
-<p>Do not log raw SQL without sanitization if it may contain sensitive literals.</p>
+<p>Do not log raw SQL without sanitization if it may contain sensitive literals. On a
+dataspace request the completed SQL is withheld from the debug log for exactly this
+reason: its predicate is a literal list of the consenting subjects (RF-08).</p>
+<hr />
+<h2 id="row-level-filtering">Row-level filtering</h2>
+<p>A dataset may declare <code>row_filters</code> in governance, and a handler turns each one into
+a predicate. On a request arriving through the dataspace the filter is not read from
+governance here — it arrives inside ds's decision, with the consenting subjects named
+in it, and this service applies it or serves nothing. That path has its own
+specification, with clauses and tests:
+<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <hr />
 <h2 id="common-policy-patterns">Common Policy Patterns</h2>
 <ul>
