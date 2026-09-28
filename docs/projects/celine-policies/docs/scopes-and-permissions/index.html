@@ -5313,7 +5313,31 @@
 <tbody>
 <tr>
 <td><code>rec-registry.admin</code></td>
-<td>Full administrative access</td>
+<td>Full administrative access to the registry</td>
+</tr>
+<tr>
+<td><code>rec-registry.read</code></td>
+<td>Read communities, members, assets and delivery points</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.write</code></td>
+<td>Create and update members, their delivery points and status</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.purge</code></td>
+<td>Permanently erase a member and its assets (erasure requests)</td>
+</tr>
+<tr>
+<td><code>rec-registry.assets.write</code></td>
+<td>Create, update and delete member assets</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.profile.write</code></td>
+<td>Change one member's role and area, nothing else. <code>members.write</code> and <code>.admin</code> also satisfy it (the registry's rule)</td>
+</tr>
+<tr>
+<td><code>rec-registry.community.write</code></td>
+<td>Update community metadata, areas and topology</td>
 </tr>
 <tr>
 <td><code>rec-registry.import</code></td>
@@ -5559,7 +5583,10 @@ the other.</p>
 (<code>provisioning.admin</code>, its own family). Onboarding is the single point of access to the
 provisioning service (requester, 2026-09-14): no other client calls it directly, and a
 <code>provisioning.*</code> grant to one is a change to argue for. <code>tests/test_provisioning_scope_holders.py</code>
-fails when a second client is granted one, over <code>clients.yaml</code> and the ds-host overlay.</p>
+fails when a second client is granted one, over <code>clients.yaml</code> and the ds-host overlay.
+Onboarding holds <code>provisioning.participants.write</code> as a default scope and
+<code>provisioning.reconcile</code> as an optional one, for its registry sync's "set up community" step
+(<a href="#svc-onboarding">svc-onboarding</a>); never <code>provisioning.admin</code>.</p>
 <hr />
 <h2 id="service-clients">Service Clients</h2>
 <p>Each CELINE service has its own OAuth client with <code>scopes_prefix</code> declaring which scope family it owns. The CLI uses this to validate scope ownership and automatically add audience mappers.</p>
@@ -5632,10 +5659,24 @@ default_scopes:
   - rec-registry.read          # aggregate population, and member names for the members page
   - nudging.analytics.read
 optional_scopes:
-  - onboarding.members.invite  # &quot;Send invitation&quot; / &quot;Reset password&quot;, through onboarding
+  - onboarding.members.invite           # &quot;Send invitation&quot; / &quot;Reset password&quot;, through onboarding
+  - rec-registry.assets.write           # attach or detach a member's meter
+  - rec-registry.members.profile.write  # change a member's role and area
 </code></pre>
 <p><code>rec-registry.read</code> also gives the members page its names. They are read per request and never
-persisted, and no email, user id, DID or supply point leaves the BFF process.</p>
+persisted, and no email, user id, DID or supply point leaves the BFF process. The one registry
+value that does travel is a meter's <strong>sensor id</strong>: the manager types it as free text in the
+meter dialog (nothing lists candidate meters, since an unattached meter belongs to no
+community), and it goes from the BFF to the registry and nowhere else. The members list shows
+only whether a meter is attached, and no audit row or log carries the id.</p>
+<p>The two registry scopes are <strong>optional, not default</strong>, for the same reason as the invitation
+scope: the Digital Twin forwards the default-scope token. The BFF writes the member's meter and
+profile to the registry with its own token, requesting <code>rec-registry.assets.write</code> only for
+attaching or detaching a meter and <code>rec-registry.members.profile.write</code> only for the profile
+call; which manager may press, and for which REC, is the dashboard's policy
+(<a href="../decisions/ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/">ADR-0011</a>).
+Every registry grant is registry-wide. <code>rec-registry.members.write</code> stays refused: it would also
+rewrite a member's user id, DID and status.</p>
 <p><code>onboarding.members.invite</code> is <strong>optional, not default</strong>. The Digital Twin forwards this
 client's default-scope token to dataset-api, and a send capability must not travel there. The
 BFF requests the scope only for its call to onboarding, and forwards the manager's own token
@@ -5651,6 +5692,13 @@ operator's browser token is rejected on audience validation before any policy ru
 default_scopes:
   - onboarding.admin
   - provisioning.participants.write
+  - rec-registry.members.write   # approval registers the member; the dataspace step writes its DID
+  - rec-registry.lookup          # the POD export reads back what each consenting DID holds
+  - digital-twin.values.read     # resolve a supply address to its boundary; validate a template's boundary ids
+  - rec-registry.read            # the registry sync's dry run, prune count and drift check
+optional_scopes:                 # requested per call, only by the registry sync
+  - rec-registry.community.write # write a community's areas and topology from its template
+  - provisioning.reconcile       # &quot;set up community&quot;: the organization, its roles and groups
 </code></pre>
 <p><strong>It administers nothing in the realm, and that is the point.</strong> It held a fine-grained
 grant over <code>/participants</code> for as long as it was the thing provisioning a participant's
@@ -5666,6 +5714,32 @@ identity for the dataspace. One service, two clients: this one validates inbound
 audiences, that one authenticates outbound M2M.</p>
 <p>See <a href="#realm-administration">Realm administration</a> below for what that block is and who
 else holds one.</p>
+<p><code>digital-twin.values.read</code> is the Digital Twin's boundary lookups
+(<a href="../decisions/ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/">ADR-0011</a>,
+<a href="../specifications/client-grants/">REQ-0004</a>): onboarding resolves a submission's supply address
+to the boundary it falls in, at save, submit and approval, and validates a boundary
+template's ids at import. It is a read, so a default scope, and it derives the audience
+mapper onto <code>svc-digital-twin</code>; a realm has it only after <code>keycloak sync</code>.</p>
+<p><code>rec-registry.read</code> is the registry sync's reads (same ADR and requirement): a community's
+areas, topology and member counts, for the sync's dry run, its prune count and the console's
+drift check. The registry's community <code>GET</code> routes derive the action <code>read</code>, which neither
+<code>members.write</code> nor <code>lookup</code> satisfies. It is a read, so a default scope; <code>svc-community</code>
+holds the same one.</p>
+<p><strong>The registry sync's two writes are optional scopes</strong>, requested per call, so the token
+onboarding uses for everything else carries no community write and no sweep:</p>
+<ul>
+<li><code>rec-registry.community.write</code> writes a community's areas and topology from its onboarding
+  template. Registry-wide, like every registry grant; onboarding only syncs the communities
+  its templates bind.</li>
+<li><code>provisioning.reconcile</code> is the sync's "set up community" step: <code>POST /reconcile/{community}</code>
+  on the provisioning service, which ensures the Keycloak organization, its roles and its
+  groups even before the community has a member
+  (<a href="../specifications/provisioning/">REQ-0002</a>). The provisioning service refuses a
+  <code>svc-onboarding</code> token that did not request it with <code>403 insufficient_scope</code>.</li>
+</ul>
+<p>Neither adds an audience: both land on services this client already addresses. A realm has
+the optional assignments only after <code>keycloak sync</code>, and the sync is started by a realm admin
+(onboarding's <code>recs.write</code>), never on a template reload.</p>
 <h3 id="svc-onboarding-cli">svc-onboarding-cli</h3>
 <p>Service account for the <code>onboarding-cli</code> review and enablement commands. No
 <code>scopes_prefix</code> — it owns nothing, it only calls:</p>
@@ -5674,6 +5748,9 @@ else holds one.</p>
 default_scopes:
   - onboarding.admin
 </code></pre>
+<p>It never starts onboarding's planned registry sync: that capability is held by realm
+<code>admins</code> only and no scope grants it, <code>onboarding.admin</code> included. The CLI's sync command
+runs with a realm admin's own token or <code>--local</code>.</p>
 <h3 id="svc-provisioning">svc-provisioning</h3>
 <p>The participant provisioning service. It holds <strong>realm-wide</strong> administration — the only
 client that does — and is the only thing that writes a participant account:</p>
@@ -5739,7 +5816,7 @@ default_scopes:
 <tr>
 <td><strong>Org-level</strong></td>
 <td><code>organization.&lt;alias&gt;.groups: ["/viewers"]</code></td>
-<td><code>sync-users</code> and the provisioning service (automatic for REC participants)</td>
+<td>the provisioning service (<code>viewers</code>, automatic for REC participants); <code>keycloak set-user-organization --group managers</code> (or <code>admins</code>), run by a platform admin; <code>sync-users</code> in local development</td>
 </tr>
 </tbody>
 </table>
@@ -6046,7 +6123,10 @@ own. <code>--no-admin-groups</code> turns the behaviour off.</p>
 the live rec-registry. The file is a picture of the community at export time, so a run
 against one leaves out everybody <code>onboarding</code> has approved since; the registry reconciles
 what is true. See
-<a href="../decisions/ADR-0006-the-registry-is-the-source-of-members/">ADR-0006</a>.</p>
+<a href="../decisions/ADR-0006-the-registry-is-the-source-of-members/">ADR-0006</a>. Either
+source is for local development: on a deployed realm <code>sync-users</code> writes nothing
+(<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>),
+and the command refuses unless <code>ENV=dev</code>.</p>
 <p>Reading the registry needs a Keycloak client holding <strong><code>rec-registry.export</code></strong> and an
 audience of <code>svc-rec-registry</code>. The default is <code>celine-cli</code>, which holds
 <code>rec-registry.admin</code> — and that is wider in a direction worth stating plainly: through the
@@ -6060,7 +6140,7 @@ no code change is needed.</p>
 <p><code>--check</code> reads the same sources and writes nothing, exiting non-zero when a member of the
 source has no account, is outside their REC organization, or is outside a group declared
 here. Organization membership is not a health probe, so this is the probe:</p>
-<pre><code class="language-console">$ celine-policies keycloak sync-users --from-registry \
+<pre><code class="language-console">$ ENV=dev celine-policies keycloak sync-users --from-registry \
     --registry-url http://api.celine.localhost/rec-registry --check
 example-renewable-community:
   ✗ example-renewable-community/20260910-1a2b3c4d (a.person@example.org): not in the REC

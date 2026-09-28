@@ -4588,6 +4588,8 @@ check is defence in depth, for a caller already inside the network.</p>
 <p><strong><code>svc-onboarding</code> is the only client granted a <code>provisioning.*</code> scope.</strong> Onboarding is the
 single point of access to this service; see
 <a href="../scopes-and-permissions/#provisioning">scopes-and-permissions.md</a>.
+It holds <code>provisioning.participants.write</code> by default and <code>provisioning.reconcile</code> as an
+optional scope, which its registry sync requests only for the reconcile call.
 A community manager's "Send invitation" and "Reset password" on the dashboard reach
 <code>POST …/invitation</code> through onboarding's member-keyed routes. <code>svc-community</code> holds
 <code>onboarding.members.invite</code> for that, never a provisioning scope.</p>
@@ -4676,7 +4678,7 @@ the operator who approved, and <code>invited</code> is true only for <code>sent<
 </tr>
 <tr>
 <td><code>no_email</code></td>
-<td>The account has no email address, in every email mode; nothing was sent. Keycloak sends to the account's own address, so the body's <code>email</code> does not stand in for it. Typically an account <code>sync-users</code> made from the registry</td>
+<td>The account has no email address, in every email mode; nothing was sent. Keycloak sends to the account's own address, so the body's <code>email</code> does not stand in for it. Typically an account <code>sync-users</code> made from the registry, in local development</td>
 </tr>
 <tr>
 <td><code>not_on_dev_list</code></td>
@@ -4716,7 +4718,7 @@ value, so internationalization has to be enabled on a realm before this service 
 updated" page with a link back to <code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code>, and then signs
 in once with the password they chose.</p>
 <p><strong>The registry is not written from here.</strong> The caller writes the member row, with the
-username this call returned — which keeps the registry single-writer and the step order
+username this call returned — which keeps member creation single-writer and the step order
 fail-closed: the login exists before the row that keys on it.</p>
 <h2 id="post-participantscommunitykeyinvitation">POST /participants/{community}/{key}/invitation</h2>
 <p>Email a member an invitation or a password reset, <strong>as the caller names it</strong>. The member is
@@ -4851,8 +4853,16 @@ disabled — skipping provisioning and revoking access are different acts.</p>
 </code></pre>
 <p><strong>Response (500)</strong> when the assertion finds anything: the same body, under <code>detail</code>, with
 the divergences listed, and <code>code: "reconcile_diverged"</code> and a <code>message</code> beside them.
-<code>404</code> <code>community_not_found</code> for a community the registry does not have. Everything checked is something this same call claimed to have
-done, so a finding is a provisioning call that reported success and had not succeeded. It
+<code>404</code> <code>community_not_found</code> for a community the registry does not have, and nothing is
+created in Keycloak.</p>
+<p><strong>A community with no active member is set up, not refused:</strong> the organization, its org
+roles and its org groups (<code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code>) are ensured, and the
+answer is <code>200</code> with <code>members: 0</code>; a second call creates nothing. This is onboarding's
+registry sync's "set up community" step, with a <code>svc-onboarding</code> token that requested
+<code>provisioning.reconcile</code> for that call
+(<a href="../specifications/provisioning/">REQ-0002</a>).</p>
+<p>The divergence answer is a <code>500</code> because everything the assertion checks is something this
+same call claimed to have done, so a finding is a provisioning call that reported success and had not succeeded. It
 fails loudly rather than repairing quietly — a <code>200</code> with a list nobody reads is how 10 of
 45 members ended up outside their own organization with nothing saying so.</p>
 <p>What calls this on a schedule is a deployment concern. The route is an entry point and

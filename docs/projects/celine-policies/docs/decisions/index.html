@@ -4149,6 +4149,14 @@ edited to say something else.</p>
 <td><a href="ADR-0009-what-the-realm-import-carried-is-declared/">ADR-0009</a></td>
 <td>What the realm import carried is declared: <code>oauth2_proxy</code> in <code>clients.yaml</code>, the operator realm admin in <code>bootstrap</code>, the dev users in <code>seed-dev-users</code></td>
 </tr>
+<tr>
+<td><a href="ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a></td>
+<td>On a deployed realm, members arrive through onboarding and a community's organization through the provisioning reconcile, called by onboarding; <code>sync-users</code> and the YAML seed are local development, and <code>sync-users</code> refuses unless <code>ENV=dev</code> (refines ADR-0006 and ADR-0008)</td>
+</tr>
+<tr>
+<td><a href="ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/">ADR-0011</a></td>
+<td>The manager dashboard writes a member's meter, role and area with optional registry scopes; <code>rec-registry.members.profile.write</code> is declared</td>
+</tr>
 </tbody>
 </table>
 

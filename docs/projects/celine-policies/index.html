@@ -4528,7 +4528,7 @@ not how often it changes:</p>
 </tr>
 <tr>
 <td><strong>organizations and users</strong>: REC organizations, org groups, participants, memberships</td>
-<td>the provisioning service, <code>keycloak sync-orgs</code>, <code>keycloak sync-users</code></td>
+<td>the provisioning service (<code>POST /reconcile/{community}</code> creates a REC's organization, org roles and groups, even with no members; <code>PUT /participants</code> files a participant), <code>keycloak set-user-organization</code> (a manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>keycloak sync-orgs</code>; <code>keycloak sync-users</code> in local development only — see <a href="docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a></td>
 <td>the registry, owners and REC YAML</td>
 </tr>
 </tbody>
@@ -4631,7 +4631,7 @@ curl http://localhost:8009/health
 <h2 id="cli-commands">CLI Commands</h2>
 <pre><code class="language-bash">celine-policies keycloak bootstrap       # Converge platform.yaml; create the admin-cli service account
 celine-policies keycloak sync            # Sync clients.yaml scopes/clients to Keycloak
-celine-policies keycloak sync-users      # Import users from REC registry YAML
+celine-policies keycloak sync-users      # Import users from REC registry YAML (ENV=dev only; see ADR-0010)
 celine-policies keycloak sync-orgs       # Import organizations from owners YAML
 celine-policies keycloak set-password    # Set a user's password (development realms only)
 celine-policies keycloak seed-dev-users  # Create admin, manager, editor, viewer (development realms only)

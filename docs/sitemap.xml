@@ -261,6 +261,10 @@
          <lastmod>2026-09-28</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-frontend/docs/decisions/ADR-0001-the-community-area-map-uses-leaflet-and-openstreetmap-tiles/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-grid/</loc>
          <lastmod>2026-09-28</lastmod>
     </url>
@@ -626,6 +630,30 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0009-what-the-realm-import-carried-is-declared/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/decisions/ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/client-grants/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/keycloak-cli/</loc>
+         <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/provisioning/</loc>
          <lastmod>2026-09-28</lastmod>
     </url>
     <url>

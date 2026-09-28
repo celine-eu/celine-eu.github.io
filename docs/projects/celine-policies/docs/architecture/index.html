@@ -4437,7 +4437,12 @@ run instead of writing them:</p>
 <ol>
 <li><strong>platform</strong> — <code>platform.yaml</code>, written by <code>bootstrap</code>;</li>
 <li><strong>clients</strong> — <code>clients.yaml</code>, written by <code>sync</code>;</li>
-<li><strong>organizations and users</strong> — written by <code>sync-orgs</code>, <code>sync-users</code> and the provisioning service.</li>
+<li><strong>organizations and users</strong> — written by the provisioning service (its
+   <code>POST /reconcile/{community}</code>, called by onboarding's registry sync, creates a REC's
+   organization, org roles and groups, even with no members), <code>set-user-organization</code> (a
+   manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>sync-orgs</code>, and
+   <code>sync-users</code> in local development only
+   (<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).</li>
 </ol>
 <p><strong>Commands:</strong>
 - <code>bootstrap</code> — converge the platform level from <code>platform.yaml</code> (only the keys it declares;
@@ -4453,6 +4458,9 @@ run instead of writing them:</p>
   grant <code>admin_permissions</code> on a realm where <code>bootstrap</code> has not turned them on
 - <code>sync-users</code> — create Keycloak users from a <code>rec-registry</code> REC definition YAML, and
   file them in the groups <code>clients.yaml</code> declares a service account may administer.
+  Local development only: on a deployed realm members arrive through onboarding
+  (<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>),
+  and it refuses unless <code>ENV=dev</code> (or <code>local</code>, <code>test</code>, <code>ci</code>), as <code>seed-dev-users</code> does.
   <code>--invite</code> creates them with no password and invites each account it created in that
   run, under the provisioning service's email settings
 - <code>sync-orgs</code> — create Keycloak organizations from an <code>owners.yaml</code>
@@ -4462,7 +4470,9 @@ run instead of writing them:</p>
 - <code>seed-dev-users</code> — create the development users (<code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code>, from
   <code>config/keycloak/dev-users.yaml</code>) with their groups; development realms only, and a password is
   never reset
-- <code>set-user-organization</code> — assign a user to organizations and org-level groups
+- <code>set-user-organization</code> — assign a user to organizations and org-level groups; group names
+  are plural (<code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code>) and a group the organization does not
+  have is refused, so it runs after the reconcile has created the organization
 - <code>status</code> — show current scopes, clients, and assignments</p>
 <p>Authentication to Keycloak uses either admin user credentials (<code>--admin-user</code>) or a service account client (<code>celine-admin-cli</code>) whose secret is stored in <code>.client.secrets.yaml</code> after bootstrap. Both <code>bootstrap</code> and <code>sync</code> write that file through one merging writer, so a sync cannot delete the credential a bootstrap put there; it holds one realm at a time.</p>
 <h3 id="4-rego-policies">4. Rego Policies</h3>

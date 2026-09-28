@@ -4795,7 +4795,8 @@ brute force, <code>smtpServer</code>, the realm role groups) is written by <code
 bootstrap</code>, never by the realm import. It runs in the <code>policies-shell</code> pod's init containers:
 plan (with a realm export first), apply, then a check that must find nothing left to change.
 Only then does the shell run <code>keycloak sync</code>. <code>sync-orgs</code> and <code>sync-users</code> refuse a realm that
-has not been through both.</p>
+has not been through both, and <code>sync-users</code> refuses outright unless <code>ENV</code> names a non-production environment (<code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code>, <code>ci</code>): a deployed realm
+gets its users from onboarding, not from a YAML.</p>
 <p>The run's export, plan, apply and check output is stored under
 <code>&lt;bucket&gt;/&lt;environment&gt;/&lt;UTC time&gt;-&lt;policies_shell.image_tag&gt;/</code>. Pin <code>policies_shell.image_tag</code>
 to a release: the tag is the version of <code>platform.yaml</code>.</p>

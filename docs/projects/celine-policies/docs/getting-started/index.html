@@ -4568,8 +4568,14 @@ creates and updates only: every removal is held back and listed instead (see the
 "Adding without removing"). <code>CELINE_KEYCLOAK_SYNC_ADDITIVE=true</code> does the same from the
 environment; <code>--additive</code> / <code>--no-additive</code> override it.</p>
 <h3 id="step-4-sync-users-optional">Step 4: Sync Users (optional)</h3>
+<p>Local development only: on a deployed realm members arrive through onboarding
+(<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).
+<code>sync-users</code> runs only with <code>ENV=dev</code> (or <code>local</code>, <code>test</code>, <code>ci</code>), the guard <code>seed-dev-users</code>
+uses: unset, <code>prod</code>, <code>staging</code> or anything else, it refuses before it reads a source or
+asks Keycloak anything, <code>--dry-run</code> and <code>--check</code> included. <code>task keycloak:sync-users*</code>
+and the compose stack's <code>sync-users</code> service set it.</p>
 <p>Import users from a <code>rec-registry</code> REC definition YAML:</p>
-<pre><code class="language-bash">celine-policies keycloak sync-users ../rec-registry/recs/rec-example.yaml \
+<pre><code class="language-bash">ENV=dev celine-policies keycloak sync-users ../rec-registry/recs/rec-example.yaml \
     --password &quot;demo&quot; --mock
 </code></pre>
 <p>The <code>--mock</code> flag fills placeholder email/name fields for development.</p>
@@ -4654,7 +4660,7 @@ task debug            # Start with debugger attached
 task test             # Run pytest suite
 task keycloak:bootstrap   # Bootstrap admin client
 task keycloak:sync        # Sync clients.yaml to Keycloak
-task keycloak:sync-users  # Sync example REC users
+task keycloak:sync-users  # Sync example REC users (sets ENV=dev)
 task keycloak:sync-orgs   # Sync organizations from owners.yaml
 </code></pre>
 <h2 id="cli-reference">CLI Reference</h2>

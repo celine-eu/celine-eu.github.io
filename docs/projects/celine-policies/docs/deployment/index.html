@@ -4773,7 +4773,7 @@
 <td><code>sync-users</code></td>
 <td>Same as <code>mqtt_auth</code></td>
 <td>—</td>
-<td>Imports example REC users, then exits</td>
+<td>Imports example REC users with <code>ENV=dev</code>, then exits</td>
 </tr>
 <tr>
 <td><code>mqtt_auth</code></td>
@@ -5233,18 +5233,29 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <h4 id="which-source-a-run-reconciles">Which source a run reconciles</h4>
 <p>A <strong>file</strong> is a picture of the community at export time, so a run against one
 leaves out everybody <code>onboarding</code> has approved since it was taken. A run against
-the <strong>registry</strong> reconciles what is true. Both are supported and neither is
-deprecated: bootstrap runs before the registry holds anything, and an offline run
-is a real case.</p>
-<pre><code class="language-bash"># the file path, unchanged
-celine-policies keycloak sync-users example-rec.yaml
+the <strong>registry</strong> reconciles what is true. Both are supported <strong>for local
+development</strong>: a developer's realm is set up before the registry holds anything,
+and an offline run is a real case there.</p>
+<p><strong><code>sync-users</code> runs only with <code>ENV=dev</code></strong> (or <code>local</code>, <code>test</code>, <code>ci</code>: the guard
+<code>seed-dev-users</code> uses, <code>KeycloakSettings.is_production</code>). Unset, <code>prod</code>, <code>staging</code> or
+any other value, it exits 1 before it reads a source or asks Keycloak anything,
+<code>--dry-run</code> and <code>--check</code> included, and says to set <code>ENV=dev</code> if the realm is a
+development one. <code>CELINE_KEYCLOAK_ENV</code> and <code>CELINE_ENV</code> outrank <code>ENV</code>.</p>
+<p><strong>On a deployed realm <code>sync-users</code> writes nothing, from either source.</strong> Members
+arrive through <code>onboarding</code>, and a community's organization, org roles and org
+groups come from the provisioning service's <code>POST /reconcile/{community}</code>, which
+onboarding calls; a manager's <code>managers</code> group is added with
+<code>keycloak set-user-organization</code>. See
+<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>.</p>
+<pre><code class="language-bash"># the file path
+ENV=dev celine-policies keycloak sync-users example-rec.yaml
 
 # the live registry, every community it holds
-celine-policies keycloak sync-users --from-registry \
+ENV=dev celine-policies keycloak sync-users --from-registry \
   --registry-url http://api.celine.localhost/rec-registry
 
 # one community, and report divergence without writing anything
-celine-policies keycloak sync-users --from-registry \
+ENV=dev celine-policies keycloak sync-users --from-registry \
   --registry-url http://api.celine.localhost/rec-registry \
   --community example-renewable-community --check
 </code></pre>

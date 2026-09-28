@@ -4055,6 +4055,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="The records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4105,8 +4122,30 @@ is not derivable from the code and would otherwise be re-litigated.</p>
 <p>An ADR is immutable once accepted. It is superseded by a later ADR that names it, never
 edited to say something else.</p>
 <h2 id="the-records">The records</h2>
-<p><TODO: a one-line table as they accumulate. An index nobody updates is worse than none,
-so either keep it or delete this section.></p>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="ADR-0001-the-community-area-map-uses-leaflet-and-openstreetmap-tiles/">ADR-0001</a></td>
+<td>The community dashboard's area map uses leaflet and OpenStreetMap's public tiles, as <code>packages/roi-ui</code> does; the tile server seeing managers' requests is accepted</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementation-notes">Implementation notes</h3>
+<p>An accepted ADR is not edited, so what has landed since it was written is recorded here.</p>
+<ul>
+<li><strong>ADR-0001 is implemented.</strong> Its opening paragraph says nothing is implemented yet; that is no longer
+  true. The map is <code>apps/community/src/lib/components/AreaMap.svelte</code> with
+  <code>apps/community/src/lib/areaMap.ts</code>, drawn in the members page's role-and-area dialog
+  (<code>apps/community/README.md</code>). <code>apps/community/tests/area-map.test.mjs</code> checks the module;
+  <code>e2e/community-area-map.spec.ts</code> renders the map in Chromium against the UI dev server with
+  the BFF and the tile server stubbed.</li>
+</ul>
 
 
 
