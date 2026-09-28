@@ -2251,10 +2251,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#missing-injectable-service" class="md-nav__link">
+  <a href="#no-client-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Missing injectable service
+        No client credentials
       
     </span>
   </a>
@@ -4587,10 +4587,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#missing-injectable-service" class="md-nav__link">
+  <a href="#no-client-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Missing injectable service
+        No client credentials
       
     </span>
   </a>
@@ -4649,7 +4649,7 @@ to access external data sources.</p>
 <h2 id="overview">Overview</h2>
 <p>Clients are configured in <code>config/clients.yaml</code> and:
 - Are dynamically loaded at startup
-- Can receive injected services (e.g., token providers)
+- Receive the Digital Twin's token provider when their constructor takes one
 - Are registered in the <code>ClientsRegistry</code>
 - Are accessible by name from value fetchers
 - Are accessible from domain and event handlers through the registry</p>
@@ -4658,11 +4658,10 @@ to access external data sources.</p>
 <p>Create or edit <code>config/clients.yaml</code>:</p>
 <pre><code class="language-yaml">clients:
   dataset_api:
-    class: celine.dt.core.datasets.dataset_api:DatasetSqlApiClient
-    inject:
-      - token_provider
+    class: celine.dt.core.clients.dataset_api:DatasetSqlApiClient
+    scope: dataset.query
     config:
-      base_url: &quot;${DATASET_API_URL:-http://localhost:8001}&quot;
+      base_url: &quot;${DATASET_API_BASE_URL:-http://host.docker.internal:8001}&quot;
       timeout: 30.0
 
   weather_api:
@@ -4688,9 +4687,9 @@ to access external data sources.</p>
 <td>Import path to the client class (<code>module:ClassName</code>)</td>
 </tr>
 <tr>
-<td><code>inject</code></td>
+<td><code>scope</code></td>
 <td>No</td>
-<td>List of services to inject from app state</td>
+<td>The scope the Digital Twin's own client-credentials token is requested with, for this client</td>
 </tr>
 <tr>
 <td><code>config</code></td>
@@ -4699,6 +4698,16 @@ to access external data sources.</p>
 </tr>
 </tbody>
 </table>
+<p><strong>The token provider is injected by signature.</strong> A client whose constructor takes
+<code>token_provider</code> receives the Digital Twin's OIDC client-credentials provider (client
+<code>svc-digital-twin</code>, secret <code>CELINE_OIDC_CLIENT_SECRET</code>), requesting the client's <code>scope</code>
+when one is given. There is no <code>inject</code> key; one in a file is ignored.</p>
+<p><strong>Whose token reaches <code>dataset-api</code>.</strong> <code>DatasetSqlApiClient</code> forwards the caller's token
+when a fetcher passes the request context, which is the default. A fetcher declared
+<code>identity="service"</code> passes none, and the client then authenticates with that provider's
+token; with no provider, or one that cannot get a token, it sends nothing and the route
+answers 503 <code>service_identity_unavailable</code> (<a href="../values/#reference-boundaries">values.md</a>,
+REQ-1125, REQ-1129).</p>
 <hr />
 <h2 id="environment-variable-substitution">Environment Variable Substitution</h2>
 <p>Configuration values support environment variable substitution:</p>
@@ -4731,32 +4740,16 @@ to access external data sources.</p>
 </code></pre>
 <hr />
 <h2 id="dependency-injection">Dependency Injection</h2>
-<p>Clients can receive services from the application state via the <code>inject</code> list.</p>
-<p>Currently available injectable services:</p>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>token_provider</code></td>
-<td>OIDC token provider for authenticated requests</td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
+<p>The one injected service is <code>token_provider</code>, the Digital Twin's OIDC client-credentials
+provider. It is injected by signature, not by a YAML key: a client class that accepts
+<code>token_provider</code> as a constructor argument receives it, scoped to the client's <code>scope</code>.</p>
 <pre><code class="language-yaml">clients:
   authenticated_api:
     class: my.module:AuthenticatedClient
-    inject:
-      - token_provider
+    scope: my-service.read
     config:
       base_url: &quot;${API_URL}&quot;
 </code></pre>
-<p>The client class must accept <code>token_provider</code> as a constructor argument:</p>
 <pre><code class="language-python">class AuthenticatedClient:
     def __init__(
         self,
@@ -4891,11 +4884,15 @@ await nudging_admin_client.ingest_event(DigitalTwinEvent.from_dict(payload))
 is not set and no default provided
 </code></pre>
 <p><strong>Solution</strong>: Set the environment variable or provide a default.</p>
-<h3 id="missing-injectable-service">Missing injectable service</h3>
-<pre><code>ValueError: Client 'my_client' requires injectable service 'token_provider' 
-but it was not provided
+<h3 id="no-client-credentials">No client credentials</h3>
+<pre><code>INFO - No OIDC base_url configured — token provider disabled
+WARNING - OIDC base_url set but client_id/client_secret missing — token provider disabled
 </code></pre>
-<p><strong>Solution</strong>: Ensure OIDC is configured if using <code>token_provider</code>.</p>
+<p>The clients are still registered, with no token provider. Fetchers that forward the
+caller's token work; a <code>"service"</code> fetcher answers 503 <code>service_identity_unavailable</code> and
+sends nothing.</p>
+<p><strong>Solution</strong>: Configure the Digital Twin's own OIDC client (base URL and
+<code>CELINE_OIDC_CLIENT_SECRET</code>).</p>
 <h3 id="invalid-class-path">Invalid class path</h3>
 <pre><code>ImportError: Cannot import module 'nonexistent.module'
 </code></pre>

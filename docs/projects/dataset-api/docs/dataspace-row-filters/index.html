@@ -4044,6 +4044,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Handlers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rec_registry-on-the-normal-api-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rec_registry on the normal API path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4162,6 +4179,28 @@
     <span class="md-ellipsis">
       
         RF-10 — The disclosure names the subjects by DID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rf-11-a-caller-with-no-metered-asset-gets-no-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RF-11 — A caller with no metered asset gets no rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rf-12-a-caller-who-is-no-registry-member-gets-no-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RF-12 — A caller who is no registry member gets no rows
       
     </span>
   </a>
@@ -4296,7 +4335,30 @@ Each clause below names its tests.</p>
 <p>Handler names belong to the data plane, not to ds: ds passes the name through
 from <code>governance.yaml</code> and never interprets it. The two ends agree through that
 file, which the connector reads and this service must recognise.</p>
+<h3 id="rec_registry-on-the-normal-api-path"><code>rec_registry</code> on the normal API path</h3>
+<p>The same handler serves requests that do not come through the dataspace, where
+<code>principals</code> is absent, and it decides by who the caller is, in this order:</p>
+<ol>
+<li><strong><code>principals</code> present</strong>, even empty: a delegated request, resolved for the
+   named members on this service's identity (RF-05).</li>
+<li><strong>A service account</strong>: not narrowed at all. A service is not a registry
+   member, has no meters of its own, and has already passed the policy's
+   <code>dataset.query</code> check; the handler returns no predicate and the whole table
+   is served.</li>
+<li><strong>A person</strong>: the registry is asked for the caller's own assets with the
+   caller's token, and the rows narrow to their sensor ids — or to no rows
+   when they own no metered asset (RF-11) or are no member at all (RF-12).</li>
+</ol>
+<p>The second case is deliberate and easy to miss. Any service allowed to query a
+<code>rec_registry</code>-filtered dataset reads every member's rows, so a service that
+relays those rows to a person narrows them itself — or forwards the person's
+token, as the Digital Twin does for a participant's queries, so that the third
+case applies. The order is what keeps a delegated request from ever reaching the
+second case: a dataspace query always arrives on a service identity.
+Code: <code>src/celine/dataset/api/dataset_query/row_filters/handlers/rec_registry.py</code>.</p>
 <h2 id="clauses">Clauses</h2>
+<p>A clause marked <strong>planned</strong> states behaviour decided but not yet in the code;
+the change that lands it adds its tests and removes the status line.</p>
 <h3 id="rf-01-the-filter-travels-whole">RF-01 — The filter travels whole</h3>
 <p>A verdict's <code>row_filter</code> carries <code>handler</code>, <code>args</code>, <code>principals</code>, <code>keys</code> and
 <code>subject_dids</code>, never a column and a list of ids. A decision reduced to a column
@@ -4412,6 +4474,79 @@ dataspace query for as long as the two are out of step (RF-02).</p>
 subjects, and an empty list would read as <em>authorised for nobody</em>.
 Tests: <code>tests/security/test_dataplane_row_filter_contract.py</code>,
 <code>tests/dps/test_pull.py</code>, <code>tests/api/test_edr_subject_key_filter.py</code>.</p>
+<h3 id="rf-11-a-caller-with-no-metered-asset-gets-no-rows">RF-11 — A caller with no metered asset gets no rows</h3>
+<p>On the self-service path (a person's own token, <code>principals</code> absent), a caller
+whose registry assets carry no sensor id is answered with no rows — a <code>deny</code>
+plan, the shape RF-05 and the delegated path already use — and never with
+<code>column IN ()</code>. That caller is ordinary, not an edge case: it is every member
+between approval and a manager attaching their meter.</p>
+<p>The handler used to build the predicate from whatever the list held, and an
+empty list rendered <code>IN ()</code>, which PostgreSQL rejects as a syntax error; the
+query failed where it should have answered empty. An empty assets page is a
+valid answer and reaches the deny, not a 500. The distinction RF-05 draws
+holds here too: a registry that cannot be reached, or gives no answer at all,
+is still an error, never read as "owns nothing".
+Issue: <a href="https://github.com/celine-eu/dataset-api/issues/74">celine-eu/dataset-api#74</a>.
+Tests: <code>tests/api/dataset_query/test_rec_registry_self_service.py</code> — a caller
+with no assets, and a caller whose only assets have no sensor id, each answered
+with a deny that renders no <code>IN</code> and executes to no rows; metered assets still
+narrow to their sensor ids; no answer and a registry failure stay errors.</p>
+<h3 id="rf-12-a-caller-who-is-no-registry-member-gets-no-rows">RF-12 — A caller who is no registry member gets no rows</h3>
+<p>On the self-service path, the registry answers <code>GET /user/assets</code> for a person
+with no membership in any community with
+<code>403 {"detail": "You are not a member of any community", "code": "not_a_member"}</code>
+(rec-registry's error-code vocabulary; a registry older than the codes sends the
+detail alone). That answer is a fact about the caller, not a failure: they own
+no asset, so no row is theirs, and the handler answers with the same <code>deny</code> plan
+as RF-11. Before, the SDK's <code>UnexpectedStatus</code> propagated and the query failed
+with a 500.</p>
+<p>Only that answer maps to a deny. The status must be 403 and the body the
+registry's own JSON object, judged this way:</p>
+<ul>
+<li>a body with a <code>code</code> is judged by the code alone: <code>not_a_member</code> is the
+  answer whatever the detail says, so the registry may reword its sentence; any
+  other code (or a code that is not that exact string) is not, even beside the
+  old detail;</li>
+<li>a body with no <code>code</code> (or <code>code: null</code>) — a registry that predates the codes —
+  is the answer only with the exact detail above.</li>
+</ul>
+<p>It is the only 403 that route gives — the registry's middleware answers a
+missing or invalid token with 401 — but a bare 403 could come from anything in
+front of the registry (a gateway, a proxy), and reading that as "owns nothing"
+would turn an outage or a misconfiguration into a silent deny. Every other
+answer stays an error, as RF-05 draws the line: a 403 with any other body or
+code, a 401, a 404 or 5xx (even carrying the same code or words), an unreachable
+registry. The deny is cached like any plan (RF-07), so a person who becomes a
+member sees their rows once the cache entry expires.</p>
+<p>The handler asks through the SDK's public <code>RecRegistryUserClient.get_my_assets</code>
+(celine-sdk REQ-0132), which raises <code>RecRegistryApiError</code> on anything but a
+readable 200 — never <code>UnexpectedStatus</code> — carrying the status, the raw body and
+the registry's <code>code</code> and <code>detail</code> read from the top level of a JSON object
+body (<code>None</code> for a body that is not one). The match reads that error: status
+403, then the <code>code</code>, then — only when the body names no <code>code</code> at all — the
+detail. A <code>code</code> the SDK does not read (one that is not a string) still counts
+as a code, so it never falls through to the detail match. Any other exception
+is not the answer. A failure is logged with its status and code only, not the
+registry's sentence. This needs a celine-sdk that carries REQ-0132, the
+1.21.0 release: <code>pyproject.toml</code> requires <code>celine-sdk&gt;=1.21.0</code>. Against 1.20.0,
+<code>get_my_assets</code> raises <code>UnexpectedStatus</code> on the 403 (or returns <code>None</code>) and the
+answer is a 500 (the loud side), never a deny. Until 1.21.0 is on PyPI, <code>uv lock</code>
+cannot meet the floor and <code>uv.lock</code> still pins 1.20.0; an image built from that
+lock (the Dockerfile's <code>uv sync --frozen</code> does not check the lock against
+<code>pyproject.toml</code>) would carry the 500, so this change does not ship until the
+lock is refreshed. Tests run against the editable SDK checkout in <code>.venv</code>.
+<code>tests/test_sdk_dependency_floor.py</code> pins the floor.
+Code: <code>_is_not_a_member</code> in
+<code>src/celine/dataset/api/dataset_query/row_filters/handlers/rec_registry.py</code>.
+Tests: <code>tests/api/dataset_query/test_rec_registry_not_a_member.py</code> — the real SDK
+client over a mocked transport: the coded answer, the coded answer reworded and
+the detail-only answer are each a deny that executes to no rows, logged without
+the caller; each other status, body and code above, and an unreachable
+registry, still raise; a raw <code>UnexpectedStatus</code> carrying the answer is not read;
+the handler goes through the public call and no private part of the client; a
+failure's log carries status and code, not the sentence; a member's 200 on the
+wire still narrows to its sensor ids, a 200 with no items is RF-11's deny, and
+an unreadable 200 raises.</p>
 <h2 id="configuring-a-dataset-for-it">Configuring a dataset for it</h2>
 <p>In <code>governance.yaml</code>, on the dataset the holder serves:</p>
 <pre><code class="language-yaml">consent_required: true

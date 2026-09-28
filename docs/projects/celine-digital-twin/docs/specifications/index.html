@@ -4069,6 +4069,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#planned-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planned requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#writing-one" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4116,7 +4127,7 @@ elsewhere disagrees with a requirement here, the requirement is the one that was
 </tr>
 <tr>
 <td><a href="values/">values.md</a></td>
-<td>value fetcher registration, execution, validation, pagination</td>
+<td>value fetcher registration, execution, validation, pagination; the service identity a fetcher may declare, and what the Digital Twin logs; the reference-boundary fetchers</td>
 </tr>
 <tr>
 <td><a href="query-templates/">query-templates.md</a></td>
@@ -4169,13 +4180,25 @@ next to the assertion instead.</p>
 <p>Two consequences worth stating, because both are easy to get wrong:</p>
 <ul>
 <li><strong>A requirement with no tag is unverified</strong>, and that is a finding rather than a
-  formatting slip. <code>tests/test_traceability.py</code> fails on it.</li>
+  formatting slip. <code>tests/test_traceability.py</code> fails on it, unless the requirement is
+  marked planned (below).</li>
 <li><strong>A tag naming a requirement that does not exist</strong> is also a failure. Renumbering a
   requirement without moving its tags breaks the trace silently otherwise.</li>
 </ul>
 <p><code>tests/test_traceability.py</code> enforces both directions in the ordinary suite, so the answer
 to "is this verified?" is available from <code>uv run pytest</code> alone — the harness checker
 (<code>python -m harness .</code>) is not installed in every checkout.</p>
+<h2 id="planned-requirements">Planned requirements</h2>
+<p>A requirement may be written <strong>ahead of the code</strong>, marked planned
+(<a href="../decisions/ADR-0002-requirements-may-land-ahead-of-the-code/">ADR-0002</a>): a line
+<code>**Status:** planned</code> directly under its heading, and no <code>@verifies</code> tag yet. The change that
+makes it true lands its tests with their tags and removes the status line in the same change.
+A requirement with no status line is implemented. A planned one is a design commitment, not
+something a caller may use yet.</p>
+<p><code>tests/test_traceability.py</code> exempts a planned requirement from the "no tag" check, fails on
+a tag naming one, and fails on a status line that says anything but <code>planned</code>. The harness
+checker does not read the status line and reports a planned requirement as uncovered, which
+is the honest reading: nothing verifies it yet.</p>
 <h2 id="writing-one">Writing one</h2>
 <ul>
 <li><strong>State behaviour, not implementation.</strong> "An unknown fetcher id answers 404", not

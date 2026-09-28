@@ -4571,9 +4571,10 @@
 <ul>
 <li><code>POST /query</code> — accepts <code>{"sql": "SELECT ...", "limit": 50, "offset": 0, "skip_count": false}</code></li>
 <li>Validates SQL (SELECT-only, table allowlist, function allowlist)</li>
-<li>Supports spatial PostGIS functions: <code>ST_Intersects</code>, <code>ST_Within</code>, <code>ST_Contains</code>, <code>ST_Transform</code>, <code>ST_Distance</code>, <code>ST_SetSRID</code>, <code>ST_GeomFromGeoJSON</code>, <code>ST_Point</code>, <code>ST_XMin/YMin/XMax/YMax</code>, <code>ST_Extent</code></li>
+<li>Supports spatial PostGIS functions: <code>ST_Intersects</code>, <code>ST_Within</code>, <code>ST_Contains</code>, <code>ST_Transform</code>, <code>ST_Distance</code>, <code>ST_SetSRID</code>, <code>ST_GeomFromGeoJSON</code>, <code>ST_Point</code>, <code>ST_XMin/YMin/XMax/YMax</code>, <code>ST_Extent</code>, and <code>ST_AsGeoJSON</code>/<code>ST_Simplify</code> for a shape at a bounded size (QE-01)</li>
+<li>Admits a unary minus on a numeric literal only, so <code>ST_Point(-0.05, 45.1)</code> parses (QE-02)</li>
 <li>Supports <code>IN</code> clauses with tuples, string/numeric/date functions, aggregates</li>
-<li>Enforces <code>LIMIT</code>/<code>OFFSET</code> server-side</li>
+<li>Enforces <code>LIMIT</code>/<code>OFFSET</code> server-side, after the statement's top-level <code>ORDER BY</code> (carried onto the page query where its keys name selected columns; see QE-04 in the query engine docs)</li>
 <li>Configurable query timeout via <code>QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000ms)</li>
 <li><code>skip_count: true</code> skips the <code>COUNT(*)</code> query to avoid full table scans</li>
 <li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>http_in_list</code>, <code>table_pointer</code>)</li>
@@ -4713,6 +4714,9 @@ its own instance.</p>
 <pre><code class="language-bash">uv sync
 uv run pytest          # or: task test
 </code></pre>
+<p><code>pyproject.toml</code> requires <code>celine-sdk&gt;=1.21.0</code>, the first release whose registry
+self-service calls raise <code>RecRegistryApiError</code> with the registry's <code>code</code> (RF-12 in
+<a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>); <code>uv.lock</code> pins it.</p>
 <p>The API, governance and DPS tests need a real PostgreSQL with PostGIS. <strong>They never use
 the database <code>DATABASE_URL</code> names</strong>, because their fixtures drop and recreate the
 catalogue schema on every test:</p>
@@ -4726,6 +4730,11 @@ in <code>_test</code>, or which is the one <code>DATABASE_URL</code> or <code>DA
 (<code>tests/testdb.py</code>). The SQL parser tests need no database. The process e2e in
 <code>tests/e2e</code> runs with <code>DATASET_API_E2E=1</code> and creates, then drops, two more <code>*_test</code>
 databases on the same server.</p>
+<p><strong>One test database per server, so run one suite at a time.</strong> Every run on a server uses
+the same <code>*_test</code> database and its fixtures drop and recreate the catalogue schema on every
+test, so two runs at once (two checkouts, or a run beside an agent's) fail each other's
+tests at random. Give a concurrent run its own <code>TEST_DATABASE_URL</code> (a name ending in
+<code>_test</code>, such as <code>.../datasets_b_test</code>; it is created on first use).</p>
 <p>Before opening a PR:
 - validate all YAML definitions
 - add tests for new API behaviour

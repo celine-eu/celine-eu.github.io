@@ -4459,7 +4459,7 @@ into a cohesive, entity-scoped API surface.</p>
 <tr>
 <td>Energy Community</td>
 <td><code>/communities/it/{community_id}</code></td>
-<td><code>rec_self_consumption</code>, <code>rec_self_consumption_daily</code>, <code>rec_settlement_1h</code>, <code>weather_current</code>, <code>pv_potential_forecast</code></td>
+<td><code>rec_self_consumption</code>, <code>rec_self_consumption_daily</code>, <code>rec_settlement_1h</code>, <code>weather_current</code>, <code>pv_potential_forecast</code>, <code>boundary_at_point</code>, <code>boundary_shape</code></td>
 </tr>
 <tr>
 <td>Participant</td>
@@ -4550,7 +4550,10 @@ under its entity scope, plus whatever its <code>routes/</code> package exports. 
    <code>{{ entity.metadata.zone | sql_list }}</code></p>
 </li>
 <li>
-<p><strong>Bind parameters</strong> handle safe value injection: <code>:start</code>, <code>:end</code></p>
+<p><strong>Bind parameters</strong> handle safe value injection: <code>:start</code>, <code>:end</code>. They are
+   substituted only outside quoted literals, so a <code>:name</code> inside a string (one a
+   template wrote, or one <code>sql_list</code>/<code>sql_quote</code> rendered from a caller's value) stays
+   text. Templates must not use <code>E'...'</code> literals.</p>
 </li>
 </ol>
 <pre><code class="language-sql">SELECT timestamp, kwh

@@ -4202,6 +4202,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1115-when-a-fetcher-declares-a-payload_schema-a-nan-or-infinite-number-anywhere-in-the-payload-must-answer-400-and-must-not-reach-the-data-client-the-answer-and-the-log-must-name-the-property-and-must-not-carry-the-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1115 — When a fetcher declares a payload_schema, a NaN or infinite number anywhere in the payload MUST answer 400, and MUST NOT reach the data client; the answer and the log MUST name the property and MUST NOT carry the value.
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4231,10 +4242,65 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-1121-the-request-context-must-be-passed-to-the-client-with-the-query" class="md-nav__link">
+  <a href="#req-1121-the-request-context-must-be-passed-to-the-client-with-the-query-unless-the-fetcher-declares-the-service-identity-req-1125" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-1121 — The request context MUST be passed to the client with the query.
+        REQ-1121 — The request context MUST be passed to the client with the query, unless the fetcher declares the service identity (REQ-1125).
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1125-a-fetcher-that-declares-identityservice-must-reach-its-client-with-no-request-context-so-that-the-client-authenticates-with-the-digital-twins-own-service-token-and-must-not-forward-the-callers-token-the-route-must-still-require-an-authenticated-caller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1125 — A fetcher that declares identity="service" MUST reach its client with no request context, so that the client authenticates with the Digital Twin's own service token and MUST NOT forward the caller's token; the route MUST still require an authenticated caller.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1126-when-dataset-api-answers-an-error-the-digital-twins-log-must-carry-the-status-and-a-short-code-derived-from-the-status-and-must-not-carry-the-response-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1126 — When dataset-api answers an error, the Digital Twin's log MUST carry the status and a short code derived from the status, and MUST NOT carry the response body.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1127-the-digital-twins-log-must-not-carry-a-rendered-statement-or-any-part-of-it-a-fetch-is-logged-by-its-fetcher-id-limit-and-offset-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1127 — The Digital Twin's log MUST NOT carry a rendered statement or any part of it; a fetch is logged by its fetcher id, limit and offset only.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1128-the-authorization-header-the-digital-twin-sends-to-dataset-api-must-carry-exactly-one-bearer-scheme-followed-by-the-token-whether-the-token-is-the-callers-or-the-digital-twins-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1128 — The Authorization header the Digital Twin sends to dataset-api MUST carry exactly one Bearer scheme followed by the token, whether the token is the caller's or the Digital Twin's own.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1129-when-a-fetcher-that-declares-identityservice-req-1125-is-fetched-and-the-digital-twin-has-no-token-provider-configured-or-its-token-provider-fails-to-obtain-a-token-the-fetch-must-answer-503-with-the-code-service_identity_unavailable-and-must-not-send-the-statement-to-dataset-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1129 — When a fetcher that declares identity="service" (REQ-1125) is fetched and the Digital Twin has no token provider configured, or its token provider fails to obtain a token, the fetch MUST answer 503 with the code service_identity_unavailable, and MUST NOT send the statement to dataset-api.
       
     </span>
   </a>
@@ -4357,6 +4423,144 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#reference-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference boundaries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference boundaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1150-boundary_at_point-and-boundary_shape-must-declare-source-as-a-required-closed-enum-in-their-payload_schema-whose-only-value-is-gse_cabine_primarie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1150 — boundary_at_point and boundary_shape MUST declare source as a required, closed enum in their payload_schema, whose only value is gse_cabine_primarie.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1151-a-source-outside-that-enum-must-answer-400-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1151 — A source outside that enum MUST answer 400, and MUST NOT reach the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1152-boundary_at_point-must-require-lat-and-lon-as-numbers-within-9090-and-180180-wgs-84-degrees-and-must-answer-400-for-a-value-outside-those-ranges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1152 — boundary_at_point MUST require lat and lon as numbers within −90..90 and −180..180 (WGS 84 degrees), and MUST answer 400 for a value outside those ranges.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1153-boundary_at_point-must-answer-at-most-one-row-and-that-rows-id-must-name-a-boundary-of-the-requested-source-whose-shape-covers-the-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1153 — boundary_at_point MUST answer at most one row, and that row's id MUST name a boundary of the requested source whose shape covers the point.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1154-a-point-that-no-boundary-of-the-source-covers-must-answer-200-with-no-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1154 — A point that no boundary of the source covers MUST answer 200 with no rows.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1155-a-point-covered-by-more-than-one-boundary-on-an-edge-they-share-or-where-two-shapes-overlap-must-answer-the-boundary-with-the-lowest-id-in-lexical-order-the-same-on-every-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1155 — A point covered by more than one boundary — on an edge they share, or where two shapes overlap — MUST answer the boundary with the lowest id in lexical order, the same on every call.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1156-boundary_shape-must-answer-one-row-per-requested-id-that-the-source-knows-carrying-that-id-and-its-shape-as-geojson-and-must-not-answer-any-id-that-was-not-requested" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1156 — boundary_shape MUST answer one row per requested id that the source knows, carrying that id and its shape as GeoJSON, and MUST NOT answer any id that was not requested.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1157-an-id-the-source-does-not-know-must-be-absent-from-the-boundary_shape-answer-not-an-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1157 — An id the source does not know MUST be absent from the boundary_shape answer, not an error.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1158-an-empty-ids-must-answer-200-with-no-rows-and-must-not-send-a-statement-containing-an-empty-list-to-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1158 — An empty ids MUST answer 200 with no rows, and MUST NOT send a statement containing an empty list to the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1159-boundary_shape-must-declare-a-maxitems-for-ids-and-its-limit-must-be-at-least-that-maxitems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1159 — boundary_shape MUST declare a maxItems for ids, and its limit MUST be at least that maxItems.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1160-boundary_at_point-and-boundary_shape-must-declare-identityservice-req-1125-and-every-other-fetcher-this-repository-ships-must-keep-the-callers-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1160 — boundary_at_point and boundary_shape MUST declare identity="service" (REQ-1125), and every other fetcher this repository ships MUST keep the caller's identity.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4416,13 +4620,62 @@ which verb they were using.</p>
 fetcher's defaults into the next fetcher's input.</p>
 </blockquote>
 <h3 id="req-1114-a-fetcher-with-no-payload_schema-must-accept-any-payload">REQ-1114 — A fetcher with no <code>payload_schema</code> MUST accept any payload.</h3>
+<h3 id="req-1115-when-a-fetcher-declares-a-payload_schema-a-nan-or-infinite-number-anywhere-in-the-payload-must-answer-400-and-must-not-reach-the-data-client-the-answer-and-the-log-must-name-the-property-and-must-not-carry-the-value">REQ-1115 — When a fetcher declares a <code>payload_schema</code>, a NaN or infinite number anywhere in the payload MUST answer 400, and MUST NOT reach the data client; the answer and the log MUST name the property and MUST NOT carry the value.</h3>
+<blockquote>
+<p>JSON Schema's <code>number</code> admits NaN, and NaN passes every <code>minimum</code> and <code>maximum</code>, so the
+schema alone let a <code>lat</code> of NaN through to <code>boundary_at_point</code>'s statement as <code>nan</code>, which
+the database cannot read: a 500 for a client error.</p>
+</blockquote>
 <hr />
 <h2 id="execution">Execution</h2>
 <h3 id="req-1120-the-rendered-query-must-be-executed-through-the-client-named-by-the-fetchers-spec">REQ-1120 — The rendered query MUST be executed through the client named by the fetcher's spec.</h3>
-<h3 id="req-1121-the-request-context-must-be-passed-to-the-client-with-the-query">REQ-1121 — The request context MUST be passed to the client with the query.</h3>
+<h3 id="req-1121-the-request-context-must-be-passed-to-the-client-with-the-query-unless-the-fetcher-declares-the-service-identity-req-1125">REQ-1121 — The request context MUST be passed to the client with the query, unless the fetcher declares the service identity (REQ-1125).</h3>
 <blockquote>
 <p>This is what carries the caller's identity to <code>dataset-api</code>. It was threaded through the
 executor in a refactor that the test doubles did not follow.</p>
+<p>It is also why no requirement here says which meters a participant's query may reach, or
+what a participant who holds no meter gets back. The Digital Twin never builds that list:
+<code>dataset-api</code>'s <code>rec_registry</code> row filter resolves the caller's meters from the registry and
+narrows the rows. A caller with no meter is that filter's case — no rows, never an empty
+<code>IN ()</code> — and it is specified in <code>dataset-api</code> (<code>docs/dataspace-row-filters.md</code>, RF-11),
+not here.</p>
+</blockquote>
+<h3 id="req-1125-a-fetcher-that-declares-identityservice-must-reach-its-client-with-no-request-context-so-that-the-client-authenticates-with-the-digital-twins-own-service-token-and-must-not-forward-the-callers-token-the-route-must-still-require-an-authenticated-caller">REQ-1125 — A fetcher that declares <code>identity="service"</code> MUST reach its client with no request context, so that the client authenticates with the Digital Twin's own service token and MUST NOT forward the caller's token; the route MUST still require an authenticated caller.</h3>
+<blockquote>
+<p>For open reference data only, whose rows do not depend on who asks (ADR-0003). The
+caller still needs a token the Digital Twin accepts, which is <code>digital-twin.values.read</code>;
+it needs nothing on <code>dataset-api</code>. A fetcher that omits <code>identity</code> is a <code>"caller"</code>
+fetcher, and REQ-1121 holds for it.</p>
+</blockquote>
+<h3 id="req-1126-when-dataset-api-answers-an-error-the-digital-twins-log-must-carry-the-status-and-a-short-code-derived-from-the-status-and-must-not-carry-the-response-body">REQ-1126 — When <code>dataset-api</code> answers an error, the Digital Twin's log MUST carry the status and a short code derived from the status, and MUST NOT carry the response body.</h3>
+<blockquote>
+<p><code>dataset-api</code>'s error body can quote the statement, and a statement carries the payload's
+literals — for <code>boundary_at_point</code>, a supply address's coordinates. The reason for a
+refusal is in <code>dataset-api</code>'s own log.</p>
+</blockquote>
+<h3 id="req-1127-the-digital-twins-log-must-not-carry-a-rendered-statement-or-any-part-of-it-a-fetch-is-logged-by-its-fetcher-id-limit-and-offset-only">REQ-1127 — The Digital Twin's log MUST NOT carry a rendered statement or any part of it; a fetch is logged by its fetcher id, limit and offset only.</h3>
+<blockquote>
+<p>The statement carries the payload's literals — for <code>boundary_at_point</code>, a supply
+address's coordinates. The log line used to carry the statement's first 80 characters,
+which kept the coordinates out only because they happened to come later.</p>
+</blockquote>
+<h3 id="req-1128-the-authorization-header-the-digital-twin-sends-to-dataset-api-must-carry-exactly-one-bearer-scheme-followed-by-the-token-whether-the-token-is-the-callers-or-the-digital-twins-own">REQ-1128 — The <code>Authorization</code> header the Digital Twin sends to <code>dataset-api</code> MUST carry exactly one <code>Bearer</code> scheme followed by the token, whether the token is the caller's or the Digital Twin's own.</h3>
+<blockquote>
+<p>The request context holds the caller's token without its scheme, and the client used to
+add <code>Bearer</code> twice, so a forwarded token reached <code>dataset-api</code> as <code>Bearer Bearer &lt;token&gt;</code>.
+<code>dataset-api</code>'s JWT parsing tolerated it; another receiver need not.</p>
+</blockquote>
+<h3 id="req-1129-when-a-fetcher-that-declares-identityservice-req-1125-is-fetched-and-the-digital-twin-has-no-token-provider-configured-or-its-token-provider-fails-to-obtain-a-token-the-fetch-must-answer-503-with-the-code-service_identity_unavailable-and-must-not-send-the-statement-to-dataset-api">REQ-1129 — When a fetcher that declares <code>identity="service"</code> (REQ-1125) is fetched and the Digital Twin has no token provider configured, or its token provider fails to obtain a token, the fetch MUST answer 503 with the code <code>service_identity_unavailable</code>, and MUST NOT send the statement to <code>dataset-api</code>.</h3>
+<blockquote>
+<p>With no provider there is no identity of the Digital Twin's own, and the client used to
+send the statement with no <code>Authorization</code> header at all: an unauthenticated query, and a
+500 once <code>dataset-api</code> refused it. It is a deployment fault (no OIDC client credentials),
+so a coded 503 rather than a crash. A <code>"caller"</code> fetcher is unaffected: it forwards the
+caller's token, provider or not.</p>
+<p>Amended: a provider that is configured but cannot obtain a token (the identity provider
+is down, or refuses the client credentials) used to surface as a 500. For the caller it is
+the same fault as no provider: the Digital Twin has no identity to query with right now.
+The log line carries the code and the exception type only.</p>
 </blockquote>
 <h3 id="req-1122-when-a-fetcher-declares-an-output_mapper-it-must-be-applied-to-every-returned-row">REQ-1122 — When a fetcher declares an <code>output_mapper</code>, it MUST be applied to every returned row.</h3>
 <h3 id="req-1123-a-failing-output-mapper-must-propagate-rather-than-yield-partial-results">REQ-1123 — A failing output mapper MUST propagate rather than yield partial results.</h3>
@@ -4444,6 +4697,65 @@ today — with a 200 and no error.</p>
 <code>it-energy-community.rec_self_consumption</code>. The sizing arithmetic behind it, and why
 watching the displayed numbers cannot verify a fix, is
 the companion's knowledge. Tracked as an issue; see that entry.</p>
+</blockquote>
+<hr />
+<h2 id="reference-boundaries">Reference boundaries</h2>
+<p>Two fetchers answer questions about published reference boundaries — for Italy, the GSE
+conventional primary-substation areas, one shape per substation code. <code>boundary_at_point</code>
+names the boundary that covers a point; <code>boundary_shape</code> returns the shapes of named
+boundaries. They live in the energy-community domain, and <code>source</code> is their extension point
+(<a href="../../decisions/ADR-0003-boundary-fetchers-live-in-the-energy-community-domain/">ADR-0003</a>).
+How the table is chosen from <code>source</code> is REQ-1214. The route surface, payloads and answers
+are in <code>docs/values.md</code> (reference boundaries).</p>
+<h3 id="req-1150-boundary_at_point-and-boundary_shape-must-declare-source-as-a-required-closed-enum-in-their-payload_schema-whose-only-value-is-gse_cabine_primarie">REQ-1150 — <code>boundary_at_point</code> and <code>boundary_shape</code> MUST declare <code>source</code> as a required, closed enum in their <code>payload_schema</code>, whose only value is <code>gse_cabine_primarie</code>.</h3>
+<blockquote>
+<p>Another country's boundaries are a new enum value and a new template branch, not a new
+fetcher and never a table name taken from the request.</p>
+</blockquote>
+<h3 id="req-1151-a-source-outside-that-enum-must-answer-400-and-must-not-reach-the-data-client">REQ-1151 — A <code>source</code> outside that enum MUST answer 400, and MUST NOT reach the data client.</h3>
+<blockquote>
+<p>REQ-1110 gives the 400. The second half is the point: a refused source is refused before any
+statement is rendered.</p>
+</blockquote>
+<h3 id="req-1152-boundary_at_point-must-require-lat-and-lon-as-numbers-within-9090-and-180180-wgs-84-degrees-and-must-answer-400-for-a-value-outside-those-ranges">REQ-1152 — <code>boundary_at_point</code> MUST require <code>lat</code> and <code>lon</code> as numbers within −90..90 and −180..180 (WGS 84 degrees), and MUST answer 400 for a value outside those ranges.</h3>
+<h3 id="req-1153-boundary_at_point-must-answer-at-most-one-row-and-that-rows-id-must-name-a-boundary-of-the-requested-source-whose-shape-covers-the-point">REQ-1153 — <code>boundary_at_point</code> MUST answer at most one row, and that row's <code>id</code> MUST name a boundary of the requested source whose shape covers the point.</h3>
+<blockquote>
+<p>"Covers" includes the shape's edge. A containment test that excludes the edge answers
+nothing for a point on a line two boundaries share, which reads as "outside every
+boundary" to a caller deciding eligibility.</p>
+</blockquote>
+<h3 id="req-1154-a-point-that-no-boundary-of-the-source-covers-must-answer-200-with-no-rows">REQ-1154 — A point that no boundary of the source covers MUST answer 200 with no rows.</h3>
+<blockquote>
+<p>No match is an answer, not an error. The caller decides what "outside" means.</p>
+</blockquote>
+<h3 id="req-1155-a-point-covered-by-more-than-one-boundary-on-an-edge-they-share-or-where-two-shapes-overlap-must-answer-the-boundary-with-the-lowest-id-in-lexical-order-the-same-on-every-call">REQ-1155 — A point covered by more than one boundary — on an edge they share, or where two shapes overlap — MUST answer the boundary with the lowest <code>id</code> in lexical order, the same on every call.</h3>
+<blockquote>
+<p>The source's areas are meant to tile the territory, so this is the edge case. What matters
+is that the answer is one id and does not change between the wizard and the approval that
+re-checks it.</p>
+</blockquote>
+<h3 id="req-1156-boundary_shape-must-answer-one-row-per-requested-id-that-the-source-knows-carrying-that-id-and-its-shape-as-geojson-and-must-not-answer-any-id-that-was-not-requested">REQ-1156 — <code>boundary_shape</code> MUST answer one row per requested <code>id</code> that the source knows, carrying that <code>id</code> and its shape as GeoJSON, and MUST NOT answer any <code>id</code> that was not requested.</h3>
+<h3 id="req-1157-an-id-the-source-does-not-know-must-be-absent-from-the-boundary_shape-answer-not-an-error">REQ-1157 — An <code>id</code> the source does not know MUST be absent from the <code>boundary_shape</code> answer, not an error.</h3>
+<blockquote>
+<p>A caller validating a list of ids compares what it asked for with what came back. Failing
+the whole request would hide which id was unknown.</p>
+</blockquote>
+<h3 id="req-1158-an-empty-ids-must-answer-200-with-no-rows-and-must-not-send-a-statement-containing-an-empty-list-to-the-data-client">REQ-1158 — An empty <code>ids</code> MUST answer 200 with no rows, and MUST NOT send a statement containing an empty list to the data client.</h3>
+<blockquote>
+<p><code>IN ()</code> is a syntax error in PostgreSQL; <code>dataset-api</code> answers it 400 and the fetcher 500s.
+See REQ-1234 and REQ-1235.</p>
+</blockquote>
+<h3 id="req-1159-boundary_shape-must-declare-a-maxitems-for-ids-and-its-limit-must-be-at-least-that-maxitems">REQ-1159 — <code>boundary_shape</code> MUST declare a <code>maxItems</code> for <code>ids</code>, and its <code>limit</code> MUST be at least that <code>maxItems</code>.</h3>
+<blockquote>
+<p>REQ-1140 applied to a list rather than a window: one row per id, so the widest request the
+schema permits is <code>maxItems</code> rows. A lower limit silently drops the last shapes with a 200.</p>
+</blockquote>
+<h3 id="req-1160-boundary_at_point-and-boundary_shape-must-declare-identityservice-req-1125-and-every-other-fetcher-this-repository-ships-must-keep-the-callers-identity">REQ-1160 — <code>boundary_at_point</code> and <code>boundary_shape</code> MUST declare <code>identity="service"</code> (REQ-1125), and every other fetcher this repository ships MUST keep the caller's identity.</h3>
+<blockquote>
+<p>The boundaries are open reference data, and onboarding asks for them before the person
+is a member of anything, holding <code>digital-twin.values.read</code> and no <code>dataset.query</code>. The
+Digital Twin's own client holds <code>dataset.query</code>. Every other fetcher reads rows that
+<code>dataset-api</code> narrows to the caller, which only the caller's token can do.</p>
 </blockquote>
 
 

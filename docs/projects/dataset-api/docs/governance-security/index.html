@@ -4647,7 +4647,8 @@ They should carry:
 <li>DDL: <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, …</li>
 <li>DML: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>MERGE</code>, …</li>
 <li>multiple statements / statement chaining</li>
-<li>functions not on allowlist</li>
+<li>functions not on allowlist (<a href="../query-engine/#function-and-expression-allowlist">query-engine.md</a>
+  says what is admitted and on what basis)</li>
 <li>referencing raw physical table names to bypass catalogue</li>
 <li>unbounded scans (policy + query guards)</li>
 </ul>
@@ -4672,9 +4673,11 @@ They should carry:
 - allow/deny decision
 - validation errors (sanitized)
 - execution time and rows returned</p>
-<p>Do not log raw SQL without sanitization if it may contain sensitive literals. On a
-dataspace request the completed SQL is withheld from the debug log for exactly this
-reason: its predicate is a literal list of the consenting subjects (RF-08).</p>
+<p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
+statement's shape, every literal replaced by <code>?</code> (QE-03 in
+<a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
+withheld from the log entirely: its predicate is a literal list of the consenting subjects
+(RF-08).</p>
 <hr />
 <h2 id="row-level-filtering">Row-level filtering</h2>
 <p>A dataset may declare <code>row_filters</code> in governance, and a handler turns each one into
@@ -4683,6 +4686,11 @@ governance here — it arrives inside ds's decision, with the consenting subject
 in it, and this service applies it or serves nothing. That path has its own
 specification, with clauses and tests:
 <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
+<p><strong>A service account is not narrowed by <code>rec_registry</code></strong> on the normal API path: it
+is not a registry member, and once the policy has admitted it the whole table is
+served. A service that relays such rows to a person narrows them itself or forwards
+the person's token. The order the handler decides in is in
+<a href="../dataspace-row-filters/#rec_registry-on-the-normal-api-path">dataspace-row-filters.md</a>.</p>
 <hr />
 <h2 id="common-policy-patterns">Common Policy Patterns</h2>
 <ul>

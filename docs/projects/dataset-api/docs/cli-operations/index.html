@@ -4600,7 +4600,8 @@ All changes happen through controlled workflows:
 <h3 id="sql-rejected">“SQL rejected”</h3>
 <ul>
 <li>non-SELECT statement</li>
-<li>unknown function</li>
+<li>unknown function — not in the allowlist; see
+  <a href="../query-engine/#function-and-expression-allowlist">query-engine.md</a> before adding one</li>
 <li>references non-catalogued table</li>
 <li>multiple statements detected</li>
 </ul>

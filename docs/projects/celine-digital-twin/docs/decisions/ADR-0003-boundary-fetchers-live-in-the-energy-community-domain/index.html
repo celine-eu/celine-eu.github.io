@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/domains/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/decisions/ADR-0003-boundary-fetchers-live-in-the-energy-community-domain/">
       
       
       
@@ -16,16 +16,16 @@
         
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
     
     
       
-        <title>Domains - CELINE Project</title>
+        <title>ADR-0003 — The boundary fetchers live in the energy-community domain, and source is a closed enum - CELINE Project</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.618322db.min.css">
       
       
 
@@ -44,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domains" class="md-skip">
+        <a href="#adr-0003-the-boundary-fetchers-live-in-the-energy-community-domain-and-source-is-a-closed-enum" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +76,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Domains
+              ADR-0003 — The boundary fetchers live in the energy-community domain, and source is a closed enum
             
           </span>
         </div>
@@ -169,7 +169,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../.." class="md-tabs__link">
+      <a href="../../../../.." class="md-tabs__link">
         
   
   
@@ -197,7 +197,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../celine-ai-assistant/" class="md-tabs__link">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -218,7 +218,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -237,7 +237,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../ontologies/" class="md-tabs__link">
+      <a href="../../../../../ontologies/" class="md-tabs__link">
         
   
   
@@ -256,7 +256,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../schema/" class="md-tabs__link">
+      <a href="../../../../../schema/" class="md-tabs__link">
         
   
   
@@ -291,7 +291,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -309,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../../../../.." class="md-nav__link">
         
   
   
@@ -440,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -468,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -496,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -524,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -552,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -640,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -668,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -696,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -724,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -752,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -840,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/" class="md-nav__link">
+      <a href="../../../../rec-registry/" class="md-nav__link">
         
   
   
@@ -868,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/data-model/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/data-model/" class="md-nav__link">
         
   
   
@@ -896,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -924,7 +924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/import-export/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/import-export/" class="md-nav__link">
         
   
   
@@ -952,7 +952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/development/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/development/" class="md-nav__link">
         
   
   
@@ -1040,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/" class="md-nav__link">
+      <a href="../../../../celine-webapp/" class="md-nav__link">
         
   
   
@@ -1068,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1096,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1124,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/features/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/features/" class="md-nav__link">
         
   
   
@@ -1152,7 +1152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/development/" class="md-nav__link">
         
   
   
@@ -1240,7 +1240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/" class="md-nav__link">
+      <a href="../../../../nudging-tool/" class="md-nav__link">
         
   
   
@@ -1268,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/architecture/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1296,7 +1296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/engine/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/engine/" class="md-nav__link">
         
   
   
@@ -1324,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1352,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/development/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/development/" class="md-nav__link">
         
   
   
@@ -1440,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/" class="md-nav__link">
         
   
   
@@ -1468,7 +1468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1496,7 +1496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/authentication/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/authentication/" class="md-nav__link">
         
   
   
@@ -1524,7 +1524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/services/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/services/" class="md-nav__link">
         
   
   
@@ -1552,7 +1552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/development/" class="md-nav__link">
         
   
   
@@ -1640,7 +1640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/" class="md-nav__link">
+      <a href="../../../../celine-frontend/" class="md-nav__link">
         
   
   
@@ -1668,7 +1668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/packages/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/packages/" class="md-nav__link">
         
   
   
@@ -1696,7 +1696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/apps/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/apps/" class="md-nav__link">
         
   
   
@@ -1724,7 +1724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/theming/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/theming/" class="md-nav__link">
         
   
   
@@ -1752,7 +1752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/development/" class="md-nav__link">
         
   
   
@@ -1840,7 +1840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -1868,7 +1868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/" class="md-nav__link">
+      <a href="../../concepts/" class="md-nav__link">
         
   
   
@@ -1896,7 +1896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../values/" class="md-nav__link">
+      <a href="../../values/" class="md-nav__link">
         
   
   
@@ -1924,7 +1924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../simulations/" class="md-nav__link">
+      <a href="../../simulations/" class="md-nav__link">
         
   
   
@@ -1952,7 +1952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients/" class="md-nav__link">
+      <a href="../../clients/" class="md-nav__link">
         
   
   
@@ -1980,7 +1980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subscriptions/" class="md-nav__link">
+      <a href="../../subscriptions/" class="md-nav__link">
         
   
   
@@ -2008,7 +2008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../brokers/" class="md-nav__link">
+      <a href="../../brokers/" class="md-nav__link">
         
   
   
@@ -2036,7 +2036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../developer-guide/" class="md-nav__link">
+      <a href="../../developer-guide/" class="md-nav__link">
         
   
   
@@ -2124,7 +2124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/" class="md-nav__link">
+      <a href="../../../../dataset-api/" class="md-nav__link">
         
   
   
@@ -2152,7 +2152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/architecture/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/architecture/" class="md-nav__link">
         
   
   
@@ -2180,7 +2180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
         
   
   
@@ -2208,7 +2208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/cli-operations/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/cli-operations/" class="md-nav__link">
         
   
   
@@ -2236,7 +2236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/governance-security/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/governance-security/" class="md-nav__link">
         
   
   
@@ -2264,7 +2264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/query-engine/" class="md-nav__link">
+      <a href="../../../../dataset-api/docs/query-engine/" class="md-nav__link">
         
   
   
@@ -2352,7 +2352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/" class="md-nav__link">
+      <a href="../../../../celine-policies/" class="md-nav__link">
         
   
   
@@ -2380,7 +2380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/getting-started/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/getting-started/" class="md-nav__link">
         
   
   
@@ -2408,7 +2408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/architecture/" class="md-nav__link">
         
   
   
@@ -2436,7 +2436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/scopes-and-permissions/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/scopes-and-permissions/" class="md-nav__link">
         
   
   
@@ -2464,7 +2464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/mqtt-integration/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/mqtt-integration/" class="md-nav__link">
         
   
   
@@ -2492,7 +2492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -2520,7 +2520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/deployment/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/deployment/" class="md-nav__link">
         
   
   
@@ -2608,7 +2608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/" class="md-nav__link">
+      <a href="../../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -2636,7 +2636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
         
   
   
@@ -2664,7 +2664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -2692,7 +2692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -2720,7 +2720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/cli/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/cli/" class="md-nav__link">
         
   
   
@@ -2808,7 +2808,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/" class="md-nav__link">
         
   
   
@@ -2836,7 +2836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
         
   
   
@@ -2864,7 +2864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
         
   
   
@@ -2892,7 +2892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
         
   
   
@@ -2920,7 +2920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/testing/" class="md-nav__link">
         
   
   
@@ -2948,7 +2948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
   
@@ -2976,7 +2976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/om/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/om/" class="md-nav__link">
         
   
   
@@ -3004,7 +3004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
@@ -3032,7 +3032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/owm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/owm/" class="md-nav__link">
         
   
   
@@ -3060,7 +3060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
         
   
   
@@ -3088,7 +3088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/dwd/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/dwd/" class="md-nav__link">
         
   
   
@@ -3116,7 +3116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
@@ -3144,7 +3144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/osm/" class="md-nav__link">
         
   
   
@@ -3172,7 +3172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
         
   
   
@@ -3200,7 +3200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
         
   
   
@@ -3228,7 +3228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/grid/" class="md-nav__link">
         
   
   
@@ -3256,7 +3256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
         
   
   
@@ -3284,7 +3284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
         
   
   
@@ -3312,7 +3312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
         
   
   
@@ -3340,7 +3340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
         
   
   
@@ -3368,7 +3368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
         
   
   
@@ -3456,7 +3456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ontologies/" class="md-nav__link">
+      <a href="../../../../celine-ontologies/" class="md-nav__link">
         
   
   
@@ -3544,7 +3544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/" class="md-nav__link">
+      <a href="../../../../celine-grid/" class="md-nav__link">
         
   
   
@@ -3572,7 +3572,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-grid/docs/architecture/" class="md-nav__link">
         
   
   
@@ -3660,7 +3660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/" class="md-nav__link">
+      <a href="../../../../celine-roi/" class="md-nav__link">
         
   
   
@@ -3688,7 +3688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/user-guide/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/user-guide/" class="md-nav__link">
         
   
   
@@ -3716,7 +3716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-roi/docs/variables-reference/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/variables-reference/" class="md-nav__link">
         
   
   
@@ -3804,7 +3804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../flexibility-api/" class="md-nav__link">
+      <a href="../../../../flexibility-api/" class="md-nav__link">
         
   
   
@@ -3892,7 +3892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-infra/" class="md-nav__link">
+      <a href="../../../../celine-infra/" class="md-nav__link">
         
   
   
@@ -3935,7 +3935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -3962,7 +3962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../ontologies/" class="md-nav__link">
+      <a href="../../../../../ontologies/" class="md-nav__link">
         
   
   
@@ -3989,7 +3989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../schema/" class="md-nav__link">
+      <a href="../../../../../schema/" class="md-nav__link">
         
   
   
@@ -4036,10 +4036,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-the-service-is" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What the service is
+        Context
       
     </span>
   </a>
@@ -4047,10 +4047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#layout" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Layout
+        Decision
       
     </span>
   </a>
@@ -4058,54 +4058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-dtdomain-contract" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The DTDomain contract
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#routes-the-runtime-mounts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Routes the runtime mounts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-domains-that-exist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The domains that exist
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#related" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Related
+        Consequences
       
     </span>
   </a>
@@ -4129,242 +4085,83 @@
 
 
 
-<h1 id="domains">Domains</h1>
-<p>A <strong>domain</strong> is the central organising unit of the DT runtime: a self-contained vertical
-bundling values, simulations, broker subscriptions and custom routes into one entity-scoped
-API surface.</p>
-<p>This document describes what a domain is and what the runtime does with it. The procedure
-for adding one is the companion's playbook for adding a domain.</p>
-<h2 id="what-the-service-is">What the service is</h2>
-<p>The Digital Twin is a domain-driven FastAPI service exposing entity-scoped APIs for the
-CELINE verticals. It is <strong>not</strong> a CRUD application — it is a read-through runtime that
-fetches from external sources, primarily <code>dataset-api</code>, enriches through entity context, and
-optionally reacts to broker events.</p>
-<p>Package <code>celine-dt</code>, import root <code>celine.dt</code>, port <code>8002</code>.</p>
-<h2 id="layout">Layout</h2>
-<p>The package, under <code>src/celine/dt/</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Path</th>
-<th>What lives there</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>src/celine/dt/contracts/</code></td>
-<td>protocol definitions — the framework's public API surface</td>
-</tr>
-<tr>
-<td><code>src/celine/dt/core/</code></td>
-<td>the domain-agnostic runtime: loader, registry, values, broker, ontology</td>
-</tr>
-<tr>
-<td><code>src/celine/dt/api/</code></td>
-<td>FastAPI wiring — context dependency injection, discovery routes, the domain router builder</td>
-</tr>
-<tr>
-<td><code>src/celine/dt/domains/</code></td>
-<td>the concrete domains</td>
-</tr>
-</tbody>
-</table>
-<p>And two trees at the <strong>repository root</strong>, not inside the package — they are deployment
-inputs rather than code, and are mounted rather than imported:</p>
-<table>
-<thead>
-<tr>
-<th>Path</th>
-<th>What lives there</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>config/</code></td>
-<td>YAML declarations: <code>domains.yaml</code>, <code>clients.yaml</code>, <code>brokers.yaml</code></td>
-</tr>
-<tr>
-<td><code>ontologies/mapper</code></td>
-<td>CELINE ontology mapper specs, YAML to JSON-LD</td>
-</tr>
-</tbody>
-</table>
-<p>The app factory is <code>celine.dt.main:create_app</code>. Startup order is fixed and matters: OIDC
-token provider → clients → domain value fetchers → brokers → subscriptions → each domain's
-<code>on_startup()</code>. A domain that reaches for a client before this has finished sees nothing.</p>
-<h2 id="the-dtdomain-contract">The DTDomain contract</h2>
-<p>Every domain subclass declares:</p>
-<p><strong>Identity</strong>, all class variables — <code>name</code>, <code>domain_type</code>, <code>version</code>, <code>route_prefix</code>,
-<code>entity_id_param</code>.</p>
-<p><strong>Capabilities</strong>, as overridable methods:</p>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>Returns</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>get_value_specs()</code></td>
-<td>the declarative data fetchers</td>
-</tr>
-<tr>
-<td><code>get_simulations()</code></td>
-<td>the what-if models</td>
-</tr>
-<tr>
-<td><code>get_subscriptions()</code></td>
-<td>broker event handlers</td>
-</tr>
-<tr>
-<td><code>get_ontology_specs()</code></td>
-<td>JSON-LD concept views</td>
-</tr>
-<tr>
-<td><code>resolve_entity(entity_id, request)</code></td>
-<td>validates and enriches the entity from the URL</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Lifecycle</strong> — <code>on_startup()</code>, <code>on_shutdown()</code>.</p>
-<p>Infrastructure is injected by <code>set_infrastructure()</code>; shared services are reached through
-<code>self.infra</code> rather than imported.</p>
-<p><strong>Whose token a fetcher queries with.</strong> A <code>ValueFetcherSpec</code> a domain returns carries
-<code>identity</code>, <code>"caller"</code> by default: the caller's token is forwarded, and dataset-api narrows
-the rows to that caller. A fetcher declared <code>identity="service"</code> queries with the Digital
-Twin's own client-credentials token instead, and answers <strong>503</strong>
-<code>service_identity_unavailable</code> when that token cannot be had. Only a fetcher whose rows are
-the same for every caller may declare it; today that is the two reference-boundary fetchers
-(REQ-1125, REQ-1129, REQ-1160; <a href="../values/#reference-boundaries">values.md</a>). <code>identity</code> is
-not a <code>config/values.yaml</code> key: a YAML fetcher is always <code>"caller"</code>.</p>
-<h2 id="routes-the-runtime-mounts">Routes the runtime mounts</h2>
-<p>Every domain gets these automatically at <code>/{route_prefix}/{entity_id_param}/</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Method</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/info</code></td>
-<td>GET</td>
-<td>entity and domain metadata</td>
-</tr>
-<tr>
-<td><code>/summary</code></td>
-<td>GET</td>
-<td>the domain's own summary — <strong>501</strong> unless it implements <code>get_summary</code></td>
-</tr>
-<tr>
-<td><code>/values</code></td>
-<td>GET</td>
-<td>list the registered fetchers</td>
-</tr>
-<tr>
-<td><code>/values/{fetcher_id}</code></td>
-<td>GET/POST</td>
-<td>execute one, by query string or JSON body</td>
-</tr>
-<tr>
-<td><code>/values/{fetcher_id}/describe</code></td>
-<td>GET</td>
-<td>payload schema introspection</td>
-</tr>
-<tr>
-<td><code>/simulations</code></td>
-<td>GET</td>
-<td>list simulations — <strong>501</strong> unless the domain implements <code>list_simulations</code></td>
-</tr>
-<tr>
-<td><code>/ontology</code></td>
-<td>GET</td>
-<td>list ontology specs</td>
-</tr>
-<tr>
-<td><code>/ontology/{spec_id}</code></td>
-<td>GET/POST</td>
-<td>fetch the JSON-LD document</td>
-</tr>
-</tbody>
-</table>
-<p>Two things this table used to get wrong, both verified against the mounted routes on
-2026-08-15:</p>
+<h1 id="adr-0003-the-boundary-fetchers-live-in-the-energy-community-domain-and-source-is-a-closed-enum">ADR-0003 — The boundary fetchers live in the energy-community domain, and <code>source</code> is a closed enum</h1>
+<p><strong>Date:</strong> 2026-09-27
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p>A renewable energy community's areas are being redefined as references to published
+reference boundaries — for Italy, the GSE conventional primary-substation areas, one shape
+per substation code, already loaded into the gold layer and exposed by <code>dataset-api</code> as an
+open dataset. Two consumers need to ask about them:</p>
 <ul>
-<li><code>/summary</code> is mounted and was missing here.</li>
-<li><strong>There is no <code>POST /simulations/{key}</code>.</strong> <code>GET /simulations</code> is the entire simulation
-  surface the runtime mounts. The scenario/run/sweep API described in <code>simulations.md</code> is
-  not wired to any route — see the status note at the top of that document.</li>
+<li><strong>onboarding</strong>, at eligibility: which boundary contains this supply address's point? It
+  asks with its own service token, before the person is a member of anything;</li>
+<li><strong>the community dashboard's backend</strong>, for a read-only map: the shapes of this community's
+  boundaries, by id.</li>
 </ul>
-<p><strong>Every one of these requires a JWT.</strong> They sit behind <code>get_ctx_auth</code>; a request without a
-bearer token answers 401 and never reaches entity resolution. This holds for a <code>"service"</code> fetcher too: the
-Digital Twin's own token is used only after the caller's has been verified.</p>
-<p><code>{fetcher_id}</code> is the <strong>domain-local</strong> identifier — <code>rec_self_consumption</code>, not
-<code>it-energy-community.rec_self_consumption</code> — on both verbs. The <code>/values</code> listing and
-<code>/describe</code> report the namespaced registry key, which is <em>not</em> the form the path takes;
-the companion's knowledge has the
-full mapping.</p>
-<p>Modules under <code>domains/{name}/routes/</code> are discovered and mounted alongside these, inside
-the same entity scope. Globally, the service exposes <code>GET /health</code> and <code>GET /domains</code>,
-neither of which is entity-scoped or authenticated.</p>
-<p>Operation ids are namespaced per domain (<code>it_grid__get_info</code>), because <code>celine-sdk</code> is
-generated from this schema and two domains would otherwise collide on the built-in routes.</p>
-<p>The requirements behind all of this are <code>docs/specifications/runtime.md</code>.</p>
-<h2 id="the-domains-that-exist">The domains that exist</h2>
-<table>
-<thead>
-<tr>
-<th>Domain</th>
-<th>Name</th>
-<th>Prefix</th>
-<th>Entity parameter</th>
-<th>Covers</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Energy Community</td>
-<td><code>it-energy-community</code></td>
-<td><code>/communities/it</code></td>
-<td><code>community_id</code></td>
-<td>REC self-consumption, weather, PV, settlement, reference boundaries (<code>boundary_at_point</code>, <code>boundary_shape</code>, inherited from the base <code>EnergyCommunityDomain</code>)</td>
-</tr>
-<tr>
-<td>Participant</td>
-<td><code>it-participant</code></td>
-<td><code>/participants</code></td>
-<td><code>participant_id</code></td>
-<td>meter data, flexibility, gamification, nudging</td>
-</tr>
-<tr>
-<td>Grid</td>
-<td><code>it-grid</code></td>
-<td><code>/grid</code></td>
-<td><code>network_id</code></td>
-<td>wind and heat risk, substation topology, nowcasting</td>
-</tr>
-</tbody>
-</table>
-<p>Registration is <code>config/domains.yaml</code>, mapping the name to an import path resolving to a
-module-level <code>domain</code> instance.</p>
-<h2 id="configuration">Configuration</h2>
-<p>The three YAML files support <code>${VAR:-default}</code> environment expansion:</p>
+<p>Hence two value fetchers, <code>boundary_at_point(source, lat, lon)</code> and
+<code>boundary_shape(source, ids)</code>. Every value fetcher here is reached under a domain's entity
+route, so they have to live in some domain. Three were candidates:</p>
 <ul>
-<li><code>config/domains.yaml</code> — domain declarations: import path, enabled flag, overrides</li>
-<li><code>config/clients.yaml</code> — data clients: class, base URL, scope, timeout</li>
-<li><code>config/brokers.yaml</code> — MQTT brokers: host, port, TLS, token authentication</li>
+<li><strong><code>it-grid</code></strong> already serves geometry, but it models a distribution network's resilience:
+  its entity is a <code>network_id</code>, and neither consumer has one. Hosting boundaries there would
+  make both callers invent an entity for a question that is not about a network.</li>
+<li><strong>A new reference-geography domain</strong> would be the purest home, and it would cost a new
+  domain registration, a new route prefix, a new generated client surface in <code>celine-sdk</code> and
+  new consumer wiring, for two read-only fetchers. Nothing else would live in it yet.</li>
+<li><strong>The energy-community domain</strong> is where the question comes from: areas exist to model the
+  community incentive, both consumers already address the Digital Twin by community, and the
+  base class <code>EnergyCommunityDomain</code> is inherited by every locale variant.</li>
 </ul>
-<h2 id="related">Related</h2>
+<p>The shapes are country-specific; the question is not. Another country's communities will want
+the same two answers from their own boundary tables (a NUTS or LAU table, say), and the
+extension point has to be somewhere that does not require a new fetcher per country.</p>
+<h2 id="decision">Decision</h2>
+<p>Declare both fetchers in the <strong>base energy-community domain</strong>, in a module the locale variants
+share, so <code>it-energy-community</code> registers them today and any later locale variant inherits
+them unchanged. They are reached as
+<code>/communities/it/{community_id}/values/boundary_at_point</code> and <code>…/boundary_shape</code>.</p>
+<p><strong>A point on a boundary's edge is inside it, and a point in more than one shape resolves to the
+lowest id.</strong> <code>boundary_at_point</code> tests that the shape <em>covers</em> the point, not that it <em>contains</em>
+it, so a supply address on a line two boundaries share is never "outside every boundary"; of
+several covering shapes it answers the one with the lowest <code>id</code> in lexical order, so the wizard
+and the approval that re-checks it always get the same id. The requester settled both, and the
+base-domain placement, on 2026-09-27 (REQ-1153, REQ-1155).</p>
+<p><strong>The community in the path does not scope the answer.</strong> A reference boundary belongs to no
+community; the entity is the address the runtime needs, not a filter. Both fetchers query
+<code>dataset-api</code> with the Digital Twin's own service token, not the caller's forwarded one
+(<code>identity="service"</code>, REQ-1125, REQ-1160; the requester, 2026-09-28): a caller needs
+<code>digital-twin.values.read</code> (the <code>svc-digital-twin</code> audience the route still requires) and no
+<code>dataset.query</code>. Every other fetcher keeps forwarding the caller's token.</p>
+<p><strong><code>source</code> is a closed enum</strong> in both fetchers' <code>payload_schema</code>, initially
+<code>gse_cabine_primarie</code> alone. Each value selects one gold table through a Jinja branch written
+into the template; the value itself never reaches the statement. A new country's boundaries
+are a new enum value and a new branch, reviewed like any other change to a statement — not a
+new fetcher, and never a table name taken from the request. An unknown value is refused at
+payload validation.</p>
+<p>The requirements are <code>docs/specifications/values.md</code> (reference boundaries) and
+<code>docs/specifications/query-templates.md</code> (table selection), marked planned under ADR-0002.</p>
+<h2 id="consequences">Consequences</h2>
 <ul>
-<li><code>specifications/runtime.md</code> — what the runtime must do, as requirements with tests</li>
-<li><code>values.md</code> — value fetchers in depth, including the query template reference</li>
-<li><code>simulations.md</code> — the two-phase what-if model (<strong>largely unimplemented</strong>; see its status note)</li>
-<li><code>subscriptions.md</code> — broker subscriptions and topic patterns</li>
-<li><code>clients.md</code> — data client configuration and adding one</li>
-<li>the companion's playbook for adding a domain — the procedure for adding one</li>
+<li><code>dataset-api</code> sees the Digital Twin, not the caller, on these two statements: its audit
+  and any row filter it applies name the Digital Twin's client. That is acceptable for the
+  same reason as the next point, and it is what lets onboarding ask before the person is a
+  member, without a <code>dataset-api</code> grant of its own.</li>
+<li>A caller must name some community to ask a geography question. Onboarding knows the
+  community a template binds, and the dashboard asks for its own, so neither is burdened
+  today; a caller with no community would be, and that is the point at which a
+  reference-geography domain earns its cost.</li>
+<li>Because the path does not scope the answer, any authenticated caller that can reach one
+  community route can read every boundary of an enabled source. That is acceptable only
+  because the sources are open reference data; a source holding anything else does not belong
+  in this enum.</li>
+<li>The enum is the whole extension surface. Loosening it to a free string, or to a table name,
+  would make the request choose what the statement reads — the interpolation REQ-1210
+  forbids, one level up.</li>
+<li><strong>What will tempt someone to undo it:</strong> the second country. Its boundaries will look like
+  they belong in its own locale domain. They can live there as an override if its shapes need
+  different columns; while they answer the same two questions from a table of the same shape,
+  one more enum value is the smaller change.</li>
 </ul>
 
 
@@ -4415,10 +4212,10 @@ module-level <code>domain</code> instance.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
     
   </body>

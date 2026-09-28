@@ -4141,6 +4141,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1214-a-fetcher-that-reads-one-of-several-tables-chosen-by-a-payload-value-must-choose-it-with-a-jinja-branch-over-the-values-of-a-closed-enum-each-branch-naming-its-table-literally-in-the-template-and-must-not-interpolate-the-payload-value-into-the-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1214 — A fetcher that reads one of several tables chosen by a payload value MUST choose it with a Jinja branch over the values of a closed enum, each branch naming its table literally in the template, and MUST NOT interpolate the payload value into the statement.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1215-bind-parameter-substitution-must-not-substitute-a-name-that-stands-inside-a-single-quoted-string-literal-or-a-double-quoted-identifier-of-the-jinja-rendered-text-and-a-rendered-query-with-an-unterminated-quote-must-fail-as-a-valueerror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1215 — Bind-parameter substitution MUST NOT substitute a :name that stands inside a single-quoted string literal or a double-quoted identifier of the Jinja-rendered text, and a rendered query with an unterminated quote MUST fail as a ValueError.
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4224,6 +4246,50 @@
     <span class="md-ellipsis">
       
         REQ-1232 — sql_quote MUST escape embedded single quotes, and MUST render None as NULL and booleans as TRUE/FALSE.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1233-sql_list-must-escape-an-embedded-single-quote-in-a-string-element-as-sql_quote-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1233 — sql_list MUST escape an embedded single quote in a string element as sql_quote does.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1234-sql_list-must-reject-an-empty-list-failing-as-a-valueerror-naming-the-filter-rather-than-render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1234 — sql_list MUST reject an empty list, failing as a ValueError naming the filter, rather than render ().
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1235-every-fetcher-this-repository-ships-that-passes-a-list-property-to-sql_list-must-either-declare-minitems-of-at-least-1-for-it-or-guard-the-filter-with-a-jinja-branch-that-decides-what-an-empty-list-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1235 — Every fetcher this repository ships that passes a list property to sql_list MUST either declare minItems of at least 1 for it or guard the filter with a Jinja branch that decides what an empty list answers.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1236-sql_quote-and-sql_list-must-reject-a-nan-or-infinite-number-failing-as-a-valueerror-rather-than-render-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1236 — sql_quote and sql_list MUST reject a NaN or infinite number, failing as a ValueError, rather than render it.
       
     </span>
   </a>
@@ -4371,6 +4437,27 @@ literal text. Substitution happens after rendering, precisely so it cannot recur
 <p>An undeclared bind parameter cannot be supplied and cannot be defaulted, so the fetcher
 raises on every request — a 500 for something that can never succeed.</p>
 </blockquote>
+<h3 id="req-1214-a-fetcher-that-reads-one-of-several-tables-chosen-by-a-payload-value-must-choose-it-with-a-jinja-branch-over-the-values-of-a-closed-enum-each-branch-naming-its-table-literally-in-the-template-and-must-not-interpolate-the-payload-value-into-the-statement">REQ-1214 — A fetcher that reads one of several tables chosen by a payload value MUST choose it with a Jinja branch over the values of a closed enum, each branch naming its table literally in the template, and MUST NOT interpolate the payload value into the statement.</h3>
+<p>A value that matches no branch MUST fail rendering rather than fall through to a default
+table.</p>
+<blockquote>
+<p>A table name is structure, so REQ-1210's bind parameter cannot carry it, and <code>sql_quote</code>
+renders a string literal, which is not a table name at all. The enum in the
+<code>payload_schema</code> (REQ-1110) refuses an unknown value first; the missing default is the
+second line, for the day the enum and the branches drift apart. The first user is the
+boundary fetchers' <code>source</code> (REQ-1150).</p>
+</blockquote>
+<h3 id="req-1215-bind-parameter-substitution-must-not-substitute-a-name-that-stands-inside-a-single-quoted-string-literal-or-a-double-quoted-identifier-of-the-jinja-rendered-text-and-a-rendered-query-with-an-unterminated-quote-must-fail-as-a-valueerror">REQ-1215 — Bind-parameter substitution MUST NOT substitute a <code>:name</code> that stands inside a single-quoted string literal or a double-quoted identifier of the Jinja-rendered text, and a rendered query with an unterminated quote MUST fail as a <code>ValueError</code>.</h3>
+<blockquote>
+<p>REQ-1212 covers text a <em>bind parameter</em> brings in; this covers text the <em>Jinja pass</em>
+brings in. <code>sql_list</code> and <code>sql_quote</code> render caller values as literals before the second
+pass runs, so until 2026-09-27 an element such as <code>'x:ids'</code> had <code>:ids</code> substituted in the
+middle of its own literal: the inserted quotes closed it, and the rest of the caller's
+input became SQL. The second pass now reads the rendered text as PostgreSQL reads a
+standard literal (a doubled quote stays inside) and substitutes only outside literals.
+A template must therefore not write an <code>E'...'</code> literal, whose backslash escapes that
+reading does not follow.</p>
+</blockquote>
 <hr />
 <h2 id="postgresql-casts">PostgreSQL casts</h2>
 <h3 id="req-1220-a-cast-must-not-be-treated-as-a-bind-parameter">REQ-1220 — A <code>::</code> cast MUST NOT be treated as a bind parameter.</h3>
@@ -4388,6 +4475,33 @@ far from the change.</p>
 <h3 id="req-1230-sql_list-must-render-a-list-as-a-parenthesised-comma-separated-sql-list-quoting-strings-and-leaving-numbers-unquoted">REQ-1230 — <code>sql_list</code> MUST render a list as a parenthesised, comma-separated SQL list, quoting strings and leaving numbers unquoted.</h3>
 <h3 id="req-1231-sql_list-must-reject-a-non-list-argument-rather-than-coerce-it">REQ-1231 — <code>sql_list</code> MUST reject a non-list argument rather than coerce it.</h3>
 <h3 id="req-1232-sql_quote-must-escape-embedded-single-quotes-and-must-render-none-as-null-and-booleans-as-truefalse">REQ-1232 — <code>sql_quote</code> MUST escape embedded single quotes, and MUST render <code>None</code> as <code>NULL</code> and booleans as <code>TRUE</code>/<code>FALSE</code>.</h3>
+<h3 id="req-1233-sql_list-must-escape-an-embedded-single-quote-in-a-string-element-as-sql_quote-does">REQ-1233 — <code>sql_list</code> MUST escape an embedded single quote in a string element as <code>sql_quote</code> does.</h3>
+<blockquote>
+<p>Until 2026-09-27 it wrapped each string in quotes and nothing more, so an element
+containing <code>'</code> ended the literal early. Each element is now rendered by <code>sql_quote</code> itself,
+so <code>None</code> and booleans render as there too. REQ-1230 stays true either way; this closes
+the gap beside it.</p>
+</blockquote>
+<h3 id="req-1234-sql_list-must-reject-an-empty-list-failing-as-a-valueerror-naming-the-filter-rather-than-render">REQ-1234 — <code>sql_list</code> MUST reject an empty list, failing as a <code>ValueError</code> naming the filter, rather than render <code>()</code>.</h3>
+<blockquote>
+<p><code>IN ()</code> is a syntax error in PostgreSQL. It reaches <code>dataset-api</code>, comes back a 400, and
+surfaces here as a 500 far from the template that produced it. What an empty list <em>means</em>
+is the fetcher's decision (REQ-1235), not the filter's.</p>
+</blockquote>
+<h3 id="req-1235-every-fetcher-this-repository-ships-that-passes-a-list-property-to-sql_list-must-either-declare-minitems-of-at-least-1-for-it-or-guard-the-filter-with-a-jinja-branch-that-decides-what-an-empty-list-answers">REQ-1235 — Every fetcher this repository ships that passes a list property to <code>sql_list</code> MUST either declare <code>minItems</code> of at least 1 for it or guard the filter with a Jinja branch that decides what an empty list answers.</h3>
+<blockquote>
+<p>The optional filters already sit inside <code>{% if … %}</code>, and an empty list takes the else
+branch. A required list property with no <code>minItems</code> and no guard was the case that
+rendered <code>IN ()</code>: <code>it-grid.risks</code>' <code>dates</code>, which now declares <code>minItems: 1</code> (an empty list
+answers 400). <code>boundary_shape</code>'s <code>ids</code> is guarded instead, because an empty <code>ids</code> has an
+answer (REQ-1158). <code>tests/test_domain_specs.py</code> checks every shipped fetcher.</p>
+</blockquote>
+<h3 id="req-1236-sql_quote-and-sql_list-must-reject-a-nan-or-infinite-number-failing-as-a-valueerror-rather-than-render-it">REQ-1236 — <code>sql_quote</code> and <code>sql_list</code> MUST reject a NaN or infinite number, failing as a <code>ValueError</code>, rather than render it.</h3>
+<blockquote>
+<p><code>str()</code> renders <code>nan</code> and <code>inf</code>, which SQL reads as column names. REQ-1115 refuses such a
+value at the payload; this is the second line, for a value that reaches a filter another
+way.</p>
+</blockquote>
 <hr />
 <h2 id="undefined-values">Undefined values</h2>
 <h3 id="req-1240-an-undefined-value-must-be-falsy-in-a-conditional-so-if-entitymetadatax-takes-the-else-branch-rather-than-raising">REQ-1240 — An undefined value MUST be falsy in a conditional, so <code>{% if entity.metadata.x %}</code> takes the else branch rather than raising.</h3>

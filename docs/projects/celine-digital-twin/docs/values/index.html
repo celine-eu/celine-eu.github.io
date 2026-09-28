@@ -2334,6 +2334,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reference-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference boundaries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2372,6 +2383,17 @@
     <span class="md-ellipsis">
       
         500 Internal Server Error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#503-service-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        503 Service Unavailable
       
     </span>
   </a>
@@ -5021,6 +5043,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reference-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference boundaries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5059,6 +5092,17 @@
     <span class="md-ellipsis">
       
         500 Internal Server Error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#503-service-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        503 Service Unavailable
       
     </span>
   </a>
@@ -5373,6 +5417,9 @@ curl -X POST http://localhost:8000/values/weather_forecast \
 </tr>
 </tbody>
 </table>
+<p>A fetcher declared in YAML always queries with the caller's token. A domain's
+<code>get_value_specs()</code> may also set <code>identity="service"</code> on a <code>ValueFetcherSpec</code>, for rows that
+are the same for every caller; see <a href="#reference-boundaries">Reference boundaries</a>.</p>
 <hr />
 <h2 id="query-templates">Query Templates</h2>
 <h3 id="parameter-syntax">Parameter syntax</h3>
@@ -5618,12 +5665,112 @@ class UserOutputMapper(OutputMapper):
 </code></pre>
 <p>The mapper is applied to each item in the result.</p>
 <hr />
+<h2 id="reference-boundaries">Reference boundaries</h2>
+<p>Two fetchers every energy-community locale inherits from <code>EnergyCommunityDomain</code>
+(<a href="../decisions/ADR-0003-boundary-fetchers-live-in-the-energy-community-domain/">ADR-0003</a>;
+requirements REQ-1150 – REQ-1159 and REQ-1214 in <code>specifications/</code>). Declared in
+<code>src/celine/dt/domains/energy_community/boundary_fetchers.py</code>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>boundary_at_point</code></th>
+<th><code>boundary_shape</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path (Italy)</td>
+<td><code>POST /communities/it/{community_id}/values/boundary_at_point</code></td>
+<td><code>POST /communities/it/{community_id}/values/boundary_shape</code></td>
+</tr>
+<tr>
+<td>Payload</td>
+<td><code>{"source": "gse_cabine_primarie", "lat": &lt;number -90..90&gt;, "lon": &lt;number -180..180&gt;}</code></td>
+<td><code>{"source": "gse_cabine_primarie", "ids": [&lt;string 1..64 chars&gt;, …]}</code>, at most 100 ids</td>
+</tr>
+<tr>
+<td>Answer</td>
+<td><code>items</code>: <code>[]</code>, or <code>[{"id": "&lt;cod_ac&gt;"}]</code></td>
+<td><code>items</code>: <code>[{"id": "&lt;cod_ac&gt;", "geojson": "&lt;GeoJSON geometry, as a string&gt;"}, …]</code>, sorted by <code>id</code></td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>1</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>source</code> is a closed enum</strong>, today <code>gse_cabine_primarie</code> alone: the GSE conventional
+  primary-substation areas in <code>ds_dev_gold.gse_cabine_primarie</code> (<code>cod_ac</code>, <code>geometry</code> in
+  EPSG:4326). Anything else, or a missing field, a coordinate out of range or not a number,
+  more than 100 ids: <strong>400</strong>, and no statement is sent. Each value selects its table
+  through a literal Jinja branch that exposes it as <code>(id, geometry)</code>; a new source is a new
+  enum value and a new branch.</li>
+<li><strong>The community in the path does not scope the answer.</strong> Boundaries are open reference
+  data; any community id resolves.</li>
+<li><strong>A point on an edge is inside.</strong> The statement uses <code>ST_Intersects(geometry, point)</code>,
+  which for a point is exactly <code>ST_Covers</code> (interior or boundary). <code>ST_Covers</code> itself is
+  not in dataset-api's SQL allowlist. Of several covering shapes (a shared edge or corner,
+  an overlap) the answer is the lowest <code>id</code> (<code>ORDER BY id</code>, <code>limit</code> 1), the same on every
+  call. No covering shape: 200 with no rows.</li>
+<li><strong><code>boundary_shape</code></strong> answers one row per requested id the source knows; an unknown id is
+  simply absent, and an empty <code>ids</code> answers 200 with no rows without sending a list. The
+  shape is <code>ST_AsGeoJSON(ST_Simplify(geometry, 0.0001, TRUE), 6)</code>: a tolerance of 0.0001
+  degrees (about 11 m north-south, 8 m east-west at 45° N) for a map, collapsed shapes
+  kept, coordinates to 6 decimals. It is a display shape, not the stored boundary; a caller
+  deciding containment asks <code>boundary_at_point</code>. <code>geojson</code> is a string: parse it.</li>
+<li><strong>Lexical order</strong> is the database's <code>ORDER BY</code> on the id column. dataset-api refuses
+  <code>COLLATE</code>, so for ids of one fixed shape (the GSE codes are) the order is the byte order.</li>
+</ul>
+<p><strong>Who may call them.</strong> The Digital Twin authenticates every entity route with a verified
+JWT whose audience is <code>svc-digital-twin</code> (<code>src/celine/dt/core/config.py</code>), and checks
+no scope itself. In Keycloak a client gets that audience by holding
+<code>digital-twin.values.read</code>, which derives the audience mapper onto <code>svc-digital-twin</code>
+(<code>celine-policies</code>' <code>clients.yaml</code>). <strong>That scope is the whole grant on this side.</strong></p>
+<p><strong>Whose token reaches dataset-api.</strong> Every other fetcher forwards the caller's token, and
+dataset-api narrows the rows to that caller. These two do not: they declare
+<code>identity="service"</code> in their <code>ValueFetcherSpec</code>, so the executor hands the client no
+request context and <code>DatasetSqlApiClient</code> authenticates with the Digital Twin's own
+client-credentials token (the <code>dataset_api</code> client's <code>scope: dataset.query</code> in
+<code>config/clients.yaml</code>; REQ-1125, REQ-1160). The boundaries are open reference data, so the
+rows do not depend on who asks. The caller therefore needs <code>digital-twin.values.read</code> and
+nothing on dataset-api: no <code>dataset.query</code>, no <code>svc-dataset-api</code> audience. The route still
+requires the caller's verified token; without one it answers 401 and nothing is sent.</p>
+<p><strong>No service identity configured.</strong> The Digital Twin's own token comes from its OIDC
+client-credentials provider, which is off when the OIDC settings (base URL, client id,
+secret) are absent. Then a <code>"service"</code> fetcher answers <strong>503</strong> with
+<code>{"detail": {"error": "service_identity_unavailable", "message": …}}</code> and nothing is sent to
+dataset-api (REQ-1129). The same 503 answers when the provider is configured but cannot
+obtain a token (the identity provider is down or refuses the client credentials); it never falls back to an unauthenticated query. <code>"caller"</code> fetchers
+are unaffected. The client sends one <code>Bearer</code> scheme on every request (REQ-1128).</p>
+<p><code>identity</code> defaults to <code>"caller"</code>. Declare <code>"service"</code> only for a fetcher whose rows are the
+same for every caller; any row filter dataset-api applies then applies to the Digital Twin,
+not to the person asking.</p>
+<p><strong>Privacy.</strong> A caller's point is personal data. The fetchers select no personal data, and
+the executor logs neither payload values, nor the rendered statement (a fetch is logged by
+fetcher id, limit and offset; REQ-1127), nor a failed validation's value (it logs the
+property and the rule). When dataset-api answers an error, the client logs its status and a
+code derived from the status (<code>query_refused</code>, <code>unauthenticated</code>, <code>forbidden</code>, <code>not_found</code>,
+<code>rate_limited</code>, <code>client_error</code>, <code>upstream_error</code>), never the response body, which can quote
+the statement and so the point (REQ-1126). The reason is in dataset-api's log.</p>
+<p><strong>Negative coordinates.</strong> A point south of the equator or west of Greenwich renders as
+signed numeric literals, <code>ST_Point(-0.3, -0.05)</code>. dataset-api's SQL allowlist admits a
+unary minus on a numeric literal from its clause QE-02 on; against a dataset-api without
+QE-02 such a point is refused (<code>Unsupported SQL construct: Neg</code>) and surfaces here as a
+500. Every point of the one enabled source (Italy) is positive.</p>
+<hr />
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="400-bad-request">400 Bad Request</h3>
 <p>Returned for:
 - Missing required parameters
 - Type coercion failures
 - Schema validation failures
+- A NaN or infinite number anywhere in the payload of a fetcher that declares a
+  <code>payload_schema</code> (JSON Schema's <code>number</code> admits NaN and NaN passes every
+  <code>minimum</code>/<code>maximum</code>, so the executor refuses it itself; the message names the property,
+  not the value)
 - Missing query parameters</p>
 <pre><code class="language-json">{
   &quot;detail&quot;: &quot;Missing required parameter: 'location'&quot;
@@ -5640,6 +5787,15 @@ class UserOutputMapper(OutputMapper):
 - Client query failures
 - Output mapper errors
 - Unexpected exceptions</p>
+<h3 id="503-service-unavailable">503 Service Unavailable</h3>
+<p>Returned by a fetcher declared with <code>identity="service"</code> (the
+<a href="#reference-boundaries">reference boundaries</a>) when the Digital Twin has no service
+identity configured, or its identity provider does not give it a token. Nothing is sent to
+dataset-api.</p>
+<pre><code class="language-json">{
+  &quot;detail&quot;: {&quot;error&quot;: &quot;service_identity_unavailable&quot;, &quot;message&quot;: &quot;The Digital Twin has no service identity configured&quot;}
+}
+</code></pre>
 <hr />
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-use-meaningful-ids">1. Use meaningful IDs</h3>
