@@ -4087,11 +4087,16 @@
 
 <h1 id="specifications">Specifications</h1>
 <p>What this SDK must do, stated so that a test can name it.</p>
-<p>These requirements were <strong>extracted from the implementation</strong> on 2026-08-15, not written
+<p>The first requirements were <strong>extracted from the implementation</strong> on 2026-08-15, not written
 ahead of it. That direction matters when reading them: each one says what the code already
 does and what consumers therefore depend on. Where the extraction found the published
 documentation disagreeing with the code, the code won and <code>docs/</code> was corrected — the
 disagreements are listed at the end of this file.</p>
+<p>Since then a requirement may also be written <strong>ahead of the code, marked planned</strong>
+(<a href="../decisions/ADR-0002-requirements-may-land-ahead-of-the-code/">ADR-0002</a>): a line
+<code>**Status:** planned</code> under its heading, no <code>@verifies</code> tag yet, and the status line removed
+in the change that lands the code and its tests. A requirement with no status line is
+implemented. A planned one is a design commitment, not something a consumer may call yet.</p>
 <p>Twelve repositories import <code>celine.sdk.auth</code> and ten import <code>celine.sdk.settings</code>
 (the companion's knowledge). A requirement here is therefore
 a promise to those repositories, and changing one is a platform change, not a local one.</p>
@@ -4121,7 +4126,15 @@ a promise to those repositories, and changing one is a platform change, not a lo
 </tr>
 <tr>
 <td><a href="rec-registry-client/">REC registry client</a></td>
-<td><code>celine.sdk.rec_registry</code> — the batch asset lookups</td>
+<td><code>celine.sdk.rec_registry</code> — the batch asset lookups; the meter writes; the profile write; the area and topology writes, the area rename and the community read; self-service refusals</td>
+</tr>
+<tr>
+<td><a href="onboarding-client/">Onboarding client</a></td>
+<td><code>celine.sdk.onboarding</code> — the registry sync of a community's areas</td>
+</tr>
+<tr>
+<td><a href="digital-twin-client/">Digital Twin client</a></td>
+<td><code>celine.sdk.dt</code> — no refusal detail in any log; no mutable defaults, the payload is the caller's</td>
 </tr>
 <tr>
 <td><a href="spec-management/">Spec management</a></td>
@@ -4136,7 +4149,7 @@ never written by hand. the companion's testing playbook states how.</p>
 <p>Numbers are allocated in blocks per document so a new requirement can be appended without
 renumbering: configuration <code>0001–0019</code>, identity <code>0020–0049</code>, policy evaluation
 <code>0050–0069</code>, messaging <code>0070–0099</code>, spec management <code>0100–0119</code>, REC registry client
-<code>0120–0139</code>.</p>
+<code>0120–0139</code>, onboarding client <code>0140–0159</code>, Digital Twin client <code>0160–0179</code>.</p>
 <h2 id="what-is-deliberately-not-specified-here">What is deliberately not specified here</h2>
 <ul>
 <li><strong>The generated tree.</strong> <code>src/celine/sdk/openapi</code> is 454 files produced by <code>task gen</code>;

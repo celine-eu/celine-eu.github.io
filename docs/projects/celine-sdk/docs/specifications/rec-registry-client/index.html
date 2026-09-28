@@ -4124,6 +4124,156 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#meter-and-profile-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meter and profile writes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Meter and profile writes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-0125-attaching-a-meter-writes-one-asset-through-the-per-asset-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0125 — attaching a meter writes one asset through the per-asset route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0126-detaching-a-meter-deletes-that-one-asset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0126 — detaching a meter deletes that one asset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0127-a-refused-write-raises-with-the-registrys-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0127 — a refused write raises with the registry's code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0128-the-profile-write-sends-only-role-and-area-to-the-profile-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0128 — the profile write sends only role and area, to the profile route
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#areas-and-topology-the-onboarding-template-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Areas and topology: the onboarding template sync
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Areas and topology: the onboarding template sync">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-0129-the-community-read-answers-areas-and-topology-or-raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0129 — the community read answers areas and topology, or raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0130-an-area-write-sends-one-area-and-answers-the-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0130 — an area write sends one area and answers the community
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0131-a-topology-node-write-sends-one-node-and-answers-the-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0131 — a topology node write sends one node and answers the community
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0133-an-area-rename-sends-only-the-new-key-and-answers-what-moved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0133 — an area rename sends only the new key and answers what moved
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-service-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Self-service reads
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Self-service reads">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-0132-a-refused-self-service-read-raises-recregistryapierror-with-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0132 — a refused self-service read raises RecRegistryApiError with the code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4148,7 +4298,10 @@ objects — the general shape of every wrapper in this SDK.</p>
 <p>What is stated here is only the part of that wrapper where a wrong answer is
 indistinguishable from a right one: the three <strong>batch lookups</strong>, whose empty list is a real
 answer the service gives on purpose. The rest of the wrapper — every single-id lookup, the
-writes, the user-scoped client — is not specified yet.</p>
+writes, the user-scoped client — is not specified yet, except the <strong>meter and profile
+writes</strong> (REQ-0125–REQ-0128), the <strong>area and topology writes</strong> of onboarding's template sync
+(REQ-0129–REQ-0131, REQ-0133), and how the <strong>self-service reads</strong> raise a registry refusal
+(REQ-0132), all at the end of this page.</p>
 <p>The service's own behaviour belongs to <code>rec-registry</code>, not here; where a requirement below
 mirrors one of its, the identifier is named so the two can be kept honest.</p>
 <hr />
@@ -4171,6 +4324,9 @@ method has, that <strong>nothing matched</strong>. A consumer resolving six hund
 dataspace query would conclude that none of them are registered.</p>
 <p>The exception is the wrapper's own, not the generated layer's, and mirrors
 <code>celine.sdk.dt.util.DTApiError</code>.</p>
+<p>The same exception also carries the registry's machine-readable refusal <code>code</code> and its
+<code>detail</code> (REQ-0127). The batch lookups set neither — their refusals are validation errors,
+which name no code — so both are <code>None</code> there.</p>
 <h3 id="req-0121-a-batch-larger-than-the-bound-is-split-not-refused">REQ-0121 — a batch larger than the bound is split, not refused</h3>
 <p>Both routes accept at most <code>MAX_BATCH_LOOKUP_IDS</code> ids — 500, mirrored from <code>rec-registry</code>,
 where REQ-0043 and REQ-0045 read one shared constant of that name and 501 is a <code>422</code>.</p>
@@ -4208,6 +4364,178 @@ one implementation of it is why a fourth cannot quietly get it wrong.</p>
 <p>A DID belonging to nobody and a member holding no supply points are deliberately
 indistinguishable at the service (<code>rec-registry</code> REQ-0061), and the wrapper adds no third
 meaning.</p>
+<hr />
+<h2 id="meter-and-profile-writes">Meter and profile writes</h2>
+<p>A community manager attaches a member's meter, detaches it, and corrects the member's role
+and area, from the community dashboard. Its backend calls the registry through this wrapper
+with a token carrying only the scope that one write needs — <code>rec-registry.assets.write</code> for a
+meter, <code>rec-registry.members.profile.write</code> for a profile — so the helpers below take the
+token per call, as every other method does.</p>
+<p>These helpers differ from the existing writes on purpose. <code>create_member</code>, <code>patch_member</code>,
+<code>upsert_asset</code> and their siblings return the undecoded response, because for their callers a
+<code>409</code> is an ordinary outcome to branch on (a retried registration finds the member already
+there). They keep that contract; onboarding depends on it. For the dashboard a refusal is an
+answer to show the manager, and the registry names it with a code — so the helpers below
+parse success into a schema and raise on everything else, and the code is the part of the
+refusal the caller acts on.</p>
+<p>The rules they rely on belong to <code>rec-registry</code>: the meter asset key <code>meter-&lt;sensor_id&gt;</code>
+with the sensor id trimmed, one active holder per sensor id across communities, detaching as
+a hard delete of the asset, and the dedicated profile route and its action. They are named
+here only so the two can be kept honest.</p>
+<h3 id="req-0125-attaching-a-meter-writes-one-asset-through-the-per-asset-route">REQ-0125 — attaching a meter writes one asset through the per-asset route</h3>
+<p>The meter write (<code>RecRegistryAdminClient.put_asset</code>) sends one asset to <code>PUT /admin/communities/{community_key}/members/{member_key}/assets/{asset_key}</code>,
+with the asset key and body the caller gives and nothing added, and answers the stored asset
+as the generated <code>AssetDetailSchema</code> — the shape the asset <code>GET</code> answers, which the registry
+declares on the <code>PUT</code> too since 1.6.0 (the wrapper declares no schema of its own; a key the
+registry adds later is ignored, not refused). It does not compose the key and does not trim the sensor id: the key convention
+and the comparison are the registry's, and a second copy of either here would be the one
+that drifts.</p>
+<p>Writing an asset the member already holds with the same body answers the stored asset, as
+the registry does; the wrapper does not turn a no-op into an error.</p>
+<p>This is what fills the gap REQ-0124 describes: onboarding registers no asset, and a meter
+reaches a member only when a manager attaches it.</p>
+<h3 id="req-0126-detaching-a-meter-deletes-that-one-asset">REQ-0126 — detaching a meter deletes that one asset</h3>
+<p>The meter delete (<code>RecRegistryAdminClient.delete_asset</code>) sends <code>DELETE</code> for one asset key of one member and answers nothing on
+<code>204</code>. The member's other assets are not touched. Any other status raises under REQ-0127 —
+including a <code>404</code> for a key the member does not hold, which the wrapper does not read as
+"already detached": whether that is success is the caller's decision, not a translation the
+wrapper makes silently.</p>
+<h3 id="req-0127-a-refused-write-raises-with-the-registrys-code">REQ-0127 — a refused write raises with the registry's code</h3>
+<p>Extends REQ-0120 to the helpers of this section. A status the helper does not treat as
+success — declared in the registry's spec or not — raises <code>RecRegistryApiError</code> carrying the
+status code, the body and, when the registry's refusal names one, its machine-readable
+<code>code</code> as a string (<code>sensor_held</code>, <code>asset_key_too_long</code>, <code>invalid_area_boundary</code>, and the
+rest of the registry's error-code vocabulary). A refusal that names no code has <code>code</code> of
+<code>None</code>.</p>
+<p>The registry declares its coded <code>422</code> beside FastAPI's validation <code>422</code> as one <code>oneOf</code>
+body (<code>ErrorResponse</code> / <code>HTTPValidationError</code>). The generated parse tries <code>ErrorResponse</code>
+first and accepts a validation body as one too, with no <code>code</code>, so the model it returns
+does not tell the two apart: the code is always read from the raw body, as below.</p>
+<p>The registry's refusal body is flat: <code>{"detail": "&lt;sentence&gt;", "code": "&lt;code&gt;"}</code>, where
+<code>detail</code> is always a string and <code>code</code> sits beside it at the top level. The helper reads
+<code>code</code> from there and never parses the sentence; <code>detail</code> is kept for people. This is the
+registry's shape, not onboarding's — onboarding nests its code inside <code>detail</code> — and the two
+wrappers each read the shape their own service emits. The generated
+layer's own "unexpected status" error never reaches the caller, and neither does its
+parse of <code>code</code> into the generated <code>ErrorCode</code> enum: the helpers read the response
+themselves. A body that is not JSON (a proxy's page) raises the same exception with
+<code>code</code> and <code>detail</code> of <code>None</code>; an unreadable <code>200</code> raises rather than answering nothing.</p>
+<p>The code is compared as a string and never mapped to an enum here: the vocabulary is the
+registry's, a new code must not fail a caller built against the old list, and a generated
+enum never compares equal to its string. <code>sensor_held</code> in particular is a normal answer —
+another active member, in this community or another, holds the sensor — and the dashboard
+shows it to the manager; the wrapper adds nothing to it, and it carries no member or
+community the registry did not name.</p>
+<p>The exception gains <code>code</code> and <code>detail</code>, keyword-only and defaulting to <code>None</code>, without
+losing <code>status_code</code> or <code>body</code>, so a caller of the batch lookups that catches it is
+unchanged.</p>
+<h3 id="req-0128-the-profile-write-sends-only-role-and-area-to-the-profile-route">REQ-0128 — the profile write sends only role and area, to the profile route</h3>
+<p>The profile write (<code>RecRegistryAdminClient.patch_member_profile</code>) sends <code>PATCH /admin/communities/{community_key}/members/{member_key}/profile</code>
+with a body of <strong>only</strong> the keys the caller set, out of <code>role</code> and <code>area</code>. It has no parameter
+for any other member field, so it cannot send one, and an omitted key is omitted rather than
+sent as <code>null</code> (the same rule as REQ-0111). It answers the updated member as a schema, and a
+refusal raises under REQ-0127 (<code>invalid_role</code> and <code>unknown_area</code> are <code>422</code>; a missing
+member or community is <code>404</code>). Called with neither key, it raises <code>ValueError</code> and sends
+nothing: the registry refuses an empty body with a validation <code>422</code> that carries no code, so
+there would be nothing to show. It passes the values as given — which roles a caller may set
+is that caller's rule (the dashboard's backend allows only <code>consumer</code> and <code>prosumer</code>), and the
+role and area sets are the registry's (<code>rec-registry</code> REQ-0066, REQ-0070).</p>
+<p>It never falls back to the general member <code>PATCH</code>: that route needs
+<code>rec-registry.members.write</code>, which the dashboard's backend is deliberately not granted,
+because it would let it rewrite a member's <code>user_id</code>, <code>did</code> and status.</p>
+<hr />
+<h2 id="areas-and-topology-the-onboarding-template-sync">Areas and topology: the onboarding template sync</h2>
+<p>Onboarding's templates are the source of truth for a community's areas, and onboarding
+writes them to the registry: each primary substation as one topology node, then the area
+that references it (<code>rec-registry</code> REQ-0067, REQ-0072). The sync and its drift check read
+the community first to know what is there. For them a refusal is a row in a report to an
+admin — an area that breaks the one-substation rule, an area members still use, a node an
+area still lists — so these helpers follow the raising helpers above rather than the
+undecoded writes: success is a schema, anything else raises <code>RecRegistryApiError</code> under
+REQ-0127, with the registry's <code>code</code> read from the raw body.</p>
+<p>The token is passed per call, as everywhere in this wrapper: onboarding requests its
+optional write scope (<code>rec-registry.community.write</code>) only for the writes, and its read with
+the default one. What is compared, created, pruned or refused is onboarding's to decide; the
+wrapper adds no step, retries nothing and deletes nothing it was not asked to.</p>
+<h3 id="req-0129-the-community-read-answers-areas-and-topology-or-raises">REQ-0129 — the community read answers areas and topology, or raises</h3>
+<p>The community read (<code>RecRegistryAdminClient.read_community</code>) sends
+<code>GET /admin/communities/{community_key}</code> and answers the generated <code>CommunityDetailSchema</code>:
+each area with its <code>boundary</code> (<code>source</code>, <code>id</code>) and <code>topology</code>, and each topology node with
+<code>id</code>, <code>type</code>, <code>name</code>, <code>operator_id</code> and <code>parent</code> — the names the registry reads and writes
+since 1.6.0. Anything but <code>200</code> raises <code>RecRegistryApiError</code>, including a missing community
+(<code>404</code>, which this route answers without a <code>code</code> and does not declare) and a missing grant
+(<code>403</code>), so a community that could not be read is never taken for one with no areas. An
+unreadable <code>200</code> raises too.</p>
+<p><code>get_community</code>, which answers the undecoded response, is unchanged; its callers depend on
+that.</p>
+<h3 id="req-0130-an-area-write-sends-one-area-and-answers-the-community">REQ-0130 — an area write sends one area and answers the community</h3>
+<p>The area write (<code>RecRegistryAdminClient.put_area</code>) sends
+<code>PUT /admin/communities/{community_key}/areas/{area_key}</code> with the body the caller gives —
+<code>{name, boundary: {source, id}, topology: [id]}</code> — and nothing added. The area delete
+(<code>RecRegistryAdminClient.delete_area</code>) sends <code>DELETE</code> for one area key. Both answer the whole
+community as <code>CommunityDetailSchema</code>, as the registry does, so the caller sees the areas it
+did not touch.</p>
+<p>A refusal raises under REQ-0127: <code>invalid_area_boundary</code> (<code>422</code>) on the write,
+<code>area_in_use</code> (<code>409</code>) on the delete — whose sentence names the member count, which the
+wrapper keeps in <code>detail</code> and does not parse — and <code>community_not_found</code> (<code>404</code>). A <code>404</code>
+with no code for an area the community does not have is raised, not read as "already
+deleted": whether that is success is the caller's decision. The one-substation rule, and
+that the area's node must exist before the area, are the registry's; the wrapper checks
+neither.</p>
+<h3 id="req-0131-a-topology-node-write-sends-one-node-and-answers-the-community">REQ-0131 — a topology node write sends one node and answers the community</h3>
+<p>The node write (<code>RecRegistryAdminClient.put_topology_node</code>) sends
+<code>PUT /admin/communities/{community_key}/topology/{node_id}</code> with the body the caller gives —
+<code>{id, type, name?, operator_id?, parent?}</code>. It does not fill the body's <code>id</code> from the path or
+the other way round: the registry refuses a mismatch with a validation <code>422</code>, and the wrapper
+lets that refusal through rather than hiding it. The node delete
+(<code>RecRegistryAdminClient.delete_topology_node</code>) sends <code>DELETE</code> for one node id. Both answer
+the whole community as <code>CommunityDetailSchema</code>.</p>
+<p>A refusal raises under REQ-0127: <code>invalid_area_boundary</code> (<code>422</code>, the write would change the
+<code>type</code> of a node an area relies on), <code>topology_node_in_use</code> (<code>409</code>, an area lists the node;
+the sentence names the areas), <code>community_not_found</code> (<code>404</code>), and a <code>404</code> with no code for a
+node the community does not have, which is not read as "already deleted".</p>
+<h3 id="req-0133-an-area-rename-sends-only-the-new-key-and-answers-what-moved">REQ-0133 — an area rename sends only the new key and answers what moved</h3>
+<p>The area rename (<code>RecRegistryAdminClient.rename_area</code>) sends
+<code>POST /admin/communities/{community_key}/areas/{area_key}/rename</code> with a body of <strong>only</strong>
+<code>{"new_key": &lt;new key&gt;}</code>, and answers the generated <code>AreaRenamedSchema</code>: <code>old_key</code>,
+<code>new_key</code>, <code>members_moved</code> and the whole community after the rename, as the registry answers
+it (<code>rec-registry</code> REQ-0079). It is one request: the wrapper does not follow it with an area
+<code>PUT</code> or <code>DELETE</code> of its own, and it does not check the key's pattern — both are the
+registry's. The registry moves the area as stored and every member of the community whose
+<code>area</code> is the old key, of any status, in one transaction; that is why a template sync uses
+it for an area whose substation the registry holds under another key, where a <code>PUT</code> under
+the new key is refused (one area per boundary) and the old key's <code>DELETE</code> is refused while
+members hold it.</p>
+<p>Anything but <code>200</code> raises under REQ-0127: <code>invalid_area_key</code> (<code>422</code>, the new key is not an
+area key), <code>area_not_found</code> (<code>404</code>), <code>area_key_taken</code> (<code>409</code>, the new key exists, the old key
+included), <code>community_not_found</code> (<code>404</code>); <code>code</code> is <code>None</code> for a validation <code>422</code>, a missing
+grant (<code>403</code>) or a body that is not JSON. An unreadable <code>200</code> raises too. It needs
+<code>rec-registry.community.write</code>.</p>
+<hr />
+<h2 id="self-service-reads">Self-service reads</h2>
+<h3 id="req-0132-a-refused-self-service-read-raises-recregistryapierror-with-the-code">REQ-0132 — a refused self-service read raises <code>RecRegistryApiError</code> with the code</h3>
+<p>Since 1.6.0 the registry declares the <code>403</code> its self-service routes answer a caller who is
+no member — <code>{"detail": "You are not a member of any community", "code": "not_a_member"}</code>
+on <code>/user/community</code>, <code>/user/member</code>, <code>/user/assets</code>, <code>/user/assets/{asset_key}</code> and
+<code>/user/delivery-points</code> (<code>rec-registry</code> REQ-0073).</p>
+<p>Each of <code>RecRegistryUserClient.get_my_community</code>, <code>get_my_member</code>, <code>get_my_assets</code>,
+<code>get_my_asset</code> and <code>get_my_delivery_points</code> answers its schema on <code>200</code> and on anything else
+raises <code>RecRegistryApiError</code> under REQ-0127: <code>status_code</code>, the raw <code>body</code>, and the
+registry's <code>code</code> and <code>detail</code> read from the top level of the body — so a caller that tells
+"no member" apart does it with <code>exc.status_code == 403 and exc.code == "not_a_member"</code>, and
+a member owning nothing stays a <code>200</code> with no items. The response is read by the wrapper,
+never by the generated parse: that parse calls <code>response.json()</code> on every status the route
+declares, so a body that is not JSON on such a status (a proxy's page on the <code>403</code>, or on
+<code>/user/assets/{asset_key}</code>'s <code>422</code>) would fail there with a decode error. It raises
+<code>RecRegistryApiError</code> with <code>code</code> and <code>detail</code> of <code>None</code> instead. An undeclared status raises
+the same exception, never the generated <code>UnexpectedStatus</code>, and an unreadable <code>200</code> raises
+rather than answering <code>None</code>.</p>
+<p>This replaces the earlier contract, under which these reads raised the generated
+<code>UnexpectedStatus</code>. The consumers in the workspace other than dataset-api catch any
+exception around these reads. dataset-api's row filter, which denies rows on <code>not_a_member</code>
+and nothing else, calls the route itself today and is to move to <code>get_my_assets</code> and this
+exception's <code>code</code>.
+<code>get_me</code> is unaffected: the registry answers it <code>200</code> with no membership.</p>
 
 
 
