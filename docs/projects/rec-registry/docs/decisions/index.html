@@ -4081,7 +4081,7 @@ is not derivable from the code and would otherwise be re-litigated.</p>
 <pre><code class="language-markdown"># ADR-0001 — &lt;the decision, as a statement&gt;
 
 **Date:** &lt;ISO-8601&gt;
-**Status:** accepted | superseded by ADR-####
+**Status:** accepted | superseded by ADR-#### | accepted; amended by ADR-####
 
 ## Context
 &lt;what forced a choice. The constraint, and what had already been tried.&gt;
@@ -4116,6 +4116,42 @@ edited to say something else.</p>
 <tr>
 <td><a href="ADR-0001-requirements-are-read-out-of-the-code/">ADR-0001</a></td>
 <td>the requirements are read out of the code, and say what it does today</td>
+</tr>
+<tr>
+<td><a href="ADR-0002-requirements-may-be-written-ahead-of-the-code-marked-planned/">ADR-0002</a></td>
+<td>requirements may be written ahead of the code, marked <code>planned</code></td>
+</tr>
+<tr>
+<td><a href="ADR-0003-role-and-area-have-their-own-route-and-action/">ADR-0003</a></td>
+<td>role and area are written through their own route and action, and no caller-supplied id can change an action</td>
+</tr>
+<tr>
+<td><a href="ADR-0004-a-sensor-has-one-active-holder-and-detaching-deletes-the-meter/">ADR-0004</a></td>
+<td>a sensor id has one active holder across the registry, and detaching a meter deletes it</td>
+</tr>
+<tr>
+<td><a href="ADR-0005-an-area-is-one-gse-primary-substation/">ADR-0005</a></td>
+<td>an area is one GSE primary substation, referenced by id and never stored as a shape</td>
+</tr>
+<tr>
+<td><a href="ADR-0006-onboarding-templates-are-the-source-of-truth-for-areas/">ADR-0006</a></td>
+<td>onboarding templates are the source of truth for areas, written through the area and topology routes</td>
+</tr>
+<tr>
+<td><a href="ADR-0007-import-refuses-a-bundle-that-breaks-an-invariant/">ADR-0007</a></td>
+<td>import refuses a bundle that breaks an invariant, and old backups are reshaped rather than tolerated</td>
+</tr>
+<tr>
+<td><a href="ADR-0008-a-refusal-carries-a-machine-readable-code/">ADR-0008</a></td>
+<td>a refusal carries a machine-readable code beside its message</td>
+</tr>
+<tr>
+<td><a href="ADR-0009-a-community-is-retired-by-a-forced-empty-import/">ADR-0009</a></td>
+<td>a community is retired by a forced import with no members, and members arrive only through onboarding</td>
+</tr>
+<tr>
+<td><a href="ADR-0010-an-area-is-renamed-with-its-members-in-one-write/">ADR-0010</a></td>
+<td>an area is renamed with its members in one write, under the community's lock</td>
 </tr>
 </tbody>
 </table>

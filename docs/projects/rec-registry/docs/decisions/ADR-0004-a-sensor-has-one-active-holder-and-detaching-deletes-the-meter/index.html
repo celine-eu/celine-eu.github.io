@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/rec-registry/docs/specifications/import-and-export/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/rec-registry/docs/decisions/ADR-0004-a-sensor-has-one-active-holder-and-detaching-deletes-the-meter/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Import and export - CELINE Project</title>
+        <title>ADR-0004 — a sensor id has one active holder across the registry, and detaching a meter deletes it - CELINE Project</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#import-and-export" class="md-skip">
+        <a href="#adr-0004-a-sensor-id-has-one-active-holder-across-the-registry-and-detaching-a-meter-deletes-it" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Import and export
+              ADR-0004 — a sensor id has one active holder across the registry, and detaching a meter deletes it
             
           </span>
         </div>
@@ -4036,10 +4036,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#req-0032-an-import-is-a-full-replace-and-it-is-atomic" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0032 — an import is a full replace, and it is atomic
+        Context
       
     </span>
   </a>
@@ -4047,10 +4047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0033-overwriting-an-existing-community-must-be-asked-for" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0033 — overwriting an existing community must be asked for
+        Decision
       
     </span>
   </a>
@@ -4058,65 +4058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0034-a-dry-run-reports-and-never-writes-and-is-never-blocked-by-the-guard" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0034 — a dry run reports and never writes, and is never blocked by the guard
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0035-a-meter-with-no-sensor-id-is-skipped-with-a-warning-naming-it" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0035 — a meter with no sensor id is skipped, with a warning naming it
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0036-the-report-names-what-was-deleted-what-was-inserted-and-what-was-warned-about" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0036 — the report names what was deleted, what was inserted, and what was warned about
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0037-a-community-exports-the-same-whether-its-members-arrived-by-api-or-by-bundle" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0037 — a community exports the same whether its members arrived by API or by bundle
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0074-an-import-that-breaks-an-invariant-is-refused-whole-before-any-database-work" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0074 — an import that breaks an invariant is refused whole, before any database work
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0075-a-community-is-retired-by-a-forced-import-naming-it-with-no-members" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0075 — a community is retired by a forced import naming it with no members
+        Consequences
       
     </span>
   </a>
@@ -4140,127 +4085,61 @@
 
 
 
-<h1 id="import-and-export">Import and export</h1>
-<p>The other way a community arrives: a YAML or JSON bundle, imported wholesale. This is how
-a community is seeded and how it is restored from a backup, and it is <strong>the only place in
-the service where a write may delete what it was not given</strong>.</p>
-<p>The procedure and the file format are in <a href="../../import-export/">import &amp; export</a>. What
-follows is what the behaviour must be.</p>
-<hr />
-<h3 id="req-0032-an-import-is-a-full-replace-and-it-is-atomic">REQ-0032 — an import is a full replace, and it is atomic</h3>
-<p>Importing a community deletes the existing community with every member and asset, then
-recreates the whole graph from the bundle. Entities missing from the new bundle are gone;
-changed ones are recreated; new ones are added.</p>
-<p>The work is one transaction: if any step fails, nothing is applied. That is not a
-convenience — a half-applied replacement is a community whose members have been deleted
-and not recreated, and there is no state to roll back <em>to</em> except the transaction.</p>
-<p>Rows are built by <code>src/celine/rec_registry/services/members.py</code>, <strong>the same code the admin
-write API uses</strong>. Two implementations of "what a member row looks like" would drift on the
-first schema change; REQ-0037 is what would notice.</p>
-<h3 id="req-0033-overwriting-an-existing-community-must-be-asked-for">REQ-0033 — overwriting an existing community must be asked for</h3>
-<p>An import naming a community that already exists is <strong>refused</strong> unless <code>force</code> is set:
-<code>409</code> over HTTP, and a non-zero exit from the CLI, in both cases <strong>naming the members and
-assets that would have been deleted</strong>.</p>
-<p>With <code>force</code>, the replacement proceeds and the loss is accepted. Creating a community that
-does not exist yet needs no <code>force</code>.</p>
-<p>This guard exists because the premise changed. Full replacement was safe while a YAML file
-was the only source of members; now that members arrive at runtime through the write API,
-<strong>restoring a stale export is the likeliest way to lose weeks of approvals</strong>. The counts
-in the refusal are the point — they are how a caller judges whether forcing is warranted.</p>
-<h3 id="req-0034-a-dry-run-reports-and-never-writes-and-is-never-blocked-by-the-guard">REQ-0034 — a dry run reports and never writes, and is never blocked by the guard</h3>
-<p><code>dry_run</code> returns the same report — what would be deleted, what would be inserted, with
-what warnings — and performs no database work at all: nothing is added and nothing is
-deleted.</p>
-<p>A dry run against an existing community <strong>reports instead of refusing</strong>, even without
-<code>force</code>. Seeing the counts is exactly how a caller decides whether forcing is warranted,
-so the guard must not block the request that informs it.</p>
-<p>It also lists, in the report's <code>refusals</code>, every <code>sensor_held</code> refusal the import would make
-(REQ-0069), every <code>invalid_role</code>, <code>invalid_status</code> and <code>unknown_area</code> refusal (REQ-0066,
-REQ-0074), and every <code>invalid_area_boundary</code> refusal (REQ-0067).</p>
-<h3 id="req-0035-a-meter-with-no-sensor-id-is-skipped-with-a-warning-naming-it">REQ-0035 — a meter with no sensor id is skipped, with a warning naming it</h3>
-<p>The import continues and the report carries a warning naming the asset key and the missing
-field. Everything else in the bundle is applied.</p>
-<p>A meter is identified by its <code>sensor_id</code> throughout the platform — it is how a reading
-finds its owner (REQ-0039). One stored without it is unreachable rather than merely
-incomplete, so it is not stored; and one bad meter is not a reason to refuse a community
-of two hundred members, so the import is not failed either.</p>
-<p>A <code>sensor_id</code> that is blank after trimming counts as missing and is skipped the same way
-(REQ-0069).</p>
-<h3 id="req-0036-the-report-names-what-was-deleted-what-was-inserted-and-what-was-warned-about">REQ-0036 — the report names what was deleted, what was inserted, and what was warned about</h3>
-<p>Every import answers an <code>ImportReport</code> carrying the community key, <code>deleted</code> and
-<code>inserted</code> counts by entity type, the list of warnings, and — filled by a dry run only — the
-<code>refusals</code> the import would make, each <code>{code, detail}</code> (REQ-0069). The YAML route answers a
-<code>MultiImportReport</code>, one entry per document.</p>
-<p>A malformed request — no <code>bundle</code> field, or a body that is not JSON — is <code>422</code> before any
-of that.</p>
-<p>The counts are what makes a destructive operation reviewable after the fact. <code>deleted</code>
-being non-zero is the caller's evidence that a replacement rather than a creation
-happened.</p>
-<h3 id="req-0037-a-community-exports-the-same-whether-its-members-arrived-by-api-or-by-bundle">REQ-0037 — a community exports the same whether its members arrived by API or by bundle</h3>
-<p>Create a member through the write API, export the community, re-import the export: the
-member is still there, unchanged, with its delivery points and its assets.</p>
-<p>This is the property the two write paths exist to preserve, and the one that is invisible
-from reading either path alone. If it breaks, the symptom is <strong>a community that exports
-differently depending on how its members arrived</strong> — which nobody notices until a restore
-produces something subtly unlike the original, and by then the original is gone.</p>
-<p>Practically: the file is a <strong>seed</strong>, <code>GET /admin/export</code> is a <strong>backup</strong>, and once members
-arrive at runtime the database is the source of truth.</p>
-<p>One field is knowingly excluded from this guarantee: the declared schema version does not
-survive the round trip (REQ-0018).</p>
-<p>Areas keep the guarantee too: a v0.7 community whose areas arrived by bundle and by the area
-<code>PUT</code> exports them with their <code>boundary</code> and <code>topology</code> and re-imports unchanged, with no
-warning. An export taken before schema v0.7 has areas without a boundary, which REQ-0074
-refuses, so it has to be reshaped before it restores.</p>
-<p><strong>Planned:</strong> the source of truth becomes per collection — areas come from onboarding
-templates (<a href="../../decisions/ADR-0006-onboarding-templates-are-the-source-of-truth-for-areas/">ADR-0006</a>),
-members through onboarding, meters from a manager — and the database holds all three.</p>
-<h3 id="req-0074-an-import-that-breaks-an-invariant-is-refused-whole-before-any-database-work">REQ-0074 — an import that breaks an invariant is refused whole, before any database work</h3>
-<p>A bundle is refused, and nothing is deleted or inserted, when:</p>
+<h1 id="adr-0004-a-sensor-id-has-one-active-holder-across-the-registry-and-detaching-a-meter-deletes-it">ADR-0004 — a sensor id has one active holder across the registry, and detaching a meter deletes it</h1>
+<p><strong>Date:</strong> 2026-09-27
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p>A sensor id is how a reading finds its owner (REQ-0039). Nothing today stops two members
+holding the same one — in one community, or in two — and every consumer that joins readings
+to members would then count those readings twice. Asset keys are unique per community only,
+and <code>sensor_id</code> carries a lookup index, not a uniqueness constraint.</p>
+<p>Meters are about to be attached by community managers, by hand, as free text: a manager types
+the id printed on the device. There is deliberately no list to pick from. A meter not yet
+attached belongs to no community, so any candidate list would either show one community the
+meters of another or assign a meter to the wrong one. The registry's answer to the attach is
+the only feedback the manager gets, so that answer has to be right — including across
+communities the manager cannot see.</p>
+<h2 id="decision">Decision</h2>
 <ul>
-<li>two of its active members hold the same trimmed sensor id, or one of them holds a sensor an
-  active member of <strong>another</strong> community holds (REQ-0069) — the replaced community's own
-  current rows do not count, since the import deletes them;</li>
-<li>an asset key is longer than the 128 characters <code>asset.key</code> holds — <code>asset_key_too_long</code>
-  (REQ-0028), implemented with the sensor clause;</li>
-<li>a member's <code>role</code> or <code>status</code> is outside its set, or its <code>area</code> is not one of the bundle's
-  areas (REQ-0066);</li>
-<li>an area's key is not an area key — <code>invalid_area_key</code> (REQ-0067), one refusal per key;</li>
-<li>an area breaks the one-substation rule — <code>invalid_area_boundary</code> (REQ-0067), one refusal per
-  area and one per boundary id two areas share, judged against the bundle's own
-  <code>community.topology</code>.</li>
+<li><strong>At most one active member in the whole registry holds a given sensor id.</strong> A member whose
+  status is not <code>active</code> holds nothing: deactivating a member releases its sensors, and
+  reactivating one re-checks them — if another active member took one of its sensors
+  meanwhile, the reactivation is refused with <code>sensor_held</code> and the member stays as it was.</li>
+<li><strong>The comparison is on the trimmed id</strong>, and new writes store it trimmed, so <code>SEN-1</code> and
+  <code>SEN-1</code> are one sensor. Trimming strips every Unicode whitespace character, identically in
+  Python and in the SQL that compares stored rows. An id that is blank after trimming counts as missing.</li>
+<li><strong>Every path that can make an active member hold a sensor checks it:</strong> the asset <code>PUT</code>,
+  creating a member with assets, a status change to <code>active</code> (the status route and <code>PATCH</code>),
+  and the bundle import. A clash answers <code>409</code> with the code <code>sensor_held</code>.</li>
+<li><strong>Check and write happen under one transaction-scoped advisory lock keyed on the trimmed
+  id</strong>, so two managers attaching one sensor at once get one success and one <code>sensor_held</code>,
+  never two successes. An attach and a reactivation of the same member also lock that
+  member's row first, so an attach to a suspended member cannot slip past its concurrent
+  reactivation.</li>
+<li><strong><code>sensor_held</code> names nobody outside the community addressed.</strong> Inside it, the answer may
+  name the holding member's key, as the DID clash does (REQ-0060); in any other community it
+  names neither member nor community.</li>
+<li><strong>An attached meter's asset key is <code>meter-&lt;trimmed sensor id&gt;</code></strong>, the convention the
+  dashboard uses, so a re-attach of the same sensor to the same member is the idempotent
+  upsert REQ-0028 already defines.</li>
+<li><strong>Detaching is a hard delete of the asset</strong> (<code>DELETE …/assets/meter-&lt;sensor id&gt;</code>, <code>204</code>).</li>
 </ul>
-<p>The refusal is <code>422</code> over HTTP and a non-zero exit from the CLI, with the code of the invariant
-(REQ-0073) and a report naming the offending member, asset and area keys of <strong>this</strong> bundle; a
-sensor held in another community is reported without naming that community or member. The
-check runs after parsing (REQ-0019), and a dry run answers the report with every refusal it
-would make rather than stopping at the first (REQ-0034).</p>
-<p>The schema-version check stays the warning REQ-0018 describes; this refuses on content,
-whatever version is declared. A bundle written before schema v0.7 that has areas is refused,
-and there is no compatibility branch: a file is reshaped outside the product. The runtime
-writes already refuse these rows, and an import that only warned would be the way to create
-them anyway. Decided in
-<a href="../../decisions/ADR-0007-import-refuses-a-bundle-that-breaks-an-invariant/">ADR-0007</a>.</p>
-<p>Each clause has this refusal's shape: the sensor clause as REQ-0069 describes, the asset-key
-length with it, the role, status and area clause as REQ-0066 describes — each out-of-set field
-one refusal, <code>member '&lt;key&gt;': role 'x' is not one of …</code>, the area judged against the bundle's
-own <code>community.areas</code> — and the area-key and area-boundary clauses as REQ-0067 describes. A
-refused forced re-import leaves the existing community as it was. The real import's <code>code</code> is
-the first refusal's, in the order member values, area keys, area boundaries, asset keys,
-sensors.</p>
-<h3 id="req-0075-a-community-is-retired-by-a-forced-import-naming-it-with-no-members">REQ-0075 — a community is retired by a forced import naming it with no members</h3>
-<p>A forced import of a bundle that names an existing community and carries no members deletes
-every member and asset of that community and keeps the community, with the metadata the bundle
-carries. The report counts what was deleted, as REQ-0036 says. Every sensor the old members
-held is released, so a sensor can be attached in another community afterwards without
-<code>sensor_held</code>. Without <code>force</code> it is refused like any overwrite (REQ-0033) and nothing is
-deleted. "Keeps the community" is by key: the import replaces the graph (REQ-0032), so the
-community's row is written anew under the same key and answers a new <code>id</code>.</p>
-<p>There is no community delete route and no retired status: retirement is this import, performed
-by an operator holding the import grant — the grant that is purge-equivalent for a whole
-community (REQ-0006). On a deployed realm a bundle carries a community's administrative data
-only, and members arrive through onboarding; members loaded from a file are for local
-development. Decided in
-<a href="../../decisions/ADR-0009-a-community-is-retired-by-a-forced-empty-import/">ADR-0009</a>.</p>
+<h2 id="consequences">Consequences</h2>
+<p><strong>Detaching loses the pointer from past readings to that member.</strong> Readings are joined to
+members without dates, so after a detach the sensor's whole history follows its next holder,
+and the previous holder's share of it is attributed to nobody until then. That is accepted for
+now; dated holdings — a meter held from one date to another — are the recorded follow-up, and
+the reason this is a delete rather than a soft end-date that nothing would read yet.</p>
+<p><strong>A meter cannot move within a community until the old asset is deleted.</strong> The key
+<code>meter-&lt;sensor id&gt;</code> is unique per community whatever its holder's status, so an inactive
+member who still holds the asset blocks the attach with a key clash — a code distinct from
+<code>sensor_held</code>, because the remedy differs: delete the old asset, then attach.</p>
+<p><strong>Existing duplicates are not repaired by this.</strong> A registry that already holds a sensor on
+two active members keeps both rows until someone acts; the check refuses the next write, not
+the past ones. A report of existing duplicates runs before the check is switched on.</p>
+<p><strong>The temptation is to relax "any community" to "this community"</strong> the first time a
+cross-community clash surprises someone. The double count it prevents is invisible where it
+happens and only shows up in settlement.</p>
 
 
 

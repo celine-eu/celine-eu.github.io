@@ -4091,6 +4091,50 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0076-the-cli-reports-sensor-ids-held-by-more-than-one-active-member-and-writes-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0076 — the CLI reports sensor ids held by more than one active member, and writes nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0077 — the CLI reports members whose role, status or area is out of set, and writes nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0078-the-cli-reports-stored-areas-that-break-the-one-substation-rule-and-writes-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0078 — the CLI reports stored areas that break the one-substation rule, and writes nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0080-the-access-log-carries-no-sensor-id-user-id-or-delivery-point-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0080 — the access log carries no sensor id, user id or delivery-point id
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4173,6 +4217,78 @@ matters more here than in a docstring: <code>../celine-sdk</code> snapshots this
 <code>openapi/rec-registry/v&lt;info.version&gt;/</code> and generates its client from that directory, so a
 version that does not move while the document does overwrites a snapshot in place — and no
 consumer of the generated client can tell the API changed.</p>
+<h3 id="req-0076-the-cli-reports-sensor-ids-held-by-more-than-one-active-member-and-writes-nothing">REQ-0076 — the CLI reports sensor ids held by more than one active member, and writes nothing</h3>
+<p><code>celine-rec-registry duplicate-sensors</code> reads every community through <code>GET /admin/export</code> and
+prints one line per holder of each trimmed sensor id — trimmed as the registry trims it
+(REQ-0069), so an id exported with a tab or a no-break space around it is the same sensor —
+that more than one <strong>active</strong> member holds, in any communities: the sensor id, the community key, the member key, and how many
+active members hold it. A member holding one id under two asset keys is one holder. It exits
+<code>0</code> when there are none, <code>1</code> when there are, and <code>2</code> when the registry cannot be read — so an
+unreadable registry is never reported as clean.</p>
+<p>The registry refuses the next write that would make a second active holder (REQ-0069) but
+does not repair holders that already exist, and nothing else would find them: every write
+path now refuses to create one. This is the report ADR-0004 asks to run before the check is
+relied on. It issues one <code>GET</code> and no other request.</p>
+<h3 id="req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing">REQ-0077 — the CLI reports members whose role, status or area is out of set, and writes nothing</h3>
+<p><code>celine-rec-registry out-of-set-values</code> reads every community through <code>GET /admin/export</code> and
+prints one line per offending field: the community key, the member key, the field (<code>role</code>,
+<code>status</code> or <code>area</code>), and the value — <code>&lt;missing&gt;</code> when the export does not carry the field. A
+role or status is out of set when it is not one of REQ-0066's values, compared exactly; an area
+when it is not a key of <strong>that member's own community's</strong> <code>areas</code>. It exits <code>0</code> when there are
+none, <code>1</code> when there are, and <code>2</code> when the registry cannot be read — so an unreadable registry
+is never reported as clean. It prints no name, <code>user_id</code> or other personal field.</p>
+<p>The writes refuse such values from REQ-0066 on, but rows written before it are not repaired,
+and a re-import of their community is refused (REQ-0074). This is the report REQ-0066 asks to
+run before the check is relied on; it judges with the same function the writes do, so the two
+cannot disagree about what is out of set. It issues one <code>GET</code> and no other request.</p>
+<h3 id="req-0078-the-cli-reports-stored-areas-that-break-the-one-substation-rule-and-writes-nothing">REQ-0078 — the CLI reports stored areas that break the one-substation rule, and writes nothing</h3>
+<p><code>celine-rec-registry invalid-area-boundaries</code> reads every community through <code>GET /admin/export</code>
+and prints one line per broken rule: the community key and the refusal sentence REQ-0067's
+check produces, which names the area keys and the rule — never a boundary or node id. Every
+area of each community is judged against that community's own <code>topology</code>, with the function
+the area <code>PUT</code>, the topology node <code>PUT</code> and the import use (<code>area_boundary_refusals</code>), so the
+report and the check cannot disagree. An area whose key is not an area key (REQ-0067) is listed
+too, one line per key before the community's boundary lines, with the function the import uses
+(<code>area_key_refusals</code>). It exits <code>0</code> when there are none, <code>1</code> when there are, and <code>2</code> when the
+registry cannot be read. It issues one <code>GET</code> and no other request.</p>
+<p>The writes refuse such areas from REQ-0067 on, but areas stored before it are not re-judged by
+a write to a sibling, and a re-import of their community is refused (REQ-0074). This is the
+report to run before a deployment relies on the rule — then an onboarding template sync, an
+area rename (REQ-0079) for a key, or a reshaped bundle, corrects what it lists.</p>
+<h3 id="req-0080-the-access-log-carries-no-sensor-id-user-id-or-delivery-point-id">REQ-0080 — the access log carries no sensor id, user id or delivery-point id</h3>
+<p>The access line uvicorn writes for every request (the image's <code>CMD</code> runs uvicorn) keeps its
+method, its route shape and its status, and carries no sensor id, user id or delivery-point
+id:</p>
+<ul>
+<li>the segment after <code>/assets/</code> is logged as <code>{asset_key}</code> — on the admin asset read, the
+  member asset <code>PUT</code> and <code>DELETE</code>, and <code>GET /user/assets/{asset_key}</code> — for every asset key,
+  not only <code>meter-</code> ones;</li>
+<li>everything after <code>by-sensor-id/</code> is logged as <code>{sensor_id}</code> — on
+  <code>…/assets/by-sensor-id/</code>, <code>/admin/lookup/community-by-sensor-id/</code> and
+  <code>/admin/lookup/asset-by-sensor-id/</code>, slashes included, since the id is a <code>:path</code>
+  parameter;</li>
+<li>everything after <code>by-user-id/</code> is logged as <code>{user_id}</code> — on <code>…/members/by-user-id/</code>,
+  <code>/admin/lookup/community-by-user-id/</code> and <code>/admin/lookup/member-by-user-id/</code>, slashes
+  included;</li>
+<li>everything after <code>/delivery-points/by-id/</code> and <code>/admin/lookup/community-by-delivery-point/</code>
+  is logged as <code>{dp_id}</code>, slashes included, and so is the segment after a member's
+  <code>/delivery-points/</code> on the member delivery-point <code>PUT</code> and <code>DELETE</code>;</li>
+<li>the <code>cursor</code> query value of the <code>…/assets</code>, <code>…/meters</code> and <code>…/delivery-points</code> listings,
+  which is an asset key or a delivery-point id, is logged as <code>{redacted}</code>, and so is a
+  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>
+  or <code>delivery_point_ids</code> query value on any route (no route takes one today).</li>
+</ul>
+<p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, so without this every attach, detach and lookup
+wrote a member's sensor id — the key that joins them to their readings — to the log, where
+it is kept longer and read by more people than the registry's rows. A user id is the
+member's login name and a delivery-point id their supply point's code; both name a person
+as surely. The markers are fixed, not a hash: these ids are few, and a hash of one is
+reversed by trying them. The cost is that two lines about one asset, member or delivery
+point cannot be told apart in the log.</p>
+<p>The rewrite is a filter on the <code>uvicorn.access</code> logger that <code>create_app</code> installs, once. It
+covers uvicorn's line and nothing else: a process that serves the app some other way, or a
+proxy in front of it that logs the URL, is not covered. A member key, community key, area
+key or topology node id in the path is logged as it is.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>

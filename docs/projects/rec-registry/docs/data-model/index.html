@@ -4340,12 +4340,12 @@
 <tr>
 <td><code>areas</code></td>
 <td><code>JSONB</code></td>
-<td>Named areas, each with <code>name</code>, <code>topology</code> (list of node IDs), optional <code>location</code>/<code>geometry</code></td>
+<td>Named areas; each is one GSE primary substation: <code>name</code>, <code>boundary</code> (<code>{source: gse_cabine_primarie, id: &lt;cod_ac&gt;}</code>), <code>topology</code> (exactly one node ID, equal to <code>boundary.id</code>, a <code>primary_substation</code> node of <code>topology</code>), optional <code>location</code>/<code>geometry</code> (unused). <code>boundary.id</code> is at most 64 characters. No two areas share a <code>boundary.id</code>; enforced on the area <code>PUT</code>, the topology node <code>PUT</code> and on import. An area key is letters, digits, <code>-</code> and <code>_</code>, starting with a letter or digit, at most 128 characters; enforced on the area <code>PUT</code>, the rename's new key and on import. Areas stored before schema v0.7 may lack a boundary, or carry another key, and are read back as stored. An area's key changes only through <code>POST …/areas/{key}/rename</code>, which moves its members' <code>area</code> with it (REQ-0079)</td>
 </tr>
 <tr>
 <td><code>topology</code></td>
 <td><code>JSONB</code></td>
-<td>Grid topology as a list of nodes (<code>id</code>, <code>type</code>, <code>name</code>, <code>operator_id</code>, children)</td>
+<td>Grid topology as a list of nodes (<code>id</code>, <code>type</code>, <code>name</code>, <code>operator_id</code>, <code>parent</code>, optional <code>area</code> geometry), the bundle's names, which reads answer too. Written one node at a time by <code>PUT</code>/<code>DELETE …/topology/{node_id}</code>, merging by <code>id</code> (REQ-0072); a node an area lists, or another node names as its <code>parent</code>, cannot be deleted</td>
 </tr>
 <tr>
 <td><code>legal</code></td>
@@ -4408,17 +4408,17 @@
 <tr>
 <td><code>role</code></td>
 <td><code>str</code></td>
-<td><code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, or <code>admin</code></td>
+<td><code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, or <code>admin</code> — enforced on every write path</td>
 </tr>
 <tr>
 <td><code>area</code></td>
 <td><code>str</code></td>
-<td>Reference to a community area key</td>
+<td>A key of the community's <code>areas</code> — enforced on every write path; rewritten by an area rename (REQ-0079)</td>
 </tr>
 <tr>
 <td><code>status</code></td>
 <td><code>str</code></td>
-<td><code>pending</code>, <code>active</code>, <code>suspended</code>, or <code>inactive</code></td>
+<td><code>pending</code>, <code>active</code>, <code>suspended</code>, or <code>inactive</code> — enforced on every write path</td>
 </tr>
 <tr>
 <td><code>delivery_points</code></td>
@@ -4452,7 +4452,7 @@ dataspace.</p>
 <tr>
 <td><code>key</code></td>
 <td><code>str</code></td>
-<td>Unique asset identifier within the community</td>
+<td>Unique asset identifier within the community, at most 128 characters; a meter attached at runtime is keyed <code>meter-&lt;sensor_id&gt;</code></td>
 </tr>
 <tr>
 <td><code>asset_type</code></td>
@@ -4467,7 +4467,7 @@ dataspace.</p>
 <tr>
 <td><code>sensor_id</code></td>
 <td><code>str?</code></td>
-<td>Optional sensor/meter identifier (promoted column for lookups)</td>
+<td>Optional sensor/meter identifier (promoted column for lookups); stored trimmed, and held by at most one <code>active</code> member across the registry (REQ-0069)</td>
 </tr>
 <tr>
 <td><code>properties</code></td>

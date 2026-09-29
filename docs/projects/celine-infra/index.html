@@ -4095,6 +4095,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#onboarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onboarding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#keycloak-realm-bootstrap" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4469,6 +4480,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#onboarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onboarding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#keycloak-realm-bootstrap" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4789,6 +4811,84 @@ changed by the import.</p>
 <code>provisioning.email_dev_recipients</code>. Set <code>deliver</code> only in an environment that should
 email participants.</p>
 <hr />
+<h2 id="onboarding">Onboarding</h2>
+<p>The REC onboarding service runs as two releases on one host, <code>onboarding.&lt;domain&gt;</code>:
+<code>onboarding</code> (the API, <code>charts/celine-onboarding</code>) and <code>frontend-onboarding</code> (the UI,
+<code>charts/celine-frontend-onboarding</code>). <strong>Both are off</strong> until the environment sets
+<code>onboarding.enabled: true</code>, which also adds the <code>onboarding</code> database to <code>postgres-db</code> and
+<code>ONBOARDING_URL</code> to the <code>community</code> release.</p>
+<p>The member wizard is public. Only <code>/api/admin</code> and <code>/api/me</code> go through oauth2-proxy, and
+every <code>/api</code> path goes straight to the API, so the API sees the ingress controller as its
+peer.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onboarding.enabled</code></td>
+<td>installs both releases, the database and <code>ONBOARDING_URL</code></td>
+</tr>
+<tr>
+<td><code>onboarding.forwarded_allow_ips</code></td>
+<td><strong>required</strong>: the ingress controller's pod address range, uvicorn's <code>FORWARDED_ALLOW_IPS</code>. Rate limits, consent evidence and audit rows use the address it resolves. The chart refuses <code>*</code></td>
+</tr>
+<tr>
+<td><code>onboarding.encryption_key</code></td>
+<td><strong>required</strong>, secret: the Fernet key for personal data at rest. Losing it loses the data</td>
+</tr>
+<tr>
+<td><code>postgres_db.onboarding</code></td>
+<td><strong>required</strong>, secret: the database role's password. It goes into a connection URI unescaped, so use a URL-safe value</td>
+</tr>
+<tr>
+<td><code>onboarding.client_secret</code>, <code>onboarding.cli_client_secret</code></td>
+<td>secret: <code>svc-onboarding</code> and <code>svc-onboarding-cli</code>, the same keys <code>policies-shell</code> syncs to the realm</td>
+</tr>
+<tr>
+<td><code>onboarding.image_tag</code>, <code>onboarding.ui_image_tag</code></td>
+<td>the API image tag, and the UI's (defaults to the API's)</td>
+</tr>
+<tr>
+<td><code>onboarding.host</code></td>
+<td>defaults to <code>onboarding.&lt;domain&gt;</code></td>
+</tr>
+<tr>
+<td><code>onboarding.dataspace_enabled</code></td>
+<td><code>false</code> by default. A template declaring <code>consent.data_sharing</code> also needs a connector, or the API does not start</td>
+</tr>
+<tr>
+<td><code>onboarding.sms_provider</code></td>
+<td><code>none</code> by default: no phone verification. The service's own default, <code>log</code>, only prints the code to the pod log. <code>brevo</code> also needs <code>dpa_sms_signed</code> and <code>brevo_api_key</code></td>
+</tr>
+<tr>
+<td><code>onboarding.smtp</code></td>
+<td>overrides the shared <code>smtp</code> block, as in <a href="#email-smtp">Email (SMTP)</a>. STARTTLS or plain only: a resolved block with <code>ssl: true</code> stops the render</td>
+</tr>
+<tr>
+<td><code>onboarding.templates.files</code>, <code>onboarding.templates.binary_files</code></td>
+<td>the community templates, <code>&lt;slug&gt;/&lt;path&gt;</code> to text or base64, mounted from a ConfigMap (1 MiB at most)</td>
+</tr>
+<tr>
+<td><code>onboarding.persistence</code></td>
+<td><code>{enabled, size, storage_class}</code>: a volume for uploaded documents. Off by default, because document scanning is off</td>
+</tr>
+<tr>
+<td><code>onboarding.env</code></td>
+<td>further plain settings for the API, <code>NAME: value</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>charts/celine-onboarding/examples/example-rec.values.yaml</code> is a complete example. The API
+runs its Alembic migrations in an init container. After a template changes, import it:</p>
+<pre><code class="language-bash">kubectl -n celine-&lt;env&gt; exec deploy/onboarding -- \
+  /app/.venv/bin/onboarding-cli import-templates --filter &lt;slug&gt;
+</code></pre>
+<p>The import checks each boundary id with the Digital Twin, so the Digital Twin must be up.</p>
+<hr />
 <h2 id="keycloak-realm-bootstrap">Keycloak realm bootstrap</h2>
 <p>The realm's platform level (Organizations, sign-in settings, languages, themes, lifespans,
 brute force, <code>smtpServer</code>, the realm role groups) is written by <code>celine-policies keycloak
@@ -4905,6 +5005,7 @@ the pod is starting. Rolling back is manual: put the platform-level keys back fr
 <li><code>celine-ai-assistant</code> — AI Assistant API</li>
 <li><code>celine-roi</code> — ROI API</li>
 <li><code>celine-webapp</code> — Participant webapp API</li>
+<li><code>celine-onboarding</code> — REC onboarding API (member wizard and operator console). See <a href="#onboarding">Onboarding</a></li>
 <li><code>celine-grid</code> — Grid resilience API</li>
 </ul>
 <h3 id="frontends">Frontends</h3>
@@ -4913,6 +5014,7 @@ the pod is starting. Rolling back is manual: put the platform-level keys back fr
 <li><code>celine-frontend-roi</code> — ROI webapp</li>
 <li><code>celine-frontend-webapp</code> — Participant webapp</li>
 <li><code>celine-frontend-grid</code> — Grid webapp</li>
+<li><code>celine-frontend-onboarding</code> — REC onboarding UI, and the host the onboarding API answers on</li>
 </ul>
 <h3 id="platform">Platform</h3>
 <ul>

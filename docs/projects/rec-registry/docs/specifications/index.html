@@ -4069,6 +4069,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#planned-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planned requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4123,17 +4134,24 @@
 <p>These were <strong>distilled from the code, not written before it</strong> — see
 <a href="../decisions/ADR-0001-requirements-are-read-out-of-the-code/">ADR-0001</a>. Every one is
 something the registry does today and something a reader would want to stay true; none is
-an aspiration.</p>
+an aspiration — <strong>except those marked <code>planned</code></strong>, which
+<a href="../decisions/ADR-0002-requirements-may-be-written-ahead-of-the-code-marked-planned/">ADR-0002</a>
+allows to land ahead of the code, and which say so (below).</p>
 <h2 id="why-this-service-in-particular">Why this service in particular</h2>
 <p><strong>This is the platform's answer to "who is in this community".</strong> It depends on almost
-nothing and is read by six other repositories, and <strong>none of their suites runs against
+nothing and is read by eight other repositories, and <strong>none of their suites runs against
 it</strong>. That asymmetry is the reason a written, traceable requirement is worth more here
 than in a service with a user watching it: a wrong row here is wrong everywhere, and
 nothing downstream can tell.</p>
 <p>Two of those consumers make it concrete. <code>../onboarding</code> <strong>writes</strong> members on approval,
-through SDK wrappers that are not in a published release yet. <code>../dataset-api</code> uses
+through the SDK's registry wrappers (<code>celine.sdk.rec_registry</code>). <code>../dataset-api</code> uses
 membership to decide access — so a member wrongly deactivated here is a member who cannot
 see their own data there, and the error surfaces three repositories away from its cause.</p>
+<p>Two more write. The community dashboard's backend, <code>../celine-community</code>, attaches and
+detaches meters and corrects a member's role and area (REQ-0063, REQ-0066,
+REQ-0069 – REQ-0071), and <code>../onboarding</code> writes a community's areas and topology from its
+templates through the area and topology node routes (REQ-0067, REQ-0072); the area rename
+route (REQ-0079) is the one its sync moves an area with members to a new key through.</p>
 <h2 id="none-of-them-describes-a-defect">None of them describes a defect</h2>
 <p>For a while two did, and then one. They were written as behaviour anyway — a requirement
 describing <em>intended</em> behaviour would be an unverified wish, and the trace matrix would
@@ -4181,7 +4199,22 @@ grep -rhoE '^### (REQ-[0-9]{4})' docs/specifications/*.md | sort
 naming a requirement that does not exist is a typo — and a typo in a trace tag is
 indistinguishable from coverage until someone reads the matrix.</p>
 <p>Adding a requirement means adding a <code>REQ-####</code> here <strong>and</strong> a test declaring it, in the
-same change. The procedure is in the companion's testing playbook.</p>
+same change — unless it is planned. The procedure is in the companion's testing playbook.</p>
+<h2 id="planned-requirements">Planned requirements</h2>
+<p>A requirement written ahead of the code carries, directly under its heading:</p>
+<pre><code class="language-markdown">**Status:** planned
+</code></pre>
+<p>It states the behaviour the code will have and names the decision record it comes from. <strong>No
+test declares it</strong>, so the projection reads it as planned rather than unverified — and a
+<code>@verifies</code> tag naming it is an error: either the status is stale or the tag is wrong. The
+change that implements it adds its tests and removes the status line; an unmarked requirement
+is implemented. An implemented requirement whose behaviour a planned one will change keeps
+describing today, with a paragraph headed <strong>Planned</strong> pointing at the new one.</p>
+<pre><code class="language-bash">awk 'FNR==1{id=&quot;&quot;} /^### REQ-/{id=$2} id &amp;&amp; /^\*\*Status:\*\* planned/{print id; id=&quot;&quot;}' docs/specifications/*.md | sort
+</code></pre>
+<p>Read against the two lists above: every requirement is either declared by a test or listed
+here, and never both. The checker that owns the matrix does not know the status line yet and
+reports planned requirements as unverified.</p>
 <h2 id="the-requirements">The requirements</h2>
 <table>
 <thead>
@@ -4192,19 +4225,19 @@ same change. The procedure is in the companion's testing playbook.</p>
 </thead>
 <tbody>
 <tr>
-<td>REQ-0001 – REQ-0010</td>
+<td>REQ-0001 – REQ-0010, REQ-0063 – REQ-0065</td>
 <td><a href="identity-and-authorisation/">identity and authorisation</a> — who the caller is and what they may do</td>
 </tr>
 <tr>
-<td>REQ-0011 – REQ-0019, REQ-0059</td>
+<td>REQ-0011 – REQ-0019, REQ-0059, REQ-0066 – REQ-0069</td>
 <td><a href="registry-model/">the registry model</a> — what a community, member and asset are</td>
 </tr>
 <tr>
-<td>REQ-0020 – REQ-0031, REQ-0060, REQ-0062</td>
+<td>REQ-0020 – REQ-0031, REQ-0060, REQ-0062, REQ-0070 – REQ-0073, REQ-0079</td>
 <td><a href="member-writes/">member and community writes</a> — how a community changes at runtime</td>
 </tr>
 <tr>
-<td>REQ-0032 – REQ-0037</td>
+<td>REQ-0032 – REQ-0037, REQ-0074 – REQ-0075</td>
 <td><a href="import-and-export/">import and export</a> — the destructive path, and its guard</td>
 </tr>
 <tr>
@@ -4216,24 +4249,27 @@ same change. The procedure is in the companion's testing playbook.</p>
 <td><a href="self-service/">self-service</a> — what a participant may see about themselves</td>
 </tr>
 <tr>
-<td>REQ-0054 – REQ-0058</td>
-<td><a href="operability/">operability</a> — the CLI, health, version</td>
+<td>REQ-0054 – REQ-0058, REQ-0076 – REQ-0078, REQ-0080</td>
+<td><a href="operability/">operability</a> — the CLI, health, version, the access log</td>
 </tr>
 </tbody>
 </table>
 <p>Each page's own block was full and contiguous when the dataspace DID arrived, so
 REQ-0059 – REQ-0061 append to the end of the universe and are listed against the page they
 belong to rather than renumbering three ranges to keep them tidy. Later additions append the
-same way.</p>
+same way; REQ-0063 – REQ-0075, written planned, did, and so did REQ-0076 – REQ-0080.</p>
 <h2 id="what-is-not-covered">What is not covered</h2>
 <p>Unverified by any suite here, whatever this document says. Each area's own page repeats the
 part that belongs to it.</p>
 <ul>
-<li><strong>The six repositories that read this one.</strong> <code>../digital-twin</code>, <code>../celine-webapp</code>,
-  <code>../onboarding</code>, <code>../celine-ai-assistant</code>, <code>../flexibility-api</code> and <code>../dataset-api</code> all
-  consume the registry through <code>celine.sdk.rec_registry</code>, and none of their suites runs
-  against this service. <code>../celine-policies</code>' <code>keycloak sync-users</code> reads a REC definition
-  from here out of band.</li>
+<li><strong>The eight repositories that read this one.</strong> <code>../digital-twin</code>, <code>../celine-webapp</code>,
+  <code>../onboarding</code>, <code>../celine-ai-assistant</code>, <code>../flexibility-api</code>, <code>../dataset-api</code> and the
+  community dashboard's backend <code>../celine-community</code> consume the registry through
+  <code>celine.sdk.rec_registry</code>; <code>../celine-pipelines</code> mirrors it from <code>GET /admin/export</code> and
+  reads each member's area topology. None of their suites runs against this service.
+  <code>../celine-policies</code>' <code>keycloak sync-users</code> reads a REC definition out of band — a
+  local-development path only; on a deployed realm members arrive through onboarding
+  (<a href="../decisions/ADR-0009-a-community-is-retired-by-a-forced-empty-import/">ADR-0009</a>).</li>
 <li><strong>The middleware.</strong> REQ-0001 – REQ-0008 pin <code>_get_admin_action</code>, a pure function, called
   directly. JWT parsing and verification, the decision cache, and the <code>401</code>/<code>403</code> a real
   request would receive are not exercised — the suite runs with <code>AUTH_ENABLED=false</code> and
@@ -4255,7 +4291,10 @@ part that belongs to it.</p>
   <code>user_id</code> are covered (REQ-0022) — constraint, translation and test. No other overlapping
   write is. <code>asset</code> carries the same unique index on <code>(community_id, key)</code> and nothing
   translates it, so two callers creating one asset key at once still answer <code>500</code>; two
-  upserting an area resolve by last-writer-wins, unchecked.</li>
+  upserting one area key resolve by last-writer-wins. One sensor attached to
+  two members at once is covered, serialised by an advisory lock (REQ-0069), and so is a
+  member moved into an area while it is deleted, and two areas written onto one substation
+  at once, both serialised on the community's row (REQ-0066, REQ-0067).</li>
 </ul>
 <h2 id="what-is-not-here">What is not here</h2>
 <ul>

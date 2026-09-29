@@ -4323,13 +4323,13 @@
 <p>API for modelling Renewable Energy Communities (RECs). Manages communities, members, assets, delivery points, and grid topology. Provides self-service endpoints for participants and administrative endpoints for managers, with import/export of community bundles in YAML format.</p>
 <h2 id="features">Features</h2>
 <ul>
-<li>Multi-community support with v0.6 schema</li>
+<li>Multi-community support with v0.7 schema (each area one GSE primary substation)</li>
 <li>Self-service user API (profile, membership, assets, delivery points)</li>
 <li>Admin API for community management, cross-community lookup, and batch operations</li>
 <li><strong>Runtime member management</strong> — create, update, deactivate members and their delivery points and assets, one at a time</li>
 <li>YAML-based import/export with full replace semantics, guarded so a restore cannot silently delete a live community</li>
 <li>In-process OPA policy evaluation for authorization</li>
-<li>CLI (<code>celine-rec-registry</code>) for import, export, listing, and lookup operations</li>
+<li>CLI (<code>celine-rec-registry</code>) for import, export, listing, and lookup operations, and read-only reports of stored rows the write checks would now refuse</li>
 <li>Paginated responses with cursor-based navigation</li>
 </ul>
 <h2 id="two-ways-a-community-changes">Two ways a community changes</h2>
@@ -4378,8 +4378,28 @@ task run
 <td>Create a member; sub-resources for its delivery points and assets</td>
 </tr>
 <tr>
+<td><code>PUT\|DELETE /admin/communities/{key}/members/{member}/assets/meter-{sensor_id}</code></td>
+<td>Attach or detach a meter; one active holder per sensor id (<code>409 sensor_held</code>)</td>
+</tr>
+<tr>
+<td><code>PATCH /admin/communities/{key}/members/{member}/profile</code></td>
+<td>Correct a member's role and area, nothing else (<code>members.profile.write</code>)</td>
+</tr>
+<tr>
 <td><code>PATCH /admin/communities/{key}</code></td>
-<td>Update community metadata, areas</td>
+<td>Update community metadata (areas have their own route)</td>
+</tr>
+<tr>
+<td><code>PUT\|DELETE /admin/communities/{key}/areas/{area}</code></td>
+<td>Add, replace or remove one area; an area is one GSE primary substation (<code>422 invalid_area_boundary</code>) under an area key (<code>422 invalid_area_key</code>)</td>
+</tr>
+<tr>
+<td><code>POST /admin/communities/{key}/areas/{area}/rename</code></td>
+<td>Move an area to a new key with its members, in one write (<code>community.write</code>)</td>
+</tr>
+<tr>
+<td><code>PUT\|DELETE /admin/communities/{key}/topology/{node}</code></td>
+<td>Add, replace or remove one topology node; a node an area lists or another node names as <code>parent</code> is not deleted (<code>409 topology_node_in_use</code>)</td>
 </tr>
 <tr>
 <td><code>POST /admin/import</code></td>
@@ -4408,7 +4428,12 @@ celine-rec-registry list
 celine-rec-registry tree --community example_rec
 celine-rec-registry lookup-user --user-id &lt;id&gt;
 celine-rec-registry lookup-sensor --sensor-id &lt;id&gt;
+celine-rec-registry duplicate-sensors                              # read-only; exits 1 if a sensor has two active holders
+celine-rec-registry out-of-set-values                              # read-only; exits 1 if a role, status or area is out of set
+celine-rec-registry invalid-area-boundaries                        # read-only; exits 1 if a stored area breaks the one-substation or area-key rule
 </code></pre>
+<p>A refusal a caller acts on answers <code>{"detail": "&lt;sentence&gt;", "code": "&lt;code&gt;"}</code> —
+see <a href="docs/api-reference/#refusal-codes">refusal codes</a>.</p>
 <h2 id="documentation">Documentation</h2>
 <table>
 <thead>
@@ -4420,7 +4445,7 @@ celine-rec-registry lookup-sensor --sensor-id &lt;id&gt;
 <tbody>
 <tr>
 <td><a href="docs/specifications/">Requirements</a></td>
-<td>What the service must do — 58 requirements, each named by a test</td>
+<td>What the service must do — 79 requirements, every one named by a test, none planned</td>
 </tr>
 <tr>
 <td><a href="docs/decisions/">Decisions</a></td>
@@ -4436,7 +4461,7 @@ celine-rec-registry lookup-sensor --sensor-id &lt;id&gt;
 </tr>
 <tr>
 <td><a href="docs/import-export/">Import &amp; Export</a></td>
-<td>Bundle format, replace semantics, the <code>force</code> guard, CLI usage</td>
+<td>Bundle format, replace semantics, the <code>force</code> guard, CLI usage, <a href="docs/import-export/#before-deploying-160">before deploying 1.6.0</a></td>
 </tr>
 <tr>
 <td><a href="AGENTS.md">AGENTS.md</a></td>

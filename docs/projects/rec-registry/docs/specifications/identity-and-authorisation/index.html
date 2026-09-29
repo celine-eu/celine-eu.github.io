@@ -4146,6 +4146,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0063-the-member-profile-route-derives-membersprofilewrite-and-no-other-member-route-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0063 — the member profile route derives members.profile.write, and no other member route does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0064-membersprofilewrite-is-satisfied-by-its-own-scope-by-memberswrite-and-by-admin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0064 — members.profile.write is satisfied by its own scope, by members.write and by admin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0065-a-caller-supplied-id-never-changes-the-action-a-request-derives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0065 — a caller-supplied id never changes the action a request derives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4205,9 +4238,13 @@ a proper substring. Get the order wrong and asset writes silently require the me
 grant — silently, because everything still works for any caller holding both, which is
 every caller during development.</p>
 <h3 id="req-0004-community-metadata-and-areas-are-one-grant-of-their-own">REQ-0004 — community metadata and areas are one grant of their own</h3>
-<p><code>PATCH /admin/communities/{ck}</code> and any write on <code>…/areas/{key}</code> derive <code>community.write</code>.
-Areas are community structure rather than membership, so they are authorised with the
-community and not with the members who reference them.</p>
+<p><code>PATCH /admin/communities/{ck}</code>, any write on <code>…/areas/{key}</code>, <code>POST …/areas/{key}/rename</code>
+(REQ-0079) and any write on <code>…/topology/{node_id}</code> (REQ-0072) derive <code>community.write</code>. Areas
+and topology nodes are community structure rather than membership, so they are authorised with
+the community and not with the members who reference them — a rename moves members' <code>area</code>
+with the area, and is still a community write, which neither <code>members.write</code> nor
+<code>members.profile.write</code> reaches. Any other method on <code>…/rename</code> derives <code>admin</code>. A node id or
+area key is caller-chosen like any other id, and chooses no action (REQ-0065).</p>
 <h3 id="req-0005-import-export-and-lookup-keep-their-own-actions-and-one-lookup-is-named-apart">REQ-0005 — import, export and lookup keep their own actions, and one lookup is named apart</h3>
 <p><code>/admin/import</code> and <code>/admin/import/yaml</code> derive <code>import</code>; <code>/admin/export</code> derives
 <code>export</code>; anything under <code>/admin/lookup/</code> derives <code>lookup</code>.</p>
@@ -4221,8 +4258,9 @@ them apart is what lets a policy separate them later without an API change. Anyt
 under <code>/admin/lookup/</code> falls through to <code>lookup</code>, so a new person-shaped batch route has to
 be added here deliberately rather than inheriting the broader action by default.</p>
 <p>These are separable because they are the ones a service account most often should
-<em>not</em> have. A service that registers approved participants needs <code>members.write</code> and
-<code>assets.write</code>, and has no business importing, exporting or purging.</p>
+<em>not</em> have. A service account is granted the actions it calls and no others: one that
+registers approved participants needs <code>members.write</code>, one that attaches meters needs
+<code>assets.write</code>, and neither has any business importing, exporting or purging.</p>
 <h3 id="req-0006-erasing-a-member-is-authorised-apart-from-writing-one">REQ-0006 — erasing a member is authorised apart from writing one</h3>
 <p><code>DELETE …/members/{key}</code> alone derives <code>members.write</code>. The same request with a truthy
 <code>purge</code> query parameter derives <strong><code>members.purge</code></strong>, a separate grant.</p>
@@ -4230,6 +4268,10 @@ be added here deliberately rather than inheriting the broader action by default.
 purge takes their meters with them. A service that manages members day to day must not be
 able to cross that line by adding a query parameter to a request it is already allowed to
 make.</p>
+<p><strong>The import grant is the exception to that line.</strong> A forced import replaces a community's
+whole graph (REQ-0032), deleting every member and asset in it, so a holder of
+<code>rec-registry.import</code> can do to a community what <code>members.purge</code> cannot do to one member.
+The separation above holds only for callers who do not hold the import grant.</p>
 <h3 id="req-0007-an-ambiguous-purge-parameter-reads-as-the-recoverable-action">REQ-0007 — an ambiguous purge parameter reads as the recoverable action</h3>
 <p><code>purge=true</code>, <code>purge=1</code>, <code>purge=yes</code> and <code>purge=on</code> ask for the purge grant. Everything
 else — absent, empty, <code>false</code>, <code>0</code>, <code>maybe</code>, or a different parameter entirely — derives
@@ -4240,11 +4282,13 @@ unrecognised value must never be read as consent to erase.</p>
 <p><code>DELETE /admin/communities/{ck}?purge=true</code> derives <code>community.write</code>. The parameter is
 only meaningful where a purge is possible, so it does not leak the purge action onto paths
 that have no such operation.</p>
+<p>No community <code>DELETE</code> route exists; the requirement pins what the derivation would answer,
+so that adding one cannot inherit the purge action by accident.</p>
 <h3 id="req-0009-serviceadmin-satisfies-every-action">REQ-0009 — <code>{service}.admin</code> satisfies every action</h3>
 <p>The shared scope matcher in <code>../celine-sdk</code> treats a held scope ending <code>.admin</code> as
 covering every action of that service, so <code>rec-registry.admin</code> satisfies <code>read</code>,
-<code>members.write</code>, <code>members.purge</code>, <code>assets.write</code>, <code>community.write</code>, <code>import</code>, <code>export</code>,
-<code>lookup</code> and <code>assets.lookup</code>.</p>
+<code>members.write</code>, <code>members.profile.write</code>, <code>members.purge</code>, <code>assets.write</code>, <code>community.write</code>,
+<code>import</code>, <code>export</code>, <code>lookup</code> and <code>assets.lookup</code>.</p>
 <p>This is what made the fine-grained actions backwards compatible: every token that worked
 before they existed still works. The property is pinned by reading
 <code>policies/celine/scopes.rego</code> directly, because its absence would be silent until
@@ -4252,14 +4296,59 @@ deployment — and would then revoke access for every existing admin token at on
 <p><strong>It is compatibility, not a recommendation.</strong> Do not grant <code>rec-registry.admin</code> to a
 service account; grant the actions it calls.</p>
 <h3 id="req-0010-every-action-name-has-a-rule-in-the-rego-bundle">REQ-0010 — every action name has a rule in the Rego bundle</h3>
-<p><code>policies/celine/rec_registry/access.rego</code> carries a rule for each of the nine action
-names <code>_get_admin_action</code> can return. An action derived by the middleware with no
+<p><code>policies/celine/rec_registry/access.rego</code> carries a rule for each of the eleven action
+names <code>_get_admin_action</code> can return: the ten grants, and <code>admin</code>, which a path matching no
+route derives (REQ-0065) and only <code>rec-registry.admin</code> satisfies. An action derived by the middleware with no
 corresponding rule would be denied by default — a fail-closed outcome, but one that
 presents as an unexplained <code>403</code> in production rather than as anything a test would catch.</p>
-<p>So the bundle is read and checked for all nine, rather than the actions being exercised
+<p>So the bundle is read and checked for all eleven, rather than the actions being exercised
 one at a time. <code>assets.lookup</code> is the one that shows why this is checked as a set: it was
 added to the middleware and to the bundle together but left out of the list being checked,
 so for a while the check passed while covering eight of nine.</p>
+<p><code>members.profile.write</code> (REQ-0063, REQ-0064) joined the set in the same change as the
+middleware and the bundle, as every addition must.</p>
+<h3 id="req-0063-the-member-profile-route-derives-membersprofilewrite-and-no-other-member-route-does">REQ-0063 — the member profile route derives <code>members.profile.write</code>, and no other member route does</h3>
+<p><code>PATCH /admin/communities/{ck}/members/{mk}/profile</code> derives <strong><code>members.profile.write</code></strong>.
+Every other mutating request on a member path keeps deriving <code>members.write</code> (REQ-0002), or
+<code>members.purge</code> (REQ-0006), exactly as today — including the general <code>PATCH …/members/{mk}</code>,
+which still accepts <code>role</code> and <code>area</code>. Any other method on the profile path matches no route
+and derives <code>admin</code> (REQ-0065); a read of it is a read (REQ-0001).</p>
+<p>The route exists so that a service correcting a member's role and area — a community
+dashboard — can be given that and nothing more. The action is named by the route and the
+method, never by the body, because the middleware decides before the body is read. Decided in
+<a href="../../decisions/ADR-0003-role-and-area-have-their-own-route-and-action/">ADR-0003</a>.</p>
+<h3 id="req-0064-membersprofilewrite-is-satisfied-by-its-own-scope-by-memberswrite-and-by-admin">REQ-0064 — <code>members.profile.write</code> is satisfied by its own scope, by <code>members.write</code> and by <code>admin</code></h3>
+<p><code>policies/celine/rec_registry/access.rego</code> allows <code>members.profile.write</code> for a caller holding
+<code>rec-registry.members.profile.write</code>, <code>rec-registry.members.write</code> or <code>rec-registry.admin</code>. A
+caller holding only <code>rec-registry.members.profile.write</code> is refused <code>members.write</code> — the
+general <code>PATCH</code> among it — and every other action: pinned by requests through the middleware
+with the policy engine on.</p>
+<p>The superset lives in the policy rule, not in the shared matcher in
+<code>policies/celine/scopes.rego</code>, which stays exact-or-<code>.admin</code>-or-<code>.*</code>: <code>members.write</code> does not
+match <code>members.profile.write</code> by any of those rules, so without the rule listing it a service
+that already writes members — onboarding — would be refused the narrower write it could
+always perform through the general <code>PATCH</code>.</p>
+<h3 id="req-0065-a-caller-supplied-id-never-changes-the-action-a-request-derives">REQ-0065 — a caller-supplied id never changes the action a request derives</h3>
+<p>The action depends only on the fixed segments of the route a request matches, each read at its
+position, and on the method. A member key, asset key, delivery-point id, area key, community
+key or lookup id that contains <code>lookup</code>, <code>import</code>, <code>export</code>, <code>assets</code>, <code>members</code>, <code>profile</code> or
+any other route word derives the same action as the same request with a plain id:
+<code>PUT …/members/{mk}/assets/meter-export-01</code> is <code>assets.write</code>, not <code>export</code>, and a holder of
+<code>rec-registry.lookup</code> alone is refused a <code>PUT</code> or <code>DELETE</code> of an asset keyed
+<code>meter-lookup-01</code>.</p>
+<p>The method is honoured on the fixed routes too: import is a <code>POST</code> and export a read, and a
+lookup is a read or a batch <code>POST</code>. <strong>A request matching no route shape derives <code>admin</code></strong>, which
+only <code>rec-registry.admin</code> satisfies — such a request answers <code>404</code> or <code>405</code> anyway, and an
+unknown shape must not fall through to whichever narrower grant a word in it resembles.</p>
+<p>The derivation used to match by substring over the whole path, before it looked at the method,
+so such an id derived the action of whatever word it contained — and a holder of that action's
+grant reached a write it was never given. Asset keys become <code>meter-&lt;sensor id&gt;</code> (REQ-0071), so
+the content of an id is no longer under the registry's operators' control at all. Pinned by
+hostile-id tests over every admin route family, and by requests through the middleware with the
+policy engine on.</p>
+<p>It was the first change of the set, landed before REQ-0071 wrote caller-supplied
+<code>meter-&lt;sensor id&gt;</code> keys. Decided in
+<a href="../../decisions/ADR-0003-role-and-area-have-their-own-route-and-action/">ADR-0003</a>.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
@@ -4268,6 +4357,10 @@ so for a while the check passed while covering eight of nine.</p>
   verification, the policy engine's decision cache, or the <code>401</code> that an unauthenticated
   caller should receive. The suite runs with <code>AUTH_ENABLED=false</code> and
   <code>POLICIES_ENABLED=false</code>.</li>
+<li><strong>Which community a write reaches.</strong> Every grant is registry-wide: a holder of
+  <code>rec-registry.assets.write</code> can write any community's assets, and a holder of
+  <code>rec-registry.members.profile.write</code> (REQ-0063) any community's members. Keeping a manager
+  to their own community is the calling dashboard's policy, and nothing here checks it.</li>
 <li><strong>The Keycloak realm.</strong> Operators are authorised by organization and group against state
   <code>../celine-policies</code> owns and syncs. There is no import to grep for and nothing here
   would notice a rename.</li>

@@ -991,6 +991,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#refusal-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refusal codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-access-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The access log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#user-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1423,6 +1445,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#patch-admincommunitiescommunity_keymembersmember_keyprofile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PATCH /admin/communities/{community_key}/members/{member_key}/profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#post-admincommunitiescommunity_keymembersmember_keystatus" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1482,6 +1515,28 @@
     <span class="md-ellipsis">
       
         PUT|DELETE /admin/communities/{community_key}/areas/{area_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-admincommunitiescommunity_keyareasarea_keyrename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/communities/{community_key}/areas/{area_key}/rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#putdelete-admincommunitiescommunity_keytopologynode_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT|DELETE /admin/communities/{community_key}/topology/{node_id}
       
     </span>
   </a>
@@ -4713,6 +4768,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#refusal-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refusal codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-access-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The access log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#user-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5145,6 +5222,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#patch-admincommunitiescommunity_keymembersmember_keyprofile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PATCH /admin/communities/{community_key}/members/{member_key}/profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#post-admincommunitiescommunity_keymembersmember_keystatus" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5204,6 +5292,28 @@
     <span class="md-ellipsis">
       
         PUT|DELETE /admin/communities/{community_key}/areas/{area_key}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-admincommunitiescommunity_keyareasarea_keyrename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/communities/{community_key}/areas/{area_key}/rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#putdelete-admincommunitiescommunity_keytopologynode_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT|DELETE /admin/communities/{community_key}/topology/{node_id}
       
     </span>
   </a>
@@ -5274,7 +5384,11 @@
 <h1 id="api-reference">API Reference</h1>
 <h2 id="authorization">Authorization</h2>
 <p><code>/admin</code> routes need a JWT and an OPA decision. The action is derived from the
-path <strong>and</strong> the HTTP method, so reads and writes are separate grants:</p>
+path <strong>and</strong> the HTTP method, so reads and writes are separate grants. Only the
+route's fixed segments are read, each at its position: a member key, asset key or
+any other id containing <code>lookup</code>, <code>import</code>, <code>export</code> or <code>profile</code> never changes the action,
+and a path matching no route derives <code>admin</code>, which only <code>rec-registry.admin</code>
+satisfies (REQ-0065).</p>
 <table>
 <thead>
 <tr>
@@ -5295,6 +5409,11 @@ path <strong>and</strong> the HTTP method, so reads and writes are separate gran
 <td><code>rec-registry.members.write</code></td>
 </tr>
 <tr>
+<td><code>members.profile.write</code></td>
+<td><code>PATCH …/members/{key}/profile</code> (role and area only)</td>
+<td><code>rec-registry.members.profile.write</code>, or <code>rec-registry.members.write</code></td>
+</tr>
+<tr>
 <td><code>members.purge</code></td>
 <td><code>DELETE …/members/{key}?purge=true</code></td>
 <td><code>rec-registry.members.purge</code></td>
@@ -5306,7 +5425,7 @@ path <strong>and</strong> the HTTP method, so reads and writes are separate gran
 </tr>
 <tr>
 <td><code>community.write</code></td>
-<td>write methods on a community or its areas</td>
+<td>write methods on a community, its areas (the area rename included) or its topology nodes</td>
 <td><code>rec-registry.community.write</code></td>
 </tr>
 <tr>
@@ -5319,17 +5438,188 @@ path <strong>and</strong> the HTTP method, so reads and writes are separate gran
 <td><code>/admin/lookup/*</code></td>
 <td><code>rec-registry.lookup</code></td>
 </tr>
+<tr>
+<td><code>assets.lookup</code></td>
+<td><code>/admin/lookup/assets-by-user-ids</code>, <code>/admin/lookup/members-by-dids</code></td>
+<td><code>rec-registry.lookup</code></td>
+</tr>
 </tbody>
 </table>
 <p><code>rec-registry.admin</code> satisfies all of them (the shared matcher treats
 <code>{service}.admin</code> as covering <code>{service}.*</code>), so existing tokens keep working —
 but <strong>do not give it to a service account</strong>. Grant the actions it calls: a
-service that registers approved participants needs <code>members.write</code> and
-<code>assets.write</code>, and has no business importing, exporting or purging.</p>
+service that registers approved participants needs <code>members.write</code>, one that
+attaches meters needs <code>assets.write</code>, one that corrects a member's role and area
+needs <code>members.profile.write</code> — which reaches that one route and nothing else — and none has any business importing,
+exporting or purging.</p>
 <p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code>.</p>
+<h2 id="refusal-codes">Refusal codes</h2>
+<p>A refusal a caller is expected to act on answers</p>
+<pre><code class="language-json">{&quot;detail&quot;: &quot;This sensor is already held by another active member&quot;, &quot;code&quot;: &quot;sensor_held&quot;}
+</code></pre>
+<p><code>detail</code> is a sentence for people and stays a string; branch on <code>code</code>, never on
+the wording (REQ-0073). The OpenAPI document names the body <code>ErrorResponse</code> and the
+codes <code>ErrorCode</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Status</th>
+<th>Refusal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>community_not_found</code></td>
+<td><code>404</code></td>
+<td>a write naming an unknown community</td>
+</tr>
+<tr>
+<td><code>member_not_found</code></td>
+<td><code>404</code></td>
+<td>a write naming a member the community does not have</td>
+</tr>
+<tr>
+<td><code>asset_not_found</code></td>
+<td><code>404</code></td>
+<td>deleting an asset the member does not hold</td>
+</tr>
+<tr>
+<td><code>member_key_taken</code></td>
+<td><code>409</code></td>
+<td>the member key is taken in the community</td>
+</tr>
+<tr>
+<td><code>user_id_taken</code></td>
+<td><code>409</code></td>
+<td>the <code>user_id</code> is taken in the community</td>
+</tr>
+<tr>
+<td><code>did_taken</code></td>
+<td><code>409</code></td>
+<td>the DID is held by another member anywhere</td>
+</tr>
+<tr>
+<td><code>asset_key_taken</code></td>
+<td><code>409</code></td>
+<td>the asset key is held by another member of the community</td>
+</tr>
+<tr>
+<td><code>asset_key_too_long</code></td>
+<td><code>422</code></td>
+<td>the asset key is longer than 128 characters (asset <code>PUT</code>, member create, import)</td>
+</tr>
+<tr>
+<td><code>sensor_held</code></td>
+<td><code>409</code> (<code>422</code> on an import)</td>
+<td>another active member, in any community, holds the sensor</td>
+</tr>
+<tr>
+<td><code>area_in_use</code></td>
+<td><code>409</code></td>
+<td>deleting an area members still reference</td>
+</tr>
+<tr>
+<td><code>invalid_status</code></td>
+<td><code>422</code></td>
+<td>a status outside <code>pending</code>, <code>active</code>, <code>suspended</code>, <code>inactive</code> (every member write, import)</td>
+</tr>
+<tr>
+<td><code>invalid_role</code></td>
+<td><code>422</code></td>
+<td>a role outside <code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, <code>admin</code> (every member write, import)</td>
+</tr>
+<tr>
+<td><code>unknown_area</code></td>
+<td><code>422</code></td>
+<td>an area that is not a key of the community's <code>areas</code> (every member write; on an import, the bundle's own areas)</td>
+</tr>
+<tr>
+<td><code>invalid_area_boundary</code></td>
+<td><code>422</code></td>
+<td>an area that is not one primary substation: one boundary, one <code>primary_substation</code> node with its id, no two areas on one boundary id (area <code>PUT</code>, topology node <code>PUT</code>, import)</td>
+</tr>
+<tr>
+<td><code>topology_node_in_use</code></td>
+<td><code>409</code></td>
+<td>deleting a topology node an area still references, or another node names as its <code>parent</code></td>
+</tr>
+<tr>
+<td><code>area_not_found</code></td>
+<td><code>404</code></td>
+<td>renaming an area the community does not have</td>
+</tr>
+<tr>
+<td><code>area_key_taken</code></td>
+<td><code>409</code></td>
+<td>renaming an area onto a key the community already has</td>
+</tr>
+<tr>
+<td><code>invalid_area_key</code></td>
+<td><code>422</code></td>
+<td>an area key that is not letters, digits, <code>-</code> and <code>_</code>, starting with a letter or digit, at most 128 characters (area <code>PUT</code>, rename's <code>new_key</code>, import)</td>
+</tr>
+<tr>
+<td><code>not_a_member</code></td>
+<td><code>403</code></td>
+<td>a <code>/user</code> route other than <code>GET /user</code>, for a caller whose username names no member</td>
+</tr>
+</tbody>
+</table>
+<p>Other refusals — FastAPI's validation errors, a body id or key that does not match
+the path, the import's <code>force</code> guard, a <code>404</code> for an unknown delivery point, topology
+node, or area on its <code>DELETE</code> — keep the plain <code>{"detail": ...}</code> body. A route
+that answers a coded <code>422</code> documents its <code>422</code> as <code>oneOf</code> <code>ErrorResponse</code> and
+<code>HTTPValidationError</code> (whose <code>detail</code> is a list): both arrive with that status.</p>
+<h2 id="the-access-log">The access log</h2>
+<p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, three routes take a sensor id in
+the path, three a user id and three a delivery-point id, so the access line uvicorn writes
+is rewritten before it is logged (REQ-0080): method, route shape and status stay, the
+identifiers do not.</p>
+<table>
+<thead>
+<tr>
+<th>Request</th>
+<th>Logged as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PUT /admin/communities/example-rec/members/ex-00001/assets/meter-SEN-1</code></td>
+<td><code>PUT /admin/communities/example-rec/members/ex-00001/assets/{asset_key}</code></td>
+</tr>
+<tr>
+<td><code>GET /admin/lookup/asset-by-sensor-id/SEN-1</code></td>
+<td><code>GET /admin/lookup/asset-by-sensor-id/{sensor_id}</code></td>
+</tr>
+<tr>
+<td><code>GET /admin/lookup/member-by-user-id/user-1</code></td>
+<td><code>GET /admin/lookup/member-by-user-id/{user_id}</code></td>
+</tr>
+<tr>
+<td><code>GET /admin/lookup/community-by-delivery-point/DP-1</code></td>
+<td><code>GET /admin/lookup/community-by-delivery-point/{dp_id}</code></td>
+</tr>
+<tr>
+<td><code>GET /admin/communities/example-rec/meters?limit=50&amp;cursor=meter-SEN-1</code></td>
+<td><code>GET /admin/communities/example-rec/meters?limit=50&amp;cursor={redacted}</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every asset key is replaced, on every <code>/assets/{asset_key}</code> route; so is everything after
+<code>by-sensor-id/</code>, <code>by-user-id/</code>, <code>/delivery-points/by-id/</code> and
+<code>community-by-delivery-point/</code>, the delivery-point id on the member delivery-point <code>PUT</code>
+and <code>DELETE</code>, the <code>cursor</code> of the asset, meter and delivery-point listings, and any
+<code>sensor_id(s)</code>, <code>user_id(s)</code>, <code>dp_id(s)</code> or <code>delivery_point_id(s)</code> query value. The markers
+are fixed rather than a hash of the id. Only uvicorn's own line is covered: a proxy in front
+of the service that logs the URL logs the identifiers.</p>
 <hr />
 <h2 id="user-routes">User Routes</h2>
 <p>Self-service endpoints scoped to the authenticated user's membership. Prefix: <code>/user</code>.</p>
+<p>A caller whose username names no member gets <code>GET /user</code> with <code>membership: null</code>;
+every other route answers <code>403</code> with
+<code>{"detail": "You are not a member of any community", "code": "not_a_member"}</code>
+(REQ-0047). Branch on the code, not the sentence.</p>
 <h3 id="get-user"><code>GET /user</code></h3>
 <p>Profile summary: user info, community membership, asset counts by type.</p>
 <h3 id="get-usermember"><code>GET /user/member</code></h3>
@@ -5356,7 +5646,9 @@ service that registers approved participants needs <code>members.write</code> an
 <h3 id="get-admincommunitiescommunity_key"><code>GET /admin/communities/{community_key}</code></h3>
 <p>Community detail including areas, topology, legal, contact, settings.</p>
 <h3 id="get-admincommunitiescommunity_keytopology"><code>GET /admin/communities/{community_key}/topology</code></h3>
-<p>Grid topology nodes for a community.</p>
+<p>Grid topology nodes for a community, each <code>{id, type, name, operator_id, parent,
+area}</code> — the bundle's names. (Before 1.6.0 reads answered <code>operator</code>, always
+<code>null</code>, and never the stored <code>operator_id</code>.)</p>
 <h3 id="get-admincommunitiescommunity_keymembers"><code>GET /admin/communities/{community_key}/members</code></h3>
 <p>Paginated list of members.</p>
 <p><strong>Query params:</strong>
@@ -5433,11 +5725,26 @@ oracle: an identifier matching nothing contributes no row and is never a <code>4
 <p>Import a community from a JSON bundle. Full replace: deletes existing community graph and recreates from bundle. Atomic operation.</p>
 <p><strong>Destructive.</strong> Overwriting a community that already exists requires <code>force: true</code> and otherwise answers <code>409</code>, naming the members and assets that would have been deleted. See <a href="../import-export/#the-force-guard">Import &amp; Export</a>.</p>
 <p><strong>Request body:</strong> <code>{bundle, dry_run, force}</code> (see <a href="../import-export/">Import &amp; Export</a>).</p>
-<p><strong>Response:</strong> <code>ImportReport</code> with created counts.</p>
+<p><strong>Response:</strong> <code>ImportReport</code> with created counts. A dry run also lists in
+<code>refusals</code> (<code>[{code, detail}]</code>) every invariant refusal the import would make.</p>
+<p><strong>Refused whole</strong>, before anything is deleted, with <code>422</code> and the invariant's
+<code>code</code>, when the bundle breaks an invariant the runtime writes keep — today
+<code>sensor_held</code>: one trimmed sensor id held by two active members of the bundle, or
+by one of them and an active member of another community (that community and
+member are not named); <code>asset_key_too_long</code>: an asset key over 128 characters;
+<code>invalid_role</code>, <code>invalid_status</code>, <code>unknown_area</code>: a member whose role or status
+is outside its set, or whose area is not a key of the bundle's <code>community.areas</code>;
+<code>invalid_area_key</code>: an area whose key is not an area key (below, under the area
+<code>PUT</code>); <code>invalid_area_boundary</code>: an area that is not one primary substation (below, under
+the area <code>PUT</code>), judged against the bundle's own <code>community.topology</code> — so a
+bundle written before schema v0.7 that has areas is refused, whatever
+<code>schema_version</code> it declares. The replaced community's own current rows do not
+count.</p>
 <h3 id="post-adminimportyaml"><code>POST /admin/import/yaml</code></h3>
 <p>Import one or more communities from a YAML multidocument body. Each document is a separate community bundle.</p>
 <p><strong>Request body:</strong> <code>text/yaml</code> — multidocument YAML. Query: <code>dry_run</code>, <code>force</code>.</p>
-<p><strong>Response:</strong> <code>MultiImportReport</code> with per-community results.</p>
+<p><strong>Response:</strong> <code>MultiImportReport</code> with per-community results. A bundle breaking an
+invariant refuses the whole request as <code>POST /admin/import</code> does.</p>
 <h3 id="get-adminexport"><code>GET /admin/export</code></h3>
 <p>Export communities as YAML multidocument.</p>
 <p><strong>Response:</strong> <code>text/plain</code> — YAML bundle(s).</p>
@@ -5460,9 +5767,13 @@ rather than here — see <code>PATCH</code> below.</p>
 top level — the same place <code>PATCH</code> puts them. Other body keys that are not member
 fields are kept in <code>extra</code> too.</p>
 <p><strong>Responses:</strong> <code>201</code> with the member; <code>409</code> when the key or <code>user_id</code> is already
-taken, naming the existing key so the caller can switch to <code>PATCH</code>, or when the
-<code>did</code> is already held by another member anywhere in the registry; <code>404</code> for an
-unknown community.</p>
+taken (<code>member_key_taken</code>, <code>user_id_taken</code>), naming the existing key so the caller
+can switch to <code>PATCH</code>, or when the <code>did</code> is already held by another member
+anywhere in the registry (<code>did_taken</code>); <code>409 sensor_held</code> when an <code>active</code> member
+is created with a meter whose sensor another active member holds; <code>404
+community_not_found</code>; <code>422 invalid_role</code>, <code>invalid_status</code> or <code>unknown_area</code> when
+<code>role</code>, <code>status</code> or <code>area</code> is out of set (the area must be a key of the
+community's <code>areas</code>).</p>
 <h3 id="patch-admincommunitiescommunity_keymembersmember_key"><code>PATCH /admin/communities/{community_key}/members/{member_key}</code></h3>
 <p>Partial update. Absent fields are left alone, never cleared.</p>
 <p><code>delivery_points</code> is deliberately not accepted here — it is a JSONB list, and a
@@ -5471,14 +5782,61 @@ delivery-point routes.</p>
 <p><strong>This is how a member's dataspace <code>did</code> is written</strong>, because the identity is
 minted a step after the member is registered. Re-sending a member the DID it
 already holds is a <code>200</code> that changes nothing, so the write is safe to retry.</p>
-<p><strong>Responses:</strong> <code>200</code>; <code>409</code> if the new <code>user_id</code> belongs to another member of the
-community, or if the new <code>did</code> belongs to any other member in the registry. A DID
-clash inside the addressed community names the holding member; one in another
-community does not, because which member of which other community holds a DID is
-not the caller's question.</p>
+<p><strong>Responses:</strong> <code>200</code>; <code>409 user_id_taken</code> if the new <code>user_id</code> belongs to another
+member of the community, or <code>409 did_taken</code> if the new <code>did</code> belongs to any other
+member in the registry. A DID clash inside the addressed community names the
+holding member; one in another community does not, because which member of which
+other community holds a DID is not the caller's question. <code>status: active</code> on a
+member that was not active re-checks its sensors: <code>409 sensor_held</code>, and nothing
+in the patch is applied, when another active member holds one.</p>
+<p><code>role</code> and <code>area</code> are still accepted here, with the checks of the profile route
+below; <code>status</code> too. Out of set: <code>422 invalid_role</code>, <code>invalid_status</code>,
+<code>unknown_area</code>, and nothing in the patch is applied. Only the fields a patch names
+are checked.</p>
+<h3 id="patch-admincommunitiescommunity_keymembersmember_keyprofile"><code>PATCH /admin/communities/{community_key}/members/{member_key}/profile</code></h3>
+<p>A member's role and area, and nothing else — the route a community dashboard
+holding only <code>rec-registry.members.profile.write</code> writes through
+(<code>rec-registry.members.write</code> and <code>.admin</code> reach it too).</p>
+<pre><code class="language-json">{&quot;role&quot;: &quot;prosumer&quot;, &quot;area&quot;: &quot;south&quot;}
+</code></pre>
+<p>At least one of the two, and no other key. Absent fields are left alone; the
+member's status is not looked at and its assets are left as they are.</p>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>written</td>
+<td><code>200</code> with the member (<code>MemberDetail</code>)</td>
+</tr>
+<tr>
+<td>an empty body, an unknown key, a <code>null</code>, or any other member field (<code>user_id</code>, <code>did</code>, <code>status</code>, <code>name</code>, <code>type</code>, <code>extra</code>)</td>
+<td><code>422</code>, FastAPI's validation body; nothing changes</td>
+</tr>
+<tr>
+<td><code>role</code> outside <code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, <code>admin</code></td>
+<td><code>422 invalid_role</code></td>
+</tr>
+<tr>
+<td><code>area</code> not a key of the community's <code>areas</code></td>
+<td><code>422 unknown_area</code></td>
+</tr>
+<tr>
+<td>unknown community / member</td>
+<td><code>404 community_not_found</code> / <code>member_not_found</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="post-admincommunitiescommunity_keymembersmember_keystatus"><code>POST /admin/communities/{community_key}/members/{member_key}/status</code></h3>
 <p>Move a member through <code>pending → active → suspended → inactive</code>, with an optional
 <code>reason</code> recorded on the member.</p>
+<p>A move to <code>active</code> re-checks the member's sensors — only an active member holds
+one — and answers <code>409 sensor_held</code>, leaving the status unchanged, when another
+active member took one meanwhile. An unknown status is <code>422 invalid_status</code>.</p>
 <h3 id="delete-admincommunitiescommunity_keymembersmember_key"><code>DELETE /admin/communities/{community_key}/members/{member_key}</code></h3>
 <p><strong>Deactivates</strong> the member (<code>status = inactive</code>). A member who leaves still has
 metering history, past consents and provenance elsewhere that reference them, and
@@ -5494,13 +5852,196 @@ match the path (<code>422</code> otherwise).</p>
 <p>Create, replace or remove one asset. <code>properties</code> is validated against the model
 for <code>asset_type</code> (<code>pv</code>, <code>storage</code>, <code>meter</code>, <code>ev_charger</code>, <code>heat_pump</code>, <code>load</code>),
 so an EV charger cannot be stored carrying a heat pump's fields.</p>
+<p><strong>Attaching a meter</strong> is a <code>PUT</code> at <code>meter-&lt;sensor id&gt;</code>, the id trimmed:</p>
+<pre><code class="language-json">{&quot;key&quot;: &quot;meter-SEN-1&quot;, &quot;asset_type&quot;: &quot;meter&quot;,
+ &quot;properties&quot;: {&quot;name&quot;: &quot;Meter&quot;, &quot;sensor_id&quot;: &quot;SEN-1&quot;, &quot;meter_type&quot;: &quot;consumption&quot;}}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>attached</td>
+<td><code>200</code> with the stored asset (<code>AssetDetail</code>)</td>
+</tr>
+<tr>
+<td>already attached to this member</td>
+<td><code>200</code>, nothing changes</td>
+</tr>
+<tr>
+<td>another active member, in any community, holds the sensor</td>
+<td><code>409 sensor_held</code> — the holder is named by key only inside this community</td>
+</tr>
+<tr>
+<td>another member of this community holds the key (with the convention: an inactive member still holding the asset)</td>
+<td><code>409 asset_key_taken</code></td>
+</tr>
+<tr>
+<td>the sensor id is blank after trimming</td>
+<td><code>422</code></td>
+</tr>
+<tr>
+<td>the asset key is longer than 128 characters</td>
+<td><code>422 asset_key_too_long</code></td>
+</tr>
+</tbody>
+</table>
+<p>Sensor ids are compared and stored trimmed (of any Unicode whitespace); only an <code>active</code> member holds one, so
+a write to a member that is not active is checked when it is reactivated.</p>
+<p><strong>Detaching</strong> is <code>DELETE</code> on the same path: a hard delete, <code>204</code>, after which the
+sensor may be attached elsewhere. An asset the member does not hold is <code>404
+asset_not_found</code>; an unknown member <code>404 member_not_found</code>.</p>
 <h3 id="patch-admincommunitiescommunity_key"><code>PATCH /admin/communities/{community_key}</code></h3>
-<p>Update community metadata. Areas and topology have their own routes, for the same
-reason delivery points do.</p>
+<p>Update community metadata. It does not touch areas or topology, for the same
+reason the member patch does not touch delivery points: both have their own
+routes, below.</p>
 <h3 id="putdelete-admincommunitiescommunity_keyareasarea_key"><code>PUT|DELETE /admin/communities/{community_key}/areas/{area_key}</code></h3>
-<p>Add, replace or remove one area. Deleting is refused with <code>409</code> while members
-still reference it — an orphaned <code>Member.area</code> is a dangling reference nothing
-else checks.</p>
+<p>Add, replace or remove one area; both answer the whole community. Deleting is
+refused with <code>409 area_in_use</code> while members still reference it — an orphaned
+<code>Member.area</code> is a dangling reference nothing else checks. A member write moving
+somebody into the area at the same moment is counted, not orphaned: both
+serialise on the community's row.</p>
+<p><strong>An area is one GSE primary substation</strong> (REQ-0067). The <code>PUT</code> body (<code>AreaUpsert</code>):</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;northern&quot;,
+  &quot;boundary&quot;: {&quot;source&quot;: &quot;gse_cabine_primarie&quot;, &quot;id&quot;: &quot;AC000E00000&quot;},
+  &quot;topology&quot;: [&quot;AC000E00000&quot;]
+}
+</code></pre>
+<p><code>location</code> and <code>geometry</code> are accepted and unused; other keys are dropped. The
+area is stored and returned with <code>boundary</code> and <code>topology</code> — every read of a
+community carries both on each area (<code>Area.boundary</code> is <code>null</code> on an area stored
+before schema v0.7 without one).</p>
+<table>
+<thead>
+<tr>
+<th>Refused <code>422 invalid_area_boundary</code>, nothing changed</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>no <code>boundary</code>, <code>null</code>, a list, or not exactly <code>{source, id}</code> of strings</td>
+<td>coded, not FastAPI's validation body</td>
+</tr>
+<tr>
+<td><code>source</code> other than <code>gse_cabine_primarie</code>, a blank <code>id</code>, or an <code>id</code> over 64 characters</td>
+<td></td>
+</tr>
+<tr>
+<td><code>topology</code> of zero or several ids, or one that is not <code>boundary.id</code> (exact)</td>
+<td></td>
+</tr>
+<tr>
+<td>the node is not in the community's <code>topology</code>, is there twice, or is not a <code>primary_substation</code></td>
+<td>write the node first (<code>PUT …/topology/{node_id}</code>)</td>
+</tr>
+<tr>
+<td>another area of the community carries the same <code>boundary.id</code></td>
+<td>two writers at once: one succeeds</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The key is an area key</strong>: letters, digits, <code>-</code> and <code>_</code>, starting with a letter
+or digit, at most 128 characters — what a rename accepts as <code>new_key</code> and
+onboarding's template import holds a template's keys to. Any other <code>area_key</code> is
+<code>422 invalid_area_key</code>, judged before the body, and nothing changes. An area stored
+under another key before the rule is read as stored; the rename, below, moves it
+onto a key that keeps the rule.</p>
+<p>An unknown community is <code>404 community_not_found</code>, before the key is judged. The
+<code>PUT</code> judges the area it writes: areas stored before the rule are not re-judged,
+but the written area may not share a boundary id with them. The registry never
+checks the code against the GSE dataset.</p>
+<h3 id="post-admincommunitiescommunity_keyareasarea_keyrename"><code>POST /admin/communities/{community_key}/areas/{area_key}/rename</code></h3>
+<p>Move an area to a new key, with its members (REQ-0079); derives <code>community.write</code>.
+Body <code>{"new_key": "nord"}</code> and nothing else. In one transaction under the
+community's row lock the area — name, boundary, topology, as stored — is written
+under <code>new_key</code>, every member of the community whose <code>area</code> is <code>area_key</code> (any
+status) is moved to it, and <code>area_key</code> is removed. Nothing else changes: not the
+other areas, the topology, the members' other fields or their assets.</p>
+<pre><code class="language-json">{&quot;old_key&quot;: &quot;north&quot;, &quot;new_key&quot;: &quot;nord&quot;, &quot;members_moved&quot;: 2, &quot;community&quot;: {&quot;key&quot;: &quot;example-rec&quot;, &quot;areas&quot;: {&quot;nord&quot;: {}}}}
+</code></pre>
+<p><code>community</code> is the whole community after the rename (abridged above).</p>
+<table>
+<thead>
+<tr>
+<th>Refused, nothing changed</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new_key</code> is not letters, digits, <code>-</code> and <code>_</code>, starting with a letter or digit, at most 128 characters</td>
+<td><code>422 invalid_area_key</code></td>
+</tr>
+<tr>
+<td>the community has no area <code>area_key</code></td>
+<td><code>404 area_not_found</code></td>
+</tr>
+<tr>
+<td>the community already has <code>new_key</code> (<code>area_key</code> itself included)</td>
+<td><code>409 area_key_taken</code></td>
+</tr>
+<tr>
+<td>an unknown community</td>
+<td><code>404 community_not_found</code></td>
+</tr>
+<tr>
+<td>a body with another key, or none</td>
+<td><code>422</code>, FastAPI's validation body</td>
+</tr>
+</tbody>
+</table>
+<p>This is the write for a template sync that renames an area with members: an area
+<code>PUT</code> under the new key is refused (one area per boundary) and the old key's
+<code>DELETE</code> is refused while members hold it. A member write naming an area at the
+same moment serialises with the rename on the community's row.</p>
+<h3 id="putdelete-admincommunitiescommunity_keytopologynode_id"><code>PUT|DELETE /admin/communities/{community_key}/topology/{node_id}</code></h3>
+<p>Add, replace or remove one topology node (REQ-0072); both answer the whole
+community and derive <code>community.write</code>. The <code>PUT</code> body is the bundle's node
+(<code>TopologyNodeIn</code>), and its <code>id</code> must match the path (<code>422</code> otherwise, plain body):</p>
+<pre><code class="language-json">{&quot;id&quot;: &quot;AC000E00000&quot;, &quot;type&quot;: &quot;primary_substation&quot;, &quot;name&quot;: &quot;Northern primary&quot;, &quot;operator_id&quot;: &quot;example-dso&quot;}
+</code></pre>
+<p><code>name</code>, <code>operator_id</code>, <code>parent</code> and <code>area</code> are optional; other keys are dropped.
+Nodes merge by <code>id</code>: re-sending one replaces it where it stands (the whole node,
+not field by field), a new one is appended, and every other node is kept.</p>
+<table>
+<thead>
+<tr>
+<th>Refused</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PUT</code> changing the <code>type</code> of a node an area lists away from <code>primary_substation</code></td>
+<td><code>422 invalid_area_boundary</code>, nothing changed; an area stored before the rule is not re-judged</td>
+</tr>
+<tr>
+<td><code>DELETE</code> of a node any area lists</td>
+<td><code>409 topology_node_in_use</code>, naming the areas: change or delete them first</td>
+</tr>
+<tr>
+<td><code>DELETE</code> of a node another node names as its <code>parent</code></td>
+<td><code>409 topology_node_in_use</code>, naming those nodes by id: re-parent or delete them first</td>
+</tr>
+<tr>
+<td><code>DELETE</code> of a node the community does not have</td>
+<td><code>404</code>, plain body</td>
+</tr>
+<tr>
+<td>an unknown community</td>
+<td><code>404 community_not_found</code></td>
+</tr>
+</tbody>
+</table>
+<p>The order a template sync writes in: the node, then the area onto it. Both routes
+serialise with the area routes on the community's row. No node is left naming a
+deleted node as its <code>parent</code>; a node naming itself does not hold itself.</p>
 <hr />
 <h2 id="meta-routes">Meta Routes</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

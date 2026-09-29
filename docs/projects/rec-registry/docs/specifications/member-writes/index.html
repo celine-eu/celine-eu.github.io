@@ -4189,6 +4189,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0070-a-members-role-and-area-are-written-through-a-route-that-accepts-nothing-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0070 — a member's role and area are written through a route that accepts nothing else
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0071-a-meter-is-attached-at-meter-sensor-id-and-detaching-it-deletes-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0071 — a meter is attached at meter-&lt;sensor id&gt;, and detaching it deletes it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0072-topology-nodes-are-written-one-at-a-time-merging-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0072 — topology nodes are written one at a time, merging by id
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0073-a-refusal-a-caller-acts-on-carries-a-code-from-a-closed-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0073 — a refusal a caller acts on carries a code from a closed list
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0079-an-areas-key-is-renamed-in-one-write-with-its-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0079 — an area's key is renamed in one write, with its members
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4262,12 +4317,20 @@ convenience — the absence is load-bearing.</p>
 <p>A patch moving <code>user_id</code> to one already held by another member of the community answers
 <code>409</code> — including when the holder's row was written concurrently and the clash check could
 not see it yet, which the unique index behind REQ-0022 is what catches.</p>
+<p>A patch setting <code>status: active</code> on a member that was not active re-checks its sensors, and
+the whole patch answers <code>409</code> <code>sensor_held</code> — changing nothing — when another active member
+holds one (REQ-0069).</p>
+<p><code>role</code> is held to its set and <code>area</code> to the community's areas (REQ-0066), as on the narrower
+route role and area also have (REQ-0070).</p>
 <h3 id="req-0025-a-status-change-is-its-own-route-and-records-why">REQ-0025 — a status change is its own route, and records why</h3>
 <p><code>POST …/members/{mk}/status</code> moves a member through <code>pending</code>, <code>active</code>, <code>suspended</code>,
 <code>inactive</code>, with an optional <code>reason</code> stored at <code>extra.status_reason</code>. An unrecognised
 status answers <code>422</code>.</p>
 <p>Separate from <code>PATCH</code> because a status change is the transition an operator reasons about,
 and because it reads clearly in an audit log where a generic field update does not.</p>
+<p>A change to <code>active</code> re-checks the member's sensors, and answers <code>409</code> <code>sensor_held</code> rather
+than reactivating a member whose meter another active member now holds; the status is left as
+it was (REQ-0069). An unrecognised status carries the code <code>invalid_status</code> (REQ-0073).</p>
 <h3 id="req-0026-deleting-deactivates-erasing-is-a-different-request-and-reports-what-it-took">REQ-0026 — deleting deactivates; erasing is a different request and reports what it took</h3>
 <p><code>DELETE …/members/{mk}</code> sets <code>status = inactive</code> and answers a <code>DeletionReport</code> with
 <code>purged: false</code>. The member remains readable.</p>
@@ -4280,6 +4343,9 @@ consents and provenance elsewhere in the platform that reference them — and be
 silently takes the member's measurement history with it.</p>
 <p><code>assets_removed</code> is in the report for that reason: it is the number the caller did not ask
 about and needs to see.</p>
+<p>Deactivating releases the member's sensors, since only an active member holds one
+(REQ-0069). It does not release the asset keys: an inactive member's <code>meter-&lt;sensor id&gt;</code>
+still occupies that key in the community until the asset is deleted (REQ-0071).</p>
 <h3 id="req-0027-supply-points-merge-by-identity-never-by-position">REQ-0027 — supply points merge by identity, never by position</h3>
 <p><code>PUT …/members/{mk}/delivery-points/{id}</code> adds or replaces exactly one point, keeping the
 others; re-sending an existing id updates it rather than duplicating it; <code>DELETE</code> removes
@@ -4309,14 +4375,32 @@ member's — and the two outcomes behind that are different:</p>
   meter onto this member, which is not what <em>replace my asset</em> asked for — and this is not
   only a race: two members using one key in sequence takes exactly the same path.</li>
 </ul>
-<p><code>DELETE</code> on the same path answers <code>204</code>.</p>
+<p><code>DELETE</code> on the same path answers <code>204</code>; an asset the member does not hold is <code>404</code>.</p>
+<p>A meter attached by a manager is keyed <code>meter-&lt;sensor id&gt;</code> and detached by this <code>DELETE</code>
+(REQ-0071); the upsert refuses a sensor another active member holds (REQ-0069), checked before
+the key; the key clash above carries the code <code>asset_key_taken</code>, distinct from <code>sensor_held</code>,
+and the <code>404</code> carries <code>asset_not_found</code> (REQ-0073).</p>
+<p><strong>An asset key longer than 128 characters — what <code>asset.key</code> holds — is refused <code>422</code>
+<code>asset_key_too_long</code></strong> before anything is written, on every path that writes assets: this
+upsert, creating a member with assets (REQ-0020), and the bundle import (REQ-0074), where it
+is an import refusal like <code>sensor_held</code>. It used to fail the insert and answer <code>500</code>. With the
+meter convention (REQ-0071) a sensor id longer than 122 characters reaches it. A coded refusal
+rather than a validation error, because the caller — a manager typing the id printed on a
+device — needs to tell it from the other outcomes of an attach by <code>code</code>. The <code>detail</code> gives
+the key's length and the limit, not the key, which can embed a sensor id.</p>
+<p>The upsert answers the stored asset, as <code>AssetDetail</code> (the body of the asset <code>GET</code>), so a
+generated client has its type.</p>
 <h3 id="req-0029-patching-a-community-keeps-its-areas-and-upserting-an-area-keeps-the-others">REQ-0029 — patching a community keeps its areas, and upserting an area keeps the others</h3>
 <p><code>PATCH /admin/communities/{ck}</code> updates <code>name</code>, <code>description</code>, <code>legal</code>, <code>links</code>, <code>contact</code>
-and <code>settings</code>, merging <code>extra</code>. It does not touch <code>areas</code> or <code>topology</code>, which have their
-own routes for the same reason delivery points do — they are collections with their own
-identity, and a patch omitting one would read as emptying it.</p>
+and <code>settings</code>, merging <code>extra</code>. It does not touch <code>areas</code> or <code>topology</code>, for the same reason
+delivery points are absent from the member patch — they are collections with their own
+identity, and a patch omitting one would read as emptying it. Areas have their own route,
+below, and topology its node routes (REQ-0072). The community <code>PATCH</code> stays outside the area
+invariant of REQ-0067, because it never touches either collection.</p>
 <p><code>PUT …/areas/{key}</code> adds or replaces one area and returns the whole community, so the
-caller can see the others are still there.</p>
+caller can see the others are still there. The area it writes is one primary substation, or
+the write is refused <code>422</code> <code>invalid_area_boundary</code>, and its key is an area key, or the write is
+refused <code>422</code> <code>invalid_area_key</code> (REQ-0067).</p>
 <h3 id="req-0030-an-area-still-referenced-by-a-member-cannot-be-deleted">REQ-0030 — an area still referenced by a member cannot be deleted</h3>
 <p><code>DELETE …/areas/{key}</code> answers <code>409</code> naming how many members still reference it. An unused
 area is removed and the community returned without it; an area that does not exist is
@@ -4324,6 +4408,12 @@ area is removed and the community returned without it; an area that does not exi
 <p>An orphaned <code>Member.area</code> is a dangling reference nothing else in the system checks. It
 would surface much later, and somewhere else, as a member belonging to an area that does
 not exist — and area membership is what the incentive calculation is computed over.</p>
+<p>The count is taken under an exclusive lock on the community's row, which a member write
+naming an area holds shared until it commits, so a member moved into the area at the same
+moment is counted rather than orphaned (REQ-0066).</p>
+<p>The refusal carries the code <code>area_in_use</code> (REQ-0073). It is the answer an onboarding
+template sync meets when it prunes an area that still has members, and the count in the
+message is what tells its operator how many to move first.</p>
 <h3 id="req-0031-no-write-reduces-a-sibling">REQ-0031 — no write reduces a sibling</h3>
 <p>The invariant the whole write API exists to keep:</p>
 <blockquote>
@@ -4337,6 +4427,15 @@ the member count afterwards — <code>tests/test_writes.py::TestNoWriteReducesAS
 is a <strong>registry of writes, not a sample of them</strong>: a new write endpoint must be added to
 it, and one that is missing from it is a write nobody has checked for the single thing the
 write API guarantees.</p>
+<p>Attaching and detaching a meter (REQ-0071), a refused <code>sensor_held</code> attach, a
+reactivation, the profile route (REQ-0070) — accepted and refused — the area <code>PUT</code>,
+accepted and refused <code>invalid_area_boundary</code> and <code>invalid_area_key</code> (REQ-0067), and the topology node <code>PUT</code> and
+<code>DELETE</code> (REQ-0072) — a new node, a replaced one, a refused type change and a refused
+<code>topology_node_in_use</code> delete — of a node an area lists, and of a node another node names as
+its <code>parent</code> — and accepted deletes — are in it, and so is the area rename (REQ-0079),
+accepted and refused <code>area_key_taken</code>, <code>area_not_found</code> and <code>invalid_area_key</code>. For the
+topology writes the test also counts the community's nodes: a node write keeps every other
+node; for the renames it compares the areas: a rename changes one key and nothing else.</p>
 <h3 id="req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community">REQ-0060 — the dataspace DID is written by <code>PATCH</code>, and a clash names its holder only within the community</h3>
 <p><code>PATCH …/members/{mk}</code> accepts <code>did</code> alongside the fields of REQ-0024. There is <strong>no
 dedicated route</strong>: the DID is minted a step after the member is registered, so it arrives
@@ -4376,6 +4475,233 @@ back there, so a literal <code>extra:</code> key in a bundle is kept as it arriv
 member therefore exports with those keys flat and re-imports unchanged (REQ-0037).</p>
 <p><strong>Rows written before this are not rewritten.</strong> A member created with <code>extra</code> earlier —
 <code>../onboarding</code>'s <code>declared_at_onboarding</code> among them — still holds it at <code>extra.extra</code>.</p>
+<h3 id="req-0070-a-members-role-and-area-are-written-through-a-route-that-accepts-nothing-else">REQ-0070 — a member's role and area are written through a route that accepts nothing else</h3>
+<p><code>PATCH /admin/communities/{ck}/members/{mk}/profile</code> accepts a body of <code>{role?, area?}</code>: at
+least one of the two, and no other key. An empty body, an unknown key, a <code>null</code>, or a key the
+general <code>PATCH</code> accepts — <code>user_id</code>, <code>did</code>, <code>status</code>, <code>name</code>, <code>type</code>, <code>extra</code> — answers <code>422</code>
+with FastAPI's validation body and changes nothing. <code>role</code> and <code>area</code> are checked as REQ-0066
+says (<code>422 invalid_role</code>, <code>422 unknown_area</code>); an unknown community or member is <code>404</code>
+<code>community_not_found</code> / <code>member_not_found</code>. A valid request answers <code>200</code> with the member, and
+absent fields are left alone as REQ-0024 leaves them. The member's status is not looked at,
+and its assets are left as they are.</p>
+<p>It derives <code>members.profile.write</code> (REQ-0063). Accepting nothing else is what makes that
+action narrower than <code>members.write</code> in fact and not only in name: a body that could carry a
+<code>user_id</code> would hand the narrower grant the identity rewrite REQ-0022 exists to stop. Decided
+in <a href="../../decisions/ADR-0003-role-and-area-have-their-own-route-and-action/">ADR-0003</a>.</p>
+<h3 id="req-0071-a-meter-is-attached-at-meter-sensor-id-and-detaching-it-deletes-it">REQ-0071 — a meter is attached at <code>meter-&lt;sensor id&gt;</code>, and detaching it deletes it</h3>
+<p>A community manager attaches a meter with the asset <code>PUT</code> of REQ-0028 at
+<code>…/members/{mk}/assets/meter-&lt;sensor id&gt;</code>, the sensor id trimmed, <code>asset_type: meter</code>. The
+outcomes a caller must tell apart:</p>
+<ul>
+<li><strong>attached</strong> — <code>200</code>;</li>
+<li><strong>already attached to this member</strong> — <code>200</code>, the idempotent replace of REQ-0028;</li>
+<li><strong>the sensor is held by another active member, in any community</strong> — <code>409</code> <code>sensor_held</code>
+  (REQ-0069);</li>
+<li><strong>the key is held by another member of this community</strong> — which, with this convention, means
+  an inactive member still holds the asset — <code>409</code> <code>asset_key_taken</code>, not <code>sensor_held</code>,
+  because the remedy is different: delete that asset, then attach.</li>
+</ul>
+<p>The sensor check runs before the key check, so a key another <em>active</em> member holds for the
+same sensor answers <code>sensor_held</code>. A sensor id blank after trimming is <code>422</code>, and one long
+enough to make the key exceed 128 characters is <code>422</code> <code>asset_key_too_long</code> (REQ-0028). The registry does
+not enforce the key convention — it is the convention the dashboard uses, and an asset <code>PUT</code>
+at any other key is still the upsert of REQ-0028, still checked by REQ-0069.</p>
+<p><strong>Detaching is <code>DELETE</code> on the same path, and it is a hard delete</strong> (<code>204</code>; <code>404</code>
+<code>asset_not_found</code> when the member holds no such asset, including one another member holds). Readings are joined to members without dates, so after a detach
+the sensor's whole history follows its next holder; keeping the previous holder's share is the
+job of dated holdings, a recorded follow-up and not this requirement. Decided in
+<a href="../../decisions/ADR-0004-a-sensor-has-one-active-holder-and-detaching-deletes-the-meter/">ADR-0004</a>.</p>
+<h3 id="req-0072-topology-nodes-are-written-one-at-a-time-merging-by-id">REQ-0072 — topology nodes are written one at a time, merging by id</h3>
+<p><code>PUT /admin/communities/{ck}/topology/{node_id}</code> adds or replaces exactly one node, keeping the
+others; re-sending an existing id replaces that node where it stands rather than duplicating
+it, and a new id is appended. The <code>id</code> in the body must match the one in the path, or <code>422</code>.
+<code>DELETE</code> removes one node and keeps the rest; a node the community does not have is <code>404</code>; a
+node an area still references — any area, whether or not it keeps REQ-0067 — is refused with
+<code>409</code> <code>topology_node_in_use</code>, naming the areas; so is a node another node names as its
+<code>parent</code>, naming those nodes by id only, so they are re-parented or deleted first (a node
+naming itself does not hold itself). Both derive <code>community.write</code> (REQ-0004) and
+answer the whole community, as the area routes do.</p>
+<p><strong>The body is the bundle's topology node</strong> (<code>TopologyNodeIn</code>): <code>id</code>, <code>type</code>, and optionally
+<code>name</code>, <code>operator_id</code>, <code>parent</code>, <code>area</code>. Every read answers a node under those same names
+(<code>TopologyNode</code>): before 1.6.0 reads answered <code>operator</code>, a schema v0.4 name nothing had stored
+since v0.5, so it was always <code>null</code> and the stored <code>operator_id</code> was never returned. Keys beyond
+these are accepted and not stored, as on the import, which builds a node with the same function.
+No node is left naming a deleted node as its <code>parent</code>.</p>
+<p><strong>A node write never breaks an area that keeps REQ-0067:</strong> a <code>PUT</code> changing the <code>type</code> of a node
+such an area references away from <code>primary_substation</code> answers <code>422</code> <code>invalid_area_boundary</code> and
+changes nothing. An area stored before the rule is not re-judged by a write to its node, as the
+area <code>PUT</code> leaves such a sibling alone. A community stored holding one id twice keeps one after a
+<code>PUT</code> of that id: the first, replaced. Both routes take the community's row exclusively before
+reading the areas, as the area routes do, so an area write and a node write on one community are
+serialised.</p>
+<p>Topology is a collection with its own identity, like delivery points (REQ-0027), and the
+merge-by-id rule is theirs for the same reason. It is the route an onboarding template sync
+writes a community's substations through. Decided in
+<a href="../../decisions/ADR-0006-onboarding-templates-are-the-source-of-truth-for-areas/">ADR-0006</a>.</p>
+<h3 id="req-0073-a-refusal-a-caller-acts-on-carries-a-code-from-a-closed-list">REQ-0073 — a refusal a caller acts on carries a code from a closed list</h3>
+<p>The body of such a refusal is <code>{"detail": "&lt;sentence&gt;", "code": "&lt;code&gt;"}</code>. <code>detail</code> stays a
+string with its current meaning; the code sits beside it, never inside it. Clients — the SDK
+among them — branch on <code>code</code>, never on the wording of <code>detail</code>. The codes, and the requirement
+each comes from:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Status</th>
+<th>Refusal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>community_not_found</code></td>
+<td><code>404</code></td>
+<td>a write naming an unknown community (REQ-0023)</td>
+</tr>
+<tr>
+<td><code>member_not_found</code></td>
+<td><code>404</code></td>
+<td>a write naming a member the community does not have (REQ-0024 – REQ-0028)</td>
+</tr>
+<tr>
+<td><code>asset_not_found</code></td>
+<td><code>404</code></td>
+<td>deleting an asset the member does not hold (REQ-0028, REQ-0071)</td>
+</tr>
+<tr>
+<td><code>member_key_taken</code></td>
+<td><code>409</code></td>
+<td>a member key already held in the community (REQ-0022)</td>
+</tr>
+<tr>
+<td><code>user_id_taken</code></td>
+<td><code>409</code></td>
+<td>a <code>user_id</code> already held in the community (REQ-0022, REQ-0024)</td>
+</tr>
+<tr>
+<td><code>did_taken</code></td>
+<td><code>409</code></td>
+<td>a DID held by another member anywhere (REQ-0060)</td>
+</tr>
+<tr>
+<td><code>asset_key_taken</code></td>
+<td><code>409</code></td>
+<td>an asset key held by another member of the community (REQ-0028, REQ-0071)</td>
+</tr>
+<tr>
+<td><code>asset_key_too_long</code></td>
+<td><code>422</code></td>
+<td>an asset key longer than the 128 characters <code>asset.key</code> holds, on every path that writes assets (REQ-0028)</td>
+</tr>
+<tr>
+<td><code>sensor_held</code></td>
+<td><code>409</code></td>
+<td>a sensor id held by another active member anywhere (REQ-0069)</td>
+</tr>
+<tr>
+<td><code>area_in_use</code></td>
+<td><code>409</code></td>
+<td>deleting an area members still reference (REQ-0030)</td>
+</tr>
+<tr>
+<td><code>invalid_status</code></td>
+<td><code>422</code></td>
+<td>a status outside the set, on every write path (REQ-0025, REQ-0066)</td>
+</tr>
+<tr>
+<td><code>invalid_role</code></td>
+<td><code>422</code></td>
+<td>a role outside the set, on every write path (REQ-0066)</td>
+</tr>
+<tr>
+<td><code>unknown_area</code></td>
+<td><code>422</code></td>
+<td>an area that is not a key of the community's areas, on every write path (REQ-0066)</td>
+</tr>
+<tr>
+<td><code>invalid_area_boundary</code></td>
+<td><code>422</code></td>
+<td>an area that is not one primary substation — one boundary, one <code>primary_substation</code> node with its id, no two areas on one boundary id — on the area <code>PUT</code>, the topology node <code>PUT</code> and the import (REQ-0067, REQ-0072)</td>
+</tr>
+<tr>
+<td><code>topology_node_in_use</code></td>
+<td><code>409</code></td>
+<td>deleting a topology node an area still references, or another node names as its <code>parent</code> (REQ-0072)</td>
+</tr>
+<tr>
+<td><code>area_not_found</code></td>
+<td><code>404</code></td>
+<td>renaming an area the community does not have (REQ-0079)</td>
+</tr>
+<tr>
+<td><code>area_key_taken</code></td>
+<td><code>409</code></td>
+<td>renaming an area onto a key the community already has (REQ-0079)</td>
+</tr>
+<tr>
+<td><code>invalid_area_key</code></td>
+<td><code>422</code></td>
+<td>an area key that is not letters, digits, <code>-</code> and <code>_</code>, starting with a letter or digit, at most 128 characters — on the area <code>PUT</code>, the rename's <code>new_key</code> and the import (REQ-0067, REQ-0079)</td>
+</tr>
+<tr>
+<td><code>not_a_member</code></td>
+<td><code>403</code></td>
+<td>a self-service read by a caller whose username names no member (REQ-0047)</td>
+</tr>
+</tbody>
+</table>
+<p><code>sensor_held</code> is <code>422</code> on an import, where the bundle is what is wrong (REQ-0069, REQ-0074).
+A route that answers a coded <code>422</code> declares its <code>422</code> in the OpenAPI document as either body —
+<code>oneOf</code> <code>ErrorResponse</code> and FastAPI's <code>HTTPValidationError</code>, whose <code>detail</code> is a list — since
+both arrive with that status: the member create, both <code>PATCH</code> routes (REQ-0070) and the status
+route, the asset <code>PUT</code>, the area <code>PUT</code>, the area rename, the topology node <code>PUT</code>, and both
+import routes.
+The two <code>404</code> codes let a caller detaching a meter tell <em>"that member is gone"</em> from <em>"that
+meter is already detached"</em>. Every write route documents the body in the OpenAPI document as
+<code>ErrorResponse</code>, with the codes as the <code>ErrorCode</code> enum, and so does every self-service route
+that answers <code>403 not_a_member</code>.</p>
+<p>A code names the rule, never the entity: it carries no key or id, and what the <code>detail</code> may name
+follows the rule already governing it (REQ-0060, REQ-0069). A code is added here by the
+requirement that introduces its refusal. An import refusal (REQ-0074) carries the code of the
+invariant it breaks. Refusals no requirement has given a code keep the plain
+<code>{"detail": "&lt;sentence&gt;"}</code> body — FastAPI's own validation errors, a body id or key that does
+not match the path, an unknown asset type, the import's <code>force</code> guard (REQ-0033), and the <code>404</code>
+for an unknown delivery point, topology node, or area on its <code>DELETE</code> (the rename's is coded).
+Decided in
+<a href="../../decisions/ADR-0008-a-refusal-carries-a-machine-readable-code/">ADR-0008</a>.</p>
+<h3 id="req-0079-an-areas-key-is-renamed-in-one-write-with-its-members">REQ-0079 — an area's key is renamed in one write, with its members</h3>
+<p><code>POST /admin/communities/{ck}/areas/{area_key}/rename</code> with body <code>{"new_key": "&lt;key&gt;"}</code> moves
+an area to a new key. In <strong>one transaction, under the community's row taken exclusively</strong>, the
+area as stored — <code>name</code>, <code>boundary</code>, <code>topology</code>, and whatever else it carries — is written
+under <code>new_key</code>, every member of the community whose <code>area</code> is <code>area_key</code> is moved to
+<code>new_key</code>, <strong>whatever their status</strong>, and <code>area_key</code> is removed. It answers <code>{old_key, new_key,
+members_moved, community}</code>, the whole community after the rename. It derives
+<code>community.write</code> (REQ-0004).</p>
+<p><strong>Nothing else changes</strong> (REQ-0031): not the other areas, not the topology, not a member's
+other fields, not a member's assets, not a member of another community whose <code>area</code> has the
+same key. The area is moved as stored, not re-judged against REQ-0067, and the set of
+boundary ids never changes — so no reader ever sees two areas on one boundary, both keys, or a
+member in an area that does not exist.</p>
+<p><strong>Refused, changing nothing:</strong></p>
+<ul>
+<li>a <code>new_key</code> that is not an area key — letters, digits, <code>-</code> and <code>_</code>, starting with a letter
+  or digit, at most 128 characters (what <code>member.area</code> holds, and what onboarding's template
+  import accepts; the rule every write of a key holds, REQ-0067) — <code>422</code> <code>invalid_area_key</code>;</li>
+<li>an <code>area_key</code> the community does not have — <code>404</code> <code>area_not_found</code>;</li>
+<li>a <code>new_key</code> the community already has, <code>area_key</code> itself included — <code>409</code>
+  <code>area_key_taken</code>;</li>
+<li>an unknown community — <code>404</code> <code>community_not_found</code>; a body other than <code>{new_key}</code> — <code>422</code>
+  (FastAPI's validation body).</li>
+</ul>
+<p><strong>Concurrency</strong> follows the order every write takes its locks in: community row, then member
+rows (REQ-0066). A member write naming an area holds the row shared, so a rename waits for it
+and then moves that member too; a member write naming an area during a rename waits, then
+finds <code>area_key</code> gone (<code>422 unknown_area</code>) or <code>new_key</code> there. A write that names no area
+takes no community lock, waits on the member row the rename updated, and leaves the moved area
+as it is. Two renames of one area at once: one succeeds, the other finds it gone.</p>
+<p>This is how an onboarding template sync renames an area that has members: an area <code>PUT</code> under
+the new key is refused (<code>invalid_area_boundary</code>, one area per boundary) and a <code>DELETE</code> of the
+old key is refused (<code>area_in_use</code>) while members hold it. Decided in
+<a href="../../decisions/ADR-0010-an-area-is-renamed-with-its-members-in-one-write/">ADR-0010</a>.</p>
 
 
 
