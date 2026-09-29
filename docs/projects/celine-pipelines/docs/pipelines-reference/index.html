@@ -4828,7 +4828,21 @@ an unconnected <em>cabina primaria</em>; netting community-wide would invent ene
 physically cannot flow. See
 the companion's knowledge,
 which also records the known defect in the hourly model.</p>
+<p><strong>The netting is only as correct as the substation attribution.</strong> <code>silver_rec_registry</code>
+takes <code>topology_ids[1]</code> of the member's area as its <code>substation_id</code>. That is right when an
+area lists exactly one <code>primary_substation</code> node, whose id is the <code>cod_ac</code> of the area's
+boundary; an area listing several nodes puts all its members under the first. The registry
+enforces it from schema v0.7 on area writes, topology node writes and bundle import. The
+mirror carries the area's <code>boundary_id</code>, and the singular test
+<code>rec_registry_mirror_substation_is_area_boundary</code> fails on any area breaking it. See
+<code>apps/rec_it/README.md</code>.</p>
 </blockquote>
+<p>A membership change (meter attached or detached, role or area changed) reaches only the rows
+computed after it: the settlement models are incremental over a short lookback, and
+per-device keys include <code>substation_id</code>. Aligning history needs a bounded recompute by an
+operator; see <code>apps/rec_it/README.md</code>.</p>
+<p>Gold <code>gse_cabine_primarie</code> is read at runtime by the Digital Twin (through dataset-api) to
+resolve community areas, on <code>cod_ac</code> and <code>geometry</code>; its merge never deletes a substation.</p>
 <h2 id="rec_flexibility-flexibility-and-gamification"><code>rec_flexibility</code> — flexibility and gamification</h2>
 <p>Opportunity windows, per-commitment settlement with proportional redistribution,
 three-layer gamification scoring, anti-gaming flags and CO2 impact. Mixes dbt models with
@@ -4859,13 +4873,24 @@ Python tasks (baselines, streaks, auto-commit). <code>0 6 * * *</code>.</p>
 and the pipeline succeeds with an empty result. That is the expected local behaviour, not
 a failure.</p>
 <blockquote>
+<p><strong>The points fleet is a deploy setting, not the registry.</strong> Points, settlement, streaks
+and the leaderboard are scoped to the devices in <code>REC_ACTIVE_DEVICES</code>; a meter attached
+to a member later earns no points until its device id is added there. Issue:
+<a href="https://github.com/celine-eu/celine-pipelines/issues/8">#8</a>.</p>
 <p><strong>The flexibility signal is netted across substations.</strong> There is no join path from this
 app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cancels a surplus on another.</p>
 </blockquote>
 <h2 id="rec_registry-registry-mirror"><code>rec_registry</code> — registry mirror</h2>
 <p>Full-replace mirror of the CELINE REC Registry API into <code>raw.rec_registry_mirror</code>, every
-5 minutes. One row per user/community pair: grid areas, topology nodes, delivery points,
-meter sensors. Python-only; no dbt, no Meltano. OIDC-authenticated.</p>
+5 minutes. One row per user/community pair of an active member: area, role, member type,
+topology nodes, the area's boundary id, delivery points, meter sensors. Python-only; no dbt,
+no Meltano. OIDC-authenticated. Each run logs the areas whose <code>topology_ids[1]</code> is not their
+boundary id (it flags them; it does not refuse the export).</p>
+<blockquote>
+<p><strong>An empty export does not replace the mirror.</strong> When the export holds no active member,
+the flow returns before the <code>TRUNCATE</code> and the previous rows keep feeding <code>rec_it</code>. Clear
+the table by hand in that case. Issue: <a href="https://github.com/celine-eu/celine-pipelines/issues/7">#7</a>.</p>
+</blockquote>
 <h2 id="rec_flexibility_commitments-commitments-mirror"><code>rec_flexibility_commitments</code> — commitments mirror</h2>
 <p>90-day sliding mirror of the CELINE Flexibility API into
 <code>raw.flexibility_commitments_mirror</code>, every 15 minutes, tracking status evolution

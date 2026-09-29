@@ -4594,7 +4594,12 @@ reference: fixtures in <code>conftest.py</code> build a deterministic 3-device �
 meter frame, and <code>test_python_sql_equivalence.py</code> asserts the Python task and the dbt
 model agree on the same input — the test that catches the two implementations drifting.</p>
 <pre><code class="language-bash">uv run pytest apps/rec_flexibility/tests -q
+uv run pytest apps/rec_registry/tests -q
 </code></pre>
+<p>pytest comes from the project's <code>dev</code> dependency group (<code>pyproject.toml</code>), which <code>uv run</code>
+installs into <code>.venv</code> by default. Run it through <code>uv run</code>, not a global <code>pytest</code>: a pytest
+outside the project environment cannot import <code>prefect</code> or <code>celine.utils</code> and fails at
+collection.</p>
 <h3 id="dbt-unit-tests">dbt unit tests</h3>
 <p>Declared in a <code>unit_tests:</code> block, they run a model against fixture rows with no table
 behind it. Use them for <strong>logic that would need a specific and awkward data situation</strong> to
@@ -4834,7 +4839,7 @@ tests; regenerate with <code>dbt ls --resource-type test</code> inside an app.</
 <tr>
 <td><code>rec_it</code></td>
 <td>yes</td>
-<td>—</td>
+<td>1</td>
 <td>—</td>
 <td>—</td>
 </tr>
@@ -4853,7 +4858,14 @@ tests; regenerate with <code>dbt ls --resource-type test</code> inside an app.</
 <td>—</td>
 </tr>
 <tr>
-<td><code>rec_registry</code>, <code>rec_flexibility_commitments</code></td>
+<td><code>rec_registry</code></td>
+<td>no dbt project</td>
+<td>—</td>
+<td>—</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>rec_flexibility_commitments</code></td>
 <td>no dbt project</td>
 <td>—</td>
 <td>—</td>

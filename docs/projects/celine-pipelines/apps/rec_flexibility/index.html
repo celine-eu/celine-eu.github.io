@@ -5023,6 +5023,7 @@ daily_points             = daily_settlement_points + daily_bonus_points
 <p>Serves with cron <code>*/15 * * * *</code> (every 15 minutes) in dev mode. The Python tasks are idempotent (DELETE+INSERT inside a single <code>engine.begin()</code> transaction).</p>
 <h2 id="configuration">Configuration</h2>
 <p>All tunable parameters live in <code>flexibility_config.yaml</code> (shared with <code>src/notebooks/gamification/</code>). Edit the YAML, not the code, to retune baselines, effort tiers, bonus multipliers, streak decay, and anti-gaming thresholds.</p>
+<p><strong>The points fleet is a deploy setting, not the registry.</strong> Points, settlement, streaks and the leaderboard are scoped to the devices in <code>REC_ACTIVE_DEVICES</code> (comma-separated; <code>fleet.active_devices</code> in the YAML is a local-dev fallback that ships empty), written to the <code>rec_active_devices</code> seed at flow start. A meter attached to a member in the registry after the fleet was set earns no points until its device id is added to that setting and the flow runs again. Issue: <a href="https://github.com/celine-eu/celine-pipelines/issues/8">#8</a>.</p>
 
 
 

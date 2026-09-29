@@ -3484,6 +3484,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#substation-attribution-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substation attribution check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#execution-docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4248,6 +4281,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#substation-attribution-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substation attribution check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#execution-docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4300,7 +4366,7 @@
 <h1 id="rec-registry-pipeline">REC Registry Pipeline</h1>
 <h2 id="overview">Overview</h2>
 <p>The <strong>REC Registry pipeline</strong> mirrors community membership data from the <strong>CELINE REC Registry API</strong> into a PostgreSQL raw table.</p>
-<p>It performs a <strong>full-replace refresh every 5 minutes</strong>, providing a stable source of active members, their grid areas, topology nodes, delivery points, and meter sensors.</p>
+<p>It performs a <strong>full-replace refresh every 5 minutes</strong>, providing a stable source of active members, their grid areas, topology nodes, delivery points, and meter sensors. One exception: when the export holds no active member at all, the run writes nothing and the previous rows stay (see <a href="#known-limitations">Known limitations</a>).</p>
 <hr />
 <h2 id="data-sources">Data sources</h2>
 <ul>
@@ -4311,9 +4377,25 @@
 <h2 id="output-datasets">Output datasets</h2>
 <ul>
 <li><strong>RAW</strong></li>
-<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair)</li>
+<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair), except after an empty export (see <a href="#known-limitations">Known limitations</a>). Columns: <code>user_id</code>, <code>rec_id</code>, <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>delivery_point_ids</code> (text[]), <code>sensor_ids</code> (text[], the <code>sensor_id</code> of each meter asset), <code>boundary_id</code> (the id of the member's area's boundary, <code>area.boundary.id</code> in registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(user_id, rec_id)</code>. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area.</li>
 </ul>
+<p>Every community the registry exports lands in the same table, keyed by <code>rec_id</code>. A sensor listed on two active members appears in two rows, and downstream models count it twice. The registry refuses that case at the source (<code>409 sensor_held</code>: one active holder per sensor id across every community, from rec-registry 1.6.0); a pair stored before then stays until it is fixed, and the registry's <code>duplicate-sensors</code> command lists them.</p>
+<h2 id="substation-attribution-check">Substation attribution check</h2>
+<p><code>rec_it</code> takes <code>topology_ids[1]</code> as a member's <code>substation_id</code>. That is right only when the member's area lists exactly one topology node and its id is the area's <code>boundary_id</code>. On every run, before the mirror is replaced, the <strong>Check substation attribution</strong> task flags each <code>(rec_id, area)</code> whose rows break this: it logs one warning per area (community id and area key only, never a member) and reports <code>areas_mismatched</code> in its result. It does <strong>not</strong> refuse the export: withholding it would leave the previous mirror feeding <code>rec_it</code>, which is no better. Rows with a null <code>boundary_id</code> are not checked.</p>
+<p>The registry refuses such areas on area writes, topology node writes and bundle import from schema v0.7, so a hit means an area stored before that (the registry's <code>invalid-area-boundaries</code> command lists them). The same invariant is a dbt singular test in <code>rec_it</code> (<code>rec_registry_mirror_substation_is_area_boundary</code>), which fails the <code>rec_it</code> test stage.</p>
+<hr />
 <p>No dbt transformation layers are included in this pipeline. The raw table serves as a source for downstream dbt pipelines computing virtual self-consumption, billing, and community analytics.</p>
+<hr />
+<h2 id="known-limitations">Known limitations</h2>
+<ul>
+<li><strong>An empty export leaves the previous mirror in place.</strong> <code>mirror_to_db</code> returns before the <code>TRUNCATE</code> when the export has no active member rows, so the rows of the last non-empty export keep feeding the downstream dbt models. This happens when every member of every community is suspended, removed or deleted, or when a community is retired before any new member is active. Until the flow truncates on an empty export, clear the table by hand in that situation (<code>TRUNCATE raw.rec_registry_mirror</code>). Issue: <a href="https://github.com/celine-eu/celine-pipelines/issues/7">#7</a>.</li>
+<li><strong>Only the mirror is current.</strong> Downstream incremental models recompute a short trailing window, so a membership change (a meter attached or detached, a role or area changed) reaches rows from the next run onwards; older rows keep the values they were computed with. See <code>apps/rec_it/README.md</code>.</li>
+</ul>
+<hr />
+<h2 id="tests">Tests</h2>
+<p>Pure-Python tests of the flatten and the substation check, on synthetic bundles (no database, no registry):</p>
+<pre><code class="language-bash">uv run pytest apps/rec_registry/tests -q
+</code></pre>
 <hr />
 <h2 id="execution-docker-image">Execution &amp; Docker image</h2>
 <p>Docker image:</p>
