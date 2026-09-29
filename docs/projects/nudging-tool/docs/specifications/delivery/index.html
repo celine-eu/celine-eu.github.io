@@ -4156,8 +4156,8 @@ as the send.</p>
 <p>The exception is an email-only ingest (REQ-0014): a <code>user_id</code> beginning <code>email-ingest:</code>
 together with explicit recipients gets no web job. Both halves are required — recipients
 under a real participant, or a synthetic id with no recipients, still get one.</p>
-<p>The web destination is <code>web:&lt;user&gt;</code> or <code>web:&lt;user&gt;:&lt;community&gt;</code>, and that string is what
-the daily cap counts (REQ-0039), so its shape is load-bearing rather than cosmetic.</p>
+<p>The web destination is <code>web:&lt;user&gt;</code> or <code>web:&lt;user&gt;:&lt;community&gt;</code>. The daily cap no longer
+reads it: it counts the participant's notifications through their nudges (REQ-0039).</p>
 <p>Jobs of one notification share its <code>nudge_id</code>, <code>notification_id</code> and <code>dedup_key</code> and
 differ only in channel, destination and their own id.</p>
 <p>Only <code>web</code> and <code>email</code> have publishers. <code>Channel</code> also declares <code>telegram</code> and

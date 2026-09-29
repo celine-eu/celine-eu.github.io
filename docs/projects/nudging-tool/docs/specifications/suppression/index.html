@@ -4102,10 +4102,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0039-the-daily-cap-counts-web-deliveries-sent-today-to-this-destination" class="md-nav__link">
+  <a href="#req-0039-the-daily-cap-counts-the-participants-notifications-sent-today-on-any-channel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0039 — the daily cap counts web deliveries sent today to this destination
+        REQ-0039 — the daily cap counts the participant's notifications sent today, on any channel
       
     </span>
   </a>
@@ -4254,19 +4254,23 @@ what a participant switched off.</p>
 <p>The cap for a participant with no row is a literal <code>3</code> in the orchestrator, <strong>not</strong>
 <code>MAX_PER_DAY_DEFAULT</code>; that setting only fills in the column for <em>seeded</em> rows. The two
 values agree today. Filed as <a href="https://github.com/celine-eu/nudging-tool/issues/36">#36</a>.</p>
-<h3 id="req-0039-the-daily-cap-counts-web-deliveries-sent-today-to-this-destination">REQ-0039 — the daily cap counts web deliveries sent today to this destination</h3>
-<p><code>sent_today &lt; max_per_day</code>, where the count is <code>delivery_log</code> rows that are <code>sent</code>, whose
-<code>sent_at</code> is today, and whose destination starts with <code>web:&lt;user&gt;</code> or
-<code>web:&lt;user&gt;:&lt;community&gt;</code>.</p>
+<h3 id="req-0039-the-daily-cap-counts-the-participants-notifications-sent-today-on-any-channel">REQ-0039 — the daily cap counts the participant's notifications sent today, on any channel</h3>
+<p><code>sent_today &lt; max_per_day</code>, where the count is the participant's <strong>notifications</strong> with at
+least one <code>delivery_log</code> row that is <code>sent</code> and whose <code>sent_at</code> is today, whatever the
+channel. A delivery is attributed through its nudge's <code>user_id</code>. It counts notifications,
+not deliveries, because the promise on <code>/preferences</code> is "at most N a day": one that
+reached both web and email counts once, and an email-only one counts too. Until
+<a href="https://github.com/celine-eu/nudging-tool/issues/37">#37</a> it counted web deliveries by
+destination prefix, so email was unbounded.</p>
 <p>Three narrowings, each a way for the cap to be wrong:</p>
 <ul>
 <li>a suppressed or failed attempt does not consume the allowance;</li>
-<li>a participant in two communities has two allowances, because the prefix differs — while
-  the community-less prefix is a prefix of both;</li>
-<li><strong>an email delivery matches no prefix</strong>, so it neither consumes the allowance nor is
-  checked against it. A participant who opted into email is capped on push and unbounded
-  on email, and email-only ingest is entirely uncapped. Filed as
-  <a href="https://github.com/celine-eu/nudging-tool/issues/37">#37</a>.</li>
+<li>with a community, only that community's notifications count, so a participant in two
+  communities has two allowances; without one, all of the participant's notifications
+  count;</li>
+<li><strong>email-only ingest (REQ-0014) is not capped.</strong> Grid alerts to an operator inbox have no
+  participant and no preference, and suppressing one past a count is a safety risk
+  (requester, 2026-09-29).</li>
 </ul>
 <p>The participant-facing bound is 1..10 (<code>PUT /preferences/me</code>). The database has no such
 constraint, so a seed can write <code>0</code>, which silences that participant completely.</p>
