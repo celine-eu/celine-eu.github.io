@@ -2293,13 +2293,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#yaml-structure-recommended" class="md-nav__link">
+  <a href="#yaml-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        YAML Structure (Recommended)
+        YAML Structure
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="YAML Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-governanceyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source: governance.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2316,10 +2344,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#create-vs-update" class="md-nav__link">
+  <a href="#physical-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create vs Update
+        Physical validation
       
     </span>
   </a>
@@ -2347,17 +2375,6 @@
     <span class="md-ellipsis">
       
         Dry Run
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#physical-validation-reflection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physical Validation &amp; Reflection
       
     </span>
   </a>
@@ -4348,13 +4365,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#yaml-structure-recommended" class="md-nav__link">
+  <a href="#yaml-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        YAML Structure (Recommended)
+        YAML Structure
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="YAML Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-governanceyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source: governance.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4371,10 +4416,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#create-vs-update" class="md-nav__link">
+  <a href="#physical-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create vs Update
+        Physical validation
       
     </span>
   </a>
@@ -4402,17 +4447,6 @@
     <span class="md-ellipsis">
       
         Dry Run
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#physical-validation-reflection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physical Validation &amp; Reflection
       
     </span>
   </a>
@@ -4548,97 +4582,122 @@
 <p>Catalogue state is defined in YAML and treated like application config:
 - version controlled
 - reviewed
-- validated before import</p>
+- validated on import</p>
 <p>The API database stores the <em>result</em> of the import, but YAML remains the source of truth.</p>
 <hr />
-<h2 id="yaml-structure-recommended">YAML Structure (Recommended)</h2>
-<p>A compact pattern:</p>
+<h2 id="yaml-structure">YAML Structure</h2>
+<p>Two formats are involved.</p>
+<h3 id="source-governanceyaml">Source: <code>governance.yaml</code></h3>
+<p>Pipelines declare governance next to the data, as <code>defaults</code> plus rules matched by
+dataset glob under <code>sources</code>, with <code>governance.&lt;app&gt;.yaml</code> overlays. It is parsed by
+<code>celine.governance</code> (celine-utils):</p>
 <pre><code class="language-yaml">defaults:
   access_level: internal
   classification: green
-  tags: []
-  ownership: []
-  retention_days: 365
 
 sources:
-  datasets.gold.example:
-    access_level: external
+  datasets.ds_dev_gold.example:
     title: Example dataset
     description: Curated indicator for X.
+    expose: true
+    access_level: open
     tags: [gold, example]
-    documentation_url: https://...
-    source_system: Example producer
+    documentation_url: https://example.org/docs
+    dataspace:
+      expose: true
 </code></pre>
-<p>Key fields you typically need:
-- <code>dataset_id</code>
-- <code>title</code>, <code>description</code>
-- <code>access_level</code>
-- <code>tags</code>, <code>classification</code>
-- <code>source_system</code>, <code>documentation_url</code>
-- optional ownership, license, retention hints</p>
+<p>Rule fields include <code>title</code>, <code>description</code>, <code>expose</code>, <code>access_level</code>
+(<code>open|internal|restricted|secret</code>), <code>classification</code> (<code>green|yellow|red|pii</code>),
+<code>tags</code>, <code>ownership</code>, <code>license</code>, <code>documentation_url</code>, <code>source_system</code>,
+<code>retention_days</code>, <code>row_filters</code>, <code>dcat</code>, <code>ontology</code> and <code>dataspace</code>.</p>
+<h3 id="import-format">Import format</h3>
+<p><code>dataset-cli export governance</code> turns governance files into the format
+<code>dataset-cli import catalogue</code> reads, a top-level <code>datasets</code> map keyed by
+<code>dataset_id</code> (a file without it is skipped with a warning):</p>
+<pre><code class="language-yaml">datasets:
+  datasets.ds_dev_gold.example:
+    title: Example dataset
+    description: Curated indicator for X.
+    backend_type: postgres            # postgres|s3|fs|quantumleap|context_broker
+    backend_config: {table: ds_dev_gold.example}
+    expose: true                      # catalogue gate (default false)
+    dataspace_expose: true            # offered to the dataspace (default false)
+    access_level: open                # open|internal|restricted|secret
+    tags: {keywords: [gold, example, &quot;classification:green&quot;]}
+    lineage: {name: datasets.ds_dev_gold.example, facets: {governance: {}}}
+    landing_page: https://example.org/docs   # from documentation_url
+</code></pre>
+<p><code>title</code> and <code>backend_type</code> are required. <code>access_level</code>, when given, must be one of
+<code>open</code>, <code>internal</code>, <code>restricted</code>, <code>secret</code> (any case); an entry that states none is
+stored as <code>internal</code>. <code>classification</code> becomes the keyword
+<code>classification:&lt;value&gt;</code>; <code>source_system</code> and <code>retention_days</code> live only in the
+governance facet. Only <code>postgres</code> datasets are queryable; the other backend types
+are catalogue entries only. See <a href="../cli-operations/">cli-operations.md</a> for the
+exporters (<code>governance</code>, <code>postgres</code>, <code>openlineage</code>).</p>
 <hr />
 <h2 id="import-semantics">Import Semantics</h2>
-<p>Imports are <strong>reconciling</strong>:</p>
+<p><code>POST /admin/catalogue</code> (called by <code>dataset-cli import catalogue</code>) requires the
+<code>dataset.admin</code> scope or the <code>admins</code> group, and upserts on <code>dataset_id</code>:</p>
 <ul>
-<li>create missing dataset entries</li>
-<li>update metadata on existing entries</li>
-<li>optionally delete or disable entries that are no longer present in YAML</li>
+<li>missing entries are created</li>
+<li>existing entries have every field overwritten</li>
+<li>entries absent from the input are left in place; removal happens only through
+  the stale-entry cleanup below</li>
 </ul>
-<p>This makes environments reproducible.</p>
-<h3 id="create-vs-update">Create vs Update</h3>
-<ul>
-<li>if dataset_id exists → update metadata and refresh schema references</li>
-<li>if not → create entry, then validate physical mapping</li>
-</ul>
+<p>The response is <code>{created, updated}</code>.</p>
+<h3 id="physical-validation">Physical validation</h3>
+<p>For <code>postgres</code> datasets the table is checked by reflection <strong>before</strong> create or
+update: <code>backend_config.table</code>, or when the entry states none, the table its id
+names (<code>datasets.&lt;schema&gt;.&lt;table&gt;</code> → <code>&lt;schema&gt;.&lt;table&gt;</code>) — the same table the query
+path would use. A dataset whose table does not exist is skipped (logged server-side, not
+reported in the response). Column schema is not stored: <code>GET
+/catalogue/{id}/schema</code> reflects it on request.</p>
 <hr />
 <h2 id="selection-filters">Selection &amp; Filters</h2>
-<p>To manage large catalogues, imports support dataset selection filters.</p>
-<p>Recommended semantics:
-- <code>+pattern</code> includes (glob)
-- <code>-pattern</code> excludes (glob)</p>
+<p><code>dataset-cli import catalogue</code> resolves the selection before sending anything:</p>
+<ul>
+<li><code>--input/-i</code> — file or glob, repeatable; inputs are sorted and de-duplicated</li>
+<li><code>--ns</code> — namespace filter on <code>lineage.namespace</code> (default <code>default</code>); supports
+  <code>*</code>, <code>+ns</code>, <code>-ns</code></li>
+<li><code>--datasets</code> — <code>dataset_id</code> globs, repeatable: <code>+pattern</code> (or bare) includes,
+  <code>-pattern</code> excludes; includes are applied first, then excludes</li>
+</ul>
 <p>Example:
-- include only gold: <code>+datasets.*.gold.*</code>
-- exclude one: <code>-datasets.gold.experimental_*</code></p>
-<p>The import command should resolve the final selection list <em>before</em> applying changes.</p>
+- include only gold: <code>--datasets '+datasets.*.gold.*'</code>
+- exclude one: <code>--datasets '-datasets.*.gold.experimental_*'</code></p>
+<p>A <code>dataset_id</code> declared differently in two inputs is refused unless
+<code>--allow-conflicts</code>, which keeps the declaration from the last file in sorted order.
+Invalid entries are skipped with a warning; <code>--strict</code> fails on the first one.</p>
 <hr />
 <h2 id="dry-run">Dry Run</h2>
-<p><code>--dry-run</code> should:
-- print the selected dataset_ids after filters
-- show what would be created/updated/deleted
-- perform no writes</p>
-<p>This is essential for safe ops.</p>
-<hr />
-<h2 id="physical-validation-reflection">Physical Validation &amp; Reflection</h2>
-<p>During import (or post-import), the system should:
-- verify the referenced physical table/view exists
-- reflect schema to build columns/types
-- optionally generate JSON Schema artifacts</p>
-<p>If reflection fails:
-- mark dataset as invalid (or reject import for that dataset)
-- surface actionable error</p>
+<p><code>--dry-run</code> prints the dataset_ids selected after <code>--ns</code> and <code>--datasets</code> and exits.
+It does not validate entries and does not contact the API, so it cannot say what
+would be created, updated or cleaned up.</p>
 <hr />
 <h2 id="cleanup-of-stale-entries">Cleanup of Stale Entries</h2>
-<p>A robust import process includes a cleanup phase.</p>
-<p><strong>Goal:</strong> remove catalogue entries whose physical tables no longer exist.</p>
-<p>Recommended algorithm:</p>
+<p>Every import ends with a cleanup, in the same transaction, over the <strong>whole</strong>
+catalogue (not just the selection):</p>
 <ol>
-<li>list catalogue entries</li>
-<li>for each, check existence (reflection / information_schema)</li>
-<li>if missing, delete entry unless protected</li>
-<li>support skip-list for datasets just imported or explicitly pinned</li>
+<li>only <code>postgres</code> entries are checked, against the same table the query path uses
+   (stated or derived from the id)</li>
+<li>an entry whose table no longer exists is deleted</li>
+<li>tables validated earlier in this import are skipped</li>
 </ol>
+<p>There is no protection or pinning. The number removed is logged server-side.</p>
 <p>This addresses real-world drift when pipelines drop or rename tables.</p>
 <hr />
 <h2 id="dcat-exposure-rules">DCAT Exposure Rules</h2>
-<p>The API should only expose datasets in the public catalogue that meet both:
-- configured exposure rules (e.g. namespace in {gold})
-- access level compatible with anonymous viewing (typically <code>open</code>)</p>
-<p>You can still keep internal/restricted datasets in the internal catalogue, but hide from public endpoints.</p>
+<p>Every catalogue surface (<code>GET /catalogue</code>, <code>GET /catalogue/{id}</code>, <code>POST
+/catalogue/search</code>, <code>/schema</code>, <code>/vocabulary</code>, the HTML pages) lists each entry with
+<code>expose: true</code>, except <code>access_level: secret</code>. Metadata of <code>internal</code> and
+<code>restricted</code> datasets is public; access to their rows is governed separately at
+<code>/query</code>. <code>dataspace_expose</code> does not affect the catalogue: it only gates the
+dataspace path.</p>
 <hr />
 <h2 id="operational-tips">Operational Tips</h2>
 <ul>
 <li>keep titles/descriptions in YAML (reviewable)</li>
-<li>use tags to express domain/tenant scoping for OPA</li>
+<li>use the governance facet and the namespace for policy scoping</li>
 <li>keep dataset_ids stable; rename through controlled migration</li>
 <li>do not overload YAML with physical implementation details unless necessary</li>
 </ul>
@@ -4685,10 +4744,14 @@ before making it. The report then reports <code>profile_pinned: false</code>, be
 not the dataset's own claim.</p>
 <h3 id="access">Access</h3>
 <p>Authorised exactly like <code>/query</code>, and through the same executor: same governance and
-OPA checks, same row filters. The report quotes row values back in its violation
+policy checks, same row filters. The report quotes row values back in its violation
 messages, so anything weaker would be a row-level leak wearing a metadata endpoint's
 clothes. 404 when the dataset is not exposed or declares no mapping, matching
 <code>/vocabulary</code>.</p>
+<p>The request body is <code>{limit, profile_version, context}</code>, all optional. <code>limit</code>
+defaults to <code>CONFORMANCE_SAMPLE_LIMIT</code> (100) and is capped at
+<code>CONFORMANCE_MAX_SAMPLE</code> (1000). An unknown <code>profile_version</code> is a 400 naming the
+available versions.</p>
 <h3 id="reading-the-response">Reading the response</h3>
 <pre><code class="language-jsonc">{
   &quot;dataset_id&quot;: &quot;datasets.ds_dev_gold.kpi_definitions&quot;,

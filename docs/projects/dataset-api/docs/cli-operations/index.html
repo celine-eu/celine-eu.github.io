@@ -2333,10 +2333,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-validate-a-catalogue" class="md-nav__link">
+  <a href="#1-export-catalogue-yaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1) Validate a catalogue
+        1) Export catalogue YAML
       
     </span>
   </a>
@@ -2366,10 +2366,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-export-lineage-candidates" class="md-nav__link">
+  <a href="#4-edit-row-filters-in-exported-yaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4) Export lineage candidates
+        4) Edit row filters in exported YAML
       
     </span>
   </a>
@@ -2431,6 +2431,17 @@
     <span class="md-ellipsis">
       
         “Forbidden (403)”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-refused-401403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        “Import refused (401/403)”
       
     </span>
   </a>
@@ -4349,10 +4360,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-validate-a-catalogue" class="md-nav__link">
+  <a href="#1-export-catalogue-yaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1) Validate a catalogue
+        1) Export catalogue YAML
       
     </span>
   </a>
@@ -4382,10 +4393,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-export-lineage-candidates" class="md-nav__link">
+  <a href="#4-edit-row-filters-in-exported-yaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4) Export lineage candidates
+        4) Edit row filters in exported YAML
       
     </span>
   </a>
@@ -4447,6 +4458,17 @@
     <span class="md-ellipsis">
       
         “Forbidden (403)”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-refused-401403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        “Import refused (401/403)”
       
     </span>
   </a>
@@ -4527,60 +4549,125 @@
 All changes happen through controlled workflows:
 - pipelines change physical data
 - CLI imports catalogue metadata and reconciles state
-- policies are updated in OPA</p>
+- policies are <code>.rego</code> files in <code>POLICIES_DIR</code>, loaded at start (restart to apply
+  changes)</p>
 <p>This prevents “clickops” drift.</p>
 <hr />
 <h2 id="cli-core-workflows">CLI: Core Workflows</h2>
-<h3 id="1-validate-a-catalogue">1) Validate a catalogue</h3>
-<p>Validation should happen before import.</p>
-<pre><code class="language-bash">dataset-cli validate catalogue catalogue.yaml
+<p>The entry point is <code>dataset-cli</code>, with three command groups: <code>export</code>, <code>import</code> and
+<code>row-filter</code>. Every command takes <code>--help</code>.</p>
+<h3 id="1-export-catalogue-yaml">1) Export catalogue YAML</h3>
+<p>From <code>governance.yaml</code> files (the usual path; needs neither a database nor Marquez,
+and merges <code>governance.&lt;app&gt;.yaml</code> overlays):</p>
+<pre><code class="language-bash">dataset-cli export governance &quot;/path/to/**/governance.yaml&quot; -o ./data/governance \
+  [--owners owners.yaml] [--backend-type postgres]
 </code></pre>
-<p>What validation should check:
-- YAML schema correctness
-- required fields
-- duplicate dataset_ids
-- invalid access_level values
-- unresolved references (optional)</p>
+<p>From PostgreSQL introspection (writes safe defaults, <code>access_level: internal</code>, to edit
+before import):</p>
+<pre><code class="language-bash">dataset-cli export postgres -o ./catalogue \
+  [--schema public] [--tables 'public.*' --tables '-public.tmp_*'] \
+  [--namespace gold] [--expose] [--single-file] [--dry-run]
+</code></pre>
+<p><code>--database-url</code> defaults to <code>DATABASE_URL</code>.</p>
+<p>From lineage in Marquez:</p>
+<pre><code class="language-bash">dataset-cli export openlineage --ns '*' -o ./data/openlineage --expose
+</code></pre>
+<p><code>--marquez-url</code> defaults to <code>MARQUEZ_URL</code>; <code>--ns</code> supports <code>*</code>, <code>+ns</code>, <code>-ns</code>.</p>
 <h3 id="2-import-a-catalogue">2) Import a catalogue</h3>
-<pre><code class="language-bash">dataset-cli import catalogue catalogue.yaml
+<pre><code class="language-bash">dataset-cli import catalogue --input &quot;./data/governance/*.yaml&quot; \
+  --api-url http://localhost:8001
 </code></pre>
-<p>Expected output:
-- created / updated counts
-- per-dataset errors (if partial success supported)
-- cleanup summary (if enabled)</p>
+<p>The import authenticates: <code>POST /admin/catalogue</code> requires the <code>dataset.admin</code>
+scope. The token is <code>--token</code> (or <code>DATASET_API_TOKEN</code>) when given, otherwise a
+client-credentials token for <code>CELINE_OIDC_CLIENT_ID</code> / <code>CELINE_OIDC_CLIENT_SECRET</code>
+(<code>svc-dataset-api</code> holds the scope). With neither, the CLI stops before sending
+anything. <code>--dry-run</code> needs no token.</p>
+<p>Validation happens here: each entry is checked against the catalogue schema
+(<code>title</code> and <code>backend_type</code> required, <code>backend_type</code> one of <code>postgres</code>, <code>s3</code>, <code>fs</code>,
+<code>quantumleap</code>, <code>context_broker</code>). Invalid entries are skipped with a warning;
+<code>--strict</code> fails on the first one. A <code>dataset_id</code> declared differently in two inputs
+is refused unless <code>--allow-conflicts</code>.</p>
+<p>The CLI prints file, namespace and filter counts, then <code>Catalogue import complete.</code>.
+The server upserts on <code>dataset_id</code>, skips entries whose PostgreSQL table does not
+exist, and deletes catalogue entries whose table has disappeared. See
+<a href="../catalogue-management/">catalogue-management.md</a>.</p>
 <h3 id="3-dry-run-import">3) Dry-run import</h3>
-<pre><code class="language-bash">dataset-cli import catalogue catalogue.yaml --dry-run
+<pre><code class="language-bash">dataset-cli import catalogue --input &quot;./data/governance/*.yaml&quot; \
+  --api-url http://localhost:8001 --dry-run
 </code></pre>
-<p>Dry-run should print:
-- final selected dataset_ids after filters
-- planned create/update/delete actions</p>
-<h3 id="4-export-lineage-candidates">4) Export lineage candidates</h3>
-<pre><code class="language-bash">dataset-cli export openlineage
+<p>Prints the dataset_ids selected after <code>--ns</code> and <code>--datasets</code>, then exits without
+validating or contacting the API.</p>
+<h3 id="4-edit-row-filters-in-exported-yaml">4) Edit row filters in exported YAML</h3>
+<pre><code class="language-bash">dataset-cli row-filter add &quot;./data/governance/*.yaml&quot; datasets.ds_dev_gold.example \
+  --handler direct_user_match --args column=user_id
+dataset-cli row-filter remove &quot;./data/governance/*.yaml&quot; datasets.ds_dev_gold.example \
+  --handler direct_user_match
+dataset-cli row-filter list &quot;./data/governance/*.yaml&quot;
 </code></pre>
-<p>Expected:
-- fetch from lineage backend
-- map lineage → dataset_ids
-- produce a governance/candidate YAML for curation</p>
+<p>Handlers and their args are listed in
+<a href="../dataspace-row-filters/#handlers">dataspace-row-filters.md</a>.</p>
 <hr />
 <h2 id="filters-selection">Filters &amp; Selection</h2>
-<p>Use include/exclude patterns:
-- <code>+pattern</code> include
+<p>Use include/exclude patterns on <code>dataset_id</code> with <code>--datasets</code> (repeatable), and on
+namespace with <code>--ns</code>:
+- <code>+pattern</code> (or bare) include
 - <code>-pattern</code> exclude</p>
 <p>Example:</p>
-<pre><code class="language-bash">dataset-cli import catalogue catalogue.yaml \
-  --filter +datasets.*.gold.* \
-  --filter -datasets.*.gold.experimental_*
+<pre><code class="language-bash">dataset-cli import catalogue --input &quot;./data/governance/*.yaml&quot; \
+  --api-url http://localhost:8001 \
+  --datasets '+datasets.*.gold.*' \
+  --datasets '-datasets.*.gold.experimental_*'
 </code></pre>
 <hr />
 <h2 id="configuration-surfaces">Configuration Surfaces</h2>
-<p>Typical configuration areas:
-- API base URL
-- DB connection
-- OPA URL
-- lineage backend URL/credentials
-- query limits/timeouts
-- public catalogue exposure rules</p>
-<p>Keep configuration environment-driven and documented.</p>
+<p>Settings come from the environment, over an optional YAML file (<code>DATASET_CONFIG</code>,
+else <code>./config.yaml</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Databases</td>
+<td><code>DATABASE_URL</code> (catalogue), <code>DATASETS_DATABASE_URL</code> (warehouse), <code>CATALOGUE_SCHEMA</code> (<code>dataset_api</code>), <code>DB_POOL_RECYCLE_SECONDS</code> (300)</td>
+</tr>
+<tr>
+<td>URIs</td>
+<td><code>API_BASE_URL</code>, <code>CATALOG_URI</code>, <code>DATASET_BASE_URI</code>, <code>ENTITY_BASE_URI</code></td>
+</tr>
+<tr>
+<td>Lineage &amp; owners</td>
+<td><code>MARQUEZ_URL</code>, <code>OWNERS_YAML_PATH</code> (<code>./owners.yaml</code>)</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td><code>CELINE_OIDC_*</code> (also read from <code>.env</code>); <code>DATASET_API_TOKEN</code> for the import</td>
+</tr>
+<tr>
+<td>Policies</td>
+<td>see <a href="../governance-security/#configuration">governance-security.md</a></td>
+</tr>
+<tr>
+<td>Query</td>
+<td><code>QUERY_STATEMENT_TIMEOUT_MS</code> (5000)</td>
+</tr>
+<tr>
+<td>Row filters</td>
+<td><code>ROW_FILTERS_MODULES</code>, <code>ROW_FILTERS_CACHE_TTL</code> (300), <code>ROW_FILTERS_CACHE_MAXSIZE</code> (10000), <code>REC_REGISTRY_URL</code></td>
+</tr>
+<tr>
+<td>Dataspace</td>
+<td><code>EDR_ENABLED</code>, <code>CONNECTOR_INTERNAL_URL</code>, <code>CONNECTOR_INTERNAL_URLS</code>; <code>DPS_*</code> in <a href="../dps-data-plane/">dps-data-plane.md</a></td>
+</tr>
+<tr>
+<td>Conformance</td>
+<td><code>CONFORMANCE_ENABLED</code> (false), <code>CONFORMANCE_SAMPLE_LIMIT</code>, <code>CONFORMANCE_MAX_SAMPLE</code></td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="troubleshooting-guide">Troubleshooting Guide</h2>
 <h3 id="dataset-not-found">“Dataset not found”</h3>
@@ -4588,21 +4675,34 @@ All changes happen through controlled workflows:
 <li>dataset_id missing from catalogue DB</li>
 <li>import filters excluded it</li>
 <li>import failed validation</li>
+<li>its PostgreSQL table does not exist in <code>DATASETS_DATABASE_URL</code> (skipped at import)</li>
 <li>cleanup removed it due to missing physical table</li>
+<li>the catalogue hides it: <code>expose</code> is false or <code>access_level</code> is <code>secret</code>
+  (<code>/query</code> answers <code>403</code> <em>"Dataset not available"</em> for an unexposed dataset)</li>
 </ul>
 <h3 id="forbidden-403">“Forbidden (403)”</h3>
 <ul>
-<li>JWT missing groups/roles required by OPA policy</li>
-<li>service account not mapped in policy</li>
+<li>JWT missing groups/scopes required by the policy</li>
+<li>service account without the <code>dataset.query</code> (internal) or <code>dataset.admin</code>
+  (restricted) scope</li>
 <li>access_level is <code>restricted</code> and policy denies</li>
-<li>token missing scope used by policy</li>
+<li>dataspace path: <em>"Dataset not offered in the dataspace"</em> (no <code>dataspace.expose</code>),
+  <em>"Refused by ds: …"</em>, or a row filter handler this instance cannot enforce</li>
+<li>dataspace path, <code>401</code> <em>"This data plane does not serve the provider…"</em>: the
+  provider is missing from <code>CONNECTOR_INTERNAL_URLS</code>; <code>503</code>: no
+  <code>CONNECTOR_INTERNAL_URL</code> configured</li>
+</ul>
+<h3 id="import-refused-401403">“Import refused (401/403)”</h3>
+<ul>
+<li>no token: set <code>--token</code>/<code>DATASET_API_TOKEN</code>, or <code>CELINE_OIDC_CLIENT_ID</code>/<code>_SECRET</code></li>
+<li>the token lacks the <code>dataset.admin</code> scope (or the user the <code>admins</code> group)</li>
 </ul>
 <h3 id="sql-rejected">“SQL rejected”</h3>
 <ul>
 <li>non-SELECT statement</li>
 <li>unknown function — not in the allowlist; see
   <a href="../query-engine/#function-and-expression-allowlist">query-engine.md</a> before adding one</li>
-<li>references non-catalogued table</li>
+<li>references non-catalogued table (<em>"Query references unknown datasets: …"</em>)</li>
 <li>multiple statements detected</li>
 </ul>
 <h3 id="schema-endpoint-fails">“Schema endpoint fails”</h3>
@@ -4614,15 +4714,14 @@ All changes happen through controlled workflows:
 <h3 id="lineage-export-is-empty">“Lineage export is empty”</h3>
 <ul>
 <li>lineage backend not receiving OpenLineage events</li>
-<li>wrong namespace filters</li>
-<li>wrong time window</li>
-<li>wrong Marquez project or API base URL</li>
+<li>wrong <code>--ns</code> filter</li>
+<li>wrong <code>--marquez-url</code> / <code>MARQUEZ_URL</code></li>
 </ul>
 <hr />
 <h2 id="operational-checks-recommended">Operational Checks (Recommended)</h2>
 <ul>
 <li>periodic import dry-run in CI</li>
-<li>periodic cleanup run (or as part of import)</li>
+<li>cleanup runs on every import; watch the server log's removed count</li>
 <li>dashboards for:</li>
 <li>authorization denies</li>
 <li>validation rejects</li>

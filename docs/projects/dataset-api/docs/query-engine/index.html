@@ -2366,10 +2366,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoints-conceptual" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoints (Conceptual)
+        Endpoints
       
     </span>
   </a>
@@ -2577,22 +2577,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-semantics-examples" class="md-nav__link">
+  <a href="#error-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Semantics (Examples)
+        Error Semantics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Error Semantics (Examples)">
+    <nav class="md-nav" aria-label="Error Semantics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#validation-error-400" class="md-nav__link">
+  <a href="#400-the-statement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation error (400)
+        400 — the statement
       
     </span>
   </a>
@@ -2600,10 +2600,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#authorization-error-403" class="md-nav__link">
+  <a href="#401-identity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authorization error (403)
+        401 — identity
       
     </span>
   </a>
@@ -2611,10 +2611,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#not-found-404" class="md-nav__link">
+  <a href="#403-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Not found (404)
+        403 — authorization
       
     </span>
   </a>
@@ -2622,10 +2622,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#execution-error-500502" class="md-nav__link">
+  <a href="#500-the-service" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execution error (500/502)
+        500 — the service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#502-503-upstream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        502 / 503 — upstream
       
     </span>
   </a>
@@ -4471,10 +4482,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoints-conceptual" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoints (Conceptual)
+        Endpoints
       
     </span>
   </a>
@@ -4682,22 +4693,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-semantics-examples" class="md-nav__link">
+  <a href="#error-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Semantics (Examples)
+        Error Semantics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Error Semantics (Examples)">
+    <nav class="md-nav" aria-label="Error Semantics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#validation-error-400" class="md-nav__link">
+  <a href="#400-the-statement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation error (400)
+        400 — the statement
       
     </span>
   </a>
@@ -4705,10 +4716,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#authorization-error-403" class="md-nav__link">
+  <a href="#401-identity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authorization error (403)
+        401 — identity
       
     </span>
   </a>
@@ -4716,10 +4727,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#not-found-404" class="md-nav__link">
+  <a href="#403-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Not found (404)
+        403 — authorization
       
     </span>
   </a>
@@ -4727,10 +4738,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#execution-error-500502" class="md-nav__link">
+  <a href="#500-the-service" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execution error (500/502)
+        500 — the service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#502-503-upstream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        502 / 503 — upstream
       
     </span>
   </a>
@@ -4812,27 +4834,30 @@
 <h1 id="query-engine">Query Engine</h1>
 <p>This document explains the governed SQL interface: request/response semantics, validation rules, dataset resolution, and performance guardrails.</p>
 <hr />
-<h2 id="endpoints-conceptual">Endpoints (Conceptual)</h2>
-<p>Your exact route names may differ; the engine typically exposes:
-- <strong>POST query</strong>: run a SQL query against a dataset
-- <strong>GET schema</strong>: fetch JSON Schema for a dataset
-- <strong>GET metadata</strong>: column and dataset metadata for UI/clients</p>
-<p>The README should link to the concrete API reference.</p>
+<h2 id="endpoints">Endpoints</h2>
+<ul>
+<li><code>POST /query</code> — run a governed SQL statement (this document)</li>
+<li><code>POST /dps/public/query</code> — the same body, authorised by a DPS pull token (see <a href="../dps-data-plane/">dps-data-plane.md</a>)</li>
+<li><code>GET /catalogue/{dataset_id}/schema</code> — JSON Schema of a dataset's rows</li>
+<li><code>GET /catalogue</code>, <code>GET /catalogue/{dataset_id}</code> — dataset metadata (see <a href="../catalogue-management/">catalogue-management.md</a>)</li>
+</ul>
 <hr />
 <h2 id="query-request-model">Query Request Model</h2>
-<p>Typical POST body:</p>
 <pre><code class="language-json">{
   &quot;sql&quot;: &quot;SELECT ...&quot;,
   &quot;limit&quot;: 100,
-  &quot;offset&quot;: 0
+  &quot;offset&quot;: 0,
+  &quot;skip_count&quot;: false
 }
 </code></pre>
 <p>Notes:
 - <code>limit</code>/<code>offset</code> are applied server-side.
-- the engine may override <code>limit</code> with a maximum.</p>
+- <code>limit</code> defaults to 100; a value ≤ 0 means 100, and anything above <code>MAX_LIMIT</code>
+  (10 000, fixed in <code>executor.py</code>) is clamped to it. A negative <code>offset</code> is read as 0.
+- <code>skip_count: true</code> skips the <code>COUNT(*)</code> query; <code>total</code> is then <code>null</code>.
+- A missing or blank <code>sql</code> is a <code>400</code> (<em>"sql query not provided"</em>).</p>
 <hr />
 <h2 id="response-model">Response Model</h2>
-<p>A typical paginated response:</p>
 <pre><code class="language-json">{
   &quot;items&quot;: [
     {&quot;col_a&quot;: 1, &quot;col_b&quot;: &quot;x&quot;},
@@ -4840,20 +4865,36 @@
   ],
   &quot;limit&quot;: 100,
   &quot;offset&quot;: 0,
-  &quot;count&quot;: 2
+  &quot;count&quot;: 2,
+  &quot;total&quot;: 2
 }
 </code></pre>
+<p><code>count</code> is the number of rows on this page; <code>total</code> is the number of rows the
+statement yields after row filters (<code>null</code> with <code>skip_count</code>); <code>limit</code> and
+<code>offset</code> echo the values actually applied.</p>
 <hr />
 <h2 id="sql-validation-rules">SQL Validation Rules</h2>
 <h3 id="statement-restrictions">Statement restrictions</h3>
 <ul>
-<li>single statement only</li>
-<li><code>SELECT</code> only</li>
+<li>one statement; a trailing <code>;</code> is tolerated</li>
+<li><code>SELECT</code> only, with CTEs and subqueries; <code>UNION</code>, <code>INTERSECT</code> and <code>EXCEPT</code> are refused</li>
+<li>no comments (<code>--</code>, <code>/* */</code>)</li>
+<li>no top-level <code>LIMIT</code>/<code>OFFSET</code>: the request's <code>limit</code>/<code>offset</code> page the result</li>
+<li>an AST deeper than 200 nodes is refused (<em>"Query too complex"</em>)</li>
+<li>a tautology (<code>x = x</code>) inside an <code>OR</code> is refused; on its own (<code>WHERE 1=1</code>) it is
+  logged and allowed</li>
 </ul>
 <h3 id="table-restrictions">Table restrictions</h3>
 <ul>
-<li>references must map to <strong>catalogued datasets</strong></li>
+<li>references must map to <strong>catalogued datasets</strong>; an unknown reference is a <code>400</code>
+  (<em>"Query references unknown datasets: [...]"</em>)</li>
 <li>if a query contains multiple table references, each must be resolvable</li>
+<li>a two-part reference (<code>schema.table</code>) also matches a three-part catalogue id by
+  literal suffix (<code>_</code> is not a wildcard); more than one match is a <code>400</code></li>
+<li>a statement that references no table (<code>SELECT 1</code>) is a <code>400</code></li>
+<li>a dataset that is unexposed, <code>secret</code>, or carries an unreadable access level is a
+  <code>403</code> (<em>"Dataset not available"</em>), the same answer for all three</li>
+<li>a dataset whose backend has no SQL table (<code>s3</code>, <code>fs</code>, …) is a <code>400</code> (<em>"not queryable"</em>)</li>
 </ul>
 <h3 id="function-and-expression-allowlist">Function and expression allowlist</h3>
 <ul>
@@ -4866,9 +4907,17 @@ timeout bounds. On that basis the parser admits:</p>
 <ul>
 <li>the functions in <code>ALLOWED_FUNCTIONS</code> (<code>parser.py</code>), whether sqlglot parses them
   as a typed node (<code>COALESCE</code>, <code>FLOOR</code>, <code>EXTRACT</code>, …) or as an anonymous call. Any
-  of a function's SQL names counts, so <code>IFNULL</code> is <code>COALESCE</code></li>
-<li><code>GREATEST</code>, <code>LEAST</code>, <code>NULLIF</code></li>
-<li><code>CASE</code> expressions</li>
+  of a function's SQL names counts, so <code>IFNULL</code> is <code>COALESCE</code>. The set covers the
+  PostGIS <code>ST_*</code> functions listed in the README, <code>LOWER</code>, <code>UPPER</code>, <code>LENGTH</code>, <code>TRIM</code>,
+  <code>LTRIM</code>, <code>RTRIM</code>, <code>SUBSTRING</code>, <code>REPLACE</code>, <code>ABS</code>, <code>ROUND</code>, <code>CEIL</code>, <code>FLOOR</code>,
+  <code>COALESCE</code>, <code>GREATEST</code>, <code>LEAST</code>, <code>NULLIF</code>, <code>DATE</code>, <code>DATE_TRUNC</code>, <code>EXTRACT</code></li>
+<li>aggregates <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>, <code>ARRAY_AGG</code>, with <code>DISTINCT</code> and
+  <code>FILTER (WHERE …)</code></li>
+<li><code>CAST</code> and <code>::</code>, <code>INTERVAL</code>, <code>CURRENT_DATE</code>, <code>CURRENT_TIMESTAMP</code>, <code>NOW()</code>,
+  arithmetic <code>+ - * /</code></li>
+<li><code>IN</code> (list, tuple or subquery), <code>BETWEEN</code>, <code>IS [NOT] NULL</code>, <code>NOT</code>/<code>AND</code>/<code>OR</code></li>
+<li>joins, subqueries and CTEs</li>
+<li><code>CASE</code> expressions and <code>IF(...)</code></li>
 <li>window functions (<code>… OVER (…)</code>) and the ranking functions <code>ROW_NUMBER</code>, <code>RANK</code>,
   <code>DENSE_RANK</code>. The function inside a window is still checked on its own</li>
 <li><code>PERCENTILE_CONT</code> / <code>PERCENTILE_DISC</code> with <code>WITHIN GROUP</code>, and <code>BOOL_OR</code> /
@@ -4876,7 +4925,12 @@ timeout bounds. On that basis the parser admits:</p>
 <li>a <code>VALUES</code> list, typically as a CTE of constant rows</li>
 </ul>
 <p>Hash and crypto functions (<code>MD5</code>, <code>SHA256</code>, …) and string concatenation (<code>||</code>)
-are not admitted. No read path needs them, so derive such values in the caller.</p>
+are not admitted. No read path needs them, so derive such values in the caller.
+Also refused, for want of a reader: <code>LIKE</code>/<code>ILIKE</code>, <code>%</code>, <code>~</code>, <code>IS DISTINCT FROM</code>,
+<code>AT TIME ZONE</code>, <code>ANY</code>/<code>ALL</code>, <code>EXISTS</code>, and any function outside
+<code>ALLOWED_FUNCTIONS</code> (<code>LAG</code>, <code>STDDEV</code>, <code>TO_CHAR</code>, <code>CONCAT</code>, …). A refusal is a <code>400</code>
+naming the node: <em>"SQL function not allowed: X"</em> or <em>"Unsupported SQL construct: X"</em>.
+Tests: <code>tests/api/dataset_query/sql_parser/test_accept_analytics.py</code>.</p>
 <p>A clause below marked <strong>planned</strong> describes a widening decided but not yet in
 the code: the parser still rejects it. The change that lands it adds its tests
 and removes the status line.</p>
@@ -4929,7 +4983,10 @@ Tests: <code>tests/api/dataset_query/sql_parser/test_accept_negative_literals.py
 <code>tests/routes/test_boundary_query.py</code> (negative coordinates executed on PostGIS
 through <code>POST /query</code>).</p>
 <h3 id="row-filters">Row filters</h3>
-<p>A dataset's governance can declare row filters (<code>rowFilters</code>). They are applied to
+<p>A dataset's governance can declare row filters (<code>rowFilters</code> or <code>row_filters</code>; the
+legacy <code>userFilterColumn</code> becomes a <code>direct_user_match</code> filter). An unauthenticated
+caller of a filtered dataset gets <code>401</code>; a member of the <code>admins</code> group is not
+filtered. Filters are applied to
 the validated AST after physical table names are substituted, and the query is then
 rendered once, as PostgreSQL. The SQL is never re-parsed from text in between: a
 text round trip changes the dialect (<code>INTERVAL '30 minutes'</code> becomes
@@ -4973,10 +5030,8 @@ log at any level for an executed, a failed, an unparseable and a refused
 statement, nor for a count or data query failing with a non-driver error, while
 the shape still does).</p>
 <h3 id="projection-safety">Projection safety</h3>
-<ul>
-<li>avoid <code>SELECT *</code> if you want strict contracts (optional)</li>
-<li>optionally enforce explicit column selection for restricted datasets</li>
-</ul>
+<p><code>SELECT *</code> is admitted. Column-level restriction is not implemented: a dataset
+that must hide columns needs a view as its physical table.</p>
 <hr />
 <h2 id="dataset-resolution">Dataset Resolution</h2>
 <p>The engine enforces a separation between:
@@ -4986,19 +5041,25 @@ the shape still does).</p>
 <ol>
 <li>parse SQL and extract table identifiers</li>
 <li>map identifiers to catalogue entries</li>
-<li>substitute physical references into the execution query (or bind via prepared mapping)</li>
-<li>reject if any identifier cannot be mapped</li>
+<li>substitute the physical name into the AST: <code>backend_config.table</code>, or for a
+   postgres entry that states none, the table its id names
+   (<code>datasets.&lt;schema&gt;.&lt;table&gt;</code> → <code>&lt;schema&gt;.&lt;table&gt;</code>)</li>
+<li>reject (<code>400</code>) any identifier that matches no catalogue entry</li>
 </ol>
+<p>Every referenced dataset is mapped, access-checked and row-filtered; none skips a step.</p>
 <p>This prevents “escaping” to arbitrary tables.</p>
 <hr />
 <h2 id="pagination-limits-timeouts">Pagination, Limits &amp; Timeouts</h2>
-<p>The engine must guard the storage backend.</p>
-<p>Recommended controls:
-- hard max <code>limit</code> (e.g. 1k / 10k rows)
-- max offset (to prevent deep scans) or encourage keyset pagination
-- statement timeout
-- max query complexity (joins, subqueries, regex-like operations)</p>
-<p>Even for <code>open</code> datasets, resource controls must remain enforced.</p>
+<p>The engine guards the storage backend, for <code>open</code> datasets too:</p>
+<ul>
+<li><code>limit</code> is capped at 10 000 (<code>MAX_LIMIT</code>, not configurable); there is no offset cap</li>
+<li>the count query and the page query each run under
+  <code>statement_timeout = QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000 ms); a timeout is a
+  <code>400</code> (<em>"Query exceeded time limit"</em>)</li>
+<li>the parser refuses an AST deeper than 200 nodes</li>
+<li>there is no join, subquery or pattern-cost limit; <code>skip_count: true</code> saves the
+  full <code>COUNT(*)</code> scan</li>
+</ul>
 <p>The row cap is the request's <code>limit</code>: a <code>LIMIT</code> or <code>OFFSET</code> in the top-level
 statement is refused. The engine wraps the statement as
 <code>SELECT * FROM (&lt;statement&gt;) AS q [ORDER BY …] LIMIT :limit OFFSET :offset</code>, so an
@@ -5048,52 +5109,62 @@ carrying <code>ORDER BY q.…</code>; a column not selected and a star over a jo
 tables share column names still run, with no outer <code>ORDER BY</code>).</p>
 <hr />
 <h2 id="join-policy">Join Policy</h2>
-<p>Joins can be permitted, but only within controlled boundaries:</p>
-<ul>
-<li>join only catalogued datasets</li>
-<li>join only within allowed namespaces (e.g. silver+gold)</li>
-<li>reject cartesian products</li>
-<li>optionally limit join count (e.g. &lt;= 3 tables)</li>
-</ul>
-<p>If you want safer defaults:
-- forbid joins by default, allow per-dataset tags/policy</p>
+<p>Joins (inner, outer, cross, comma) are admitted. Each joined table must resolve to
+a catalogued dataset and pass that dataset's access check and row filters. On the
+dataspace path every joined dataset must be <code>dataspace_expose</code>, and ds judges the
+join as a whole: one refused dataset refuses the query. There is no join-count,
+namespace or cartesian-product limit.</p>
 <hr />
-<h2 id="error-semantics-examples">Error Semantics (Examples)</h2>
-<h3 id="validation-error-400">Validation error (400)</h3>
+<h2 id="error-semantics">Error Semantics</h2>
+<h3 id="400-the-statement">400 — the statement</h3>
 <ul>
-<li>invalid SQL</li>
-<li>forbidden keyword</li>
-<li>unknown dataset reference</li>
+<li>invalid SQL, a refused construct or function, a top-level <code>LIMIT</code>/<code>OFFSET</code></li>
+<li>unknown or ambiguous dataset reference, or no dataset referenced</li>
+<li>a dataset whose backend has no SQL table</li>
+<li>statement timeout (<em>"Query exceeded time limit"</em>), or any other database error
+  (<em>"Database query failed"</em>)</li>
 </ul>
-<h3 id="authorization-error-403">Authorization error (403)</h3>
+<h3 id="401-identity">401 — identity</h3>
 <ul>
-<li>identity not permitted by OPA</li>
-<li>missing required scopes/roles/groups</li>
+<li>the dataset requires authentication and none was given</li>
+<li>a row-filtered dataset queried without a user</li>
+<li>an EDR token missing or invalid on the dataspace path</li>
 </ul>
-<h3 id="not-found-404">Not found (404)</h3>
+<h3 id="403-authorization">403 — authorization</h3>
 <ul>
-<li>dataset id does not exist in catalogue</li>
+<li>identity not permitted by the policy engine</li>
+<li>dataset unexposed, <code>secret</code>, or with an unreadable access level (<em>"Dataset not available"</em>)</li>
+<li>dataspace path: dataset not offered, refused by ds, or a row filter this
+  instance cannot enforce</li>
 </ul>
-<h3 id="execution-error-500502">Execution error (500/502)</h3>
+<h3 id="500-the-service">500 — the service</h3>
 <ul>
-<li>database error</li>
-<li>upstream dependency failure (OPA/lineage)</li>
+<li>a row filter that cannot be built or applied (unknown handler, bad spec,
+  handler failure)</li>
+<li>an unexpected execution error</li>
 </ul>
+<h3 id="502-503-upstream">502 / 503 — upstream</h3>
+<ul>
+<li><code>502</code>: ds-connector unreachable or answering an error</li>
+<li><code>503</code>: policy engine unavailable, or a pooled database connection lost (retry)</li>
+</ul>
+<p><code>/query</code> never answers <code>404</code>: an unknown dataset is a <code>400</code>.</p>
 <hr />
 <h2 id="examples">Examples</h2>
 <h3 id="query-a-dataset">Query a dataset</h3>
 <pre><code class="language-bash">curl -X POST \
   -H &quot;Authorization: Bearer $TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d '{&quot;sql&quot;:&quot;SELECT * FROM datasets.gold.example WHERE ts &gt;= now() - interval \'1 day\'&quot;,&quot;limit&quot;:100,&quot;offset&quot;:0}' \
-  https://host/api/dataset/datasets.gold.example/query
+  --data @- https://host/query &lt;&lt;'JSON'
+{&quot;sql&quot;: &quot;SELECT * FROM datasets.gold.example WHERE ts &gt;= now() - interval '1 day'&quot;, &quot;limit&quot;: 100, &quot;offset&quot;: 0}
+JSON
 </code></pre>
 <h3 id="paginate">Paginate</h3>
 <pre><code class="language-bash">curl -X POST \
   -H &quot;Authorization: Bearer $TOKEN&quot; \
   -H &quot;Content-Type: application/json&quot; \
   -d '{&quot;sql&quot;:&quot;SELECT id, ts, value FROM datasets.gold.example ORDER BY ts DESC&quot;,&quot;limit&quot;:100,&quot;offset&quot;:100}' \
-  https://host/api/dataset/datasets.gold.example/query
+  https://host/query
 </code></pre>
 <hr />
 <h2 id="performance-recommendations-for-clients">Performance Recommendations for Clients</h2>
@@ -5102,6 +5173,7 @@ tables share column names still run, with no outer <code>ORDER BY</code>).</p>
 <li>request only needed columns</li>
 <li>prefer indexed predicates</li>
 <li>avoid deep offsets; paginate with stable ordering</li>
+<li>send <code>skip_count: true</code> when <code>total</code> is not needed</li>
 </ul>
 
 

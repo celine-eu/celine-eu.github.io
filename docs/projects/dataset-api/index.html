@@ -4554,7 +4554,7 @@
 
 
 <h1 id="celine-dataset-api">CELINE Dataset API</h1>
-<p>Provides a secure, lineage-aware, metadata-rich interface to heterogeneous datasets (PostgreSQL, object storage, filesystem). Exposes a DCAT-AP 3.0 compatible catalogue, a governed SQL query interface, and OpenLineage-integrated provenance, designed to support Digital Twins, analytical applications, and DSSC-aligned dataspace participants.</p>
+<p>Provides a secure, lineage-aware, metadata-rich interface to catalogued datasets: PostgreSQL tables are queryable, and object storage and filesystem backends can be catalogued. Exposes a DCAT-AP 3.0 compatible catalogue, a governed SQL query interface, and OpenLineage-integrated provenance, designed to support Digital Twins, analytical applications, and DSSC-aligned dataspace participants.</p>
 <hr />
 <h2 id="core-capabilities">Core capabilities</h2>
 <h3 id="dcat-ap-30-catalogue">DCAT-AP 3.0 catalogue</h3>
@@ -4564,7 +4564,7 @@
 <li><code>GET /catalogue/{id}</code> — single dataset by ID</li>
 <li><code>POST /catalogue/search</code> — filtered search by <code>q</code>, <code>access_level</code>, <code>keywords</code></li>
 </ul>
-<p>Each dataset includes <code>dct:publisher</code>, <code>dcat:theme</code>, <code>dct:language</code>, <code>dct:spatial</code>, <code>dct:accrualPeriodicity</code>, and <code>odrl:hasPolicy</code> on every distribution. Publisher URI is derived from <code>governance.yaml</code>; the fallback is <code>settings.catalog_uri</code>.</p>
+<p>Each dataset includes <code>dct:publisher</code> and <code>odrl:hasPolicy</code> on its distribution, and <code>dcat:theme</code>, <code>dct:language</code>, <code>dct:spatial</code>, <code>dct:accrualPeriodicity</code>, <code>dct:conformsTo</code>, <code>dct:temporal</code> when governance provides them. Publisher URI is derived from <code>governance.yaml</code>; the fallback is <code>settings.catalog_uri</code>.</p>
 <p>The <code>downloadURL</code> is only present on distributions with <code>access_level: open</code>. All other distributions require negotiating access through a dataspace connector.</p>
 <h3 id="governed-query-api">Governed query API</h3>
 <p>SQL <code>SELECT</code> queries over exposed datasets with strict validation, server-side pagination, hard row caps, and row-level filters.</p>
@@ -4577,7 +4577,7 @@
 <li>Enforces <code>LIMIT</code>/<code>OFFSET</code> server-side, after the statement's top-level <code>ORDER BY</code> (carried onto the page query where its keys name selected columns; see QE-04 in the query engine docs)</li>
 <li>Configurable query timeout via <code>QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000ms)</li>
 <li><code>skip_count: true</code> skips the <code>COUNT(*)</code> query to avoid full table scans</li>
-<li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>http_in_list</code>, <code>table_pointer</code>)</li>
+<li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>subject_key_match</code>, <code>http_in_list</code>, <code>table_pointer</code>)</li>
 </ul>
 <h3 id="edr-gated-query-path-dataspace-integration">EDR-gated query path (dataspace integration)</h3>
 <p>When queries arrive through the EDC data plane (via an Endpoint Data Reference), the API detects the EDR context via the <code>Edc-Contract-Agreement-Id</code> header and switches to a dataspace-specific enforcement path.</p>
@@ -4591,9 +4591,10 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 <li>The <code>Authorization</code> header is <strong>not</strong> validated against Keycloak: an EDR token is signed with the provider EDC's vault key, which Keycloak's key set can never contain. The request reaches the route with no user identity — the state an unauthenticated request already reaches, so asserting the header costs a caller its identity and grants it nothing</li>
 <li>Verifies the EDR token's signature against the key set ds publishes at <code>GET /internal/edr-jwks</code>. <strong>This service is the EDR endpoint</strong> — upstream EDC removed the data-plane proxy, so nothing validated the token before it arrived</li>
 <li>Takes the consumer from the verified <code>aud</code> and the provider from the verified <code>iss</code>; neither comes from a header</li>
+<li>Refuses the whole query (403) if any referenced dataset is not offered to the dataspace (<code>dataspace.expose</code> in governance → <code>dataspace_expose</code>); the dataset must also be <code>expose: true</code></li>
 <li>Calls <code>ds-connector POST /internal/dataplane/authorize</code> once for the whole query — agreement validity, the agreement↔consumer binding, purpose and the consented subjects are all ds's to answer, and it returns the verdict <em>and</em> the row-filter spec</li>
 <li>Applies that spec through the row-filter handlers, then records the disclosure with <code>POST /internal/audit/query</code></li>
-<li>Skips the Keycloak/OPA path entirely for datasets covered by the decision</li>
+<li>Skips the Keycloak/policy path entirely for datasets covered by the decision</li>
 </ol>
 <h4 id="one-instance-several-connectors">One instance, several connectors</h4>
 <p>The connector is resolved <strong>per request</strong>, from the provider in the EDR token, so
@@ -4625,23 +4626,25 @@ its own instance.</p>
 <h3 id="governance-and-disclosure-model">Governance and disclosure model</h3>
 <p>Access levels:
 - <code>open</code> — no authentication required; <code>downloadURL</code> exposed in DCAT
-- <code>internal</code> — JWT required; <code>ds:accessScope eq "dataspaces.query"</code> constraint in ODRL
-- <code>restricted</code> — JWT + contract required; <code>ds:contractRequired eq "true"</code> in ODRL
-- <code>secret</code> — not exposed in catalogue or EDC</p>
+- <code>internal</code> — JWT required; services need the <code>dataset.query</code> scope, users one of the <code>admins</code>/<code>managers</code>/<code>viewers</code> groups; ODRL carries <code>ds:accessScope eq "dataspaces.query"</code>
+- <code>restricted</code> — JWT required; only the <code>dataset.admin</code> scope or the <code>admins</code> group (<code>policies/celine/dataset.rego</code>); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code> and <code>ds:consentStatus eq "active"</code>
+- <code>secret</code> — omitted from every catalogue surface; not queryable (<code>403 Dataset not available</code>, as for an unexposed dataset)</p>
+<p>An entry that states no level is <code>internal</code>, and the import stores it as such; an unknown level is refused at import.</p>
 <p>Row-level filtering via the pluggable governance handler registry. Five built-in handlers are supported:
 - <code>direct_user_match</code> — filter by user column
 - <code>rec_registry</code> — lookup via REC registry
 - <code>subject_key_match</code> — filter by the typed data keys (<code>pod:…</code>) the consent carried, for a holder whose rows are keyed by something only the organisation that collected the consent can name
 - <code>http_in_list</code> — HTTP-based allow list
 - <code>table_pointer</code> — table-based lookup</p>
+<p>Further handlers can be registered through <code>ROW_FILTERS_MODULES</code> or the <code>celine.dataset.row_filters</code> entry-point group (see <code>celine.dataset.ext</code>).</p>
 <p>Users in the <code>admins</code> group bypass row filters entirely. Service accounts bypass the <code>rec_registry</code> filter when they query on their own behalf — never when a dataspace decision delegates the query to them.</p>
 <p>On a dataspace request the filter arrives from ds whole, naming the consenting subjects as <code>principals</code> and as <code>keys</code>; a filter this service cannot apply serves no rows. Specification: <a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>.</p>
 <p>Governance overrides are supported via <code>governance.&lt;app_name&gt;.yaml</code> files merged with the base <code>governance.yaml</code>.</p>
 <h3 id="lineage-and-provenance">Lineage and provenance</h3>
 <ul>
-<li>OpenLineage ingestion via Marquez</li>
+<li>Lineage read from Marquez by <code>dataset-cli export openlineage</code> (<code>MARQUEZ_URL</code> or <code>--marquez-url</code>)</li>
 <li>Namespace-based dataset grouping</li>
-<li>Governance facets embedded in lineage events (<code>userFilterColumn</code>, <code>medallion</code>, <code>classification</code>)</li>
+<li>Governance facets embedded in lineage events (<code>rowFilters</code>, <code>accessLevel</code>, <code>classification</code>, <code>medallion</code>, <code>consentRequired</code>; legacy <code>userFilterColumn</code> still read)</li>
 <li>Provenance surfaced in catalogue metadata</li>
 </ul>
 <h3 id="schema-and-metadata-introspection">Schema and metadata introspection</h3>
@@ -4653,13 +4656,18 @@ its own instance.</p>
 <h2 id="api-surface">API surface</h2>
 <ul>
 <li><code>GET /catalogue</code> — DCAT-AP catalogue (<code>application/ld+json</code>)</li>
-<li><code>GET /catalogue/{id}</code> — single dataset</li>
+<li><code>GET /catalogue/{id}</code> — single dataset (HTML for browsers)</li>
+<li><code>GET /catalogue/{id}/schema</code> — JSON Schema of the dataset's rows</li>
+<li><code>GET /catalogue/{id}/vocabulary</code> — the dataset's ontology vocabulary</li>
+<li><code>POST /catalogue/{id}/conformance</code> — SHACL conformance check, when <code>CONFORMANCE_ENABLED=true</code></li>
 <li><code>POST /catalogue/search</code> — filtered search</li>
+<li><code>GET /</code> — HTML catalogue view</li>
 <li><code>POST /query</code> — governed SQL query; EDR-gated when <code>EDR_ENABLED=true</code></li>
-<li><code>POST /admin/catalogue</code> — catalogue import</li>
-<li><code>/dps/v1/dataflows/*</code>, <code>/dps/v1/controlplanes</code>, <code>GET /dps/registration</code> — DPS signalling, when <code>DPS_ENABLED=true</code></li>
+<li><code>POST /admin/catalogue</code> — catalogue import; requires the <code>dataset.admin</code> scope or the <code>admins</code> group</li>
+<li><code>/dps/v1/dataflows/*</code>, <code>PUT /dps/v1/controlplanes</code>, <code>DELETE /dps/v1/controlplanes/{id}</code>, <code>GET /dps/registration</code> — DPS signalling, when <code>DPS_ENABLED=true</code></li>
 <li><code>POST /dps/public/query</code> — governed SQL query for a DPS pull token, when <code>DPS_ENABLED=true</code></li>
 <li><code>GET /health</code></li>
+<li><code>/docs</code>, <code>/redoc</code> — OpenAPI UI</li>
 </ul>
 <hr />
 <h2 id="cli">CLI</h2>
@@ -4670,12 +4678,12 @@ its own instance.</p>
 - <code>export openlineage</code> — extract lineage from Marquez
 - <code>export governance</code> — export governance rules to dataset entries
 - <code>export postgres</code> — generate catalogue YAML from PostgreSQL schema introspection
-- <code>import catalogue</code> — validate and import dataset catalogue
+- <code>import catalogue</code> — validate and import dataset catalogue (authenticates with <code>--token</code>/<code>DATASET_API_TOKEN</code>, else the <code>CELINE_OIDC_CLIENT_ID</code>/<code>_SECRET</code> client credentials)
 - <code>row-filter add|remove|list</code> — manage row filters in exported YAML files</p>
-<p>The <code>export governance</code> command reads <code>governance.yaml</code> files and propagates <code>dcat:</code> and <code>dataspace:</code> blocks to <code>DatasetEntry</code> records. The <code>expose: true</code> field on a source entry controls whether the dataset is visible in the catalogue and registered in EDC.</p>
+<p>The <code>export governance</code> command reads <code>governance.yaml</code> files (plus <code>governance.&lt;app&gt;.yaml</code> overlays) and writes catalogue YAML for <code>import catalogue</code>; it needs neither a database nor Marquez. <code>expose</code> lists the dataset in the catalogue and makes it queryable; <code>dataspace.expose</code> offers it into the dataspace (required for EDR/DPS requests). An unset <code>expose</code> falls back to <code>dataspace.expose</code>; offered-but-unlisted is refused.</p>
 <hr />
 <h2 id="governanceyaml-integration">governance.yaml integration</h2>
-<p>Dataset-api reads governance rules resolved by <code>celine-utils</code> <code>GovernanceResolver</code>. The following extended blocks are supported:</p>
+<p>Dataset-api reads governance rules resolved by <code>celine.governance.GovernanceResolver</code> (from <code>celine-utils&gt;=2.0</code>). The following extended blocks are supported:</p>
 <p><code>dcat:</code> block — DCAT-AP metadata:
 - <code>publisher_uri</code> — overrides the settings-level fallback
 - <code>themes</code> — <code>dcat:theme</code> URIs (EU Publications Office vocabulary)
@@ -4685,22 +4693,23 @@ its own instance.</p>
 - <code>conforms_to</code> — <code>dct:conformsTo</code> URI
 - <code>temporal</code> — <code>dct:temporal</code> with <code>start</code> and <code>end</code> dates</p>
 <p><code>dataspace:</code> block — access control and ODRL hints:
-- <code>contract_required</code> — adds <code>ds:contractRequired</code> constraint to ODRL
-- <code>consent_required</code> — adds <code>ds:consentStatus eq active</code> constraint
-- <code>odrl_action</code> — default action for the ODRL offer
-- <code>purpose</code> — purpose values for ODRL purpose constraints
-- <code>medallion</code> — data quality level</p>
+- <code>expose</code> — offer the dataset to dataspace consumers
+- <code>consent_required</code> (or any <code>row_filters</code>) — adds <code>ds:consentStatus eq active</code> constraint
+- <code>contract_required</code>, <code>odrl_action</code>, <code>purpose</code> — carried in the governance facet for dataspace consumers; not rendered into the ODRL offer, which always uses <code>odrl:use</code>
+- <code>medallion</code> — data quality level (inferred from the name when unset)</p>
 <p><code>expose: true</code> on the source entry (top-level, not under <code>dataspace:</code>) makes the dataset visible in the catalogue.</p>
 <hr />
 <h2 id="documentation">Documentation</h2>
 <ul>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/architecture">Architecture overview</a></li>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/catalogue-management">Catalogue Management</a></li>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/cli-operations">CLI operations</a></li>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/dataspace-row-filters">Dataspace row filters</a></li>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/governance-security">Governance and security</a></li>
-<li><a href="https://celine-eu.github.io/projects/dataset-api/docs/query-engine">Query engine</a></li>
+<li><a href="docs/architecture/">Architecture overview</a></li>
+<li><a href="docs/catalogue-management/">Catalogue Management</a></li>
+<li><a href="docs/cli-operations/">CLI operations</a></li>
+<li><a href="docs/governance-security/">Governance and security</a></li>
+<li><a href="docs/query-engine/">Query engine</a></li>
+<li><a href="docs/dataspace-row-filters/">Dataspace row filters</a></li>
+<li><a href="docs/dps-data-plane/">DPS data plane</a></li>
 </ul>
+<p>Published at <a href="https://celine-eu.github.io/projects/dataset-api/">celine-eu.github.io</a>.</p>
 <hr />
 <h2 id="development-and-contribution">Development and contribution</h2>
 <ul>

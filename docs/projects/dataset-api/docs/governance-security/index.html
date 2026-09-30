@@ -2399,15 +2399,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#authorization-with-opa" class="md-nav__link">
+  <a href="#authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authorization with OPA
+        Authorization
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Authorization with OPA">
+    <nav class="md-nav" aria-label="Authorization">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2422,10 +2422,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-opa-input-shape-illustrative" class="md-nav__link">
+  <a href="#policy-input-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example OPA input shape (illustrative)
+        Policy input shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shipped-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shipped policy
       
     </span>
   </a>
@@ -2488,6 +2499,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#catalogue-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catalogue administration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataspace-edr-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace (EDR) path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auditability-observability" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2510,10 +2543,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#common-policy-patterns" class="md-nav__link">
+  <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Policy Patterns
+        Configuration
       
     </span>
   </a>
@@ -4393,15 +4426,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#authorization-with-opa" class="md-nav__link">
+  <a href="#authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authorization with OPA
+        Authorization
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Authorization with OPA">
+    <nav class="md-nav" aria-label="Authorization">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4416,10 +4449,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-opa-input-shape-illustrative" class="md-nav__link">
+  <a href="#policy-input-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example OPA input shape (illustrative)
+        Policy input shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shipped-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shipped policy
       
     </span>
   </a>
@@ -4482,6 +4526,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#catalogue-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catalogue administration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataspace-edr-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace (EDR) path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auditability-observability" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4504,10 +4570,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#common-policy-patterns" class="md-nav__link">
+  <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Policy Patterns
+        Configuration
       
     </span>
   </a>
@@ -4564,74 +4630,123 @@
 <td><code>internal</code></td>
 <td>internal audiences</td>
 <td>required</td>
-<td>policy may still apply</td>
+<td>required (policy)</td>
 </tr>
 <tr>
 <td><code>restricted</code></td>
 <td>limited audiences</td>
 <td>required</td>
-<td>required (OPA)</td>
+<td>required (policy)</td>
+</tr>
+<tr>
+<td><code>secret</code></td>
+<td>nobody</td>
+<td>—</td>
+<td>omitted from every catalogue surface; <code>/query</code> answers <code>403 Dataset not available</code></td>
 </tr>
 </tbody>
 </table>
 <p>Notes:
 - <code>open</code> does not mean “unsafe”; SQL hardening and limits still apply.
-- <code>restricted</code> should be used when access depends on groups/roles/attributes.</p>
+- <code>restricted</code> should be used when access depends on groups/roles/attributes.
+- A dataset that states no <code>access_level</code> is <code>internal</code>; the import stores it as such.
+- A level the import cannot read is refused there (<code>422</code>). A stored level nobody can
+  read answers like <code>secret</code>: <code>403 Dataset not available</code>, indistinguishable from an
+  unexposed dataset.
+- With <code>POLICIES_CHECK_ENABLED=false</code>, any authenticated caller may read <code>internal</code>
+  and <code>restricted</code> datasets.</p>
 <hr />
 <h2 id="identity-model">Identity Model</h2>
 <h3 id="jwt-inputs">JWT Inputs</h3>
-<p>The API receives a JWT from an Identity Provider. The raw token can vary by IdP.
-The API normalizes claims to a consistent internal representation.</p>
-<p>Typical normalized fields:
-- <code>sub</code> (subject)
-- <code>preferred_username</code> or display name
-- <code>groups</code> (list)
-- <code>roles</code> (list)
-- <code>scopes</code> (list) (if provided)</p>
+<p>The API receives a JWT from the OIDC provider (<code>CELINE_OIDC_*</code> settings) and
+normalizes its claims into an authenticated user:</p>
+<ul>
+<li><code>sub</code></li>
+<li><code>username</code> (<code>preferred_username</code>, falling back to <code>email</code>) and <code>email</code></li>
+<li><code>groups</code> (realm and organization groups)</li>
+<li><code>roles</code> (realm roles and the client roles of the configured client)</li>
+<li><code>scopes</code></li>
+<li><code>issuer</code>, <code>audiences</code>, and the raw <code>claims</code></li>
+</ul>
 <h3 id="users-vs-service-accounts">Users vs Service Accounts</h3>
-<p>Service accounts (client credentials) are treated as first-class identities.
-They should carry:
-- a distinct subject (client id)
-- roles/groups appropriate for their operating scope
-- optionally environment scoping (tenant/community)</p>
+<p>Service accounts (client credentials) are treated as first-class identities. A
+token is a service account's when its <code>preferred_username</code> starts with
+<code>service-account-</code> or it carries <code>gty=client-credentials</code>. Services are authorized
+by <strong>scopes</strong>, users by <strong>groups</strong>.</p>
 <p>You should avoid “god tokens” unless policy explicitly supports it.</p>
 <hr />
-<h2 id="authorization-with-opa">Authorization with OPA</h2>
-<p>OPA is the Policy Decision Point (PDP). The Dataset API is the Policy Enforcement Point (PEP).</p>
+<h2 id="authorization">Authorization</h2>
+<p>The Dataset API is the Policy Enforcement Point. Policies are evaluated
+<strong>in-process</strong> by the celine-sdk policy engine (regorus); there is no OPA server.
+The engine loads every <code>.rego</code> file under <code>POLICIES_DIR</code> (default <code>./policies</code>,
+optional data in <code>POLICIES_DATA_DIR</code>) once per process, so a policy change needs a
+restart.</p>
 <h3 id="decision-flow">Decision flow</h3>
 <ol>
-<li>API normalizes JWT → identity object</li>
-<li>API collects dataset metadata and requested action</li>
-<li>API builds OPA input document</li>
-<li>API calls OPA</li>
-<li>OPA returns decision (allow/deny + optional reason)</li>
-<li>API enforces result (deny by default)</li>
+<li>API normalizes JWT → identity</li>
+<li>API collects dataset metadata and the action (<code>read</code>)</li>
+<li>API builds the policy input</li>
+<li>the engine evaluates <code>data.&lt;POLICIES_PACKAGE&gt;.allow</code> and <code>.reason</code> (default
+   package <code>celine.dataset</code>, <code>policies/celine/dataset.rego</code>)</li>
+<li>API enforces the result: a deny is <code>403</code> with the policy's <code>reason</code>; an engine
+   that cannot load or evaluate is <code>503</code></li>
 </ol>
-<h3 id="example-opa-input-shape-illustrative">Example OPA input shape (illustrative)</h3>
+<p>Decisions are cached in memory when <code>POLICIES_CACHE_ENABLED</code> is true (the default).</p>
+<h3 id="policy-input-shape">Policy input shape</h3>
 <pre><code class="language-json">{
-  &quot;input&quot;: {
-    &quot;action&quot;: &quot;query&quot;,
-    &quot;dataset&quot;: {
-      &quot;dataset_id&quot;: &quot;datasets.gold.example&quot;,
+  &quot;subject&quot;: {
+    &quot;id&quot;: &quot;service-account-dt-app&quot;,
+    &quot;type&quot;: &quot;service&quot;,
+    &quot;groups&quot;: [&quot;ops&quot;],
+    &quot;scopes&quot;: [&quot;dataset.query&quot;],
+    &quot;claims&quot;: {&quot;…&quot;: &quot;raw JWT claims&quot;}
+  },
+  &quot;resource&quot;: {
+    &quot;type&quot;: &quot;dataset&quot;,
+    &quot;id&quot;: &quot;datasets.gold.example&quot;,
+    &quot;attributes&quot;: {
+      &quot;access_level&quot;: &quot;internal&quot;,
+      &quot;backend_type&quot;: &quot;postgres&quot;,
       &quot;namespace&quot;: &quot;gold&quot;,
-      &quot;access_level&quot;: &quot;restricted&quot;,
-      &quot;tags&quot;: [&quot;energy&quot;, &quot;forecast&quot;]
-    },
-    &quot;identity&quot;: {
-      &quot;sub&quot;: &quot;service:dt-app&quot;,
-      &quot;groups&quot;: [&quot;community:alpha&quot;, &quot;ops&quot;],
-      &quot;roles&quot;: [&quot;service&quot;],
-      &quot;scopes&quot;: [&quot;dataset:query&quot;]
-    },
-    &quot;request&quot;: {
-      &quot;sql_tables&quot;: [&quot;datasets.gold.example&quot;],
-      &quot;limit&quot;: 100,
-      &quot;offset&quot;: 0
+      &quot;governance&quot;: {&quot;…&quot;: &quot;lineage governance facet, _-prefixed keys dropped&quot;}
     }
-  }
+  },
+  &quot;action&quot;: {&quot;name&quot;: &quot;read&quot;, &quot;context&quot;: {}},
+  &quot;environment&quot;: {&quot;timestamp&quot;: 1760000000.0, &quot;source_service&quot;: &quot;dataset-api&quot;}
 }
 </code></pre>
-<p>Your actual field names may vary; keep them stable for policy authors.</p>
+<p><code>subject.type</code> is <code>user</code>, <code>service</code> or <code>anonymous</code> (<code>id: "anonymous"</code>). Roles reach
+the policy only inside <code>claims</code>; tags are not sent.</p>
+<h3 id="shipped-policy">Shipped policy</h3>
+<p><code>policies/celine/dataset.rego</code> implements:</p>
+<table>
+<thead>
+<tr>
+<th>Access level</th>
+<th>Service (by scope)</th>
+<th>User (by group)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>open</code></td>
+<td>never reaches the policy</td>
+<td>never reaches the policy</td>
+</tr>
+<tr>
+<td><code>internal</code></td>
+<td><code>dataset.query</code></td>
+<td><code>admins</code>, <code>managers</code> or <code>viewers</code></td>
+</tr>
+<tr>
+<td><code>restricted</code></td>
+<td><code>dataset.admin</code></td>
+<td><code>admins</code></td>
+</tr>
+</tbody>
+</table>
+<p>Scopes use <code>.</code> as separator; <code>dataset.admin</code> matches every <code>dataset.*</code> scope.
+Custom rules can read <code>resource.attributes.governance</code> and <code>namespace</code>.</p>
 <hr />
 <h2 id="sql-hardening-non-negotiable">SQL Hardening (Non-negotiable)</h2>
 <p>All SQL is validated using an AST parser and an allowlist.</p>
@@ -4639,7 +4754,8 @@ They should carry:
 <ul>
 <li><code>SELECT</code> queries only</li>
 <li>explicit projections and filters</li>
-<li>bounded queries (<code>LIMIT</code> required or enforced)</li>
+<li>pagination enforced server-side: <code>limit</code> defaults to 100 and is capped at 10 000;
+  every statement runs under <code>QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000 ms)</li>
 <li>references only to catalogued datasets</li>
 </ul>
 <h3 id="rejected">Rejected</h3>
@@ -4649,35 +4765,71 @@ They should carry:
 <li>multiple statements / statement chaining</li>
 <li>functions not on allowlist (<a href="../query-engine/#function-and-expression-allowlist">query-engine.md</a>
   says what is admitted and on what basis)</li>
-<li>referencing raw physical table names to bypass catalogue</li>
-<li>unbounded scans (policy + query guards)</li>
+<li>table references that resolve to no catalogue entry. A reference resolves by
+  exact id or, for a two-part <code>schema.table</code> name, by a literal id suffix, and is
+  then governed as that entry; no match, or more than one, is a <code>400</code></li>
 </ul>
 <hr />
 <h2 id="defense-in-depth-execution-pipeline">Defense-in-depth Execution Pipeline</h2>
 <ol>
-<li>Authentication (if required by access level)</li>
+<li>Reject an invalid bearer token up front</li>
 <li>SQL parse + validation</li>
-<li>Extract referenced tables/datasets</li>
-<li>Resolve to catalogued mapping</li>
-<li>OPA authorization (dataset + action + identity)</li>
-<li>Execute in restricted context with limits/timeouts</li>
+<li>Resolve every referenced table to a catalogue entry</li>
+<li>Dataspace path only: every dataset must be <code>dataspace_expose</code>, then ds authorizes
+   the query as a whole</li>
+<li>Refuse datasets that are unexposed, <code>secret</code>, or carry an unreadable level
+   (<code>403 Dataset not available</code>)</li>
+<li>Map logical ids to physical tables: <code>backend_config.table</code>, or for postgres the
+   table the id names; a backend with no SQL table is a <code>400</code>. No dataset skips
+   the steps below</li>
+<li>Ordinary path: authentication check required by the access level, then policy</li>
+<li>Apply row filters, execute with limits and timeout</li>
+<li>Dataspace path only: record the disclosure with ds</li>
 <li>Return paginated results only</li>
 </ol>
 <p>If any step fails → request fails.</p>
 <hr />
+<h2 id="catalogue-administration">Catalogue administration</h2>
+<p><code>POST /admin/catalogue</code> overwrites and deletes catalogue entries, including the
+<code>expose</code> and <code>access_level</code> every other gate reads. It requires a valid token with
+the <code>dataset.admin</code> scope, or a user in the <code>admins</code> group: <code>401</code> without a token,
+<code>403</code> without either. <code>svc-dataset-api</code> holds the scope, so an import job
+authenticates as the service with its own client credentials.</p>
+<hr />
+<h2 id="dataspace-edr-path">Dataspace (EDR) path</h2>
+<p>With <code>EDR_ENABLED=true</code>, a request carrying <code>Edc-Contract-Agreement-Id</code> is a
+dataspace request, and the ordinary path is never a fallback for it:</p>
+<ul>
+<li>the bearer is not validated against the OIDC provider; it is an EDR token,
+  verified against the key set the provider's ds-connector publishes at
+  <code>GET /internal/edr-jwks</code>. The consumer is the verified <code>aud</code>, the provider the
+  verified <code>iss</code></li>
+<li>the connector is <code>CONNECTOR_INTERNAL_URLS[iss]</code> when that map is set (an unlisted
+  provider is <code>401</code>), otherwise <code>CONNECTOR_INTERNAL_URL</code> (unset is <code>503</code>)</li>
+<li>every dataset in the query must be offered to the dataspace (<code>dataspace_expose</code>),
+  else <code>403</code> naming the withheld datasets</li>
+<li>one <code>POST /internal/dataplane/authorize</code> covers the whole query; a deny is <code>403</code>
+  (<em>"Refused by ds: …"</em>), ds unreachable or erroring is <code>502</code></li>
+<li>the row filter arrives in ds's decision and is applied here or nothing is served
+  (<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)</li>
+<li>the disclosure is recorded with <code>POST /internal/audit/query</code>, naming the
+  consenting subjects by DID, never by principal or key (RF-10 in
+  <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)</li>
+</ul>
+<p>Calls to ds authenticate with this service's OIDC client-credentials token. The DPS
+pull path reuses the same enforcement; see <a href="../dps-data-plane/">dps-data-plane.md</a>.</p>
+<hr />
 <h2 id="auditability-observability">Auditability &amp; Observability</h2>
-<p>Log (at least):
-- request id
+<p>Logged:
 - subject
 - dataset ids referenced
-- allow/deny decision
-- validation errors (sanitized)
-- execution time and rows returned</p>
+- allow/deny decision and reason
+- validation errors (sanitized)</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
 withheld from the log entirely: its predicate is a literal list of the consenting subjects
-(RF-08).</p>
+(RF-08 in <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>).</p>
 <hr />
 <h2 id="row-level-filtering">Row-level filtering</h2>
 <p>A dataset may declare <code>row_filters</code> in governance, and a handler turns each one into
@@ -4692,13 +4844,63 @@ served. A service that relays such rows to a person narrows them itself or forwa
 the person's token. The order the handler decides in is in
 <a href="../dataspace-row-filters/#rec_registry-on-the-normal-api-path">dataspace-row-filters.md</a>.</p>
 <hr />
-<h2 id="common-policy-patterns">Common Policy Patterns</h2>
-<ul>
-<li><strong>Namespace gating</strong>: allow external access only to <code>gold</code> datasets</li>
-<li><strong>Group-based</strong>: allow if identity belongs to <code>dataset:{id}:read</code></li>
-<li><strong>Tenant/community scoping</strong>: allow if identity has <code>community:{X}</code> group matching dataset tag <code>community:{X}</code></li>
-<li><strong>Service account capabilities</strong>: allow if role includes <code>service</code> and scope includes <code>dataset:query</code></li>
-</ul>
+<h2 id="configuration">Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POLICIES_CHECK_ENABLED</code></td>
+<td><code>true</code></td>
+<td>evaluate policies; <code>false</code> admits any authenticated caller</td>
+</tr>
+<tr>
+<td><code>POLICIES_DIR</code></td>
+<td><code>./policies</code></td>
+<td><code>.rego</code> files loaded at start</td>
+</tr>
+<tr>
+<td><code>POLICIES_DATA_DIR</code></td>
+<td>unset</td>
+<td>policy data</td>
+</tr>
+<tr>
+<td><code>POLICIES_PACKAGE</code></td>
+<td><code>celine.dataset</code></td>
+<td>package whose <code>allow</code>/<code>reason</code> are evaluated</td>
+</tr>
+<tr>
+<td><code>POLICIES_CACHE_ENABLED</code></td>
+<td><code>true</code></td>
+<td>cache decisions in memory</td>
+</tr>
+<tr>
+<td><code>EDR_ENABLED</code></td>
+<td><code>false</code></td>
+<td>accept dataspace (EDR) requests</td>
+</tr>
+<tr>
+<td><code>CONNECTOR_INTERNAL_URL</code></td>
+<td>unset</td>
+<td>the ds-connector, single-connector deployments</td>
+</tr>
+<tr>
+<td><code>CONNECTOR_INTERNAL_URLS</code></td>
+<td><code>{}</code></td>
+<td>JSON map provider (<code>iss</code>) → ds-connector URL</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_*</code></td>
+<td>—</td>
+<td>OIDC provider and client settings (celine-sdk)</td>
+</tr>
+</tbody>
+</table>
 
 
 

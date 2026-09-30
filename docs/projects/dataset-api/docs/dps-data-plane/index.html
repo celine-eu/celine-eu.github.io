@@ -4275,7 +4275,8 @@ maintainer on 2026-09-17.</p>
 <ul>
 <li><code>/query</code> serves API clients with their own tokens (user or service). With
   <code>EDR_ENABLED</code>, the <code>Edc-Contract-Agreement-Id</code> header switches it to the legacy EDR path
-  (see <a href="../governance-security/">governance-security.md</a>). This mode changes neither.</li>
+  (see <a href="../governance-security/#dataspace-edr-path">governance-security.md</a>). This mode
+  changes neither.</li>
 <li><code>/dps/public/query</code> serves only holders of a DPS pull token.</li>
 </ul>
 <p>Keeping the two concerns apart means neither endpoint has to guess which kind of
@@ -4337,7 +4338,7 @@ credential it was given.</p>
 <tr>
 <td><code>DPS_TRANSFER_TYPES</code></td>
 <td><code>["HttpData-PULL"]</code></td>
-<td>accepted and registered transfer types; pull only</td>
+<td>accepted and registered transfer types; pull only, a push type fails start-up</td>
 </tr>
 <tr>
 <td><code>DPS_LABELS</code></td>
@@ -4362,7 +4363,9 @@ credential it was given.</p>
 </tbody>
 </table>
 <p>The pull path calls ds exactly as the legacy EDR path does, so it also needs
-<code>CONNECTOR_INTERNAL_URL</code> and the OIDC client settings. The flows are stored in the
+<code>CONNECTOR_INTERNAL_URL</code> (or <code>CONNECTOR_INTERNAL_URLS</code>, keyed by the flow's
+<code>participantId</code>) and the <code>CELINE_OIDC_*</code> client settings; <code>EDR_ENABLED</code> is not
+required. The flows are stored in the
 catalogue database (<code>DATABASE_URL</code>), so run <code>alembic upgrade head</code> before enabling the
 mode.</p>
 <h2 id="clauses">Clauses</h2>
@@ -4438,7 +4441,8 @@ Tests: <code>tests/dps/test_tokens.py</code>, <code>tests/dps/test_signaling_api
   an already <code>TERMINATED</code> flow succeeds and changes nothing.</li>
 <li><code>completed</code>: <code>STARTED</code> → <code>COMPLETED</code>. The token is retired.</li>
 <li><code>started</code>: consumer flows only, <code>PREPARED</code> → <code>STARTED</code>. The message must carry a data
-  address, which is recorded without its credential.</li>
+  address, which is recorded without its credential. A missing data address gets
+  <code>400</code>; <code>started</code> on a provider flow gets <code>409</code>.</li>
 </ul>
 <p>Errors:</p>
 <ul>
@@ -4455,8 +4459,9 @@ by decision (see <em>Two query endpoints</em> above). The token goes in
 <code>Authorization</code>, with or without the <code>Bearer</code> prefix.</p>
 <p>Refusals:</p>
 <ul>
-<li><code>401</code>: no token, a token not signed by this data plane, or a token that is not the
-  flow's live one.</li>
+<li><code>401</code>: no token, a token not signed by this data plane, a token that is not the
+  flow's live one, or a token whose <code>aud</code>/<code>iss</code> do not match the flow's
+  <code>counterPartyId</code>/<code>participantId</code>.</li>
 <li><code>403</code>: the flow is not <code>STARTED</code>.</li>
 <li><code>403</code>: an <code>Edc-Contract-Agreement-Id</code> header that differs from the flow's agreement.</li>
 </ul>
@@ -4464,10 +4469,12 @@ by decision (see <em>Two query endpoints</em> above). The token goes in
 <ul>
 <li>the agreement is the flow's;</li>
 <li>the consumer is the token's <code>aud</code>;</li>
+<li>the provider, which selects the connector, is the flow's <code>participantId</code>;</li>
 <li>the purpose comes from <code>Edc-Purpose</code>, and the transfer id from <code>Edc-Transfer-Process-Id</code>.</li>
 </ul>
 <p>From there it follows the legacy EDR path unchanged: the <code>dataspace_expose</code> gate, then
-ds's <code>POST /internal/dataplane/authorize</code>, then row filters, then the disclosure audit.
+ds's <code>POST /internal/dataplane/authorize</code>, then the <code>expose</code> gate, row filters, and the
+disclosure audit.
 Tests: <code>tests/dps/test_pull.py</code> (PostgreSQL).</p>
 <h3 id="dps-10-registration-message">DPS-10 — Registration message</h3>
 <p><code>GET /dps/registration</code> (guarded as in DPS-02) returns <code>dataplaneId</code>, <code>endpoint</code>
@@ -4491,7 +4498,8 @@ with a <code>DataFlowStatusMessage</code> and this service's bearer token.</p>
 <p>The base is the message's <code>callbackAddress</code>. If there is none, it is the endpoint the same
 caller registered under DPS-11. With neither, the notification fails, and so does a
 non-2xx answer.</p>
-<p>The synchronous flows above send no callbacks.
+<p>No signal sends a callback today: the synchronous flows above do not need one, and
+<code>ControlPlaneClient</code> (<code>dps/callbacks.py</code>) is the client a long-running flow would use.
 Tests: <code>tests/dps/test_callbacks.py</code>, <code>tests/dps/test_signaling_api.py</code>.</p>
 <h3 id="dps-13-flows-live-in-the-catalogue-database">DPS-13 — Flows live in the catalogue database</h3>
 <p>Data flows and control-plane registrations are rows in the catalogue schema:
