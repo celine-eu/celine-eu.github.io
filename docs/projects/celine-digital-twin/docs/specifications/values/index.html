@@ -4678,6 +4678,8 @@ the same fault as no provider: the Digital Twin has no identity to query with ri
 The log line carries the code and the exception type only.</p>
 </blockquote>
 <h3 id="req-1122-when-a-fetcher-declares-an-output_mapper-it-must-be-applied-to-every-returned-row">REQ-1122 — When a fetcher declares an <code>output_mapper</code>, it MUST be applied to every returned row.</h3>
+<p>The declaration is a <code>module:attr</code> path, resolved when the fetcher is registered; a path
+that does not resolve to an object with <code>map(row)</code> MUST fail startup.</p>
 <h3 id="req-1123-a-failing-output-mapper-must-propagate-rather-than-yield-partial-results">REQ-1123 — A failing output mapper MUST propagate rather than yield partial results.</h3>
 <h3 id="req-1124-a-fetcher-declaring-no-query-must-send-an-empty-statement-to-the-client-rather-than-a-null-one">REQ-1124 — A fetcher declaring no query MUST send an empty statement to the client rather than a null one.</h3>
 <hr />

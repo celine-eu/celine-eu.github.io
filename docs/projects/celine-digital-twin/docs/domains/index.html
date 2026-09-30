@@ -4303,10 +4303,9 @@ declared in code only; there is no <em>config/values.yaml</em>.</p>
   not wired to any route — see the status note at the top of that document.</li>
 </ul>
 <p><strong>Every one of these requires a JWT.</strong> They sit behind <code>get_ctx_auth</code>, which answers 401 to a
-request without a bearer token. It wraps <code>get_ctx</code>, and that resolves the entity <strong>first</strong>:
-<code>resolve_entity</code> runs before the token check, and a <code>None</code> from it answers 404. A domain whose
-resolver rejects an unauthenticated request (participant) can therefore answer 404 where 401
-would be expected. This holds for a <code>"service"</code> fetcher too: the Digital Twin's own token is
+request without a bearer token. The token is checked <strong>before</strong> <code>get_ctx</code> resolves the
+entity, so a request without one never reaches <code>resolve_entity</code>: an unknown entity answers
+401, not 404, until the caller authenticates. This holds for a <code>"service"</code> fetcher too: the Digital Twin's own token is
 used only after the caller's has been checked.</p>
 <p><code>{fetcher_id}</code> is the <strong>domain-local</strong> identifier — <code>rec_self_consumption</code>, not
 <code>it-energy-community.rec_self_consumption</code> — on both verbs. The <code>/values</code> listing and

@@ -4784,9 +4784,10 @@ which parts no longer describe the code:</p>
 task run
 # Listens on http://localhost:8002
 </code></pre>
-<p>Copy <code>.env.example</code> to <code>.env</code> first: it sets <code>APP_ENV=dev</code>. Unset, the environment is
-production, and production refuses to start with the placeholder service secret
-(<a href="docs/brokers/#configuration-1">Brokers</a>).</p>
+<p><code>task run</code>, <code>task debug</code> and <code>docker compose up</code> default <code>APP_ENV</code> to <code>dev</code>. Anywhere else
+an unset environment is production, and production refuses to start with the placeholder
+service secret (<a href="docs/brokers/#configuration-1">Brokers</a>). <code>.env.example</code> lists the
+variables the service reads.</p>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q   # or: task test
 </code></pre>

@@ -5354,7 +5354,7 @@ class ValueFetcherSpec:
 <td><code>output_mapper</code></td>
 <td>No</td>
 <td>-</td>
-<td>Import path to an output mapper; see <a href="#output-mappers">Output mappers</a></td>
+<td><code>module:attr</code> path to an output mapper; see <a href="#output-mappers">Output mappers</a></td>
 </tr>
 <tr>
 <td><code>identity</code></td>
@@ -5580,9 +5580,18 @@ returning partial results.</p>
             &quot;fullName&quot;: f&quot;{row['first_name']} {row['last_name']}&quot;,
         }
 </code></pre>
-<p><strong><code>ValueFetcherSpec.output_mapper</code> is not resolved.</strong> Startup registers each domain
-fetcher as <code>FetcherDescriptor(spec=..., client=...)</code> with no mapper, so the import path
-on the spec is carried and listed but never applied. No shipped fetcher declares one.</p>
+<p>Declare it on the spec as a <code>module:attr</code> path — a class (instantiated with no arguments)
+or an object:</p>
+<pre><code class="language-python">ValueFetcherSpec(
+    id=&quot;users&quot;,
+    client=&quot;dataset_api&quot;,
+    query=&quot;SELECT id, first_name, last_name FROM users&quot;,
+    output_mapper=&quot;my_package.mappers:UserOutputMapper&quot;,
+)
+</code></pre>
+<p>The path is resolved when the fetcher is registered, so a path that does not import, or
+names something without <code>map(row)</code>, fails startup rather than a request. No shipped
+fetcher declares one.</p>
 <hr />
 <h2 id="reference-boundaries">Reference boundaries</h2>
 <p>Two fetchers every energy-community locale inherits from <code>EnergyCommunityDomain</code>
