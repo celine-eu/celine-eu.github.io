@@ -4965,11 +4965,11 @@
 
 <h1 id="developer-guide">Developer Guide</h1>
 <blockquote>
-<p><strong>Superseded, verified against the code on 2026-08-15.</strong> Parts 1 to 6 below teach a
-runtime generation that no longer exists. Following them produces code that does not
-load: <code>DTRegistry</code>, <code>DTAppRunner</code>, <code>registry.register_app</code>, <em>config/modules.yaml</em> and
-<em>config/values.yaml</em> have no counterpart in <code>src/celine/dt/</code>, and no <code>/apps</code> route is
-mounted.</p>
+<p><strong>Superseded, verified against the code on 2026-09-30.</strong> Parts 1 to 6 and <em>Common
+Patterns</em> below teach a runtime generation that no longer exists. Following them produces
+code that does not load: <code>DTApp</code>, <code>DTRegistry</code>, <code>DTAppRunner</code>, <code>registry.register_app</code>,
+<code>context.values</code>, <code>context.get_component</code>, <em>config/modules.yaml</em> and <em>config/values.yaml</em>
+have no counterpart in <code>src/celine/dt/</code>, and no <code>/apps</code> route is mounted.</p>
 <p><strong>Start with "Building here, today" immediately below.</strong> The tutorial is kept for the
 patterns it explains — mappers, the scenario/parameter split, the anti-patterns section
 at the end — not for its APIs.</p>
@@ -4992,11 +4992,15 @@ declared in <code>config/domains.yaml</code>.</p>
 </tr>
 <tr>
 <td>add a domain, a value fetcher, a custom route or an event handler</td>
-<td>the companion's playbook for adding a domain</td>
+<td><a href="../domains/">domains.md</a>; <code>tests/sample_domain/</code> is a minimal domain laid out like a real one</td>
 </tr>
 <tr>
 <td>write or change a query template</td>
-<td><a href="../values/">values.md</a>, then the companion's knowledge on two-phase rendering — not optional reading</td>
+<td><a href="../values/">values.md</a>, then <a href="../specifications/query-templates/">specifications/query-templates.md</a> on two-phase rendering — not optional reading</td>
+</tr>
+<tr>
+<td>query open reference data with the Digital Twin's own token (<code>identity="service"</code>)</td>
+<td><a href="../values/#reference-boundaries">values.md</a></td>
 </tr>
 <tr>
 <td>know what the service must do</td>
@@ -5004,7 +5008,7 @@ declared in <code>config/domains.yaml</code>.</p>
 </tr>
 <tr>
 <td>run and extend the tests</td>
-<td>the companion's testing playbook</td>
+<td><a href="../README.md#testing">README</a>; tests live in <code>tests/</code></td>
 </tr>
 <tr>
 <td>configure a data client</td>
@@ -5027,7 +5031,7 @@ finished, and a behaviour with no requirement in <code>docs/specifications/</cod
 <hr />
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Python 3.11+</li>
+<li>Python 3.12+</li>
 <li>Understanding of <a href="../concepts/">Concepts</a></li>
 <li>Familiarity with Pydantic models</li>
 </ul>
@@ -5395,7 +5399,7 @@ curl -X POST http://localhost:8000/simulations/my-module.rec-planning/scenarios 
   -H &quot;Content-Type: application/json&quot; \
   -d '{
     &quot;config&quot;: {
-      &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+      &quot;community_id&quot;: &quot;example-rec&quot;,
       &quot;reference_start&quot;: &quot;2024-01-01T00:00:00Z&quot;,
       &quot;reference_end&quot;: &quot;2024-12-31T23:59:59Z&quot;
     },
@@ -5448,7 +5452,7 @@ values:
 <p>Use in code:</p>
 <pre><code class="language-python">data = await context.values.fetch(
     &quot;consumption_timeseries&quot;,
-    {&quot;community_id&quot;: &quot;rec-folgaria&quot;, &quot;start&quot;: &quot;2024-01-01&quot;, &quot;end&quot;: &quot;2024-12-31&quot;}
+    {&quot;community_id&quot;: &quot;example-rec&quot;, &quot;start&quot;: &quot;2024-01-01&quot;, &quot;end&quot;: &quot;2024-12-31&quot;}
 )
 </code></pre>
 <h3 id="option-2-direct-client-access">Option 2: Direct Client Access</h3>
@@ -5583,7 +5587,8 @@ async def simulate(self, scenario, parameters, context):
 </code></pre>
 <hr />
 <h2 id="anti-patterns-to-avoid">Anti-Patterns to Avoid</h2>
-<p>❌ <strong>Don't import infrastructure in domain code</strong></p>
+<p>❌ <strong>Don't import infrastructure in domain code</strong> (a domain's <code>routes/</code> package and
+<code>resolve_entity(entity_id, request)</code> do use FastAPI types; keep the computation itself free of them)</p>
 <pre><code class="language-python"># BAD
 from fastapi import Request
 from sqlalchemy import create_engine
@@ -5604,8 +5609,8 @@ def test_app():
 </code></pre>
 <p>✅ <strong>Do use context for everything</strong></p>
 <pre><code class="language-python"># GOOD
-data = await context.values.fetch(&quot;my-data&quot;, params)
-await context.publish_event(event)
+data = await context.fetch_value(&quot;my-domain.my-data&quot;, params)  # ids are &quot;{domain.name}.{id}&quot;
+await context.publish_event(topic, payload)
 </code></pre>
 <hr />
 <h2 id="next-steps">Next Steps</h2>

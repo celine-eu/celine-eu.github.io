@@ -4694,7 +4694,7 @@ to access external data sources.</p>
 <tr>
 <td><code>config</code></td>
 <td>No</td>
-<td>Configuration dict passed to client constructor</td>
+<td>Configuration dict passed to the client constructor as keyword arguments</td>
 </tr>
 </tbody>
 </table>
@@ -4710,7 +4710,8 @@ answers 503 <code>service_identity_unavailable</code> (<a href="../values/#refer
 REQ-1125, REQ-1129).</p>
 <hr />
 <h2 id="environment-variable-substitution">Environment Variable Substitution</h2>
-<p>Configuration values support environment variable substitution:</p>
+<p>Values under <code>config</code> support environment variable substitution (<code>class</code> and <code>scope</code>
+are read as written):</p>
 <table>
 <thead>
 <tr>
@@ -4762,13 +4763,16 @@ provider. It is injected by signature, not by a YAML key: a client class that ac
 <hr />
 <h2 id="creating-a-custom-client">Creating a Custom Client</h2>
 <h3 id="1-implement-the-client-class">1. Implement the client class</h3>
-<p>For SQL-based data sources, implement the <code>DatasetClient</code> protocol:</p>
+<p>There is no base class or protocol to inherit: a client is any class the value executor
+can call as <code>await client.query(sql=..., limit=..., offset=..., ctx=...)</code>. <code>ctx</code> is the
+request context (the caller's token is <code>ctx.token</code>), or <code>None</code> for a fetcher declared
+<code>identity="service"</code>. <code>DatasetSqlApiClient</code> (<code>src/celine/dt/core/clients/dataset_api.py</code>)
+is the reference implementation:</p>
 <pre><code class="language-python"># my/module/client.py
 from typing import Any, AsyncIterator
-from celine.dt.core.datasets.client import DatasetClient
 
 
-class MyCustomClient(DatasetClient):
+class MyCustomClient:
     def __init__(
         self,
         base_url: str,
@@ -4785,6 +4789,7 @@ class MyCustomClient(DatasetClient):
         sql: str,
         limit: int = 1000,
         offset: int = 0,
+        ctx=None,
     ) -&gt; list[dict[str, Any]]:
         # Implement your query logic
         ...
@@ -4794,6 +4799,7 @@ class MyCustomClient(DatasetClient):
         *,
         sql: str,
         page_size: int = 1000,
+        ctx=None,
     ) -&gt; AsyncIterator[list[dict[str, Any]]]:
         # Implement streaming logic
         ...
@@ -4807,10 +4813,13 @@ class MyCustomClient(DatasetClient):
       timeout: 60.0
 </code></pre>
 <h3 id="3-use-in-value-fetchers">3. Use in value fetchers</h3>
-<pre><code class="language-yaml">values:
-  my_data:
-    client: my_client  # References the client name
-    query: SELECT * FROM data WHERE id = :id
+<p>Fetchers are declared in a domain's <code>get_value_specs()</code> (<a href="../values/">values.md</a>):</p>
+<pre><code class="language-python">ValueFetcherSpec(
+    id=&quot;my_data&quot;,
+    client=&quot;my_client&quot;,  # References the client name
+    query=&quot;SELECT * FROM data WHERE id = :id&quot;,
+    payload_schema={&quot;type&quot;: &quot;object&quot;, &quot;required&quot;: [&quot;id&quot;], &quot;properties&quot;: {&quot;id&quot;: {&quot;type&quot;: &quot;string&quot;}}},
+)
 </code></pre>
 <hr />
 <h2 id="non-sql-clients">Non-SQL Clients</h2>
@@ -4818,42 +4827,46 @@ class MyCustomClient(DatasetClient):
 can be any client-specific format.</p>
 <p>Example for a REST API client:</p>
 <pre><code class="language-python">class RestApiClient:
-    async def query(self, *, sql: str, limit: int, offset: int):
-        # 'sql' could be a URL path or JSON query
+    async def query(self, *, sql: str, limit: int, offset: int, ctx=None):
+        # 'sql' is the rendered query: it could be a URL path or JSON query
         # Parse and execute accordingly
         ...
 </code></pre>
-<pre><code class="language-yaml">values:
-  users:
-    client: rest_api
-    query: /users?status=active  # Not SQL, but client understands it
+<pre><code class="language-python">ValueFetcherSpec(
+    id=&quot;users&quot;,
+    client=&quot;rest_api&quot;,
+    query=&quot;/users?status=active&quot;,  # Not SQL, but client understands it
+)
 </code></pre>
+<p>The query is still rendered by the template engine, so <code>:name</code> and <code>{{ }}</code> keep their
+meaning (<a href="../values/#query-templates">values.md</a>).</p>
 <hr />
 <h2 id="multiple-files">Multiple Files</h2>
-<p>Client configurations can be split across multiple files using glob patterns:</p>
-<pre><code class="language-python"># In settings
-clients_config_paths: List[str] = [
-    &quot;config/clients.yaml&quot;,
-    &quot;config/clients/*.yaml&quot;,
-]
+<p>Client configurations can be split across multiple files using glob patterns. The
+setting is <code>clients_config_paths</code> in <code>src/celine/dt/core/config.py</code> (default
+<code>["config/clients.yaml"]</code>), overridable with the <code>CLIENTS_CONFIG_PATHS</code> environment
+variable as a JSON list:</p>
+<pre><code class="language-bash">CLIENTS_CONFIG_PATHS='[&quot;config/clients.yaml&quot;, &quot;config/clients/*.yaml&quot;]'
 </code></pre>
-<p>Later files override earlier ones when client names collide.</p>
+<p>Matching files are loaded in sorted path order. A client name may be declared only once:
+a second declaration fails startup with <code>ValueError: Client '&lt;name&gt;' already registered</code>.</p>
 <hr />
 <h2 id="verifying-configuration">Verifying Configuration</h2>
 <h3 id="check-loaded-clients-at-startup">Check loaded clients at startup</h3>
-<p>The runtime logs loaded clients:</p>
-<pre><code>INFO - Loaded 2 client specification(s): ['dataset_api', 'weather_api']
-INFO - Registered client: dataset_api
-INFO - Registered client: weather_api
+<p>The runtime logs each registered client, then the list (for the example file above):</p>
+<pre><code>INFO - Registered client: dataset_api (DatasetSqlApiClient)
+INFO - Registered client: weather_api (WeatherClient)
+INFO - Registered 2 client(s): ['dataset_api', 'weather_api']
 </code></pre>
 <h3 id="runtime-access">Runtime access</h3>
-<p>Clients are available on <code>app.state</code>:</p>
+<p>Clients live in the <code>ClientsRegistry</code> on the shared infrastructure:</p>
 <pre><code class="language-python"># In API handlers
-client = request.app.state.dataset_api
+client = request.app.state.infra.clients_registry.get(&quot;dataset_api&quot;)
 
-# Or via registry
-client = request.app.state.clients_registry.get(&quot;dataset_api&quot;)
+# In event handlers
+client = ctx.infra.clients_registry.get(&quot;dataset_api&quot;)
 </code></pre>
+<p><code>get</code> raises <code>KeyError</code> naming the available clients for an unknown name.</p>
 <hr />
 <h2 id="nudging-client">Nudging Client</h2>
 <p>The Digital Twin uses a dedicated client to forward enriched events to the
@@ -4872,16 +4885,15 @@ client = request.app.state.clients_registry.get(&quot;dataset_api&quot;)
 )
 await nudging_admin_client.ingest_event(DigitalTwinEvent.from_dict(payload))
 </code></pre>
-<p>Current Digital Twin use cases include:</p>
-<ul>
-<li>meter transmission anomaly notifications</li>
-<li>flexibility opportunity notifications derived from REC forecast windows</li>
-</ul>
+<p>The current Digital Twin use case is meter transmission anomaly notifications
+(<code>src/celine/dt/domains/participant/nudging/meters.py</code>), which first look up the
+affected assets through the <code>rec_registry_admin</code> client
+(<code>celine.sdk.rec_registry:RecRegistryAdminClient</code>, scope <code>rec-registry.lookup</code>,
+<code>REC_REGISTRY_URL</code>).</p>
 <hr />
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="missing-environment-variable">Missing environment variable</h3>
-<pre><code>ValueError: Client 'my_client' config error: Environment variable 'API_URL' 
-is not set and no default provided
+<pre><code>ValueError: Environment variable 'API_URL' not set, no default provided
 </code></pre>
 <p><strong>Solution</strong>: Set the environment variable or provide a default.</p>
 <h3 id="no-client-credentials">No client credentials</h3>
@@ -4891,10 +4903,11 @@ WARNING - OIDC base_url set but client_id/client_secret missing — token provid
 <p>The clients are still registered, with no token provider. Fetchers that forward the
 caller's token work; a <code>"service"</code> fetcher answers 503 <code>service_identity_unavailable</code> and
 sends nothing.</p>
-<p><strong>Solution</strong>: Configure the Digital Twin's own OIDC client (base URL and
+<p><strong>Solution</strong>: Configure the Digital Twin's own OIDC client (<code>CELINE_OIDC_BASE_URL</code> and
 <code>CELINE_OIDC_CLIENT_SECRET</code>).</p>
 <h3 id="invalid-class-path">Invalid class path</h3>
 <pre><code>ImportError: Cannot import module 'nonexistent.module'
+AttributeError: Module 'my.module' has no attribute 'MissingClient'
 </code></pre>
 <p><strong>Solution</strong>: Verify the class path is correct and the module is installed.</p>
 <hr />

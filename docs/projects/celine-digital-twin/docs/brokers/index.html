@@ -2141,10 +2141,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-publish-events-from-an-app" class="md-nav__link">
+  <a href="#2-publish-from-a-domain-route" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Publish events from an app
+        2. Publish from a domain route
       
     </span>
   </a>
@@ -2280,10 +2280,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#from-runcontext-recommended" class="md-nav__link">
+  <a href="#through-brokerservice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        From RunContext (Recommended)
+        Through BrokerService
       
     </span>
   </a>
@@ -2334,17 +2334,6 @@
     <span class="md-ellipsis">
       
         Using the Broker Directly
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multiple-subscriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multiple Subscriptions
       
     </span>
   </a>
@@ -2447,34 +2436,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Event Schemas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#base-event-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Base Event Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#core-vs-module-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Core vs Module Events
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4638,10 +4599,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-publish-events-from-an-app" class="md-nav__link">
+  <a href="#2-publish-from-a-domain-route" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Publish events from an app
+        2. Publish from a domain route
       
     </span>
   </a>
@@ -4777,10 +4738,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#from-runcontext-recommended" class="md-nav__link">
+  <a href="#through-brokerservice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        From RunContext (Recommended)
+        Through BrokerService
       
     </span>
   </a>
@@ -4831,17 +4792,6 @@
     <span class="md-ellipsis">
       
         Using the Broker Directly
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multiple-subscriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multiple Subscriptions
       
     </span>
   </a>
@@ -4944,34 +4894,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Event Schemas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#base-event-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Base Event Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#core-vs-module-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Core vs Module Events
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -5077,52 +4999,51 @@
 
 <h1 id="event-brokers">Event Brokers</h1>
 <p>This document describes the <strong>event broker</strong> system in the CELINE Digital Twin runtime.</p>
-<p>The broker system enables DT apps to publish computed events to external systems (e.g., MQTT brokers, message queues) and subscribe to incoming events for real-time integration.</p>
+<p>The broker system enables DT domains to publish computed events to external systems (e.g., MQTT brokers, message queues) and subscribe to incoming events for real-time integration.</p>
 <hr />
 <h2 id="overview">Overview</h2>
-<p>The broker infrastructure provides:</p>
+<p>The broker protocol and its MQTT implementation live in <code>celine-sdk</code> (<code>celine.sdk.broker</code>);
+<code>celine.dt.contracts.broker</code> re-exports them unchanged. The runtime adds:</p>
 <ul>
-<li><strong>Unified Broker protocol</strong> for both publishing and subscribing</li>
-<li><strong>MQTT implementation</strong> for IoT/edge scenarios</li>
-<li><strong>Token provider integration</strong> for JWT authentication</li>
-<li><strong>Automatic reconnection</strong> and token refresh</li>
-<li><strong>Configuration-driven</strong> broker setup</li>
+<li><strong><code>BrokerService</code></strong> (<code>celine.dt.core.broker.service</code>) — a named registry of broker
+  instances with a default, <code>connect_all()</code> / <code>disconnect_all()</code>, and <code>publish_event()</code>,
+  <code>subscribe()</code>, <code>unsubscribe()</code> helpers. <code>NullBrokerService</code> is the no-op variant.</li>
+<li><strong><code>load_and_register_brokers</code></strong> (<code>celine.dt.core.broker.loader</code>) — builds one SDK
+  <code>MqttBroker</code> per entry in <code>config/brokers.yaml</code></li>
+<li><strong>Token provider integration</strong> for JWT authentication, with refresh before expiry</li>
+<li><strong>Automatic reconnection</strong>, handled by the SDK <code>MqttBroker</code></li>
 </ul>
+<p>The broker service is <code>infra.broker</code> on the shared <code>Infrastructure</code>. Brokers are loaded and
+connected in the application lifespan, before subscriptions start and before each domain's
+<code>on_startup()</code>, and disconnected on shutdown.</p>
 <hr />
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="1-configure-the-broker">1. Configure the broker</h3>
-<p>Create or edit <code>config/brokers.yaml</code>:</p>
+<p>Edit <code>config/brokers.yaml</code> (the path comes from <code>Settings.brokers_config_paths</code>):</p>
 <pre><code class="language-yaml">brokers:
-  mqtt_local:
-    class: celine.dt.core.broker.mqtt:MqttBroker
+  celine_mqtt:
     enabled: true
+    auth_with_token: true
     config:
-      host: localhost
-      port: 1883
-      topic_prefix: &quot;celine/dt/&quot;
+      host: &quot;${MQTT_HOST:-host.docker.internal}&quot;
+      port: &quot;${MQTT_PORT:-1883}&quot;
 
-default_broker: mqtt_local
+default_broker: celine_mqtt
 </code></pre>
-<h3 id="2-publish-events-from-an-app">2. Publish events from an app</h3>
-<pre><code class="language-python">from celine.dt.contracts.app import DTApp
-from celine.dt.core.context import RunContext
-
-class MyApp(DTApp[MyConfig, MyResult]):
-    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-        result = await self._compute(config)
-
-        # Publish event if broker is available
-        if context.has_broker():
-            event = create_my_event(
-                community_id=config.community_id,
-                indicator=result.indicator,
-            )
-            await context.publish_event(event)
-
-        return result
+<h3 id="2-publish-from-a-domain-route">2. Publish from a domain route</h3>
+<p>Route handlers receive a <code>Ctx</code> (<code>celine.dt.api.context</code>), whose <code>publish()</code> goes through the
+broker service:</p>
+<pre><code class="language-python">async def handler(ctx: ITCommunityCtx = Depends(get_it_community_ctx)):
+    result = await compute(ctx)
+    await ctx.publish(f&quot;celine/dt/example/{ctx.entity.id}&quot;, result)  # Pydantic model or dict
+    return result
 </code></pre>
+<p><code>publish()</code> returns <code>None</code> when no broker service is present. From an event handler, publish
+through <code>ctx.infra.broker.publish_event(topic=..., payload=...)</code>.</p>
 <h3 id="3-subscribe-to-events">3. Subscribe to events</h3>
-<pre><code class="language-python">from celine.dt.core.broker import MqttBroker, MqttConfig, ReceivedMessage
+<p>Declare a handler with <code>@on_event</code>; see <a href="../subscriptions/">Subscriptions</a>. Raw SDK
+subscriptions are also available:</p>
+<pre><code class="language-python">from celine.sdk.broker import MqttBroker, MqttConfig, ReceivedMessage
 
 async def main():
     broker = MqttBroker(MqttConfig(host=&quot;localhost&quot;))
@@ -5130,22 +5051,23 @@ async def main():
     async def handle_message(msg: ReceivedMessage):
         print(f&quot;Received on {msg.topic}: {msg.payload}&quot;)
 
-    async with broker:
-        # Subscribe
-        result = await broker.subscribe(
-            topics=[&quot;dt/my-module/#&quot;],
-            handler=handle_message,
-        )
+    await broker.connect()
+    result = await broker.subscribe(
+        topics=[&quot;celine/dt/example/#&quot;],
+        handler=handle_message,
+    )
 
-        # Keep running to receive messages
-        await asyncio.sleep(3600)
+    # Keep running to receive messages
+    await asyncio.sleep(3600)
 
-        # Cleanup
-        await broker.unsubscribe(result.subscription_id)
+    await broker.unsubscribe(result.subscription_id)
+    await broker.disconnect()
 </code></pre>
 <hr />
 <h2 id="architecture">Architecture</h2>
-<p>The broker provides a unified interface for both publishing and subscribing. DT Apps call <code>publish()</code> to emit events and register handlers for <code>subscribe()</code> callbacks. The <code>MqttBroker</code> manages the connection to Mosquitto with automatic token refresh and reconnection.</p>
+<p>The SDK <code>Broker</code> protocol is used for both publishing and subscribing. <code>BrokerService</code> holds
+the named instances; <code>SubscriptionManager</code> subscribes <code>@on_event</code> handlers through it. The
+SDK <code>MqttBroker</code> manages the connection to Mosquitto with token refresh and reconnection.</p>
 <table>
 <thead>
 <tr>
@@ -5160,11 +5082,11 @@ async def main():
 </tr>
 <tr>
 <td><code>subscribe()</code></td>
-<td>Register a callback handler for a topic pattern</td>
+<td>Register a callback handler for a list of topic patterns</td>
 </tr>
 <tr>
 <td>Token refresh</td>
-<td>Access token refreshed automatically before expiry</td>
+<td>Access token refreshed <code>token_refresh_margin</code> seconds before expiry</td>
 </tr>
 <tr>
 <td>Reconnection</td>
@@ -5179,29 +5101,50 @@ async def main():
 <hr />
 <h2 id="configuration">Configuration</h2>
 <h3 id="broker-configuration-file">Broker Configuration File</h3>
-<p>Location: <code>config/brokers.yaml</code></p>
+<p>Location: <code>config/brokers.yaml</code>. The shipped file:</p>
 <pre><code class="language-yaml">brokers:
-  mqtt_local:
-    class: celine.dt.core.broker.mqtt:MqttBroker
+  celine_mqtt:
     enabled: true
+    auth_with_token: true
     config:
-      host: &quot;${MQTT_HOST:-localhost}&quot;
-      port: ${MQTT_PORT:-1883}
-      topic_prefix: &quot;celine/dt/&quot;
+      host: &quot;${MQTT_HOST:-host.docker.internal}&quot;
+      port: &quot;${MQTT_PORT:-1883}&quot;
+      use_tls: &quot;${MQTT_USE_TLS:-false}&quot;
       keepalive: 60
       clean_session: true
+      token_refresh_margin: 30.0
+      # Static credentials (ignored when token_provider is active):
+      # username: &quot;${MQTT_USERNAME:-}&quot;
+      # password: &quot;${MQTT_PASSWORD:-}&quot;
 
-  mqtt_secure:
-    class: celine.dt.core.broker.mqtt:MqttBroker
-    enabled: false
-    config:
-      host: secure-broker.example.com
-      port: 8883
-      use_tls: true
-      ca_certs: /etc/ssl/certs/ca-certificates.crt
-
-default_broker: mqtt_local
+default_broker: celine_mqtt
 </code></pre>
+<p>Per entry:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>false</code> skips the entry (default <code>true</code>)</td>
+</tr>
+<tr>
+<td><code>auth_with_token</code></td>
+<td><code>true</code> injects the runtime's OIDC token provider (default <code>false</code>)</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td>Keyword arguments for <code>MqttConfig</code>; numeric and boolean strings are coerced</td>
+</tr>
+</tbody>
+</table>
+<p><code>${VAR}</code> and <code>${VAR:-default}</code> are substituted from the environment; a <code>${VAR}</code> with no value
+and no default is an error. Every entry becomes a <code>celine.sdk.broker.MqttBroker</code>: there is no
+<code>class</code> key. Without <code>default_broker</code>, the first registered broker is the default.</p>
 <h3 id="mqttconfig-reference">MqttConfig Reference</h3>
 <table>
 <thead>
@@ -5228,7 +5171,7 @@ default_broker: mqtt_local
 <tr>
 <td><code>client_id</code></td>
 <td>str</td>
-<td>auto</td>
+<td><code>celine-&lt;random&gt;</code></td>
 <td>Unique client identifier</td>
 </tr>
 <tr>
@@ -5286,6 +5229,12 @@ default_broker: mqtt_local
 <td>Seconds between reconnect attempts</td>
 </tr>
 <tr>
+<td><code>max_reconnect_attempts</code></td>
+<td>int</td>
+<td><code>0</code></td>
+<td>Reconnect attempts, <code>0</code> = unlimited</td>
+</tr>
+<tr>
 <td><code>topic_prefix</code></td>
 <td>str</td>
 <td><code>""</code></td>
@@ -5297,9 +5246,16 @@ default_broker: mqtt_local
 <td><code>30.0</code></td>
 <td>Seconds before token expiry to refresh</td>
 </tr>
+<tr>
+<td><code>connect_timeout</code></td>
+<td>float</td>
+<td><code>10.0</code></td>
+<td>Seconds to wait for the connection</td>
+</tr>
 </tbody>
 </table>
 <h3 id="environment-variables">Environment Variables</h3>
+<p>Read by the shipped <code>config/brokers.yaml</code>:</p>
 <table>
 <thead>
 <tr>
@@ -5312,7 +5268,7 @@ default_broker: mqtt_local
 <tr>
 <td><code>MQTT_HOST</code></td>
 <td>MQTT broker hostname</td>
-<td><code>localhost</code></td>
+<td><code>host.docker.internal</code></td>
 </tr>
 <tr>
 <td><code>MQTT_PORT</code></td>
@@ -5320,13 +5276,18 @@ default_broker: mqtt_local
 <td><code>1883</code></td>
 </tr>
 <tr>
+<td><code>MQTT_USE_TLS</code></td>
+<td>Enable TLS</td>
+<td><code>false</code></td>
+</tr>
+<tr>
 <td><code>MQTT_USERNAME</code></td>
-<td>Authentication username</td>
+<td>Authentication username (commented out)</td>
 <td>(none)</td>
 </tr>
 <tr>
 <td><code>MQTT_PASSWORD</code></td>
-<td>Authentication password</td>
+<td>Authentication password (commented out)</td>
 <td>(none)</td>
 </tr>
 </tbody>
@@ -5335,21 +5296,22 @@ default_broker: mqtt_local
 <h2 id="authentication">Authentication</h2>
 <p>The broker supports two authentication methods:</p>
 <h3 id="1-usernamepassword">1. Username/Password</h3>
-<p>Static credentials configured in <code>brokers.yaml</code>:</p>
+<p>Static credentials in the entry's <code>config</code>, used when <code>auth_with_token</code> is off or no token
+provider is configured:</p>
 <pre><code class="language-yaml">brokers:
-  mqtt_local:
-    class: celine.dt.core.broker.mqtt:MqttBroker
+  celine_mqtt:
     config:
       host: broker.example.com
       username: &quot;${MQTT_USERNAME}&quot;
       password: &quot;${MQTT_PASSWORD}&quot;
 </code></pre>
 <h3 id="2-jwt-via-tokenprovider">2. JWT via TokenProvider</h3>
-<p>For OIDC/OAuth2 authentication, pass a <code>TokenProvider</code> to the broker:</p>
-<pre><code class="language-python">from celine.sdk.auth.oidc import OidcClientCredentialsProvider
-from celine.dt.core.broker import MqttBroker, MqttConfig
+<p>At startup the runtime builds an <code>OidcClientCredentialsProvider</code> from <code>settings.oidc</code>
+(<code>create_token_provider</code> in <code>celine.dt.core.auth</code>) and passes it to every broker entry with
+<code>auth_with_token: true</code>. Standalone, pass one to the SDK broker directly:</p>
+<pre><code class="language-python">from celine.sdk.auth import OidcClientCredentialsProvider
+from celine.sdk.broker import MqttBroker, MqttConfig
 
-# Create token provider
 token_provider = OidcClientCredentialsProvider(
     base_url=&quot;https://keycloak.example.com/realms/celine&quot;,
     client_id=&quot;dt-service&quot;,
@@ -5357,7 +5319,6 @@ token_provider = OidcClientCredentialsProvider(
     scope=&quot;openid&quot;,
 )
 
-# Create broker with JWT auth
 broker = MqttBroker(
     config=MqttConfig(
         host=&quot;secure-broker.example.com&quot;,
@@ -5366,46 +5327,36 @@ broker = MqttBroker(
     ),
     token_provider=token_provider,
 )
-
-async with broker:
-    # Both publish and subscribe use JWT auth
-    await broker.publish(message)
-    await broker.subscribe(topics, handler)
 </code></pre>
 <p>When a <code>token_provider</code> is configured:
-- Username is set to <code>"jwt"</code> (convention for JWT auth in Mosquitto)
-- Password is set to the access token
-- Tokens are automatically refreshed before expiry
-- The broker reconnects seamlessly with new credentials</p>
+- Username is set to the access token
+- Password is set to <code>"jwt"</code>
+- Tokens are refreshed <code>token_refresh_margin</code> seconds before expiry
+- The broker reconnects with the new credentials</p>
 <p>See <a href="#token-providers">Token Providers</a> for more details.</p>
 <hr />
 <h2 id="publishing-events">Publishing Events</h2>
-<h3 id="from-runcontext-recommended">From RunContext (Recommended)</h3>
-<p>The simplest way to publish events from an app:</p>
-<pre><code class="language-python">from celine.dt.contracts.broker import QoS
+<h3 id="through-brokerservice">Through BrokerService</h3>
+<p><code>publish_event()</code> accepts a Pydantic model (serialized with <code>model_dump(mode="json")</code>), a dict,
+or a primitive (wrapped as <code>{"value": str(payload)}</code>):</p>
+<pre><code class="language-python">from celine.sdk.broker import QoS
 
-class MyApp(DTApp[MyConfig, MyResult]):
-    async def run(self, config: MyConfig, context: RunContext) -&gt; MyResult:
-        result = await self._compute(config)
-
-        if context.has_broker():
-            event = create_my_event(...)
-
-            # Simple publish
-            await context.publish_event(event)
-
-            # With explicit QoS
-            await context.broker.publish_event(
-                event,
-                qos=QoS.EXACTLY_ONCE,
-                retain=True,
-            )
-
-        return result
+result = await infra.broker.publish_event(
+    topic=&quot;celine/dt/example/entity-1&quot;,
+    payload=event,
+    broker_name=None,          # default broker
+    qos=QoS.EXACTLY_ONCE,
+    retain=True,
+)
+if not result.success:
+    print(result.error)
 </code></pre>
+<p>A publish failure is logged and returned as <code>PublishResult(success=False, error=...)</code>, not
+raised. <code>Ctx.publish(topic, payload, **kw)</code> and <code>RunContext.publish_event(topic, payload,
+broker_name=...)</code> delegate to it.</p>
 <h3 id="using-mqttbroker-directly">Using MqttBroker Directly</h3>
 <p>For standalone usage:</p>
-<pre><code class="language-python">from celine.dt.core.broker import MqttBroker, MqttConfig, BrokerMessage, QoS
+<pre><code class="language-python">from celine.sdk.broker import MqttBroker, MqttConfig, BrokerMessage, QoS
 
 async def standalone_publish():
     broker = MqttBroker(MqttConfig(
@@ -5413,15 +5364,16 @@ async def standalone_publish():
         topic_prefix=&quot;celine/dt/&quot;,
     ))
 
-    async with broker:
-        result = await broker.publish(BrokerMessage(
-            topic=&quot;events/my-event&quot;,
-            payload={&quot;indicator&quot;: &quot;OPTIMAL&quot;},
-            qos=QoS.AT_LEAST_ONCE,
-        ))
+    await broker.connect()
+    result = await broker.publish(BrokerMessage(
+        topic=&quot;events/my-event&quot;,
+        payload={&quot;indicator&quot;: &quot;OPTIMAL&quot;},
+        qos=QoS.AT_LEAST_ONCE,
+    ))
 
-        if result.success:
-            print(f&quot;Published: {result.message_id}&quot;)
+    if result.success:
+        print(f&quot;Published: {result.message_id}&quot;)
+    await broker.disconnect()
 </code></pre>
 <h3 id="qos-levels">QoS Levels</h3>
 <table>
@@ -5452,65 +5404,54 @@ async def standalone_publish():
 </table>
 <hr />
 <h2 id="subscribing-to-events">Subscribing to Events</h2>
+<p>In the runtime, subscriptions are declared with <code>@on_event</code> and materialized by
+<code>SubscriptionManager</code>; see <a href="../subscriptions/">Subscriptions</a>. <code>BrokerService.subscribe(topics=...,
+handler=..., broker_name=..., qos=...)</code> and <code>unsubscribe(subscription_id=..., broker_name=...)</code>
+are the underlying calls.</p>
 <h3 id="using-the-broker-directly">Using the Broker Directly</h3>
-<pre><code class="language-python">from celine.dt.core.broker import MqttBroker, MqttConfig, ReceivedMessage
+<pre><code class="language-python">from celine.sdk.broker import MqttBroker, MqttConfig, QoS, ReceivedMessage
 
 async def main():
     broker = MqttBroker(MqttConfig(host=&quot;localhost&quot;))
 
-    # Define handler
     async def handle_alerts(msg: ReceivedMessage):
         print(f&quot;Alert on {msg.topic}&quot;)
         print(f&quot;Payload: {msg.payload}&quot;)
         print(f&quot;Received at: {msg.timestamp}&quot;)
 
-    async with broker:
-        # Subscribe to multiple topic patterns
-        result = await broker.subscribe(
-            topics=[&quot;dt/alerts/#&quot;, &quot;dt/errors/+/critical&quot;],
-            handler=handle_alerts,
-            qos=QoS.AT_LEAST_ONCE,
-        )
-
-        print(f&quot;Subscribed with ID: {result.subscription_id}&quot;)
-
-        # Do other work while receiving messages...
-        await asyncio.sleep(3600)
-
-        # Unsubscribe when done
-        await broker.unsubscribe(result.subscription_id)
-</code></pre>
-<h3 id="multiple-subscriptions">Multiple Subscriptions</h3>
-<pre><code class="language-python">async with broker:
-    # Each subscription gets its own handler
-    alerts_sub = await broker.subscribe(
-        topics=[&quot;dt/alerts/#&quot;],
+    await broker.connect()
+    # Subscribe to multiple topic patterns
+    result = await broker.subscribe(
+        topics=[&quot;dt/alerts/#&quot;, &quot;dt/errors/+/critical&quot;],
         handler=handle_alerts,
+        qos=QoS.AT_LEAST_ONCE,
     )
 
-    metrics_sub = await broker.subscribe(
-        topics=[&quot;dt/metrics/#&quot;],
-        handler=handle_metrics,
-    )
+    print(f&quot;Subscribed with ID: {result.subscription_id}&quot;)
 
-    # Unsubscribe individually
-    await broker.unsubscribe(alerts_sub.subscription_id)
-    await broker.unsubscribe(metrics_sub.subscription_id)
+    # Do other work while receiving messages...
+    await asyncio.sleep(3600)
+
+    await broker.unsubscribe(result.subscription_id)
+    await broker.disconnect()
 </code></pre>
+<p>Each <code>subscribe()</code> call gets its own handler and <code>subscription_id</code>, and is unsubscribed
+individually.</p>
 <h3 id="topic-wildcards">Topic Wildcards</h3>
 <p>Topic patterns follow MQTT conventions:
 - <code>+</code> matches exactly one level: <code>dt/module/+/event</code> matches <code>dt/module/foo/event</code>
 - <code>#</code> matches zero or more levels (must be last): <code>dt/module/#</code> matches all under <code>dt/module/</code></p>
+<p>When <code>topic_prefix</code> is set, it is prepended to every published topic and subscribed pattern.</p>
 <h3 id="receivedmessage">ReceivedMessage</h3>
 <p>Handlers receive a <code>ReceivedMessage</code> with:</p>
 <pre><code class="language-python">@dataclass(frozen=True)
 class ReceivedMessage:
-    topic: str              # Topic the message arrived on
-    payload: dict[str, Any] # Parsed JSON payload
-    raw_payload: bytes      # Original message bytes
-    qos: QoS                # QoS level of delivery
-    message_id: str | None  # Broker message ID
-    timestamp: datetime     # When received
+    topic: str                      # Topic the message arrived on
+    payload: dict[str, Any]         # Parsed JSON payload
+    raw_payload: bytes              # Original message bytes
+    qos: QoS = QoS.AT_LEAST_ONCE    # QoS level of delivery
+    message_id: str | None = None   # Broker message ID
+    timestamp: datetime | None = None  # When received
 </code></pre>
 <hr />
 <h2 id="token-providers">Token Providers</h2>
@@ -5522,15 +5463,12 @@ from celine.sdk.auth.models import AccessToken
 class TokenProvider(ABC):
     @abstractmethod
     async def get_token(self) -&gt; AccessToken:
-        &quot;&quot;&quot;
-        Return a valid access token.
-        Implementations must refresh or re-authenticate if needed.
-        &quot;&quot;&quot;
+        &quot;&quot;&quot;Return a valid access token (refreshing/re-authenticating as needed).&quot;&quot;&quot;
         ...
 </code></pre>
 <h3 id="built-in-oidcclientcredentialsprovider">Built-in: OidcClientCredentialsProvider</h3>
 <p>For service-to-service authentication using OAuth2 client credentials flow:</p>
-<pre><code class="language-python">from celine.sdk.auth.oidc import OidcClientCredentialsProvider
+<pre><code class="language-python">from celine.sdk.auth import OidcClientCredentialsProvider
 
 provider = OidcClientCredentialsProvider(
     base_url=&quot;https://keycloak.example.com/realms/celine&quot;,
@@ -5546,7 +5484,8 @@ print(f&quot;Access token: {token.access_token}&quot;)
 print(f&quot;Expires at: {token.expires_at}&quot;)
 </code></pre>
 <h3 id="configuration_1">Configuration</h3>
-<p>Configure OIDC via environment variables:</p>
+<p>The runtime's provider comes from <code>Settings.oidc</code> (<code>celine.sdk.settings.models.OidcSettings</code>,
+env prefix <code>CELINE_OIDC_</code>):</p>
 <table>
 <thead>
 <tr>
@@ -5556,25 +5495,34 @@ print(f&quot;Expires at: {token.expires_at}&quot;)
 </thead>
 <tbody>
 <tr>
-<td><code>OIDC_BASE_URL</code></td>
-<td>OIDC issuer URL</td>
+<td><code>CELINE_OIDC_BASE_URL</code></td>
+<td>OIDC issuer URL; empty disables the token provider</td>
 </tr>
 <tr>
-<td><code>OIDC_CLIENT_ID</code></td>
-<td>Client ID</td>
+<td><code>CELINE_OIDC_CLIENT_SECRET</code></td>
+<td>Client secret (default <code>svc-digital-twin</code>, refused in production — see below)</td>
 </tr>
 <tr>
-<td><code>OIDC_CLIENT_SECRET</code></td>
-<td>Client secret</td>
+<td><code>CELINE_OIDC_SCOPE</code></td>
+<td>OAuth2 scope</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_VERIFY_SSL</code></td>
+<td>Verify TLS certificates</td>
 </tr>
 </tbody>
 </table>
+<p>The client id is fixed to <code>svc-digital-twin</code> in <code>celine.dt.core.config</code>.</p>
+<p>In production, <code>create_app</code> refuses to start while <code>CELINE_OIDC_BASE_URL</code> is set and the
+secret is empty or equal to the client id. The environment name is read from <code>APP_ENV</code>,
+<code>CELINE_ENV</code> or <code>ENV</code>; only <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> and <code>ci</code> are
+non-production, and unset means production.</p>
 <h3 id="custom-token-provider">Custom Token Provider</h3>
-<pre><code class="language-python">from celine.sdk.auth.provider import TokenProvider
-from celine.sdk.auth.models import AccessToken
+<pre><code class="language-python">from celine.sdk.auth import AccessToken, TokenProvider
 
 class MyTokenProvider(TokenProvider):
     def __init__(self, api_key: str):
+        super().__init__()
         self._api_key = api_key
 
     async def get_token(self) -&gt; AccessToken:
@@ -5585,77 +5533,44 @@ class MyTokenProvider(TokenProvider):
 </code></pre>
 <hr />
 <h2 id="event-schemas">Event Schemas</h2>
-<p>Events follow a common envelope pattern with type-specific payloads.</p>
-<h3 id="base-event-structure">Base Event Structure</h3>
+<p><code>celine.dt.contracts.events.DTEvent[T]</code> is the common envelope, with a typed Pydantic payload.
+It serializes as:</p>
 <pre><code class="language-json">{
+  &quot;@type&quot;: &quot;example.event-computed&quot;,
   &quot;@context&quot;: &quot;https://celine-project.eu/contexts/dt-event.jsonld&quot;,
-  &quot;@type&quot;: &quot;dt.my-module.my-event&quot;,
   &quot;id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
   &quot;source&quot;: {
-    &quot;app_key&quot;: &quot;my-module.my-app&quot;,
-    &quot;app_version&quot;: &quot;1.0.0&quot;,
-    &quot;module&quot;: &quot;my-module&quot;
+    &quot;domain&quot;: &quot;it-energy-community&quot;,
+    &quot;entity_id&quot;: &quot;example-rec&quot;,
+    &quot;handler&quot;: null,
+    &quot;version&quot;: &quot;unknown&quot;
   },
-  &quot;timestamp&quot;: &quot;2025-01-24T10:30:00Z&quot;,
+  &quot;timestamp&quot;: &quot;2025-01-24T10:30:00+00:00&quot;,
   &quot;correlation_id&quot;: &quot;req-12345&quot;,
   &quot;payload&quot;: { ... },
   &quot;metadata&quot;: {}
 }
 </code></pre>
-<h3 id="core-vs-module-events">Core vs Module Events</h3>
-<p>The <code>celine.dt.contracts.events</code> module provides generic events:</p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>dt.app.execution-started</code></td>
-<td>App execution began</td>
-</tr>
-<tr>
-<td><code>dt.app.execution-completed</code></td>
-<td>App execution finished</td>
-</tr>
-<tr>
-<td><code>dt.app.execution-failed</code></td>
-<td>App execution failed</td>
-</tr>
-<tr>
-<td><code>dt.alert.raised</code></td>
-<td>Alert triggered</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Module-specific events belong in the module</strong>, not in contracts:</p>
-<pre><code class="language-python"># ✅ Correct - import from the module
-from celine.dt.modules.ev_charging.events import create_ev_charging_readiness_event
-
-# ❌ Wrong - don't import module events from contracts
-from celine.dt.contracts.events import create_ev_charging_event
-</code></pre>
+<p><code>correlation_id</code> is omitted when unset. <code>EventSource</code> and <code>EventSeverity</code> are in the same
+module. <code>celine.dt.contracts.events</code> defines no concrete event types: payload models belong
+with the domain that produces or consumes them (for instance the SDK's <code>PipelineRunEvent</code>,
+consumed by <code>celine.dt.domains.participant.events</code>).</p>
 <hr />
 <h2 id="topic-conventions">Topic Conventions</h2>
-<p>Events are published to topics following this convention:</p>
-<pre><code>{prefix}/dt/{module}/{event-type}/{entity-id}
-</code></pre>
-<p>Examples:
-- <code>celine/dt/ev-charging/readiness-computed/rec-folgaria</code>
-- <code>celine/dt/app/execution-completed/my-app</code>
-- <code>celine/dt/alert/raised/threshold-001</code></p>
+<p>No topic scheme is enforced; the publisher chooses the topic, and <code>topic_prefix</code> is prepended
+when set. Topics in use:</p>
+<ul>
+<li><code>celine/pipelines/runs/+</code> — pipeline run events, subscribed by the participant domain</li>
+</ul>
 <hr />
 <h2 id="creating-custom-brokers">Creating Custom Brokers</h2>
-<p>To implement a custom broker (e.g., Kafka, RabbitMQ):</p>
+<p>To implement a custom broker (e.g., Kafka, RabbitMQ), subclass the SDK <code>BrokerBase</code>:</p>
 <pre><code class="language-python">from celine.dt.contracts.broker import (
     BrokerBase,
     BrokerMessage,
     MessageHandler,
     PublishResult,
     QoS,
-    ReceivedMessage,
     SubscribeResult,
 )
 
@@ -5695,12 +5610,9 @@ class KafkaBroker(BrokerBase):
     def is_connected(self) -&gt; bool:
         return self._producer is not None
 </code></pre>
-<p>Register in <code>config/brokers.yaml</code>:</p>
-<pre><code class="language-yaml">brokers:
-  kafka:
-    class: mymodule.kafka:KafkaBroker
-    config:
-      bootstrap_servers: &quot;kafka:9092&quot;
+<p><code>config/brokers.yaml</code> only builds <code>MqttBroker</code>s, so register a custom broker in code, before
+the lifespan runs <code>connect_all()</code>:</p>
+<pre><code class="language-python">infra.broker.register(&quot;kafka&quot;, KafkaBroker(bootstrap_servers=&quot;kafka:9092&quot;))
 </code></pre>
 <hr />
 <h2 id="testing">Testing</h2>
@@ -5741,8 +5653,8 @@ async def test_message_handler():
 <hr />
 <h2 id="next-steps">Next Steps</h2>
 <ul>
-<li><a href="../apps/">Apps</a> - Build Digital Twin applications</li>
-<li><a href="../developer-guide/#part-2-creating-a-component">Components</a> - Build reusable computation units</li>
+<li><a href="../subscriptions/">Subscriptions</a> - React to broker events</li>
+<li><a href="../domains/">Domains</a> - Build Digital Twin domains</li>
 <li><a href="../clients/">Clients</a> - Configure data clients</li>
 <li><a href="../values/">Values API</a> - Configure data fetchers</li>
 </ul>

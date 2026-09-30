@@ -2006,6 +2006,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fetcher-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fetcher Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4354,6 +4365,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fetcher-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fetcher Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4519,29 +4541,38 @@ under its entity scope, plus whatever its <code>routes/</code> package exports. 
 <li><strong>Entity resolution</strong>: Optional validation/enrichment callback</li>
 </ul>
 <h3 id="multi-instance-domains">Multi-Instance Domains</h3>
-<p>Same domain type, different implementations. <code>EnergyCommunityDomain</code> is the shared base:</p>
+<p>Same domain type, different implementations. A domain-type base class holds what every
+locale shares; a locale subclass adds its own rules and data sources:</p>
 <table>
 <thead>
 <tr>
+<th>Base</th>
 <th>Implementation</th>
 <th>Rules</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td><code>EnergyCommunityDomain</code></td>
 <td><code>ITEnergyCommunityDomain</code></td>
 <td>Italian REC rules, GSE incentives</td>
 </tr>
 <tr>
-<td><code>DEEnergyCommunityDomain</code></td>
-<td>German BEG rules, Marktstammdaten</td>
+<td><code>ParticipantDomain</code></td>
+<td><code>ITParticipantDomain</code></td>
+<td>Italian participant, REC registry integration</td>
 </tr>
 <tr>
+<td><code>GridDomain</code></td>
 <td><code>ITGridDomain</code></td>
 <td>Italian grid resilience (wind/heat risks, CIM topology, nowcasting)</td>
 </tr>
 </tbody>
 </table>
+<p>Only Italian implementations exist today. <code>EnergyCommunityDomain</code> itself declares the
+reference-boundary fetchers (<code>boundary_at_point</code>, <code>boundary_shape</code>) so every locale
+inherits them; a locale extends <code>super().get_value_specs()</code> rather than replacing it
+(<a href="docs/decisions/ADR-0003-boundary-fetchers-live-in-the-energy-community-domain/">ADR-0003</a>).</p>
 <h3 id="jinja2-query-templates">Jinja2 Query Templates</h3>
 <p>Value fetcher queries use two-phase rendering:</p>
 <ol>
@@ -4567,7 +4598,7 @@ WHERE community_id = '{{ entity.id }}'
 </code></pre>
 <h3 id="entity-resolution">Entity Resolution</h3>
 <p>Optional per-domain callback:</p>
-<pre><code class="language-python">async def resolve_entity(self, entity_id: str) -&gt; EntityInfo | None:
+<pre><code class="language-python">async def resolve_entity(self, entity_id: str, request: Request) -&gt; EntityInfo | None:
     # Return None → 404
     # Return EntityInfo with metadata → available in templates + context
     record = await self.lookup(entity_id)
@@ -4579,6 +4610,13 @@ WHERE community_id = '{{ entity.id }}'
         metadata={&quot;gse_zone&quot;: record.zone},
     )
 </code></pre>
+<h3 id="fetcher-identity">Fetcher Identity</h3>
+<p>A <code>ValueFetcherSpec</code> sets whose token its client sends: <code>identity="caller"</code> (the default)
+forwards the caller's token, so dataset-api narrows rows to that caller;
+<code>identity="service"</code> uses the Digital Twin's own OIDC client-credentials token, for open
+reference data only (the boundary fetchers). When no service token can be had the client
+raises <code>ServiceIdentityUnavailable</code> (<code>core/clients/errors.py</code>) and the values routes answer
+503 <code>service_identity_unavailable</code>. See <a href="docs/domains/#the-dtdomain-contract">docs/domains.md</a>.</p>
 <h3 id="configuration">Configuration</h3>
 <p>Domains are declared in code and registered via YAML with env expansion:</p>
 <pre><code class="language-yaml"># config/domains.yaml
@@ -4598,39 +4636,57 @@ domains:
 │   ├── simulation.py   # DTSimulation protocol
 │   ├── subscription.py # SubscriptionSpec
 │   ├── values.py       # ValueFetcherSpec
-│   └── broker.py       # Broker protocol
+│   ├── ontology.py     # OntologySpec
+│   ├── infrastructure.py # Infrastructure handed to each domain
+│   ├── routes.py       # Response schemas of the generic routes
+│   └── broker.py       # Broker protocol (re-exported from celine-sdk)
 │
 ├── core/               # Runtime engine (no domain knowledge)
 │   ├── config.py       # Central Settings (env-driven)
 │   ├── context.py      # RunContext (per-request)
 │   ├── loader.py       # YAML loading, import_attr, env substitution
+│   ├── auth.py         # Token provider, incoming JWT parsing
+│   ├── router_discovery.py # Autodiscovers a domain's routes/ package
 │   ├── domain/         # Domain registration and wiring
 │   │   ├── base.py     # DTDomain base class
 │   │   ├── registry.py # DomainRegistry
 │   │   ├── config.py   # YAML domain spec loader
-│   │   └── loader.py   # Import + validate + register
+│   │   ├── loader.py   # Import + validate + register
+│   │   └── routes/     # info, summary, values, simulations, ontology
 │   ├── values/         # Data fetching subsystem
 │   │   ├── template.py # Jinja2 query engine
 │   │   ├── executor.py # Fetch execution
 │   │   └── service.py  # Facade + registry
 │   ├── broker/
-│   │   └── service.py  # BrokerService + NullBrokerService
+│   │   ├── service.py  # BrokerService + NullBrokerService
+│   │   └── subscriptions.py # SubscriptionManager
+│   ├── ontology/
+│   │   └── service.py  # OntologyService
 │   ├── simulation/
 │   │   └── registry.py # SimulationRegistry
 │   └── clients/
 │       ├── registry.py # ClientsRegistry
-│       └── dataset_api.py  # HTTP client for Dataset SQL API
+│       ├── loader.py   # Reads clients.yaml
+│       ├── dataset_api.py  # HTTP client for Dataset SQL API
+│       └── errors.py   # ServiceIdentityUnavailable
 │
 ├── api/                # HTTP layer
 │   ├── discovery.py    # /health, /domains
+│   ├── dependencies.py # JWT user, RunContext dependencies
+│   ├── context.py      # Per-request domain context (Depends)
 │   └── domain_router.py  # Auto-generated per-domain routes
 │
 ├── domains/            # Concrete domain implementations
 │   ├── energy_community/
 │   │   ├── base.py     # EnergyCommunityDomain (shared logic)
-│   │   └── domain.py   # ITEnergyCommunityDomain (Italian REC)
+│   │   ├── domain.py   # ITEnergyCommunityDomain (Italian REC)
+│   │   ├── boundary_fetchers.py # boundary_at_point, boundary_shape
+│   │   ├── manager_fetchers.py  # Aggregates for the REC Manager Dashboard
+│   │   └── routes/     # balance.py
 │   ├── participant/
-│   │   └── domain.py   # ParticipantDomain + ITParticipantDomain
+│   │   ├── domain.py   # ParticipantDomain + ITParticipantDomain
+│   │   ├── nudging/    # Nudging events from meter anomalies
+│   │   └── routes/     # assets.py, balance.py, profile.py
 │   └── grid/
 │       ├── domain.py   # GridDomain + ITGridDomain
 │       ├── queries.py  # Grid-specific query templates
@@ -4644,9 +4700,14 @@ config/
 └── brokers.yaml        # Broker definitions
 
 tests/
+├── sample_domain/      # Minimal domain used by the routing tests
+├── test_boundary_fetchers.py
 ├── test_domain_registry.py
 ├── test_domain_routing.py
+├── test_domain_specs.py
+├── test_manager_fetchers.py
 ├── test_template.py
+├── test_traceability.py
 └── test_values.py
 </code></pre>
 <h2 id="documentation">Documentation</h2>
@@ -4669,7 +4730,7 @@ tests/
 </tr>
 <tr>
 <td><a href="docs/values/">Values</a></td>
-<td>Value fetchers and Jinja2 query templates (surface partly stale; see its banner)</td>
+<td>Value fetchers, their HTTP surface, and Jinja2 query templates</td>
 </tr>
 <tr>
 <td><a href="docs/subscriptions/">Subscriptions</a></td>
@@ -4717,17 +4778,20 @@ which parts no longer describe the code:</p>
 </tr>
 </tbody>
 </table>
-<p>Working on this repository as an agent starts at <code>AGENTS.md</code>, then <code>.agents/</code>.</p>
+<p>Working on this repository as an agent starts at <code>AGENTS.md</code>.</p>
 <h2 id="running">Running</h2>
 <pre><code class="language-bash">uv sync           # or: task setup
 task run
 # Listens on http://localhost:8002
 </code></pre>
+<p>Copy <code>.env.example</code> to <code>.env</code> first: it sets <code>APP_ENV=dev</code>. Unset, the environment is
+production, and production refuses to start with the placeholder service secret
+(<a href="docs/brokers/#configuration-1">Brokers</a>).</p>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q   # or: task test
 </code></pre>
 <p>No external service is required — the dataset client and the JWT check are the only things
-faked. Procedures, coverage and the traps are in <code>.agents/playbooks/testing.md</code>.</p>
+faked.</p>
 <h2 id="what-changed-from-v1">What Changed from v1</h2>
 <table>
 <thead>

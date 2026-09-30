@@ -4369,6 +4369,73 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Startup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Startup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1060-in-a-production-environment-startup-must-fail-when-the-service-client-secret-is-empty-or-equal-to-the-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1060 — In a production environment, startup MUST fail when the service client secret is empty or equal to the client id.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1061-the-environment-is-production-unless-its-name-is-one-of-dev-development-local-test-or-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1061 — The environment is production unless its name is one of dev, development, local, test or ci.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-subscriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event subscriptions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event subscriptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1070-an-on_event-handler-that-names-no-broker-must-subscribe-on-the-broker-its-domains-overridesbroker-names-a-broker-named-on-the-handler-must-take-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1070 — An @on_event handler that names no broker MUST subscribe on the broker its domain's overrides.broker names; a broker named on the handler MUST take precedence.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#domains-this-service-ships" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4467,6 +4534,28 @@ otherwise collide on <code>get_info</code> and generate one method for both.</p>
 only application state <code>create_app</code> sets. Reading it from anywhere else reports an
 empty service with a 200 — a health check that passes while describing nothing.</p>
 </blockquote>
+<hr />
+<h2 id="startup">Startup</h2>
+<h3 id="req-1060-in-a-production-environment-startup-must-fail-when-the-service-client-secret-is-empty-or-equal-to-the-client-id">REQ-1060 — In a production environment, startup MUST fail when the service client secret is empty or equal to the client id.</h3>
+<p>Checked only when client credentials are in use, i.e. <code>CELINE_OIDC_BASE_URL</code> is non-empty.
+The error MUST name the client id and say how to proceed.</p>
+<blockquote>
+<p>A secret equal to the client id is guessable from the client id alone, and the client
+id is public. The rule is the one celine-policies applies before writing a secret into
+a realm.</p>
+</blockquote>
+<h3 id="req-1061-the-environment-is-production-unless-its-name-is-one-of-dev-development-local-test-or-ci">REQ-1061 — The environment is production unless its name is one of <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> or <code>ci</code>.</h3>
+<p>The name is read from <code>APP_ENV</code>, <code>CELINE_ENV</code> or <code>ENV</code>, in that order, case-insensitively.
+An unset or unrecognised name MUST be production.</p>
+<blockquote>
+<p>The strict side is the default: the cost of being strict in development is one
+exported variable; the cost the other way is a guessable secret in a live deployment.</p>
+</blockquote>
+<hr />
+<h2 id="event-subscriptions">Event subscriptions</h2>
+<h3 id="req-1070-an-on_event-handler-that-names-no-broker-must-subscribe-on-the-broker-its-domains-overridesbroker-names-a-broker-named-on-the-handler-must-take-precedence">REQ-1070 — An <code>@on_event</code> handler that names no broker MUST subscribe on the broker its domain's <code>overrides.broker</code> names; a broker named on the handler MUST take precedence.</h3>
+<p>Holds for handlers declared as domain methods and for plain functions found in a domain's
+package. With neither set, the broker service's default applies.</p>
 <hr />
 <h2 id="domains-this-service-ships">Domains this service ships</h2>
 <p>Not requirements — the current registry, recorded so the identifiers above have referents.
