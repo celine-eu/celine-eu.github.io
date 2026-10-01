@@ -4419,7 +4419,7 @@
 </code></pre>
 <hr />
 <h2 id="appscommunity">apps/community</h2>
-<p>REC Manager Dashboard. A SvelteKit application for the managers of a renewable energy community: energy overview, devices and data flow, flexibility, gamification, nudging, alerts, members and feedback. It is separate from <code>apps/webapp</code>, and follows the deployment and role-gate pattern of <code>apps/grid</code>.</p>
+<p>REC Manager Dashboard. A SvelteKit application for the managers of a renewable energy community: energy overview, meters and data flow, flexibility, gamification, nudging, alerts, members and feedback. It is separate from <code>apps/webapp</code>, and follows the deployment and role-gate pattern of <code>apps/grid</code>.</p>
 <p><strong>Routes:</strong></p>
 <table>
 <thead>
@@ -4443,7 +4443,7 @@
 </tr>
 <tr>
 <td><code>/[community]/devices</code></td>
-<td>Device board and technical detail drawer, by <code>device_id</code> only</td>
+<td>Meters (the IoT meters; "Misuratori" / "Medidores"): board and technical detail drawer, by <code>device_id</code> only. The path keeps its name</td>
 </tr>
 <tr>
 <td><code>/[community]/data-flow</code></td>
@@ -4467,7 +4467,7 @@
 </tr>
 <tr>
 <td><code>/[community]/members</code></td>
-<td>Members by name, with invitation and password-reset sends, the meter dialog and the role and area dialog with its area map</td>
+<td>Members by name, with invitation and password-reset sends, the measurements dialog (delivery point, read-only, and meter) and the role and area dialog with its area map</td>
 </tr>
 <tr>
 <td><code>/[community]/feedback</code></td>
@@ -4475,10 +4475,10 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Capabilities:</strong> each REC in <code>GET /api/me</code> carries the caller's capabilities, and a section or action the caller has none for is absent rather than offered and refused. The members page needs <code>members.read</code>; its actions need <code>members.invite</code> (sends), <code>members.meter</code> (attach and detach a meter) and <code>members.edit</code> (role and area). The BFF enforces every one of them again.</p>
+<p><strong>Capabilities:</strong> each REC in <code>GET /api/me</code> carries the caller's capabilities, and a section or action the caller has none for is absent rather than offered and refused. The members page needs <code>members.read</code>; its actions need <code>members.invite</code> (sends), <code>members.meter</code> (review a member's measurements, attach and detach a meter) and <code>members.edit</code> (role and area). The BFF enforces every one of them again.</p>
 <p><strong>Key components:</strong> <code>AreaMap</code>, <code>EnergyChart</code>, <code>ExportButtons</code>, <code>KpiCard</code>, <code>MemberSends</code>. Outcome codes become sentences in <code>src/lib/memberSend.ts</code>, <code>memberMeter.ts</code> and <code>memberProfile.ts</code>, in <code>en</code>, <code>it</code> and <code>es</code>.</p>
 <p><strong>Map:</strong> the role and area dialog draws a read-only map of the REC's areas with <code>leaflet</code> on OpenStreetMap's public tiles (<a href="../decisions/ADR-0001-the-community-area-map-uses-leaflet-and-openstreetmap-tiles/">ADR-0001</a>). The tile server sees the manager's IP address and the tiles shown; no member data is sent to it.</p>
-<p><strong>Privacy:</strong> member names and a member's sensor ids live in page state only, never in browser storage, a URL or an export. A sensor id is typed as free text in the meter dialog; nothing lists or suggests meters.</p>
+<p><strong>Privacy:</strong> member names and a member's delivery points (POD) and sensor ids live in page state only, never in browser storage, a URL or an export. The members list shows only whether a member has a POD and a meter. A POD is read-only here (onboarding owns it); a sensor id is typed as free text in the measurements dialog, and nothing lists or suggests meters.</p>
 <p><strong>Backend:</strong> <code>celine-community</code> BFF (port 8019). See <code>apps/community/README.md</code> for the routes the app reads and what each dialog does.</p>
 <p><strong>Docker image:</strong> <code>ghcr.io/celine-eu/celine-frontend-community</code></p>
 <p><strong>Tests:</strong> <code>pnpm --filter @celine-eu/community test</code> (<code>node --test</code>), <code>check</code> and <code>build</code>; <code>e2e/community-area-map.spec.ts</code> renders the map in Chromium with the BFF and the tile server stubbed.</p>
