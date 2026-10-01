@@ -5969,6 +5969,12 @@ transaction it adds <code>new</code>, removes <code>old</code> and relinks the m
 <p><code>DELETE</code> of a point one of the member's meters still names is <code>409
 delivery_point_linked</code>: correct it with <code>replaces</code>, or detach the meter, first. An
 unknown point is <code>404</code>.</p>
+<p><strong>Duplicates already stored</strong> are not repaired by the check; an operator lists them with
+<code>celine-rec-registry duplicate-delivery-points</code> — a read-only CLI report over
+<code>GET /admin/export</code> (the export grant), one tab-separated line per active holder:
+<code>delivery_point  community  member  active_holders</code>, the point trimmed and lower-cased; exit
+<code>0</code> none, <code>1</code> some, <code>2</code> unreadable. There is no HTTP route for it, as there is none for
+<code>duplicate-sensors</code>.</p>
 <h3 id="putdelete-admincommunitiesckmembersmkassetsasset_key"><code>PUT|DELETE /admin/communities/{ck}/members/{mk}/assets/{asset_key}</code></h3>
 <p>Create, replace or remove one asset. <code>properties</code> is validated against the model
 for <code>asset_type</code> (<code>pv</code>, <code>storage</code>, <code>meter</code>, <code>ev_charger</code>, <code>heat_pump</code>, <code>load</code>),
