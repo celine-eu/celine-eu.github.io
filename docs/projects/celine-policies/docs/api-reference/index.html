@@ -4797,7 +4797,7 @@ identity registry key on — an address change keeps the same account and the sa
 </tr>
 <tr>
 <td><code>email</code></td>
-<td>The new address. A change resets <code>email_verified</code> and has Keycloak email a <code>VERIFY_EMAIL</code> link <strong>to the new address only</strong>; nothing is sent to the old one. The same address, ignoring case and surrounding space, is not a change: nothing is reset and nothing sent</td>
+<td>The new address. A change resets <code>email_verified</code> and has Keycloak email a confirmation link (<code>send-verify-email</code>, the theme's "confirm your email address") <strong>to the new address only</strong>; nothing is sent to the old one. The same address, ignoring case and surrounding space, is not a change: nothing is reset and nothing sent</td>
 </tr>
 </tbody>
 </table>
@@ -4832,7 +4832,7 @@ retry of a call that succeeded is a no-op.</p>
 </tr>
 <tr>
 <td><code>sent</code></td>
-<td>Keycloak emailed <code>VERIFY_EMAIL</code> to the new address, valid <code>CELINE_PROVISIONING_INVITE_LIFESPAN</code> (7 days), with the invitation's redirect</td>
+<td>Keycloak emailed the new address a confirmation link through <code>PUT /users/{id}/send-verify-email</code>, valid <code>CELINE_PROVISIONING_INVITE_LIFESPAN</code> (7 days), with the invitation's redirect. The email is the theme's <code>email-verification</code> ("confirm your email address"), not an actions email, whose fixed subject is the invitation's</td>
 </tr>
 <tr>
 <td><code>not_on_dev_list</code></td>
@@ -4845,8 +4845,8 @@ back as it was read — names, address and <code>email_verified</code> — and t
 <code>502 send_failed</code>, so a retry of the same request is a change again and sends. The
 verification is <strong>outside the invitation cooldown</strong>: it is guarded by the change itself
 (repeating the call sends nothing), it goes to a recipient nothing was sent to before, and
-it neither waits for nor starts the cooldown. It is only <code>VERIFY_EMAIL</code>: an account that has
-no password yet still needs <code>POST …/invitation</code>.</p>
+it neither waits for nor starts the cooldown. It only confirms the address: an account that
+has no password yet still needs <code>POST …/invitation</code>.</p>
 <p>The checks run in this order, before anything is written: <code>community_not_found</code>,
 <code>member_not_found</code>, <code>account_not_found</code>, <code>account_disabled</code>, <code>email_taken</code>.</p>
 <table>

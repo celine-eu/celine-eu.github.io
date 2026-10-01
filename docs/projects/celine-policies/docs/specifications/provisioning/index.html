@@ -4191,7 +4191,8 @@ writes them on the account the registry names for <code>(community, key)</code>,
 <li><strong>The username is unchanged</strong>, and a body naming one is <code>422</code>.</li>
 <li><strong>An address another account holds is <code>409 email_taken</code></strong>, compared case-insensitively,
   and nothing is written.</li>
-<li><strong>An address change resets <code>emailVerified</code>, and the <code>VERIFY_EMAIL</code> link goes to the new
+<li><strong>An address change resets <code>emailVerified</code>, and the confirmation link — Keycloak's
+  <code>send-verify-email</code>, worded "confirm your email address", never the invitation — goes to the new
   address only.</strong> An unchanged address resets nothing and sends nothing; a names-only update
   leaves the address and its verification as they were.</li>
 <li>It needs <code>provisioning.participants.write</code> (or <code>provisioning.admin</code>), like every other
