@@ -4883,7 +4883,8 @@ app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cance
 <h2 id="rec_registry-registry-mirror"><code>rec_registry</code> — registry mirror</h2>
 <p>Full-replace mirror of the CELINE REC Registry API into <code>raw.rec_registry_mirror</code>, every
 5 minutes. One row per user/community pair of an active member: area, role, member type,
-topology nodes, the area's boundary id, delivery points, meter sensors. Python-only; no dbt,
+topology nodes, the area's boundary id, delivery points in service (a point flagged
+<code>active: false</code> is left out), meter sensors. Python-only; no dbt,
 no Meltano. OIDC-authenticated. Each run logs the areas whose <code>topology_ids[1]</code> is not their
 boundary id (it flags them; it does not refuse the export).</p>
 <blockquote>
