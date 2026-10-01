@@ -3,6 +3,9 @@ site_url: https://celine-eu.github.io
 
 theme:
   name: material
+  # No Google Fonts: each visitor's browser would otherwise fetch them from Google.
+  # The theme falls back to the system font stack.
+  font: false
   features:
     - navigation.tabs
     - navigation.sections

@@ -5,7 +5,7 @@ hide:
 ---
 
 <div style="text-align: center; padding: 2rem 0 1rem;">
-  <img src="https://images.squarespace-cdn.com/content/v1/67a4e789573cf87649e4f3be/d00976b5-4cfb-48a6-9a88-cf0228c5ac21/Celine_Logo_Color.png" alt="CELINE" style="max-width: 260px;" />
+  <img src="assets/images/celine-logo.png" alt="CELINE" style="max-width: 260px;" />
 </div>
 
 # Cross-sectorial integrated digital services Enabling energy Localized INnovation and community Empowerment
@@ -115,7 +115,7 @@ CELINE brings together 14 organisations across six European countries.
 ---
 
 <div style="display: flex; align-items: center; gap: 1.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--md-default-fg-color--lightest); font-size: 0.8rem; color: var(--md-default-fg-color--light);">
-  <img src="https://images.squarespace-cdn.com/content/v1/67a4e789573cf87649e4f3be/d216f5f3-cd7b-4dbd-b7aa-10b44cd6b39d/EU_Flag%404x.png" alt="Co-funded by the European Union" style="height: 48px; flex-shrink: 0;" />
+  <img src="assets/images/eu-flag.png" alt="Co-funded by the European Union" style="height: 48px; flex-shrink: 0;" />
   <span>
     Funded by the European Union — Horizon Europe, Grant Agreement No. 101160667.<br/>
     Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or CINEA.
