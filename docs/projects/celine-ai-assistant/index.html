@@ -4376,7 +4376,7 @@
 
 
 <h1 id="celine-ai-assistant">CELINE AI Assistant</h1>
-<p>FastAPI backend for the CELINE AI assistant. Implements a RAG (Retrieval-Augmented Generation) pipeline using LlamaIndex, Qdrant, and OpenAI. Provides streaming chat, conversation history, file uploads with vision support, and JWT authentication.</p>
+<p>FastAPI backend for the CELINE AI assistant. Implements a RAG (Retrieval-Augmented Generation) pipeline using LlamaIndex, Qdrant, and any OpenAI-compatible model endpoint. Provides streaming chat, conversation history, file uploads with vision support, and JWT authentication.</p>
 <p>The chat UI is part of <a href="https://github.com/celine-eu/celine-frontend">celine-frontend</a> (<code>apps/assistant</code>).</p>
 <h2 id="features">Features</h2>
 <ul>
@@ -4385,7 +4385,7 @@
 <li>Streaming chat via Server-Sent Events (SSE) with tool progress events</li>
 <li>Conversation history persisted in PostgreSQL</li>
 <li>File upload with automatic RAG ingestion into Qdrant</li>
-<li>Vision support for image attachments (captioning via OpenAI vision model)</li>
+<li>Vision support for image attachments (captioning via the vision model)</li>
 <li>Automatic sync of <code>celine-training-materials</code> from a Git repository</li>
 <li>JWT authentication (trusted headers from oauth2_proxy or JWKS verification)</li>
 <li>Admin endpoints for system uploads and training materials sync</li>
@@ -4407,24 +4407,39 @@ task run
 </thead>
 <tbody>
 <tr>
-<td><code>OPENAI_API_KEY</code></td>
+<td><code>LLM_BASE_URL</code></td>
 <td>—</td>
-<td>OpenAI API key (required)</td>
+<td>OpenAI-compatible endpoint for every model call (required, no default)</td>
 </tr>
 <tr>
-<td><code>OPENAI_CHAT_MODEL</code></td>
-<td><code>gpt-5.4-mini</code></td>
-<td>Chat completion model</td>
+<td><code>LLM_API_KEY</code></td>
+<td>—</td>
+<td>Key for that endpoint, if it needs one</td>
 </tr>
 <tr>
-<td><code>OPENAI_EMBED_MODEL</code></td>
-<td><code>text-embedding-3-small</code></td>
-<td>Embedding model</td>
+<td><code>LLM_CHAT_MODEL</code></td>
+<td>—</td>
+<td>Chat model, with tool calling (required)</td>
 </tr>
 <tr>
-<td><code>OPENAI_VISION_MODEL</code></td>
-<td><code>gpt-4o-mini</code></td>
+<td><code>LLM_VISION_MODEL</code></td>
+<td>the chat model</td>
 <td>Vision model for image captioning</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_BASE_URL</code> / <code>LLM_EMBED_API_KEY</code></td>
+<td>the chat endpoint</td>
+<td>Separate endpoint for embeddings</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_MODEL</code></td>
+<td>—</td>
+<td>Embedding model (required)</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_DIMENSIONS</code></td>
+<td>asked of the model</td>
+<td>Vector size of the collection</td>
 </tr>
 <tr>
 <td><code>QDRANT_URL</code></td>
@@ -4591,7 +4606,7 @@ task run
 </tbody>
 </table>
 <h2 id="skills">Skills</h2>
-<p>The assistant uses a modular skill system. Each skill exposes OpenAI function-calling tools that the LLM invokes autonomously during conversation. Skills are registered per-request based on available API endpoints and user authentication.</p>
+<p>The assistant uses a modular skill system. Each skill exposes OpenAI-style function-calling tools that the LLM invokes autonomously during conversation. Skills are registered per-request based on available API endpoints and user authentication.</p>
 <table>
 <thead>
 <tr>
