@@ -4336,6 +4336,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-0136-the-duplicate-delivery-points-read-answers-the-whole-list-or-raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0136 — the duplicate delivery points read answers the whole list, or raises
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4396,7 +4407,7 @@ answer the service gives on purpose. The rest of the wrapper — every single-id
 writes, the user-scoped client — is not specified yet, except the <strong>meter and profile
 writes</strong> (REQ-0125–REQ-0128), the <strong>area and topology writes</strong> of onboarding's template sync
 (REQ-0129–REQ-0131, REQ-0133), the <strong>per-field member writes and the delivery-point
-writes</strong> (REQ-0134, REQ-0135), and how the <strong>self-service reads</strong> raise a registry refusal
+writes</strong> (REQ-0134, REQ-0135), the <strong>duplicate delivery points read</strong> (REQ-0136), and how the <strong>self-service reads</strong> raise a registry refusal
 (REQ-0132), all at the end of this page.</p>
 <p>The service's own behaviour belongs to <code>rec-registry</code>, not here; where a requirement below
 mirrors one of its, the identifier is named so the two can be kept honest.</p>
@@ -4639,6 +4650,17 @@ member does not have. A <code>404</code> on delete is not read as "already remov
 <p>The undecoded <code>upsert_delivery_point</code> keeps its contract — it returns the response, <code>409</code>
 included — and gains the same keyword-only <code>replaces</code>, defaulting to <code>None</code>, which sends no
 query: an existing call sends exactly what it sent before.</p>
+<h3 id="req-0136-the-duplicate-delivery-points-read-answers-the-whole-list-or-raises">REQ-0136 — the duplicate delivery points read answers the whole list, or raises</h3>
+<p><code>RecRegistryAdminClient.list_duplicate_delivery_points</code> sends
+<code>GET /admin/communities/{community_key}/delivery-points/duplicates</code> and answers the generated
+<code>DeliveryPointDuplicatesSchema</code> — <code>community_key</code> and <code>items</code>, each item with
+<code>delivery_point</code> (the registry's compared form, trimmed and lower-cased), <code>holders</code>
+(<code>member_key</code> and the stored <code>id</code>, this community only), <code>held_elsewhere</code> and
+<code>active_holders</code> — as the registry answers it (<code>rec-registry</code> REQ-0087). The route is not
+paginated, so the wrapper sends one request and adds no paging; it does not re-sort, filter
+or normalise. An empty <code>items</code> is an answer. Anything but <code>200</code> raises under REQ-0127,
+<strong>including</strong> the uncoded <code>404</code> for a community that does not exist, so a missing community
+is never read as one with no duplicates. It needs <code>rec-registry.read</code>.</p>
 <hr />
 <h2 id="self-service-reads">Self-service reads</h2>
 <h3 id="req-0132-a-refused-self-service-read-raises-recregistryapierror-with-the-code">REQ-0132 — a refused self-service read raises <code>RecRegistryApiError</code> with the code</h3>
