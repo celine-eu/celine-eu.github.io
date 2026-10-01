@@ -4528,7 +4528,7 @@ not how often it changes:</p>
 </tr>
 <tr>
 <td><strong>organizations and users</strong>: REC organizations, org groups, participants, memberships</td>
-<td>the provisioning service (<code>POST /reconcile/{community}</code> creates a REC's organization, org roles and groups, even with no members; <code>PUT /participants</code> files a participant), <code>keycloak set-user-organization</code> (a manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>keycloak sync-orgs</code>; <code>keycloak sync-users</code> in local development only — see <a href="docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a></td>
+<td>the provisioning service (<code>POST /reconcile/{community}</code> creates a REC's organization, org roles and groups, even with no members; <code>PUT /participants</code> files a participant, <code>PATCH /participants</code> corrects their names or address), <code>keycloak set-user-organization</code> (a manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>keycloak sync-orgs</code>; <code>keycloak sync-users</code> in local development only — see <a href="docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a></td>
 <td>the registry, owners and REC YAML</td>
 </tr>
 </tbody>
@@ -4600,7 +4600,7 @@ curl http://localhost:8009/health
 │   │   ├── bundle.py       # Reading a REC bundle (file or registry: same parser)
 │   │   ├── registry.py     # GET /admin/export on the live rec-registry
 │   │   ├── service.py      # What each route does, with no FastAPI in it
-│   │   ├── routes.py       # PUT /participants, invitation, disable, reconcile
+│   │   ├── routes.py       # PUT/PATCH /participants, invitation, disable, reconcile
 │   │   ├── invitation.py   # Who may be emailed, which actions, shared with sync-users
 │   │   ├── api_models.py   # Wire models; the one place keycloak_id becomes user_id
 │   │   ├── config.py       # ProvisioningSettings

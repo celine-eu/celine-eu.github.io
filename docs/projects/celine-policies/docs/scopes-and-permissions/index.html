@@ -5336,6 +5336,22 @@
 <td>Change one member's role and area, nothing else. <code>members.write</code> and <code>.admin</code> also satisfy it (the registry's rule)</td>
 </tr>
 <tr>
+<td><code>rec-registry.members.name.write</code></td>
+<td>Change one member's name, nothing else. <code>members.write</code> and <code>.admin</code> also satisfy it</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.role.write</code></td>
+<td>Change one member's role, nothing else. <code>members.profile.write</code>, <code>members.write</code> and <code>.admin</code> also satisfy it</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.area.write</code></td>
+<td>Change one member's area, nothing else. <code>members.profile.write</code>, <code>members.write</code> and <code>.admin</code> also satisfy it</td>
+</tr>
+<tr>
+<td><code>rec-registry.members.delivery_points.write</code></td>
+<td>Add, replace and remove one member's delivery points, nothing else. <code>members.write</code> and <code>.admin</code> also satisfy it</td>
+</tr>
+<tr>
 <td><code>rec-registry.community.write</code></td>
 <td>Update community metadata, areas and topology</td>
 </tr>
@@ -5391,6 +5407,10 @@ scope at all. These scopes exist for the other subject type — service accounts
 <tr>
 <td><code>onboarding.submissions.review</code></td>
 <td>Take in charge, approve, reject, reopen</td>
+</tr>
+<tr>
+<td><code>onboarding.submissions.revise</code></td>
+<td>Correct a submission's POD, names or email by tracked revision</td>
 </tr>
 <tr>
 <td><code>onboarding.submissions.purge</code></td>
@@ -5571,7 +5591,7 @@ the other.</p>
 </tr>
 <tr>
 <td><code>provisioning.participants.write</code></td>
-<td>Create or update one participant's account, email them an invitation or a password reset, disable it</td>
+<td>Create or update one participant's account, correct its names or address, email them an invitation or a password reset, disable it</td>
 </tr>
 <tr>
 <td><code>provisioning.reconcile</code></td>
@@ -5662,6 +5682,8 @@ optional_scopes:
   - onboarding.members.invite           # &quot;Send invitation&quot; / &quot;Reset password&quot;, through onboarding
   - rec-registry.assets.write           # attach or detach a member's meter
   - rec-registry.members.profile.write  # change a member's role and area
+  - rec-registry.members.role.write     # change a member's role (its own route)
+  - rec-registry.members.area.write     # change a member's area (its own route)
 </code></pre>
 <p><code>rec-registry.read</code> also gives the members page its names. They are read per request and never
 persisted, and no email, user id, DID or supply point leaves the BFF process. The one registry
@@ -5677,6 +5699,10 @@ call; which manager may press, and for which REC, is the dashboard's policy
 (<a href="../decisions/ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/">ADR-0011</a>).
 Every registry grant is registry-wide. <code>rec-registry.members.write</code> stays refused: it would also
 rewrite a member's user id, DID and status.</p>
+<p><code>rec-registry.members.role.write</code> and <code>.area.write</code> are the per-field successors of
+<code>profile.write</code>, one per registry route (<a href="../specifications/client-grants/">REQ-0008</a>), optional
+for the same reason. <code>profile.write</code> stays until the BFF has moved to them; removing it first
+would break the profile dialog.</p>
 <p><code>onboarding.members.invite</code> is <strong>optional, not default</strong>. The Digital Twin forwards this
 client's default-scope token to dataset-api, and a send capability must not travel there. The
 BFF requests the scope only for its call to onboarding, and forwards the manager's own token
@@ -5694,6 +5720,8 @@ default_scopes:
   - provisioning.participants.write
   - rec-registry.members.write   # approval registers the member; the dataspace step writes its DID
   - rec-registry.lookup          # the POD export reads back what each consenting DID holds
+  - rec-registry.members.name.write            # an operator's correction of a member's name
+  - rec-registry.members.delivery_points.write # an operator's correction of a member's POD
   - digital-twin.values.read     # resolve a supply address to its boundary; validate a template's boundary ids
   - rec-registry.read            # the registry sync's dry run, prune count and drift check
 optional_scopes:                 # requested per call, only by the registry sync

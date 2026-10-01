@@ -4189,6 +4189,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0085-a-delivery-point-has-at-most-one-active-holder-across-the-whole-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0085 — a delivery point has at most one active holder across the whole registry
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4275,7 +4286,8 @@ keys resolve, so a relationship naming an absent asset is stored as given.</p>
 <code>address</code>, <code>tariff</code> and <code>active</code> (defaulting to true).</p>
 <p>They live in one JSONB column on the member, which is the reason every write touching them
 merges by identity rather than replacing the field (REQ-0027) — and the reason they are
-absent from the patch model entirely.</p>
+absent from the patch model entirely. An active member holds each of its points alone
+(REQ-0085).</p>
 <h3 id="req-0018-the-schema-version-is-read-and-reported-and-never-refuses">REQ-0018 — the schema version is read and reported, and never refuses</h3>
 <p><code>schema_version</code> says which schema under <code>schemas/community/</code> a bundle conforms to;
 <code>version</code> says the format of the envelope around it. They are different questions, and
@@ -4349,7 +4361,8 @@ is documentation and is not enforced (REQ-0018).</p>
 <p><code>role</code> must be one of <code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, <code>admin</code>, and <code>status</code> one
 of <code>pending</code>, <code>active</code>, <code>suspended</code>, <code>inactive</code> — on creating a member, on both member
 <code>PATCH</code> routes — the general one, which keeps accepting <code>role</code> and <code>area</code> for
-<code>members.write</code> holders (REQ-0024), and the profile route (REQ-0070) — on the status route,
+<code>members.write</code> holders (REQ-0024), and the profile route (REQ-0070) — on the role and area
+<code>PUT</code> routes (REQ-0083), on the status route,
 and in a bundle. <code>area</code> must be a key of the community's <code>areas</code> — in a bundle, of the
 bundle's own <code>community.areas</code>, since the import replaces the community. A value outside the
 set answers <code>422</code> with the code of REQ-0073 — <code>invalid_role</code>, <code>invalid_status</code> or
@@ -4482,6 +4495,39 @@ the next write, not the past ones; <code>celine-rec-registry duplicate-sensors</
 <p>Two holders double-count every reading of the sensor in every consumer that joins readings to
 members, and nothing downstream can tell. Decided in
 <a href="../../decisions/ADR-0004-a-sensor-has-one-active-holder-and-detaching-deletes-the-meter/">ADR-0004</a>.</p>
+<h3 id="req-0085-a-delivery-point-has-at-most-one-active-holder-across-the-whole-registry">REQ-0085 — a delivery point has at most one active holder across the whole registry</h3>
+<p>No two members whose status is <code>active</code> list a delivery point with the same id, in one
+community or in two. The comparison is on the id <strong>trimmed and lower-cased</strong>: trimmed by the
+one character set REQ-0069 defines (<code>core/sensor_id.py</code>), in Python and in the SQL that
+compares rows already stored alike, and lower-cased by Python's <code>str.lower</code> and Postgres
+<code>lower</code>. The id is stored as the caller spelled it. A member whose status is not <code>active</code>
+holds nothing, so deactivating a member releases its points; a point's own <code>active</code> flag is
+not read — an active member holds every point it lists.</p>
+<p>Checked on every path that can make an active member hold a point: the delivery-point <code>PUT</code>,
+with or without <code>replaces</code> (REQ-0027, REQ-0084); creating a member with delivery points
+(REQ-0020); a status change to <code>active</code> through the status route or <code>PATCH</code> (REQ-0024,
+REQ-0025); and the bundle import (REQ-0074). A clash answers <code>409</code> with the code
+<strong><code>delivery_point_held</code></strong> (REQ-0073), in the body <code>sensor_held</code> uses, and changes nothing;
+reactivation leaves the status as it was. A <code>PUT</code> to a member who is not active is not
+checked — its reactivation is. Re-sending a member's own point is not a clash.</p>
+<p><strong>Check and write run under one transaction-scoped advisory lock keyed on the compared id</strong>
+(a namespace of its own, apart from the sensors'), after the member's row lock and after any
+sensor locks the same write takes: community row, member rows, sensor locks, delivery-point
+locks — the order every write takes them in. Two writers giving one point to two active
+members at once get one success and one <code>delivery_point_held</code>.</p>
+<p><strong>The answer names nobody outside the community addressed</strong>, as REQ-0069's: a holder inside
+it may be named by member key, a holder in another community is named neither by member nor
+by community. On the import the refusal is <code>422</code> <code>delivery_point_held</code>, naming this bundle's
+member keys and never the point's id; the replaced community's own rows do not count; a dry
+run lists it in <code>refusals</code>.</p>
+<p><strong>Existing duplicates are not repaired, and do not block unrelated writes.</strong> The check
+refuses the next write that would make one, not the past ones; a duplicate already stored
+blocks re-sending either holder's point, reactivating either holder, and re-importing either
+community, until it is resolved. <code>celine-rec-registry duplicate-delivery-points</code> lists them
+(REQ-0086).</p>
+<p>A mistyped POD that happens to be somebody else's is the case this catches: two holders would
+attribute one supply to two people in every consumer that joins supply to members. Decided
+in <a href="../../decisions/ADR-0012-a-delivery-point-has-one-active-holder-and-is-corrected-in-one-write/">ADR-0012</a>.</p>
 
 
 

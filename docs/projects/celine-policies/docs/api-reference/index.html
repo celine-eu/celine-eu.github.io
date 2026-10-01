@@ -4570,6 +4570,10 @@ the scope is <code>403</code>. <code>provisioning.admin</code> satisfies any of 
 <td><code>provisioning.participants.write</code></td>
 </tr>
 <tr>
+<td><code>PATCH /participants/{community}/{key}</code></td>
+<td><code>provisioning.participants.write</code></td>
+</tr>
+<tr>
 <td><code>POST /participants/{community}/{key}/invitation</code></td>
 <td><code>provisioning.participants.write</code></td>
 </tr>
@@ -4720,6 +4724,134 @@ in once with the password they chose.</p>
 <p><strong>The registry is not written from here.</strong> The caller writes the member row, with the
 username this call returned — which keeps member creation single-writer and the step order
 fail-closed: the login exists before the row that keys on it.</p>
+<h2 id="patch-participantscommunitykey">PATCH /participants/{community}/{key}</h2>
+<p>Correct a member's names or email address <strong>on the account they already have</strong>. The member
+is resolved through the registry, as for the invitation: <code>Member.user_id</code> is the username.
+<strong>It never creates an account and never changes the username</strong>, which the registry and the
+identity registry key on — an address change keeps the same account and the same DID
+(<a href="../specifications/provisioning/">REQ-0007</a>).</p>
+<p><strong>Request:</strong> at least one field.</p>
+<pre><code class="language-json">{&quot;first_name&quot;: &quot;Anna&quot;, &quot;last_name&quot;: &quot;Rossi&quot;, &quot;email&quot;: &quot;a.new@example.org&quot;}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_name</code>, <code>last_name</code></td>
+<td>Written as given. Omitted or <code>null</code>: not touched</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>The new address. A change resets <code>email_verified</code> and has Keycloak email a <code>VERIFY_EMAIL</code> link <strong>to the new address only</strong>; nothing is sent to the old one. The same address, ignoring case and surrounding space, is not a change: nothing is reset and nothing sent</td>
+</tr>
+</tbody>
+</table>
+<p>An empty body, a body whose fields are all <code>null</code>, an empty string, or any other field —
+<code>username</code> included — is <code>422</code>.</p>
+<p><strong>Response (200):</strong></p>
+<pre><code class="language-json">{
+  &quot;user_id&quot;: &quot;3f1c…&quot;,
+  &quot;username&quot;: &quot;ex-00001&quot;,
+  &quot;first_name&quot;: &quot;Anna&quot;,
+  &quot;last_name&quot;: &quot;Rossi&quot;,
+  &quot;email&quot;: &quot;a.new@example.org&quot;,
+  &quot;email_verified&quot;: false,
+  &quot;changed&quot;: [&quot;first_name&quot;, &quot;last_name&quot;, &quot;email&quot;],
+  &quot;verification&quot;: &quot;sent&quot;
+}
+</code></pre>
+<p>The account as it now is. <code>changed</code> names the fields this call wrote, and is empty when
+every value given was already the account's — nothing was written and nothing sent, so a
+retry of a call that succeeded is a no-op.</p>
+<table>
+<thead>
+<tr>
+<th><code>verification</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>not_requested</code></td>
+<td>The address did not change</td>
+</tr>
+<tr>
+<td><code>sent</code></td>
+<td>Keycloak emailed <code>VERIFY_EMAIL</code> to the new address, valid <code>CELINE_PROVISIONING_INVITE_LIFESPAN</code> (7 days), with the invitation's redirect</td>
+</tr>
+<tr>
+<td><code>not_on_dev_list</code></td>
+<td><code>CELINE_PROVISIONING_EMAIL_MODE=dev</code> and the new address is not on <code>EMAIL_DEV_RECIPIENTS</code>: written, not emailed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A failed send undoes the call.</strong> If Keycloak does not send the link, the account is put
+back as it was read — names, address and <code>email_verified</code> — and the answer is
+<code>502 send_failed</code>, so a retry of the same request is a change again and sends. The
+verification is <strong>outside the invitation cooldown</strong>: it is guarded by the change itself
+(repeating the call sends nothing), it goes to a recipient nothing was sent to before, and
+it neither waits for nor starts the cooldown. It is only <code>VERIFY_EMAIL</code>: an account that has
+no password yet still needs <code>POST …/invitation</code>.</p>
+<p>The checks run in this order, before anything is written: <code>community_not_found</code>,
+<code>member_not_found</code>, <code>account_not_found</code>, <code>account_disabled</code>, <code>email_taken</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th><code>code</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>404</td>
+<td><code>community_not_found</code></td>
+<td>The registry has no community under <code>{community}</code></td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>member_not_found</code></td>
+<td>The community has no <strong>active</strong> member under <code>{key}</code></td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>account_not_found</code></td>
+<td>The registry has the member, and the realm has no account for it. Nothing is created</td>
+</tr>
+<tr>
+<td>409</td>
+<td><code>account_disabled</code></td>
+<td>The account is disabled; nothing was changed</td>
+</tr>
+<tr>
+<td>409</td>
+<td><code>email_taken</code></td>
+<td>Another account holds the address (case-insensitive), or Keycloak refused it as a duplicate. Nothing was changed</td>
+</tr>
+<tr>
+<td>422</td>
+<td>—</td>
+<td>No field, an empty one, or a field that is not one of the three</td>
+</tr>
+<tr>
+<td>502</td>
+<td><code>send_failed</code></td>
+<td>Keycloak did not send the verification; the account was put back</td>
+</tr>
+<tr>
+<td>502</td>
+<td><code>registry_unavailable</code>, <code>provisioning_failed</code></td>
+<td>A dependency failed</td>
+</tr>
+</tbody>
+</table>
+<p>The service function behind it, <code>update_account(username, …)</code>, takes a username and reads
+no registry, so the member's own self-service can use the same rules later.</p>
 <h2 id="post-participantscommunitykeyinvitation">POST /participants/{community}/{key}/invitation</h2>
 <p>Email a member an invitation or a password reset, <strong>as the caller names it</strong>. The member is
 resolved through the registry, whose <code>Member.user_id</code> is the username. <strong>No password is
@@ -4917,7 +5049,7 @@ FastAPI's own validation body, <code>{"detail": [ … ]}</code>.</p>
 <tr>
 <td>409</td>
 <td><code>account_disabled</code></td>
-<td>An invitation for a disabled account</td>
+<td>An invitation for, or an update of, a disabled account</td>
 </tr>
 <tr>
 <td>409</td>
@@ -4935,9 +5067,14 @@ FastAPI's own validation body, <code>{"detail": [ … ]}</code>.</p>
 <td>A send to an account with no email address</td>
 </tr>
 <tr>
+<td>409</td>
+<td><code>email_taken</code></td>
+<td>An update to an address another account holds</td>
+</tr>
+<tr>
 <td>422</td>
 <td>—</td>
-<td>The upsert's body is missing the address, or <code>locale</code> is not <code>it</code>, <code>en</code> or <code>es</code>; the invitation's body is missing, or its <code>intent</code> is unknown</td>
+<td>The upsert's body is missing the address, or <code>locale</code> is not <code>it</code>, <code>en</code> or <code>es</code>; the invitation's body is missing, or its <code>intent</code> is unknown; the update's body has no field, an empty one, or one it does not take</td>
 </tr>
 <tr>
 <td>429</td>
@@ -4957,7 +5094,7 @@ FastAPI's own validation body, <code>{"detail": [ … ]}</code>.</p>
 <tr>
 <td>502</td>
 <td><code>send_failed</code></td>
-<td>Keycloak did not send the email: SMTP failure, a refusal such as <code>Invalid redirect uri.</code> for a <code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code> not registered on <code>oauth2_proxy</code>, or a timeout. Starts no cooldown</td>
+<td>Keycloak did not send the email (an update's verification is then undone): SMTP failure, a refusal such as <code>Invalid redirect uri.</code> for a <code>CELINE_PROVISIONING_INVITE_REDIRECT_URI</code> not registered on <code>oauth2_proxy</code>, or a timeout. Starts no cooldown</td>
 </tr>
 <tr>
 <td>502</td>

@@ -4102,6 +4102,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0086-the-cli-reports-delivery-points-held-by-more-than-one-active-member-and-writes-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0086 — the CLI reports delivery points held by more than one active member, and writes nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4229,6 +4240,27 @@ unreadable registry is never reported as clean.</p>
 does not repair holders that already exist, and nothing else would find them: every write
 path now refuses to create one. This is the report ADR-0004 asks to run before the check is
 relied on. It issues one <code>GET</code> and no other request.</p>
+<h3 id="req-0086-the-cli-reports-delivery-points-held-by-more-than-one-active-member-and-writes-nothing">REQ-0086 — the CLI reports delivery points held by more than one active member, and writes nothing</h3>
+<p><code>celine-rec-registry duplicate-delivery-points</code> reads every community through
+<code>GET /admin/export</code> and prints one line per holder of each delivery point that more than one
+<strong>active</strong> member holds, in any communities, under the header
+<code>delivery_point community   member  active_holders</code> (tab-separated): the point in its compared
+form — trimmed and lower-cased exactly as the registry compares it (REQ-0085), so <code>IT001E…</code>,
+<code>it001e…</code> and <code>IT001E…</code> are one point — the community key, the member key, and how many active
+members hold it. A member listing one point twice is one holder; a member that is not
+<code>active</code> holds nothing; a blank or malformed point is skipped. It exits <code>0</code> when there are
+none, <code>1</code> when there are, and <code>2</code> when the registry cannot be read — so an unreadable registry
+is never reported as clean. It issues one <code>GET</code> and no other request, and prints no name,
+<code>user_id</code> or other personal field beyond the point itself.</p>
+<p>It is REQ-0076's report for delivery points, with the same reach: the export grant, which
+reads every community, because a clash across communities is the one no community's manager
+can see. The registry refuses the next write that would make a second active holder
+(REQ-0085) — including a re-send of either holder's point, a reactivation of either, and a
+re-import of either community — but does not repair holders already stored; this is how an
+operator finds them and resolves each, with a correction (REQ-0084) or a deactivation, before
+the check blocks either. Decided in
+<a href="../../decisions/ADR-0013-duplicate-delivery-points-are-reported-to-the-operator/">ADR-0013</a>,
+which amends ADR-0012.</p>
 <h3 id="req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing">REQ-0077 — the CLI reports members whose role, status or area is out of set, and writes nothing</h3>
 <p><code>celine-rec-registry out-of-set-values</code> reads every community through <code>GET /admin/export</code> and
 prints one line per offending field: the community key, the member key, the field (<code>role</code>,
@@ -4275,8 +4307,9 @@ id:</p>
   <code>/delivery-points/</code> on the member delivery-point <code>PUT</code> and <code>DELETE</code>;</li>
 <li>the <code>cursor</code> query value of the <code>…/assets</code>, <code>…/meters</code> and <code>…/delivery-points</code> listings,
   which is an asset key or a delivery-point id, is logged as <code>{redacted}</code>, and so is a
-  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>
-  or <code>delivery_point_ids</code> query value on any route (no route takes one today).</li>
+  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>,
+  <code>delivery_point_ids</code> or <code>replaces</code> query value on any route — <code>replaces</code> is the old POD of
+  a delivery-point correction (REQ-0084); no route takes the others today.</li>
 </ul>
 <p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, so without this every attach, detach and lookup
 wrote a member's sensor id — the key that joins them to their readings — to the log, where

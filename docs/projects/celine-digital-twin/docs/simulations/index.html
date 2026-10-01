@@ -5033,7 +5033,7 @@
 
 <h1 id="simulations">Simulations</h1>
 <blockquote>
-<p><strong>Mostly unimplemented, verified against the code on 2026-08-15.</strong> Read this as a design
+<p><strong>Mostly unimplemented, verified against the code on 2026-09-30.</strong> Read this as a design
 document, not as a description of a working subsystem.</p>
 <ul>
 <li><strong>The runtime mounts exactly one simulation route: <code>GET /{prefix}/{entity_id}/simulations</code>.</strong>
@@ -5044,6 +5044,16 @@ document, not as a description of a working subsystem.</p>
   <strong>No shipped domain does</strong>, so it currently answers 501 for all three.</li>
 <li><code>SimulationRegistry</code> and the <code>DTSimulation</code> contract exist and are wired into
   <code>Infrastructure</code>, but no domain returns anything from <code>get_simulations()</code>.</li>
+<li>What exists is <code>DTSimulation</code> and <code>SimulationDescriptor</code> (<code>contracts/simulation.py</code>),
+  <code>SimulationRegistry</code> (<code>core/simulation/registry.py</code>) and a <code>workspace</code> field on
+  <code>RunContext</code> that nothing sets. <code>SimulationRunner</code>, <code>ScenarioService</code>, <code>FileWorkspace</code>,
+  <code>FileScenarioStore</code>, <code>SimWorkspaceLayout</code> and <code>celine.dt.core.simulation.workspace</code> do
+  not exist.</li>
+<li>The mounted <code>GET /simulations</code> returns <code>SimulationDescriptorSchema</code> items — <code>key</code>,
+  <code>title</code>, <code>description</code>, <code>meta</code> — built from the domain's <code>list_simulations(ctx=...)</code>, not
+  from the registry; the <code>key</code>/<code>version</code> example below is the registry's shape.</li>
+<li>Of the settings below only <code>dt_workspace_root</code> (<code>DT_WORKSPACE_ROOT</code>) exists, and nothing
+  reads it. There is no <code>DT_SCENARIO_DEFAULT_TTL_HOURS</code>.</li>
 </ul>
 <p>So the two-phase model, the caching strategy and the sweep semantics below are the
 intended design. Nothing here is exercised by a test, because there is nothing to
@@ -5151,7 +5161,7 @@ Content-Type: application/json
 
 {
   &quot;config&quot;: {
-    &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+    &quot;community_id&quot;: &quot;example-rec&quot;,
     &quot;reference_start&quot;: &quot;2024-01-01T00:00:00Z&quot;,
     &quot;reference_end&quot;: &quot;2024-12-31T23:59:59Z&quot;,
     &quot;resolution&quot;: &quot;1h&quot;
@@ -5214,7 +5224,7 @@ Content-Type: application/json
 
 {
   &quot;scenario&quot;: {
-    &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+    &quot;community_id&quot;: &quot;example-rec&quot;,
     &quot;reference_start&quot;: &quot;2024-01-01T00:00:00Z&quot;,
     &quot;reference_end&quot;: &quot;2024-12-31T23:59:59Z&quot;
   },
@@ -5269,7 +5279,7 @@ Content-Type: application/json
 <p>Scenarios are cached based on a <strong>config hash</strong>—a deterministic hash of the scenario configuration:</p>
 <pre><code class="language-python"># Same config → same hash → reuse scenario
 config_hash = compute_config_hash({
-    &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+    &quot;community_id&quot;: &quot;example-rec&quot;,
     &quot;reference_start&quot;: &quot;2024-01-01T00:00:00Z&quot;,
     &quot;reference_end&quot;: &quot;2024-12-31T23:59:59Z&quot;,
 })

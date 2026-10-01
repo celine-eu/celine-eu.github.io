@@ -2113,10 +2113,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-or-use-the-decorator" class="md-nav__link">
+  <a href="#2-declare-it-with-the-decorator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Or use the decorator
+        2. Declare it with the decorator
       
     </span>
   </a>
@@ -2124,10 +2124,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-or-subscribe-programmatically" class="md-nav__link">
+  <a href="#3-or-return-specs-from-a-domain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Or subscribe programmatically
+        3. Or return specs from a domain
       
     </span>
   </a>
@@ -2161,17 +2161,6 @@
   
     <nav class="md-nav" aria-label="Configuration">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#application-settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Application Settings
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#subscription-specs" class="md-nav__link">
@@ -2252,10 +2241,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-yaml-configuration" class="md-nav__link">
+  <a href="#2-domain-get_subscriptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. YAML Configuration
+        2. Domain get_subscriptions()
       
     </span>
   </a>
@@ -2308,23 +2297,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#list-subscriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        List Subscriptions
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4433,10 +4405,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-or-use-the-decorator" class="md-nav__link">
+  <a href="#2-declare-it-with-the-decorator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Or use the decorator
+        2. Declare it with the decorator
       
     </span>
   </a>
@@ -4444,10 +4416,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-or-subscribe-programmatically" class="md-nav__link">
+  <a href="#3-or-return-specs-from-a-domain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Or subscribe programmatically
+        3. Or return specs from a domain
       
     </span>
   </a>
@@ -4481,17 +4453,6 @@
   
     <nav class="md-nav" aria-label="Configuration">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#application-settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Application Settings
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#subscription-specs" class="md-nav__link">
@@ -4572,10 +4533,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-yaml-configuration" class="md-nav__link">
+  <a href="#2-domain-get_subscriptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. YAML Configuration
+        2. Domain get_subscriptions()
       
     </span>
   </a>
@@ -4629,23 +4590,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Endpoints">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#list-subscriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        List Subscriptions
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -4667,15 +4611,16 @@
 
 <h1 id="event-subscription-documentation">Event Subscription Documentation</h1>
 <p>This document describes the <strong>event subscription</strong> system in the CELINE Digital Twin runtime.</p>
-<p>The subscription system enables DT apps and external handlers to receive and react to events published via the broker.</p>
+<p>The subscription system enables DT domains and plain handler functions to receive and react to events delivered via the broker.</p>
 <hr />
 <h2 id="overview">Overview</h2>
 <p>The subscription infrastructure provides:</p>
 <ul>
-<li><strong>SubscriptionService</strong> for managing event subscriptions</li>
-<li><strong>MQTT subscriber</strong> with automatic token refresh</li>
-<li><strong>Concurrent event dispatch</strong> to handlers</li>
-<li><strong>Decorator-based</strong> and <strong>programmatic</strong> registration</li>
+<li><strong><code>@on_event</code></strong> (<code>celine.dt.core.broker.decorators</code>) to declare a handler</li>
+<li><strong><code>scan_handlers</code></strong> (<code>celine.dt.core.broker.scanner</code>) to collect module-level handlers</li>
+<li><strong><code>SubscriptionManager</code></strong> (<code>celine.dt.core.broker.subscriptions</code>) to turn them into live
+  broker subscriptions</li>
+<li><strong>Error isolation</strong> per handler</li>
 </ul>
 <p>There is no YAML configuration for subscriptions. Nothing reads a <em>config/subscriptions.yaml</em>;
 subscriptions come from a domain's <code>get_subscriptions()</code> and from <code>@on_event</code> handlers that
@@ -4683,31 +4628,36 @@ subscriptions come from a domain's <code>get_subscriptions()</code> and from <co
 <hr />
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="1-create-a-handler">1. Create a handler</h3>
-<pre><code class="language-python"># celine/dt/handlers/my_handlers.py
-from celine.dt.contracts.events import DTEvent
+<pre><code class="language-python">from celine.dt.contracts.events import DTEvent
 from celine.dt.contracts.subscription import EventContext
 
-async def log_ev_charging_readiness(event: DTEvent, context: EventContext) -&gt; None:
-    print(f&quot;Received {event.type} on {context.topic}&quot;)
+async def log_pipeline_run(event: DTEvent, context: EventContext) -&gt; None:
+    print(f&quot;Received {event.event_type} on {context.topic}&quot;)
 </code></pre>
-<h3 id="2-or-use-the-decorator">2. Or use the decorator</h3>
+<h3 id="2-declare-it-with-the-decorator">2. Declare it with the decorator</h3>
 <pre><code class="language-python">from celine.dt.core.broker.decorators import on_event
 
-@on_event(&quot;ev.charging.readiness&quot;, topics=[&quot;dt/ev-charging/+/readiness&quot;])
-async def handle_readiness(event: DTEvent, context: EventContext) -&gt; None:
-    print(f&quot;EV Charging indicator: {event.payload.indicator}&quot;)
+@on_event(&quot;pipelines.run&quot;, topics=[&quot;celine/pipelines/runs/+&quot;])
+async def on_pipeline_run(event: DTEvent, context: EventContext) -&gt; None:
+    print(f&quot;Pipeline {event.payload.flow}: {event.payload.status}&quot;)
 </code></pre>
 <p>It works on a domain method and on a plain module-level function. Module-level handlers are
-found by <code>scan_handlers</code>, configured in <code>src/celine/dt/main.py</code>.</p>
-<h3 id="4-or-subscribe-programmatically">4. Or subscribe programmatically</h3>
-<pre><code class="language-python"># At runtime
-sub_id = await dt.subscribe(
-    topics=[&quot;dt/alerts/#&quot;],
-    handler=my_alert_handler,
-)
+found by <code>scan_handlers</code>, configured in <code>src/celine/dt/main.py</code>: it walks the base package of
+every registered domain (e.g. <code>celine.dt.domains.participant</code>) plus any <code>extra_packages</code>.
+<code>celine/dt/domains/participant/events.py</code> is the handler that exists today.</p>
+<h3 id="3-or-return-specs-from-a-domain">3. Or return specs from a domain</h3>
+<pre><code class="language-python">from celine.dt.contracts.subscription import SubscriptionSpec
 
-# Later, unsubscribe
-await dt.unsubscribe(sub_id)
+class MyDomain(DTDomain):
+    def get_subscriptions(self) -&gt; list[SubscriptionSpec]:
+        return [
+            *super().get_subscriptions(),   # keeps the @on_event methods
+            SubscriptionSpec(
+                topics=[&quot;dt/alerts/#&quot;],
+                handlers=[self.on_alert],
+                metadata={&quot;event_type&quot;: &quot;alert&quot;},
+            ),
+        ]
 </code></pre>
 <hr />
 <h2 id="architecture">Architecture</h2>
@@ -4721,55 +4671,52 @@ await dt.unsubscribe(sub_id)
 </thead>
 <tbody>
 <tr>
-<td><code>MqttSubscriber</code></td>
+<td><code>MqttBroker</code> (SDK)</td>
 <td>Connects to Mosquitto, manages JWT token refresh and reconnection</td>
 </tr>
 <tr>
-<td><code>SubscriptionService</code></td>
-<td>Coordinates the registry and dispatcher</td>
+<td><code>BrokerService</code></td>
+<td>Named brokers; <code>subscribe()</code> / <code>unsubscribe()</code> on a named or default broker</td>
 </tr>
 <tr>
-<td><code>SubscriptionRegistry</code></td>
-<td>Stores topic patterns and their associated handlers</td>
+<td><code>scan_handlers</code></td>
+<td>Collects <code>@on_event</code> module-level functions into <code>SubscriptionSpec</code>s</td>
 </tr>
 <tr>
-<td><code>EventDispatcher</code></td>
-<td>Dispatches events concurrently to matching handlers with error isolation and metrics</td>
+<td><code>SubscriptionManager</code></td>
+<td>Subscribes each spec at startup, wraps messages into <code>DTEvent</code> + <code>EventContext</code>, unsubscribes on shutdown</td>
 </tr>
 </tbody>
 </table>
+<p><code>SubscriptionManager.start()</code> runs in the application lifespan after the brokers connect;
+<code>stop()</code> runs on shutdown. Routes with the same <code>(broker, topics, event_type)</code> are grouped into
+one spec with several handlers.</p>
 <hr />
 <h2 id="configuration">Configuration</h2>
-<h3 id="application-settings">Application Settings</h3>
-<p>In <code>.env</code> or environment:</p>
-<pre><code class="language-bash"># Enable/disable subscriptions
-SUBSCRIPTIONS_ENABLED=true
-
-# Maximum concurrent handler invocations
-SUBSCRIPTIONS_MAX_CONCURRENT=100
-</code></pre>
+<p>There are no subscription settings. What decides a subscription:</p>
+<ul>
+<li>the <code>@on_event</code> arguments: <code>event_type</code>, <code>topics</code>, <code>broker</code>, <code>enabled</code> (default <code>true</code>),
+  <code>metadata</code>;</li>
+<li>the owning domain's <code>overrides.broker</code> in <code>config/domains.yaml</code>;</li>
+<li>the brokers in <a href="../brokers/#configuration"><code>config/brokers.yaml</code></a>.</li>
+</ul>
+<p><strong>Which broker.</strong> A <code>broker=</code> named on the handler wins. Otherwise the handler's domain's
+<code>overrides.broker</code> applies — for domain methods, and for plain functions found in that
+domain's package. Otherwise the broker service's default. The shipped handler names none,
+so <code>MQTT_BROKER</code> (default <code>celine_mqtt</code>) chooses its broker.</p>
 <h3 id="subscription-specs">Subscription specs</h3>
-<p>Built in code, not loaded from a file. A domain returns them from <code>get_subscriptions()</code>;
-the shape below is the spec, written as YAML only to show the fields:</p>
-<pre><code class="language-yaml">subscriptions:
-  # Simple handler
-  - id: log-all-events
-    topics:
-      - &quot;dt/#&quot;
-    handler: &quot;mymodule:log_event&quot;
-    enabled: true
-
-  # Multiple topics
-  - id: multi-topic-handler
-    topics:
-      - &quot;dt/ev-charging/+/readiness&quot;
-      - &quot;dt/pv-forecast/+/updated&quot;
-    handler: &quot;mymodule:handle_energy_events&quot;
-    enabled: true
-    metadata:
-      description: &quot;Handles energy-related events&quot;
-      owner: &quot;energy-team&quot;
+<p>Built in code, not loaded from a file. <code>SubscriptionSpec</code> (<code>celine.dt.contracts.subscription</code>):</p>
+<pre><code class="language-python">@dataclass
+class SubscriptionSpec:
+    topics: list[str]
+    handlers: list[EventHandler]
+    id: str = &quot;sub-&lt;random&gt;&quot;
+    enabled: bool = True
+    metadata: dict[str, Any] = {}
 </code></pre>
+<p>Metadata keys the manager reads: <code>broker</code> (broker name), <code>qos</code> (<code>QoS</code>, int or name; default
+<code>AT_LEAST_ONCE</code>), <code>event_type</code>, <code>entity_id</code>, and <code>source_domain</code>, <code>handler</code>, <code>version</code> for the
+event source of a wrapped raw payload.</p>
 <hr />
 <h2 id="topic-patterns">Topic Patterns</h2>
 <p>Subscriptions support MQTT-style topic wildcards:</p>
@@ -4785,78 +4732,76 @@ the shape below is the spec, written as YAML only to show the fields:</p>
 <tr>
 <td><code>+</code></td>
 <td>Matches exactly one level</td>
-<td><code>dt/ev-charging/+/readiness</code> matches <code>dt/ev-charging/rec-folgaria/readiness</code></td>
+<td><code>dt/example/+/readiness</code> matches <code>dt/example/example-rec/readiness</code></td>
 </tr>
 <tr>
 <td><code>#</code></td>
 <td>Matches zero or more levels</td>
-<td><code>dt/ev-charging/#</code> matches all under <code>dt/ev-charging/</code></td>
+<td><code>dt/example/#</code> matches all under <code>dt/example/</code></td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h2 id="handler-contract">Handler Contract</h2>
-<p>Handlers must be async functions with this signature:</p>
+<p>Handlers must be async functions with this signature (a domain method also takes <code>self</code>):</p>
 <pre><code class="language-python">async def my_handler(event: DTEvent, context: EventContext) -&gt; None:
     pass
 </code></pre>
+<p>A message whose JSON carries <code>@type</code> (or <code>event_type</code>) is parsed as a <code>DTEvent</code>; any other JSON
+object is wrapped in one, with <code>event_type</code> from the spec metadata or else the topic. The
+payload arrives as a Pydantic model that accepts any fields.</p>
 <h3 id="eventcontext">EventContext</h3>
-<pre><code class="language-python">@dataclass
+<pre><code class="language-python">@dataclass(frozen=True)
 class EventContext:
     topic: str           # Actual topic (after wildcard resolution)
     broker_name: str     # Which broker delivered this
     received_at: datetime
-    message_id: str | None
-    raw_payload: bytes | None
+    infra: Infrastructure  # Shared services: infra.broker, infra.values_service, ...
+    entity_id: str | None = None
+    message_id: str | None = None
+    raw_payload: bytes | None = None
+
+    def get_dt(self, domain_type: str) -&gt; DTDomain: ...
 </code></pre>
 <hr />
 <h2 id="registration-methods">Registration Methods</h2>
 <h3 id="1-decorator">1. Decorator</h3>
-<pre><code class="language-python">@subscribe(&quot;dt/ev-charging/#&quot;)
-async def handle_ev_events(event: DTEvent, context: EventContext) -&gt; None:
-    print(f&quot;Received: {event.type}&quot;)
+<pre><code class="language-python">@on_event(&quot;pipelines.run&quot;, topics=[&quot;celine/pipelines/runs/+&quot;])
+async def handle_runs(event: DTEvent, context: EventContext) -&gt; None:
+    print(f&quot;Received: {event.event_type}&quot;)
 </code></pre>
-<h3 id="2-yaml-configuration">2. YAML Configuration</h3>
-<pre><code class="language-yaml">subscriptions:
-  - id: my-handler
-    topics: [&quot;dt/ev-charging/#&quot;]
-    handler: &quot;mymodule.handlers:my_handler&quot;
-</code></pre>
+<h3 id="2-domain-get_subscriptions">2. Domain <code>get_subscriptions()</code></h3>
+<p>Return <code>SubscriptionSpec</code>s, as in the <a href="#3-or-return-specs-from-a-domain">Quick Start</a>. The
+default implementation returns the domain's <code>@on_event</code> methods.</p>
 <h3 id="3-programmatic">3. Programmatic</h3>
-<pre><code class="language-python">sub_id = await dt.subscribe(
+<p>A raw broker subscription, whose handler receives the SDK <code>ReceivedMessage</code> rather than a
+<code>DTEvent</code>:</p>
+<pre><code class="language-python">res = await infra.broker.subscribe(
     topics=[&quot;dt/alerts/#&quot;],
     handler=alert_handler,
 )
-await dt.unsubscribe(sub_id)
+await infra.broker.unsubscribe(subscription_id=res.subscription_id)
 </code></pre>
 <hr />
 <h2 id="token-refresh">Token Refresh</h2>
-<p>When using JWT authentication, the subscriber automatically refreshes tokens at 80% of lifetime and reconnects seamlessly.</p>
+<p>When using JWT authentication, the SDK broker refreshes the token <code>token_refresh_margin</code>
+seconds (default 30) before expiry and reconnects with the new credentials.</p>
 <hr />
 <h2 id="error-handling">Error Handling</h2>
-<p>Errors in handlers are logged but don't affect other handlers. Each handler runs in isolation.</p>
+<p>Errors in handlers are logged but don't affect other handlers. Each handler of a spec is
+awaited in turn, each in its own <code>try</code>. A failed subscribe is logged and skipped.</p>
 <hr />
 <h2 id="api-endpoints">API Endpoints</h2>
-<h3 id="list-subscriptions">List Subscriptions</h3>
-<pre><code>GET /subscriptions
-</code></pre>
-<p>Returns:</p>
-<pre><code class="language-json">{
-  &quot;subscriptions&quot;: [
-    {
-      &quot;id&quot;: &quot;my-handler&quot;,
-      &quot;topics&quot;: [&quot;dt/ev-charging/#&quot;],
-      &quot;enabled&quot;: true
-    }
-  ],
-  &quot;stats&quot;: {
-    &quot;running&quot;: true,
-    &quot;subscription_count&quot;: 3,
-    &quot;dispatch_count&quot;: 1234,
-    &quot;dispatch_errors&quot;: 2
+<p>There is no <code>/subscriptions</code> endpoint. <code>GET /domains</code> reports each domain's subscription
+count (other fields omitted):</p>
+<pre><code class="language-json">[
+  {
+    &quot;name&quot;: &quot;it-participant&quot;,
+    &quot;subscriptions&quot;: 0
   }
-}
+]
 </code></pre>
+<p>The count is from <code>get_subscriptions()</code>; handlers found by <code>scan_handlers</code> are not counted.</p>
 
 
 

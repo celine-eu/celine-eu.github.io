@@ -4421,15 +4421,24 @@
 
 <h1 id="apps">Apps</h1>
 <blockquote>
-<p><strong>Superseded, verified against the code on 2026-08-15.</strong> This document describes an
+<p><strong>Superseded, verified against the code on 2026-09-30.</strong> This document describes an
 artifact/module generation of the runtime that the <strong>domain</strong>-based runtime replaced.</p>
 <ul>
 <li><strong>No <code>/apps</code> route is mounted.</strong> <code>create_app</code> mounts the discovery router and one
   router per domain, and nothing else. Grep <code>src/celine/dt/</code> for <code>apps</code> and it appears in
   no route.</li>
-<li>The <code>DTApp</code> contract still exists at <code>src/celine/dt/contracts/app.py</code>, but nothing
-  loads, registers or exposes an implementation of it.</li>
-<li><code>DTRegistry</code>, <code>register_app</code> and <em>config/modules.yaml</em> do not exist.</li>
+<li><strong>The <code>DTApp</code> contract no longer exists either.</strong> It was removed in the refactor from
+  modules to domains; <code>src/celine/dt/contracts/app.py</code> now holds only <code>AppState</code>, the
+  typed <code>app.state</code> carrying <code>Infrastructure</code>.</li>
+<li><code>DTRegistry</code>, <code>register_app</code>, <code>celine.dt.contracts.mapper</code> and <em>config/modules.yaml</em> do
+  not exist.</li>
+<li>What survives has a different shape from the one below. <code>RunContext</code>
+  (<code>src/celine/dt/core/context.py</code>) carries <code>values_service</code>, <code>broker_service</code>, <code>services</code>,
+  <code>entity</code> and <code>workspace</code>, and offers <code>fetch_value()</code>, <code>publish_event(topic, payload)</code> and
+  <code>get_service()</code>; there is no <code>datasets</code>, <code>state</code>, <code>get_component()</code> or <code>has_broker()</code>.
+  <code>EventSource</code> has <code>domain</code>, <code>entity_id</code>, <code>handler</code> and <code>version</code>, not <code>app_key</code> and
+  <code>module</code>. The <code>DTComponent</code> protocol (<code>contracts/component.py</code>) exists but nothing
+  registers or looks up a component.</li>
 </ul>
 <p>The current organising unit is the <strong>domain</strong>: <code>docs/domains.md</code> for what one is,
 the companion's playbook for adding a domain for how to add one, and
@@ -4572,7 +4581,7 @@ class MyAppConfig(BaseModel):
     community_id: str = Field(
         ...,  # Required
         description=&quot;Renewable Energy Community identifier&quot;,
-        examples=[&quot;rec-folgaria&quot;],
+        examples=[&quot;example-rec&quot;],
     )
     location: dict = Field(
         ...,
@@ -4889,7 +4898,7 @@ class MyApp(DTApp[MyConfig, MyResult]):
 Content-Type: application/json
 
 {
-  &quot;community_id&quot;: &quot;rec-folgaria&quot;,
+  &quot;community_id&quot;: &quot;example-rec&quot;,
   &quot;location&quot;: {&quot;lat&quot;: 45.9, &quot;lon&quot;: 11.1}
 }
 </code></pre>

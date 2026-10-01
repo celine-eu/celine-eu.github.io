@@ -1456,6 +1456,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#put-admincommunitiescommunity_keymembersmember_keynamerolearea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /admin/communities/{community_key}/members/{member_key}/name|role|area
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#post-admincommunitiescommunity_keymembersmember_keystatus" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5233,6 +5244,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#put-admincommunitiescommunity_keymembersmember_keynamerolearea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /admin/communities/{community_key}/members/{member_key}/name|role|area
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#post-admincommunitiescommunity_keymembersmember_keystatus" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5386,7 +5408,8 @@
 <p><code>/admin</code> routes need a JWT and an OPA decision. The action is derived from the
 path <strong>and</strong> the HTTP method, so reads and writes are separate grants. Only the
 route's fixed segments are read, each at its position: a member key, asset key or
-any other id containing <code>lookup</code>, <code>import</code>, <code>export</code> or <code>profile</code> never changes the action,
+any other id containing <code>lookup</code>, <code>import</code>, <code>export</code>, <code>profile</code>, <code>name</code>, <code>role</code>, <code>area</code> or
+<code>delivery-points</code> never changes the action, nor does the body or the query,
 and a path matching no route derives <code>admin</code>, which only <code>rec-registry.admin</code>
 satisfies (REQ-0065).</p>
 <table>
@@ -5405,13 +5428,33 @@ satisfies (REQ-0065).</p>
 </tr>
 <tr>
 <td><code>members.write</code></td>
-<td>write methods on <code>…/members…</code>, delivery points included</td>
+<td>create, the general <code>PATCH</code>, <code>…/status</code> and <code>DELETE</code> on <code>…/members…</code></td>
 <td><code>rec-registry.members.write</code></td>
 </tr>
 <tr>
 <td><code>members.profile.write</code></td>
 <td><code>PATCH …/members/{key}/profile</code> (role and area only)</td>
 <td><code>rec-registry.members.profile.write</code>, or <code>rec-registry.members.write</code></td>
+</tr>
+<tr>
+<td><code>members.name.write</code></td>
+<td><code>PUT …/members/{key}/name</code></td>
+<td><code>rec-registry.members.name.write</code>, or <code>rec-registry.members.write</code></td>
+</tr>
+<tr>
+<td><code>members.role.write</code></td>
+<td><code>PUT …/members/{key}/role</code></td>
+<td><code>rec-registry.members.role.write</code>, <code>rec-registry.members.profile.write</code>, or <code>rec-registry.members.write</code></td>
+</tr>
+<tr>
+<td><code>members.area.write</code></td>
+<td><code>PUT …/members/{key}/area</code></td>
+<td><code>rec-registry.members.area.write</code>, <code>rec-registry.members.profile.write</code>, or <code>rec-registry.members.write</code></td>
+</tr>
+<tr>
+<td><code>members.delivery_points.write</code></td>
+<td><code>PUT</code> and <code>DELETE …/members/{key}/delivery-points/{id}</code>, <code>?replaces=</code> included</td>
+<td><code>rec-registry.members.delivery_points.write</code>, or <code>rec-registry.members.write</code></td>
 </tr>
 <tr>
 <td><code>members.purge</code></td>
@@ -5449,9 +5492,10 @@ satisfies (REQ-0065).</p>
 <code>{service}.admin</code> as covering <code>{service}.*</code>), so existing tokens keep working —
 but <strong>do not give it to a service account</strong>. Grant the actions it calls: a
 service that registers approved participants needs <code>members.write</code>, one that
-attaches meters needs <code>assets.write</code>, one that corrects a member's role and area
-needs <code>members.profile.write</code> — which reaches that one route and nothing else — and none has any business importing,
-exporting or purging.</p>
+attaches meters needs <code>assets.write</code>, one that corrects a member's area needs
+<code>members.area.write</code> — which reaches that one route and nothing else (ADR-0011) — and none
+has any business importing, exporting or purging. A member field is granted alone; identity
+(<code>user_id</code>, <code>did</code>, status, creating a member) is <code>members.write</code> only.</p>
 <p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code>.</p>
 <h2 id="refusal-codes">Refusal codes</h2>
 <p>A refusal a caller is expected to act on answers</p>
@@ -5564,11 +5608,21 @@ codes <code>ErrorCode</code>.</p>
 <td><code>403</code></td>
 <td>a <code>/user</code> route other than <code>GET /user</code>, for a caller whose username names no member</td>
 </tr>
+<tr>
+<td><code>delivery_point_held</code></td>
+<td><code>409</code> (<code>422</code> on an import)</td>
+<td>another active member, in any community, holds the delivery point (trimmed, case-insensitive)</td>
+</tr>
+<tr>
+<td><code>delivery_point_linked</code></td>
+<td><code>409</code></td>
+<td>deleting a delivery point one of the member's meters still names as its <code>pod</code></td>
+</tr>
 </tbody>
 </table>
 <p>Other refusals — FastAPI's validation errors, a body id or key that does not match
-the path, the import's <code>force</code> guard, a <code>404</code> for an unknown delivery point, topology
-node, or area on its <code>DELETE</code> — keep the plain <code>{"detail": ...}</code> body. A route
+the path, the import's <code>force</code> guard, a <code>404</code> for an unknown delivery point (on its
+<code>DELETE</code>, or as the <code>replaces</code> of a correction), topology node, or area on its <code>DELETE</code> — keep the plain <code>{"detail": ...}</code> body. A route
 that answers a coded <code>422</code> documents its <code>422</code> as <code>oneOf</code> <code>ErrorResponse</code> and
 <code>HTTPValidationError</code> (whose <code>detail</code> is a list): both arrive with that status.</p>
 <h2 id="the-access-log">The access log</h2>
@@ -5770,7 +5824,8 @@ fields are kept in <code>extra</code> too.</p>
 taken (<code>member_key_taken</code>, <code>user_id_taken</code>), naming the existing key so the caller
 can switch to <code>PATCH</code>, or when the <code>did</code> is already held by another member
 anywhere in the registry (<code>did_taken</code>); <code>409 sensor_held</code> when an <code>active</code> member
-is created with a meter whose sensor another active member holds; <code>404
+is created with a meter whose sensor another active member holds, and <code>409
+delivery_point_held</code> with a delivery point another active member holds; <code>404
 community_not_found</code>; <code>422 invalid_role</code>, <code>invalid_status</code> or <code>unknown_area</code> when
 <code>role</code>, <code>status</code> or <code>area</code> is out of set (the area must be a key of the
 community's <code>areas</code>).</p>
@@ -5787,8 +5842,9 @@ member of the community, or <code>409 did_taken</code> if the new <code>did</cod
 member in the registry. A DID clash inside the addressed community names the
 holding member; one in another community does not, because which member of which
 other community holds a DID is not the caller's question. <code>status: active</code> on a
-member that was not active re-checks its sensors: <code>409 sensor_held</code>, and nothing
-in the patch is applied, when another active member holds one.</p>
+member that was not active re-checks its sensors and delivery points: <code>409
+sensor_held</code> / <code>409 delivery_point_held</code>, and nothing in the patch is applied, when
+another active member holds one.</p>
 <p><code>role</code> and <code>area</code> are still accepted here, with the checks of the profile route
 below; <code>status</code> too. Out of set: <code>422 invalid_role</code>, <code>invalid_status</code>,
 <code>unknown_area</code>, and nothing in the patch is applied. Only the fields a patch names
@@ -5831,12 +5887,44 @@ member's status is not looked at and its assets are left as they are.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="put-admincommunitiescommunity_keymembersmember_keynamerolearea"><code>PUT /admin/communities/{community_key}/members/{member_key}/name|role|area</code></h3>
+<p>One field of a member, and nothing else: <code>{"name": "…"}</code>, <code>{"role": "…"}</code>,
+<code>{"area": "…"}</code>. Each derives its own action (<code>members.name.write</code>,
+<code>members.role.write</code>, <code>members.area.write</code>), so a service can be granted one field
+alone; the supersets are in the table at the top.</p>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>written</td>
+<td><code>200</code> with the member (<code>MemberDetail</code>)</td>
+</tr>
+<tr>
+<td>the key absent or <code>null</code>, or any other key beside it</td>
+<td><code>422</code>, FastAPI's validation body; nothing changes</td>
+</tr>
+<tr>
+<td><code>role</code> out of set / <code>area</code> not one of the community's</td>
+<td><code>422 invalid_role</code> / <code>unknown_area</code> — the same answer the general <code>PATCH</code> gives</td>
+</tr>
+<tr>
+<td>unknown community / member</td>
+<td><code>404 community_not_found</code> / <code>member_not_found</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="post-admincommunitiescommunity_keymembersmember_keystatus"><code>POST /admin/communities/{community_key}/members/{member_key}/status</code></h3>
 <p>Move a member through <code>pending → active → suspended → inactive</code>, with an optional
 <code>reason</code> recorded on the member.</p>
-<p>A move to <code>active</code> re-checks the member's sensors — only an active member holds
-one — and answers <code>409 sensor_held</code>, leaving the status unchanged, when another
-active member took one meanwhile. An unknown status is <code>422 invalid_status</code>.</p>
+<p>A move to <code>active</code> re-checks the member's sensors and delivery points — only an
+active member holds one — and answers <code>409 sensor_held</code> / <code>409 delivery_point_held</code>,
+leaving the status unchanged, when another active member took one meanwhile. An
+unknown status is <code>422 invalid_status</code>.</p>
 <h3 id="delete-admincommunitiescommunity_keymembersmember_key"><code>DELETE /admin/communities/{community_key}/members/{member_key}</code></h3>
 <p><strong>Deactivates</strong> the member (<code>status = inactive</code>). A member who leaves still has
 metering history, past consents and provenance elsewhere that reference them, and
@@ -5847,7 +5935,46 @@ day to day cannot perform one.</p>
 <p><strong>Response:</strong> <code>DeletionReport</code> — <code>purged</code> tells the caller which happened.</p>
 <h3 id="putdelete-admincommunitiesckmembersmkdelivery-pointspoint_id"><code>PUT|DELETE /admin/communities/{ck}/members/{mk}/delivery-points/{point_id}</code></h3>
 <p>Add, replace or remove one supply point, keeping the others. The body <code>id</code> must
-match the path (<code>422</code> otherwise).</p>
+match the path (<code>422</code> otherwise). Derives <code>members.delivery_points.write</code>.</p>
+<p><strong>One active holder per delivery point</strong> across the registry, compared trimmed and
+case-insensitively: a <code>PUT</code> giving an active member a point another active member
+holds is <code>409 delivery_point_held</code> (the holder named by key only inside this
+community). A member that is not active is checked when it is reactivated.</p>
+<p><strong>Correcting a POD</strong> is one write:
+<code>PUT …/delivery-points/{new}?replaces={old}</code> with the new point as body. In one
+transaction it adds <code>new</code>, removes <code>old</code> and relinks the member's meters whose
+<code>pod</code> named <code>old</code> to <code>new</code> (as the path spells it); a failure changes nothing.</p>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>corrected</td>
+<td><code>200</code>, <code>{"delivery_points": [...]}</code> — the member's points after the write</td>
+</tr>
+<tr>
+<td><code>old</code> is not one of this member's points</td>
+<td><code>404</code> (plain <code>{"detail"}</code>)</td>
+</tr>
+<tr>
+<td><code>new</code> is held by another active member</td>
+<td><code>409 delivery_point_held</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>DELETE</code> of a point one of the member's meters still names is <code>409
+delivery_point_linked</code>: correct it with <code>replaces</code>, or detach the meter, first. An
+unknown point is <code>404</code>.</p>
+<p><strong>Duplicates already stored</strong> are not repaired by the check; an operator lists them with
+<code>celine-rec-registry duplicate-delivery-points</code> — a read-only CLI report over
+<code>GET /admin/export</code> (the export grant), one tab-separated line per active holder:
+<code>delivery_point  community  member  active_holders</code>, the point trimmed and lower-cased; exit
+<code>0</code> none, <code>1</code> some, <code>2</code> unreadable. There is no HTTP route for it, as there is none for
+<code>duplicate-sensors</code>.</p>
 <h3 id="putdelete-admincommunitiesckmembersmkassetsasset_key"><code>PUT|DELETE /admin/communities/{ck}/members/{mk}/assets/{asset_key}</code></h3>
 <p>Create, replace or remove one asset. <code>properties</code> is validated against the model
 for <code>asset_type</code> (<code>pv</code>, <code>storage</code>, <code>meter</code>, <code>ev_charger</code>, <code>heat_pump</code>, <code>load</code>),

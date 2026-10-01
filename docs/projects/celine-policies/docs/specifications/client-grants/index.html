@@ -4057,6 +4057,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0008-member-writes-are-granted-per-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0008 — member writes are granted per field
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4111,7 +4122,22 @@ over <code>clients.yaml</code> alone and merged with the ds-host overlay:</p>
   no registry write: its only registry scope is <code>rec-registry.read</code>.</li>
 <li><strong><code>svc-community</code> never holds <code>rec-registry.members.write</code> or <code>rec-registry.admin</code></strong>, as a
   default or an optional scope. Its registry scopes are exactly <code>rec-registry.read</code> (default)
-  and the two writes (optional).</li>
+  and the two writes (optional), plus the per-field role and area writes of REQ-0008
+  (optional).</li>
+</ul>
+<h3 id="req-0008-member-writes-are-granted-per-field">REQ-0008 — member writes are granted per field</h3>
+<p>For the registry's per-field member routes (rec-registry, "member writes are granted per
+field"), over <code>clients.yaml</code> alone and merged with the ds-host overlay:</p>
+<ul>
+<li><strong>Four scopes are declared</strong> in the registry's family, owned by <code>svc-rec-registry</code>, named
+  <code>rec-registry.members.&lt;field&gt;.write</code>: <code>name</code>, <code>role</code>, <code>area</code>, <code>delivery_points</code>.</li>
+<li><strong><code>svc-community</code> holds <code>rec-registry.members.role.write</code> and <code>.area.write</code> as optional
+  scopes</strong>, beside <code>rec-registry.members.profile.write</code>, which it keeps until the BFF calls the
+  new routes. It holds neither <code>name.write</code> nor <code>delivery_points.write</code>.</li>
+<li><strong><code>svc-onboarding</code> holds <code>rec-registry.members.name.write</code> and <code>.delivery_points.write</code> as
+  default scopes</strong>, beside <code>rec-registry.members.write</code>, which it keeps because creating a
+  member needs it. It holds neither <code>role.write</code> nor <code>area.write</code>, and its optional scopes are
+  still exactly REQ-0004's two.</li>
 </ul>
 
 

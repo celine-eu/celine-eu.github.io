@@ -4302,6 +4302,7 @@ Each clause below names its tests.</p>
 <th>Handler</th>
 <th>Reads</th>
 <th>Resolves</th>
+<th>Args</th>
 </tr>
 </thead>
 <tbody>
@@ -4309,38 +4310,47 @@ Each clause below names its tests.</p>
 <td><code>direct_user_match</code></td>
 <td><code>principals</code></td>
 <td>nothing — the column holds the principal itself</td>
+<td><code>column</code></td>
 </tr>
 <tr>
 <td><code>rec_registry</code></td>
 <td><code>principals</code></td>
 <td>a member to the meters they own, through the REC registry</td>
+<td><code>column</code>; <code>url</code> (default <code>REC_REGISTRY_URL</code>)</td>
 </tr>
 <tr>
 <td><code>subject_key_match</code></td>
 <td><code>keys</code></td>
 <td>nothing — the column holds a data key, and <code>args.key_type</code> names which type</td>
+<td><code>column</code>, <code>key_type</code></td>
 </tr>
 <tr>
 <td><code>http_in_list</code></td>
 <td>—</td>
 <td>the caller's own rows; refuses a delegated request</td>
+<td><code>column</code>, <code>url</code>; <code>method</code> (<code>GET</code>), <code>headers</code>, <code>params</code>, <code>json</code>, <code>response_path</code> (<code>$</code>), <code>timeout_seconds</code> (5), <code>max_items</code> (2000), <code>empty_means_deny</code> (true), <code>forward_token</code> (false)</td>
 </tr>
 <tr>
 <td><code>table_pointer</code></td>
 <td>—</td>
 <td>the caller's own rows; refuses a delegated request</td>
+<td><code>column</code>, <code>pointer_table</code>, <code>pointer_key_column</code>; <code>pointer_subject_column</code> (<code>user_id</code>)</td>
 </tr>
 </tbody>
 </table>
+<p>Args before a <code>;</code> are required. <code>http_in_list</code> formats its string args with
+<code>{sub}</code>, <code>{username}</code>, <code>{email}</code> and <code>{token}</code>.</p>
 <p>Handler names belong to the data plane, not to ds: ds passes the name through
 from <code>governance.yaml</code> and never interprets it. The two ends agree through that
 file, which the connector reads and this service must recognise.</p>
 <h3 id="rec_registry-on-the-normal-api-path"><code>rec_registry</code> on the normal API path</h3>
 <p>The same handler serves requests that do not come through the dataspace, where
-<code>principals</code> is absent, and it decides by who the caller is, in this order:</p>
+<code>principals</code> is absent. Before any handler runs, the normal path answers an
+unauthenticated caller with <code>401</code> and skips row filters for members of the
+<code>admins</code> group. The handler then decides by who the caller is, in this order:</p>
 <ol>
-<li><strong><code>principals</code> present</strong>, even empty: a delegated request, resolved for the
-   named members on this service's identity (RF-05).</li>
+<li><strong><code>principals</code> present</strong> (dataspace path only), even empty: a delegated
+   request, resolved for the named members on this service's identity (RF-05).</li>
 <li><strong>A service account</strong>: not narrowed at all. A service is not a registry
    member, has no meters of its own, and has already passed the policy's
    <code>dataset.query</code> check; the handler returns no predicate and the whole table
@@ -4376,7 +4386,7 @@ the control plane said to withhold — silently, on both sides. The refusal is a
 of the contract disagree.</p>
 <p>The cost is accepted and symmetric with ds's own choice: upgrading the connector
 ahead of this service stops the data plane rather than widening it. <strong>So every
-field in the filter has a default</strong>, here and in ds: <code>forbid</code> governs what a
+field in the filter but <code>handler</code> has a default</strong>, here and in ds: <code>forbid</code> governs what a
 reader has never heard of, and making a known field <em>required</em> would refuse an
 older connector too. One impossible direction is a deployment order; two are a
 deadlock. See RF-10.</p>
@@ -4402,7 +4412,7 @@ renders the same SQL. Keys of another type are not ours to match.</p>
 <p><strong>The principals are ignored, and are not a fallback.</strong> They name the same people
 in a vocabulary this column does not speak; matching a username against a supply
 point returns nothing, or something by coincidence. A filter naming no <code>column</code>
-or no <code>key_type</code> cannot be applied and is an error, never an empty filter.
+or no <code>key_type</code> cannot be applied and is an error (a <code>500</code>), never an empty filter.
 Tests: <code>tests/api/dataset_query/test_subject_key_match.py</code>,
 <code>tests/api/test_edr_subject_key_filter.py</code>.</p>
 <h3 id="rf-05-an-empty-allow-list-narrows-to-nothing">RF-05 — An empty allow-list narrows to nothing</h3>
@@ -4431,7 +4441,11 @@ agreement. Nor are the principals alone: a <code>subject_key_match</code> decisi
 carries none, so two consents would differ only in their keys and the second
 would be served the first one's rows.</p>
 <p>The keys enter the cache key as a digest, not in clear. They are personal data and
-a cache key is the kind of string that ends up in a repr.
+a cache key is the kind of string that ends up in a repr.</p>
+<p>A plan lives for <code>ROW_FILTERS_CACHE_TTL</code> seconds (default 300), shortened to ds's
+<code>cache_ttl</code> on the dataspace path and to the token's remaining lifetime on the
+normal path; the cache holds at most <code>ROW_FILTERS_CACHE_MAXSIZE</code> plans (default
+10 000).
 Tests: <code>tests/api/dataset_query/test_delegated_allow_lists.py</code>.</p>
 <h3 id="rf-08-keys-reach-the-predicate-and-nothing-else">RF-08 — Keys reach the predicate and nothing else</h3>
 <p>They are personal data the collecting organisation registered with the consent.
@@ -4530,11 +4544,7 @@ is not the answer. A failure is logged with its status and code only, not the
 registry's sentence. This needs a celine-sdk that carries REQ-0132, the
 1.21.0 release: <code>pyproject.toml</code> requires <code>celine-sdk&gt;=1.21.0</code>. Against 1.20.0,
 <code>get_my_assets</code> raises <code>UnexpectedStatus</code> on the 403 (or returns <code>None</code>) and the
-answer is a 500 (the loud side), never a deny. Until 1.21.0 is on PyPI, <code>uv lock</code>
-cannot meet the floor and <code>uv.lock</code> still pins 1.20.0; an image built from that
-lock (the Dockerfile's <code>uv sync --frozen</code> does not check the lock against
-<code>pyproject.toml</code>) would carry the 500, so this change does not ship until the
-lock is refreshed. Tests run against the editable SDK checkout in <code>.venv</code>.
+answer is a 500 (the loud side), never a deny. <code>uv.lock</code> pins 1.21.0 from PyPI.
 <code>tests/test_sdk_dependency_floor.py</code> pins the floor.
 Code: <code>_is_not_a_member</code> in
 <code>src/celine/dataset/api/dataset_query/row_filters/handlers/rec_registry.py</code>.

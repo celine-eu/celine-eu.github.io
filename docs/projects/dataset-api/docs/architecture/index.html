@@ -2387,10 +2387,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lifecycle-of-a-dataset-conceptual" class="md-nav__link">
+  <a href="#lifecycle-of-a-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lifecycle of a Dataset (Conceptual)
+        Lifecycle of a Dataset
       
     </span>
   </a>
@@ -2402,6 +2402,17 @@
     <span class="md-ellipsis">
       
         Data Integrity &amp; Guardrails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension points
       
     </span>
   </a>
@@ -4437,10 +4448,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lifecycle-of-a-dataset-conceptual" class="md-nav__link">
+  <a href="#lifecycle-of-a-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lifecycle of a Dataset (Conceptual)
+        Lifecycle of a Dataset
       
     </span>
   </a>
@@ -4452,6 +4463,17 @@
     <span class="md-ellipsis">
       
         Data Integrity &amp; Guardrails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension points
       
     </span>
   </a>
@@ -4485,22 +4507,32 @@
 <li>exposes a <strong>restricted SQL query interface</strong> over <em>catalogued</em> datasets</li>
 <li>provides <strong>schema and metadata introspection</strong> for clients and UIs</li>
 <li>integrates with <strong>OpenLineage</strong> to keep provenance and trust up to date</li>
+<li>acts as the <strong>data plane</strong> of a dataspace connector, serving contracted consumers
+  through an EDR or a DPS pull token</li>
 </ul>
 <p>The API is not an ingestion tool. Pipelines produce data; the Dataset API governs and serves it.</p>
 <hr />
 <h2 id="system-context">System Context</h2>
 <h3 id="actors">Actors</h3>
 <ul>
-<li><strong>Producers (pipelines)</strong>: create/refresh physical tables and emit lineage (OpenLineage)</li>
-<li><strong>Operators</strong>: manage catalogue definitions via CLI and ensure OPA/policy config is correct</li>
+<li><strong>Producers (pipelines)</strong>: create/refresh physical tables, declare <code>governance.yaml</code>, and emit lineage (OpenLineage)</li>
+<li><strong>Operators</strong>: manage catalogue definitions via CLI and keep the Rego policies correct</li>
 <li><strong>Consumers (apps/DTs/BI)</strong>: discover datasets, fetch schemas, run governed queries</li>
+<li><strong>Dataspace consumers</strong>: query under a contract agreement, via an EDR token on
+  <code>/query</code> or a DPS pull token on <code>/dps/public/query</code></li>
 </ul>
 <h3 id="external-dependencies">External Dependencies</h3>
 <ul>
-<li><strong>Physical storage</strong>: PostgreSQL (tables, views)</li>
-<li><strong>Authorization</strong>: OPA (policy decision point)</li>
-<li><strong>Lineage backend</strong>: Marquez (OpenLineage ingestion/query)</li>
-<li><strong>Identity provider</strong>: issues JWTs (users + service accounts)</li>
+<li><strong>Physical storage</strong>: PostgreSQL — a catalogue database (<code>DATABASE_URL</code>, schema
+  <code>dataset_api</code>) and the warehouse the datasets live in (<code>DATASETS_DATABASE_URL</code>)</li>
+<li><strong>Authorization</strong>: Rego policies in <code>POLICIES_DIR</code>, evaluated in-process
+  (celine-sdk policy engine)</li>
+<li><strong>Identity provider</strong>: OIDC, issues JWTs (users + service accounts)</li>
+<li><strong>Lineage backend</strong>: Marquez, read by the CLI (<code>export openlineage</code>)</li>
+<li><strong>ds-connector(s)</strong>: decide dataspace requests (<code>/internal/dataplane/authorize</code>),
+  publish the EDR key set, and record disclosures</li>
+<li><strong>EDC control plane</strong>: signals DPS data flows at <code>/dps/v1/*</code> (optional)</li>
+<li><strong>REC registry</strong>: resolves a member's meters for the <code>rec_registry</code> row filter</li>
 </ul>
 <hr />
 <h2 id="high-level-architecture">High-level Architecture</h2>
@@ -4508,22 +4540,23 @@
             | Pipelines (ETL/dbt/..) |
             +-----------+------------+
                         |
-                        | OpenLineage events
+            governance.yaml / OpenLineage
                         v
                   +-----------+
-                  | Marquez   |
+                  | dataset-  |  export + import catalogue
+                  | cli       |
                   +-----+-----+
                         |
-                        | export lineage + metadata
                         v
 +---------+     +---------------------+      +--------------------+
-| Clients | --&gt; |     Dataset API     | &lt;--&gt; | OPA (Policy)       |
-| (apps)  |     |                     |      | allow/deny         |
+| Clients | --&gt; |     Dataset API     | &lt;--&gt; | ds-connector(s)    |
+| (apps)  |     |                     |      | authorize / audit  |
 +---------+     | - Catalogue         |      +--------------------+
                 | - Query Engine      |
-                | - Schema API        |
-                | - Metadata API      |
-                +----------+----------+
++---------+     | - Row filters       |      +--------------------+
+| Dataspace| --&gt;| - Policy (Rego)     | &lt;--&gt; | EDC control plane  |
+| consumer |    | - DPS data plane    |      | (DPS signalling)   |
++---------+     +----------+----------+      +--------------------+
                            |
                            v
                    +---------------+
@@ -4531,6 +4564,16 @@
                    | tables/views  |
                    +---------------+
 </code></pre>
+<p>Subsystems:
+- <strong>Catalogue</strong>: <code>/catalogue</code> (JSON-LD, and HTML for browsers),
+  <code>/catalogue/{id}/schema</code>, <code>/catalogue/{id}/vocabulary</code>, optional
+  <code>/catalogue/{id}/conformance</code>
+- <strong>Query engine</strong>: <code>POST /query</code> (<a href="../query-engine/">query-engine.md</a>)
+- <strong>Row-filter registry</strong>: pluggable handlers
+  (<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)
+- <strong>DPS data plane</strong>: optional (<a href="../dps-data-plane/">dps-data-plane.md</a>)</p>
+<p>One instance can serve as the data plane of several connectors: the connector is
+resolved per request from the token's issuer (<code>CONNECTOR_INTERNAL_URLS</code>).</p>
 <hr />
 <h2 id="core-domain-model">Core Domain Model</h2>
 <h3 id="dataset">Dataset</h3>
@@ -4538,21 +4581,21 @@
 <p><strong>Dataset identity</strong>
 - <code>dataset_id</code> (stable string; often namespace-qualified)</p>
 <p><strong>Dataset governance</strong>
-- <code>access_level</code>: <code>open</code> | <code>internal</code> | <code>restricted</code>
+- <code>access_level</code>: <code>open</code> | <code>internal</code> | <code>restricted</code> | <code>secret</code>
+- <code>expose</code> (listed in the catalogue, queryable) and <code>dataspace_expose</code> (offered to
+  dataspace consumers)
 - ownership / stewardship fields
-- classification, tags, retention hints</p>
+- classification, tags, retention hints
+- row filters (<code>lineage.facets.governance.rowFilters</code>)</p>
 <p><strong>Dataset physical mapping</strong>
 - resolved storage reference (e.g., Postgres table/view)
 - schema and column metadata derived from reflection</p>
 <h3 id="namespace">Namespace</h3>
-<p>Namespaces are a first-class taxonomy for lifecycle and intent:
-- <code>raw</code>: ingestion/staging
-- <code>silver</code>: enriched internal
-- <code>gold</code>: curated/exposed</p>
-<p>Namespaces drive:
-- catalogue selection filters
-- policy rules (e.g., only <code>gold</code> exposed externally)
-- operational grouping</p>
+<p>The namespace is the dataset's OpenLineage namespace (<code>lineage.namespace</code>). It
+selects datasets on import (<code>--ns</code>), is rendered as <code>dct:isPartOf</code>, and is passed
+to the policy. Exposure is decided by <code>expose</code> / <code>dataspace.expose</code>, not by
+namespace. Medallion (<code>bronze</code>/<code>silver</code>/<code>gold</code>) is a separate governance hint,
+inferred from the name when not declared, and rendered as <code>ds:medallion</code>.</p>
 <h3 id="distribution">Distribution</h3>
 <p>In DCAT terms, a dataset can expose one or more <strong>distributions</strong> (e.g., SQL endpoint, files, API resource).
 In practice:
@@ -4563,7 +4606,7 @@ In practice:
 <p>Consumers cannot mutate data or catalogue state. Mutations happen only via:
 - data pipelines (tables/views)
 - CLI-managed catalogue imports
-- admin endpoints used by CLI</p>
+- admin endpoints used by CLI, which require the <code>dataset.admin</code> scope</p>
 <p>This guarantees:
 - reproducibility
 - auditability
@@ -4571,20 +4614,26 @@ In practice:
 <hr />
 <h2 id="catalogue-vs-storage-reality">Catalogue vs Storage Reality</h2>
 <p>The catalogue is <strong>validated against storage</strong>.</p>
-<p>Expected behaviors:
-- if a dataset points to a missing table/view, it should be marked invalid and/or removed during cleanup
-- imports reconcile desired state (YAML) vs actual DB objects
-- schema endpoints reflect what exists in storage today</p>
+<ul>
+<li>a PostgreSQL dataset is checked against the table it would be queried through
+  (<code>backend_config.table</code>, or the table its id names); a missing one is skipped at
+  import</li>
+<li>on every import, any PostgreSQL entry whose table no longer exists is deleted;
+  other backends are catalogue-only, not checked and not queryable</li>
+<li>schema endpoints reflect what exists in storage today</li>
+</ul>
 <p>The catalogue <strong>never creates</strong> physical data.</p>
 <hr />
-<h2 id="lifecycle-of-a-dataset-conceptual">Lifecycle of a Dataset (Conceptual)</h2>
+<h2 id="lifecycle-of-a-dataset">Lifecycle of a Dataset</h2>
 <ol>
 <li>Pipeline creates/refreshes physical table/view</li>
-<li>Lineage is emitted to Marquez (OpenLineage)</li>
-<li>Operator exports lineage-derived candidates (CLI)</li>
-<li>Operator curates YAML (titles, descriptions, access levels, tags, docs)</li>
+<li>Pipeline declares governance (<code>governance.yaml</code>); lineage is emitted to Marquez</li>
+<li>Operator exports catalogue YAML: from <code>governance.yaml</code> (<code>export governance</code>),
+   Marquez (<code>export openlineage</code>) or PostgreSQL introspection (<code>export postgres</code>)</li>
+<li>Operator curates YAML where needed (titles, descriptions, access levels, tags, docs)</li>
 <li>CLI imports catalogue (create/update)</li>
-<li>API exposes dataset in catalogue (if allowed)</li>
+<li>API lists the dataset in the catalogue (if <code>expose</code>) and offers it to dataspace
+   consumers (if <code>dataspace.expose</code>)</li>
 <li>Consumers query datasets under governance</li>
 <li>Cleanup removes stale entries when physical assets disappear</li>
 </ol>
@@ -4593,8 +4642,17 @@ In practice:
 <ul>
 <li>SQL must be validated (AST-based, allowlisted)</li>
 <li>dataset references must resolve to catalogued assets</li>
-<li>access is policy-controlled (OPA)</li>
+<li>access is policy-controlled (Rego) on the ordinary path, and decided by the
+  provider's ds-connector on dataspace requests</li>
 <li>limits and pagination protect the system from unbounded workloads</li>
+</ul>
+<hr />
+<h2 id="extension-points">Extension points</h2>
+<ul>
+<li>routes: the <code>celine.dataset.routes</code> entry-point group</li>
+<li>row-filter handlers: the <code>celine.dataset.row_filters</code> entry-point group, or
+  <code>ROW_FILTERS_MODULES</code></li>
+<li>the public API for extensions: <code>celine.dataset.ext</code></li>
 </ul>
 
 

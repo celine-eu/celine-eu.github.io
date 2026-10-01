@@ -4377,7 +4377,7 @@
 <h2 id="output-datasets">Output datasets</h2>
 <ul>
 <li><strong>RAW</strong></li>
-<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair). An export with no active member empties it: the last active member of a community suspended leaves no row behind. Columns: <code>user_id</code>, <code>rec_id</code>, <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>delivery_point_ids</code> (text[]), <code>sensor_ids</code> (text[], the <code>sensor_id</code> of each meter asset), <code>boundary_id</code> (the id of the member's area's boundary, <code>area.boundary.id</code> in registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(user_id, rec_id)</code>. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area.</li>
+<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair). An export with no active member empties it: the last active member of a community suspended leaves no row behind. Columns: <code>user_id</code>, <code>rec_id</code>, <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>delivery_point_ids</code> (text[], the member's delivery points in service: a point flagged <code>active: false</code> in the registry is left out, an unflagged one counts as active), <code>sensor_ids</code> (text[], the <code>sensor_id</code> of each meter asset), <code>boundary_id</code> (the id of the member's area's boundary, <code>area.boundary.id</code> in registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(user_id, rec_id)</code>. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area.</li>
 </ul>
 <p>Every community the registry exports lands in the same table, keyed by <code>rec_id</code>. A sensor listed on two active members appears in two rows, and downstream models count it twice. The registry refuses that case at the source (<code>409 sensor_held</code>: one active holder per sensor id across every community, from rec-registry 1.6.0); a pair stored before then stays until it is fixed, and the registry's <code>duplicate-sensors</code> command lists them.</p>
 <h2 id="substation-attribution-check">Substation attribution check</h2>
@@ -4392,7 +4392,7 @@
 </ul>
 <hr />
 <h2 id="tests">Tests</h2>
-<p>Pure-Python tests of the flatten and the substation check, on synthetic bundles (no database, no registry):</p>
+<p>Pure-Python tests of the flatten (inactive members and inactive delivery points left out), the table replace and the substation check, on synthetic bundles (no database, no registry):</p>
 <pre><code class="language-bash">uv run pytest apps/rec_registry/tests -q
 </code></pre>
 <hr />
