@@ -45,7 +45,7 @@ jobs:
             git commit -m "chore(docs): rebuild site"
             # main may have moved during the build (manual push, other dispatch)
             for i in 1 2 3; do
-              if git pull --rebase -X theirs && git push; then exit 0; fi
+              if git pull --rebase --autostash -X theirs && git push; then exit 0; fi
               git rebase --abort 2>/dev/null || true
               sleep 5
             done
