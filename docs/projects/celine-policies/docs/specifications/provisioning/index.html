@@ -4068,6 +4068,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0007-a-correction-of-names-or-address-keeps-the-account-and-its-username" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0007 — a correction of names or address keeps the account and its username
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4121,6 +4132,24 @@ existing org group memberships in place</strong>. It removes no org group and no
 and approval files that same account
 (<a href="../../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).
 Losing <code>managers</code> there would lock the manager out of their own dashboard.</p>
+<h3 id="req-0007-a-correction-of-names-or-address-keeps-the-account-and-its-username">REQ-0007 — a correction of names or address keeps the account and its username</h3>
+<p><code>PATCH /participants/{community}/{key}</code> with any of <code>first_name</code>, <code>last_name</code>, <code>email</code>
+writes them on the account the registry names for <code>(community, key)</code>, and on no other:</p>
+<ul>
+<li><strong>It finds the account by its registry username and never creates one</strong>; a member the
+  community does not have, or whose account does not exist, is <code>404</code> and nothing is written.</li>
+<li><strong>The username is unchanged</strong>, and a body naming one is <code>422</code>.</li>
+<li><strong>An address another account holds is <code>409 email_taken</code></strong>, compared case-insensitively,
+  and nothing is written.</li>
+<li><strong>An address change resets <code>emailVerified</code>, and the <code>VERIFY_EMAIL</code> link goes to the new
+  address only.</strong> An unchanged address resets nothing and sends nothing; a names-only update
+  leaves the address and its verification as they were.</li>
+<li>It needs <code>provisioning.participants.write</code> (or <code>provisioning.admin</code>), like every other
+  participant write.</li>
+</ul>
+<p>Onboarding calls it to propagate an operator's correction of a member's declared data; the
+same rules serve the member's own self-service later, through the service's
+<code>update_account(username, …)</code>.</p>
 
 
 

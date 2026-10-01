@@ -4413,6 +4413,8 @@ participant account</strong> into the celine realm. <code>keycloak sync-users</c
 the provisioner.</p>
 <p><strong>Endpoints:</strong> <code>PUT /participants/{community}/{key}</code> (ensure the account, its REC
 organization and its org group, and optionally invite the person),
+<code>PATCH /participants/{community}/{key}</code> (correct the names or the address on the existing
+account, never the username; an address change is verified by a link to the new address),
 <code>POST /participants/{community}/{key}/invitation</code> (email an invitation or a password
 reset, as the body's <code>intent</code> names), <code>POST /participants/{community}/{key}/disable</code>,
 <code>POST /reconcile/{community}</code>, <code>/health</code>.</p>

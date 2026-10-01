@@ -4247,6 +4247,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#member-fields-and-delivery-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member fields and delivery points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Member fields and delivery points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-0134-a-per-field-member-write-sends-one-key-to-its-own-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0134 — a per-field member write sends one key to its own route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-0135-a-delivery-point-write-sends-replaces-only-when-given-and-a-refusal-raises-with-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0135 — a delivery-point write sends replaces only when given, and a refusal raises with the code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#self-service-reads" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4300,7 +4339,8 @@ indistinguishable from a right one: the three <strong>batch lookups</strong>, wh
 answer the service gives on purpose. The rest of the wrapper — every single-id lookup, the
 writes, the user-scoped client — is not specified yet, except the <strong>meter and profile
 writes</strong> (REQ-0125–REQ-0128), the <strong>area and topology writes</strong> of onboarding's template sync
-(REQ-0129–REQ-0131, REQ-0133), and how the <strong>self-service reads</strong> raise a registry refusal
+(REQ-0129–REQ-0131, REQ-0133), the <strong>per-field member writes and the delivery-point
+writes</strong> (REQ-0134, REQ-0135), and how the <strong>self-service reads</strong> raise a registry refusal
 (REQ-0132), all at the end of this page.</p>
 <p>The service's own behaviour belongs to <code>rec-registry</code>, not here; where a requirement below
 mirrors one of its, the identifier is named so the two can be kept honest.</p>
@@ -4511,6 +4551,38 @@ area key), <code>area_not_found</code> (<code>404</code>), <code>area_key_taken<
 included), <code>community_not_found</code> (<code>404</code>); <code>code</code> is <code>None</code> for a validation <code>422</code>, a missing
 grant (<code>403</code>) or a body that is not JSON. An unreadable <code>200</code> raises too. It needs
 <code>rec-registry.community.write</code>.</p>
+<hr />
+<h2 id="member-fields-and-delivery-points">Member fields and delivery points</h2>
+<p>Since <code>rec-registry</code> 1.7.0 each of a member's name, role and area has its own route and its
+own action (<code>rec-registry</code> REQ-0081–REQ-0083), so a caller can be granted one field without
+the general member <code>PATCH</code>. A delivery point can be corrected in one write that also relinks
+the member's meters (<code>?replaces=</code>, <code>rec-registry</code> REQ-0084), and one active member at a time
+holds a point (<code>delivery_point_held</code>, <code>rec-registry</code> REQ-0085). Onboarding uses them when an
+operator corrects what a member declared; a refusal there is shown to the operator, so these
+follow the raising helpers above.</p>
+<h3 id="req-0134-a-per-field-member-write-sends-one-key-to-its-own-route">REQ-0134 — a per-field member write sends one key to its own route</h3>
+<p><code>RecRegistryAdminClient.put_member_name</code>, <code>put_member_role</code> and <code>put_member_area</code> send
+<code>PUT /admin/communities/{community_key}/members/{member_key}/name</code>, <code>/role</code> and <code>/area</code>
+respectively, with a body of <strong>only</strong> <code>{"name": …}</code>, <code>{"role": …}</code> or <code>{"area": …}</code>. None of
+them has a parameter for any other member field, and none falls back to the general member
+<code>PATCH</code> or to the profile route. Each answers the updated member as <code>MemberDetailSchema</code>, and
+anything but <code>200</code> raises under REQ-0127 (<code>invalid_role</code> and <code>unknown_area</code> are <code>422</code>; a
+missing member or community is <code>404</code>; <code>code</code> is <code>None</code> for a validation <code>422</code> or a missing
+grant). Values are passed as given; the role and area sets are the registry's.</p>
+<h3 id="req-0135-a-delivery-point-write-sends-replaces-only-when-given-and-a-refusal-raises-with-the-code">REQ-0135 — a delivery-point write sends <code>replaces</code> only when given, and a refusal raises with the code</h3>
+<p><code>RecRegistryAdminClient.put_delivery_point</code> sends
+<code>PUT /admin/communities/{community_key}/members/{member_key}/delivery-points/{point_id}</code> with
+the body as given, and adds the query <code>replaces=&lt;old&gt;</code> <strong>only</strong> when the caller passed
+<code>replaces</code>; without it the request carries no query. <code>delete_delivery_point</code> sends <code>DELETE</code>
+on the same path. Both answer the member's delivery points after the write as
+<code>DeliveryPointsResponseSchema</code>, and anything but <code>200</code> raises under REQ-0127:
+<code>delivery_point_held</code> (<code>409</code>, another active member holds the point), <code>delivery_point_linked</code>
+(<code>409</code>, on delete, a meter of the member names the point), <code>member_not_found</code> or
+<code>community_not_found</code> (<code>404</code>), and a <code>404</code> with no <code>code</code> when <code>replaces</code> names a point the
+member does not have. A <code>404</code> on delete is not read as "already removed".</p>
+<p>The undecoded <code>upsert_delivery_point</code> keeps its contract — it returns the response, <code>409</code>
+included — and gains the same keyword-only <code>replaces</code>, defaulting to <code>None</code>, which sends no
+query: an existing call sends exactly what it sent before.</p>
 <hr />
 <h2 id="self-service-reads">Self-service reads</h2>
 <h3 id="req-0132-a-refused-self-service-read-raises-recregistryapierror-with-the-code">REQ-0132 — a refused self-service read raises <code>RecRegistryApiError</code> with the code</h3>
