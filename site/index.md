@@ -42,7 +42,7 @@ This site documents the open-source software components developed by the CELINE 
 
 <div style="border: 1px solid var(--md-default-fg-color--lightest); border-radius: 6px; padding: 1rem;">
 <strong>Dataset API</strong><br/>
-<small>Governed SQL query interface with DCAT-AP catalogue and OpenLineage provenance</small>
+<small>Governed SQL query interface with DCAT-AP catalogue, row-level filters and a dataspace data plane (EDR/DPS)</small>
 </div>
 
 <div style="border: 1px solid var(--md-default-fg-color--lightest); border-radius: 6px; padding: 1rem;">

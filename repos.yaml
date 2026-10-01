@@ -137,11 +137,8 @@ repos:
       - CLI operations: docs/cli-operations.md
       - Governance and security: docs/governance-security.md
       - Query engine: docs/query-engine.md
-
-    links:
-      - name: ontologies
-        source: projects/dataset-api/ontologies
-        target: ontologies
+      - Dataspace row filters: docs/dataspace-row-filters.md
+      - DPS data plane: docs/dps-data-plane.md
 
   - name: Policies
     slug: celine-policies
