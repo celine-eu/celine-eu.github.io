@@ -11,6 +11,11 @@ on:
 permissions:
   contents: write
 
+# Runs push generated docs to main; serialize them so pushes don't race.
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,7 +43,13 @@ jobs:
           if git status --porcelain docs | grep .; then
             git add docs
             git commit -m "chore(docs): rebuild site"
-            git push
+            # main may have moved during the build (manual push, other dispatch)
+            for i in 1 2 3; do
+              if git pull --rebase -X theirs && git push; then exit 0; fi
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            exit 1
           else
             echo "No changes in docs/, skipping commit"
           fi
