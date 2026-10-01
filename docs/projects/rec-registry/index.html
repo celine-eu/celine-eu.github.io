@@ -4386,6 +4386,14 @@ task run
 <td>Correct a member's role and area, nothing else (<code>members.profile.write</code>)</td>
 </tr>
 <tr>
+<td><code>PUT /admin/communities/{key}/members/{member}/name\|role\|area</code></td>
+<td>Set one field of a member, granted per field (<code>members.name.write</code>, <code>members.role.write</code>, <code>members.area.write</code>)</td>
+</tr>
+<tr>
+<td><code>PUT\|DELETE /admin/communities/{key}/members/{member}/delivery-points/{id}</code></td>
+<td>Add or remove a delivery point (<code>members.delivery_points.write</code>); <code>?replaces={old}</code> corrects one and relinks its meters in one write; one active holder per POD (<code>409 delivery_point_held</code>); a point a meter names is not deleted (<code>409 delivery_point_linked</code>)</td>
+</tr>
+<tr>
 <td><code>PATCH /admin/communities/{key}</code></td>
 <td>Update community metadata (areas have their own route)</td>
 </tr>

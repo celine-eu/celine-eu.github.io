@@ -4275,8 +4275,9 @@ id:</p>
   <code>/delivery-points/</code> on the member delivery-point <code>PUT</code> and <code>DELETE</code>;</li>
 <li>the <code>cursor</code> query value of the <code>…/assets</code>, <code>…/meters</code> and <code>…/delivery-points</code> listings,
   which is an asset key or a delivery-point id, is logged as <code>{redacted}</code>, and so is a
-  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>
-  or <code>delivery_point_ids</code> query value on any route (no route takes one today).</li>
+  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>,
+  <code>delivery_point_ids</code> or <code>replaces</code> query value on any route — <code>replaces</code> is the old POD of
+  a delivery-point correction (REQ-0084); no route takes the others today.</li>
 </ul>
 <p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, so without this every attach, detach and lookup
 wrote a member's sensor id — the key that joins them to their readings — to the log, where

@@ -4244,6 +4244,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0083-a-members-name-role-and-area-each-have-a-route-that-writes-that-field-and-nothing-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0083 — a member's name, role and area each have a route that writes that field and nothing else
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0084-a-delivery-point-is-corrected-in-one-write-and-one-a-meter-names-cannot-be-deleted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0084 — a delivery point is corrected in one write, and one a meter names cannot be deleted
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4350,7 +4372,10 @@ still occupies that key in the community until the asset is deleted (REQ-0071).<
 <p><code>PUT …/members/{mk}/delivery-points/{id}</code> adds or replaces exactly one point, keeping the
 others; re-sending an existing id updates it rather than duplicating it; <code>DELETE</code> removes
 one and keeps the rest. Removing an id the member does not have is <code>404</code>. The <code>id</code> in the
-body must match the one in the path, or <code>422</code>.</p>
+body must match the one in the path, or <code>422</code>. A <code>PUT</code> with <code>?replaces=</code> corrects a point
+(REQ-0084); a <code>DELETE</code> of a point one of the member's meters names is refused (REQ-0084); an
+active member taking a point another active member holds is refused (REQ-0085). Both routes
+derive <code>members.delivery_points.write</code> (REQ-0081).</p>
 <p>The merge is by point id, not by list index, and it does not mutate the list it was given.
 Positional replacement silently drops entries, and a member gaining a second supply point
 must not lose the first.</p>
@@ -4435,7 +4460,12 @@ accepted and refused <code>invalid_area_boundary</code> and <code>invalid_area_k
 its <code>parent</code> — and accepted deletes — are in it, and so is the area rename (REQ-0079),
 accepted and refused <code>area_key_taken</code>, <code>area_not_found</code> and <code>invalid_area_key</code>. For the
 topology writes the test also counts the community's nodes: a node write keeps every other
-node; for the renames it compares the areas: a rename changes one key and nothing else.</p>
+node; for the renames it compares the areas: a rename changes one key and nothing else.
+The field routes (REQ-0083), accepted and refused, are in it, and so are the delivery-point
+writes: a <code>PUT</code> and a <code>DELETE</code>, a correction with <code>replaces</code> (REQ-0084), refused <code>404</code> and
+<code>delivery_point_held</code> (REQ-0085), and a <code>DELETE</code> refused <code>delivery_point_linked</code>; for these it
+also compares both members' delivery points, which every write but the one addressed leaves
+as they were.</p>
 <h3 id="req-0060-the-dataspace-did-is-written-by-patch-and-a-clash-names-its-holder-only-within-the-community">REQ-0060 — the dataspace DID is written by <code>PATCH</code>, and a clash names its holder only within the community</h3>
 <p><code>PATCH …/members/{mk}</code> accepts <code>did</code> alongside the fields of REQ-0024. There is <strong>no
 dedicated route</strong>: the DID is minted a step after the member is registered, so it arrives
@@ -4647,13 +4677,24 @@ each comes from:</p>
 <td><code>403</code></td>
 <td>a self-service read by a caller whose username names no member (REQ-0047)</td>
 </tr>
+<tr>
+<td><code>delivery_point_held</code></td>
+<td><code>409</code></td>
+<td>a delivery point held by another active member anywhere, on the delivery-point <code>PUT</code>, a create, a move to <code>active</code> and the import (REQ-0085)</td>
+</tr>
+<tr>
+<td><code>delivery_point_linked</code></td>
+<td><code>409</code></td>
+<td>deleting a delivery point one of the member's meters still names as its <code>pod</code> (REQ-0084)</td>
+</tr>
 </tbody>
 </table>
-<p><code>sensor_held</code> is <code>422</code> on an import, where the bundle is what is wrong (REQ-0069, REQ-0074).
+<p><code>sensor_held</code> and <code>delivery_point_held</code> are <code>422</code> on an import, where the bundle is what is
+wrong (REQ-0069, REQ-0074, REQ-0085).
 A route that answers a coded <code>422</code> declares its <code>422</code> in the OpenAPI document as either body —
 <code>oneOf</code> <code>ErrorResponse</code> and FastAPI's <code>HTTPValidationError</code>, whose <code>detail</code> is a list — since
-both arrive with that status: the member create, both <code>PATCH</code> routes (REQ-0070) and the status
-route, the asset <code>PUT</code>, the area <code>PUT</code>, the area rename, the topology node <code>PUT</code>, and both
+both arrive with that status: the member create, both <code>PATCH</code> routes (REQ-0070), the role and area
+<code>PUT</code> routes (REQ-0083) and the status route, the asset <code>PUT</code>, the area <code>PUT</code>, the area rename, the topology node <code>PUT</code>, and both
 import routes.
 The two <code>404</code> codes let a caller detaching a meter tell <em>"that member is gone"</em> from <em>"that
 meter is already detached"</em>. Every write route documents the body in the OpenAPI document as
@@ -4665,7 +4706,8 @@ requirement that introduces its refusal. An import refusal (REQ-0074) carries th
 invariant it breaks. Refusals no requirement has given a code keep the plain
 <code>{"detail": "&lt;sentence&gt;"}</code> body — FastAPI's own validation errors, a body id or key that does
 not match the path, an unknown asset type, the import's <code>force</code> guard (REQ-0033), and the <code>404</code>
-for an unknown delivery point, topology node, or area on its <code>DELETE</code> (the rename's is coded).
+for an unknown delivery point — on its <code>DELETE</code> and as the <code>replaces</code> of a correction
+(REQ-0084) — topology node, or area on its <code>DELETE</code> (the rename's is coded).
 Decided in
 <a href="../../decisions/ADR-0008-a-refusal-carries-a-machine-readable-code/">ADR-0008</a>.</p>
 <h3 id="req-0079-an-areas-key-is-renamed-in-one-write-with-its-members">REQ-0079 — an area's key is renamed in one write, with its members</h3>
@@ -4702,6 +4744,52 @@ as it is. Two renames of one area at once: one succeeds, the other finds it gone
 the new key is refused (<code>invalid_area_boundary</code>, one area per boundary) and a <code>DELETE</code> of the
 old key is refused (<code>area_in_use</code>) while members hold it. Decided in
 <a href="../../decisions/ADR-0010-an-area-is-renamed-with-its-members-in-one-write/">ADR-0010</a>.</p>
+<h3 id="req-0083-a-members-name-role-and-area-each-have-a-route-that-writes-that-field-and-nothing-else">REQ-0083 — a member's name, role and area each have a route that writes that field and nothing else</h3>
+<p><code>PUT /admin/communities/{ck}/members/{mk}/name</code> with <code>{"name": "&lt;name&gt;"}</code>, <code>PUT …/role</code> with
+<code>{"role": "&lt;role&gt;"}</code> and <code>PUT …/area</code> with <code>{"area": "&lt;area key&gt;"}</code> each write one field and
+answer <code>200</code> with the member. The body is exactly that one key: absent, <code>null</code>, or beside any
+other key — <code>user_id</code>, <code>did</code>, <code>status</code>, another field — it is <code>422</code> with FastAPI's validation
+body, and nothing changes. An unknown community or member is <code>404</code> <code>community_not_found</code> /
+<code>member_not_found</code>.</p>
+<p><strong>The value checks are the general <code>PATCH</code>'s</strong> (REQ-0066), the same function on the same
+values: a role outside its set is <code>422 invalid_role</code>, an area that is not a key of the
+community's areas <code>422 unknown_area</code> — the same status, code and sentence as the general
+<code>PATCH</code> gives for that value — and a name is held to no set, as on the <code>PATCH</code>. The area is
+checked under the community's row (REQ-0066). The member's other fields, its status, its
+delivery points and its assets are left as they are.</p>
+<p>Each derives its own action (REQ-0081) so that a service can be granted one field
+(REQ-0082). <code>PATCH …/profile</code> (REQ-0070) stays as the role-and-area alias, and the general
+<code>PATCH</code> keeps accepting all three for <code>members.write</code> holders (REQ-0024). A member whose key is
+<code>name</code>, <code>role</code>, <code>area</code> or <code>delivery-points</code> is addressed like any other. Decided in
+<a href="../../decisions/ADR-0011-member-writes-are-granted-per-field/">ADR-0011</a>.</p>
+<h3 id="req-0084-a-delivery-point-is-corrected-in-one-write-and-one-a-meter-names-cannot-be-deleted">REQ-0084 — a delivery point is corrected in one write, and one a meter names cannot be deleted</h3>
+<p><code>PUT /admin/communities/{ck}/members/{mk}/delivery-points/{new}?replaces={old}</code> corrects a
+member's delivery point. In <strong>one transaction</strong>, under the member's row lock:</p>
+<ul>
+<li><code>new</code> is added (the body is the point, its <code>id</code> equal to <code>new</code>, as REQ-0027);</li>
+<li>every point of the member whose id is <code>old</code>, compared trimmed and case-insensitively as
+  REQ-0085 compares, is removed;</li>
+<li>every meter of <strong>this member</strong> whose <code>properties.pod</code>, compared the same way, names <code>old</code> is
+  relinked: its <code>pod</code> becomes <code>new</code>, spelled as the path spells it. Nothing else of the meter
+  changes, and another member's meter naming <code>old</code> is not touched.</li>
+</ul>
+<p>It answers <code>200</code> with the member's delivery points, as the <code>PUT</code> without <code>replaces</code> does. A
+failure at any step leaves both points and every link as they were. <code>old</code> that is not one of
+this member's points — another member's, an unknown one, a blank one — is <code>404</code> (plain
+<code>{"detail"}</code> body, as for the <code>DELETE</code> of an unknown point) and changes nothing. An active
+member's <code>new</code> that another active member holds is <code>409 delivery_point_held</code> (REQ-0085),
+checked before anything changes; the member's own <code>old</code> is not a clash, so a correction of
+spelling alone (<code>it001…</code> → <code>IT001…</code>) is accepted. Without <code>replaces</code> the <code>PUT</code> is REQ-0027's,
+plus REQ-0085. <code>replaces</code> never changes the action (REQ-0081).</p>
+<p><strong><code>DELETE …/delivery-points/{id}</code> of a point one of the member's meters still names</strong> as its
+<code>pod</code> — trimmed, case-insensitive — is <code>409 delivery_point_linked</code>, and nothing changes: the
+meter would otherwise name a supply the member no longer has. The sentence names the point
+and how many meters name it, not the meters. Correct the point with <code>replaces</code>, or detach the
+meter (REQ-0071), first. The check and the removal hold the member's row, which a meter
+attach takes too.</p>
+<p>The query parameter carries a POD, so the access log redacts it (REQ-0080). This is the call
+onboarding's POD correction makes: one write, no asset grant. Decided in
+<a href="../../decisions/ADR-0012-a-delivery-point-has-one-active-holder-and-is-corrected-in-one-write/">ADR-0012</a>.</p>
 
 
 

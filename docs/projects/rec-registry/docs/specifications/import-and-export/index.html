@@ -4222,6 +4222,9 @@ members through onboarding, meters from a manager — and the database holds all
   current rows do not count, since the import deletes them;</li>
 <li>an asset key is longer than the 128 characters <code>asset.key</code> holds — <code>asset_key_too_long</code>
   (REQ-0028), implemented with the sensor clause;</li>
+<li>two of its active members hold the same delivery point, or one of them holds a point an
+  active member of <strong>another</strong> community holds — <code>delivery_point_held</code> (REQ-0085), as the
+  sensor clause, reported by member key and never by the point's id;</li>
 <li>a member's <code>role</code> or <code>status</code> is outside its set, or its <code>area</code> is not one of the bundle's
   areas (REQ-0066);</li>
 <li>an area's key is not an area key — <code>invalid_area_key</code> (REQ-0067), one refusal per key;</li>
@@ -4246,7 +4249,7 @@ one refusal, <code>member '&lt;key&gt;': role 'x' is not one of …</code>, the 
 own <code>community.areas</code> — and the area-key and area-boundary clauses as REQ-0067 describes. A
 refused forced re-import leaves the existing community as it was. The real import's <code>code</code> is
 the first refusal's, in the order member values, area keys, area boundaries, asset keys,
-sensors.</p>
+sensors, delivery points.</p>
 <h3 id="req-0075-a-community-is-retired-by-a-forced-import-naming-it-with-no-members">REQ-0075 — a community is retired by a forced import naming it with no members</h3>
 <p>A forced import of a bundle that names an existing community and carries no members deletes
 every member and asset of that community and keeps the community, with the metadata the bundle
