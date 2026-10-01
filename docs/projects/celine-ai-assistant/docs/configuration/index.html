@@ -574,10 +574,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openai-settings" class="md-nav__link">
+  <a href="#models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenAI Settings
+        Models
       
     </span>
   </a>
@@ -2484,6 +2484,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataspace row filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPS data plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4259,10 +4315,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openai-settings" class="md-nav__link">
+  <a href="#models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenAI Settings
+        Models
       
     </span>
   </a>
@@ -4387,7 +4443,12 @@
 
 <h1 id="configuration">Configuration</h1>
 <p>All settings are defined in <code>src/celine/assistant/settings.py</code> using <code>pydantic-settings</code>. Values are read from environment variables or <code>.env</code> file.</p>
-<h2 id="openai-settings">OpenAI Settings</h2>
+<h2 id="models">Models</h2>
+<p>Every model call goes to an OpenAI-compatible endpoint: chat, conversation summaries,
+image captions and embeddings. vLLM, Ollama and the llama.cpp server all expose one.
+What crosses it is the member's messages and attachments and the data the tools fetch
+with the member's token. The endpoint therefore has <strong>no default</strong>: startup refuses
+without <code>LLM_BASE_URL</code>. To use OpenAI itself, set <code>https://api.openai.com/v1</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4399,31 +4460,67 @@
 </thead>
 <tbody>
 <tr>
-<td><code>OPENAI_API_KEY</code></td>
+<td><code>LLM_BASE_URL</code></td>
 <td><code>str</code></td>
 <td>—</td>
-<td>OpenAI API key (required)</td>
+<td>OpenAI-compatible endpoint (required)</td>
 </tr>
 <tr>
-<td><code>OPENAI_CHAT_MODEL</code></td>
+<td><code>LLM_API_KEY</code></td>
 <td><code>str</code></td>
-<td><code>gpt-5.4-mini</code></td>
-<td>Chat completion model</td>
+<td>—</td>
+<td>Key for that endpoint, if it needs one</td>
 </tr>
 <tr>
-<td><code>OPENAI_EMBED_MODEL</code></td>
+<td><code>LLM_CHAT_MODEL</code></td>
 <td><code>str</code></td>
-<td><code>text-embedding-3-small</code></td>
-<td>Embedding model for indexing and retrieval</td>
+<td>—</td>
+<td>Chat model; must support tool calling (required)</td>
 </tr>
 <tr>
-<td><code>OPENAI_VISION_MODEL</code></td>
+<td><code>LLM_VISION_MODEL</code></td>
 <td><code>str</code></td>
-<td><code>gpt-4o-mini</code></td>
+<td>the chat model</td>
 <td>Vision model for image captioning</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_BASE_URL</code></td>
+<td><code>str</code></td>
+<td><code>LLM_BASE_URL</code></td>
+<td>Separate endpoint for embeddings</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_API_KEY</code></td>
+<td><code>str</code></td>
+<td><code>LLM_API_KEY</code></td>
+<td>Key for the embeddings endpoint</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_MODEL</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Embedding model for indexing and retrieval (required)</td>
+</tr>
+<tr>
+<td><code>LLM_EMBED_DIMENSIONS</code></td>
+<td><code>int?</code></td>
+<td>asked of the model</td>
+<td>Vector size the collection is created with</td>
 </tr>
 </tbody>
 </table>
+<p>The <code>OPENAI_*</code> variables used before 2026-10-01 are no longer read. If one is set,
+startup refuses and names its replacement.</p>
+<p><strong>Changing the embedding model needs a new collection.</strong> A collection holds vectors of
+one size. If <code>QDRANT_COLLECTION</code> already exists with a different size, startup refuses.
+To switch:</p>
+<ol>
+<li>Set a new collection name.</li>
+<li>Re-ingest the corpus (<code>INGEST_FORCE_RELOAD_ON_START=true</code>).</li>
+</ol>
+<p>Uploaded attachments are not re-indexed. No command does it yet. Their files and text
+stay in storage and PostgreSQL, but the assistant cannot retrieve them from the new
+collection until they are uploaded again.</p>
 <h2 id="vector-store">Vector Store</h2>
 <table>
 <thead>

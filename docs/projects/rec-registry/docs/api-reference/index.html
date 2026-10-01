@@ -1196,6 +1196,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-pointsduplicates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points/duplicates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#get-admincommunitiescommunity_keydelivery-pointsby-iddp_id" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2980,6 +2991,62 @@
     
   
     Query engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataspace row filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPS data plane
   
 
     
@@ -4984,6 +5051,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#get-admincommunitiescommunity_keydelivery-pointsduplicates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/communities/{community_key}/delivery-points/duplicates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#get-admincommunitiescommunity_keydelivery-pointsby-iddp_id" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5722,6 +5800,29 @@ area}</code> — the bundle's names. (Before 1.6.0 reads answered <code>operator
 - <code>type</code> — filter by delivery point type
 - <code>active</code> — filter by active status
 - <code>limit</code>, <code>cursor</code> — pagination</p>
+<h3 id="get-admincommunitiescommunity_keydelivery-pointsduplicates"><code>GET /admin/communities/{community_key}/delivery-points/duplicates</code></h3>
+<p>The community's delivery points that more than one <strong>active</strong> member holds — the
+per-community view of <code>celine-rec-registry duplicate-delivery-points</code>, for an operator console.
+A read (<code>rec-registry.read</code>). Not paginated.</p>
+<pre><code class="language-json">{
+  &quot;community_key&quot;: &quot;example-rec&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;delivery_point&quot;: &quot;it001e00000001&quot;,
+      &quot;holders&quot;: [
+        {&quot;member_key&quot;: &quot;ex-00001&quot;, &quot;id&quot;: &quot;IT001E00000001&quot;},
+        {&quot;member_key&quot;: &quot;ex-00002&quot;, &quot;id&quot;: &quot;it001e00000001&quot;}
+      ],
+      &quot;held_elsewhere&quot;: 1,
+      &quot;active_holders&quot;: 3
+    }
+  ]
+}
+</code></pre>
+<p><code>delivery_point</code> is the compared form (trimmed, lower-cased); <code>holders</code> are this community's
+active holders with the spelling each stored; <code>held_elsewhere</code> counts active holders in other
+communities, which are never named, nor their communities. A point shared only between other
+communities is not listed. Unknown community: <code>404</code>.</p>
 <h3 id="get-admincommunitiescommunity_keydelivery-pointsby-iddp_id"><code>GET /admin/communities/{community_key}/delivery-points/by-id/{dp_id}</code></h3>
 <p>Lookup a specific delivery point by its ID.</p>
 <h3 id="get-admincommunitiescommunity_keyassets"><code>GET /admin/communities/{community_key}/assets</code></h3>
@@ -5973,8 +6074,9 @@ unknown point is <code>404</code>.</p>
 <code>celine-rec-registry duplicate-delivery-points</code> — a read-only CLI report over
 <code>GET /admin/export</code> (the export grant), one tab-separated line per active holder:
 <code>delivery_point  community  member  active_holders</code>, the point trimmed and lower-cased; exit
-<code>0</code> none, <code>1</code> some, <code>2</code> unreadable. There is no HTTP route for it, as there is none for
-<code>duplicate-sensors</code>.</p>
+<code>0</code> none, <code>1</code> some, <code>2</code> unreadable. One community's share of the same list is
+<code>GET /admin/communities/{community_key}/delivery-points/duplicates</code> (a read; holders in other
+communities counted, not named).</p>
 <h3 id="putdelete-admincommunitiesckmembersmkassetsasset_key"><code>PUT|DELETE /admin/communities/{ck}/members/{mk}/assets/{asset_key}</code></h3>
 <p>Create, replace or remove one asset. <code>properties</code> is validated against the model
 for <code>asset_type</code> (<code>pv</code>, <code>storage</code>, <code>meter</code>, <code>ev_charger</code>, <code>heat_pump</code>, <code>load</code>),

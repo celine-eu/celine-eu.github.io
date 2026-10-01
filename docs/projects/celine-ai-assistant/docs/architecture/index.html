@@ -2457,6 +2457,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataspace row filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPS data plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4337,7 +4393,7 @@
 <ol>
 <li><strong>Upload</strong> — files are uploaded via <code>POST /upload</code>, parsed, and chunked. Images are captioned via the vision model.</li>
 <li><strong>Index</strong> — chunks are embedded and stored in Qdrant as vector documents</li>
-<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the OpenAI prompt; the LLM autonomously calls skill tools to fetch live data</li>
+<li><strong>Chat</strong> — at query time, relevant chunks are retrieved and injected into the prompt; the LLM autonomously calls skill tools to fetch live data</li>
 <li><strong>Stream</strong> — the response is streamed back to the client via SSE</li>
 </ol>
 <p>All of it shares <strong>one Qdrant collection</strong>: curated training material, administrator-shared
@@ -4380,14 +4436,19 @@ changing anything on this path.</p>
 <td>File storage, attachment management</td>
 </tr>
 <tr>
-<td>OpenAI streaming</td>
+<td>Chat streaming</td>
 <td><code>openai_stream.py</code></td>
 <td>SSE token streaming with agentic tool-calling loop</td>
 </tr>
 <tr>
 <td>Vision</td>
 <td><code>openai_vision.py</code></td>
-<td>Image captioning via OpenAI vision model</td>
+<td>Image captioning via the vision model</td>
+</tr>
+<tr>
+<td>Model endpoint</td>
+<td><code>llm.py</code></td>
+<td>Clients for the configured OpenAI-compatible endpoint, embeddings, startup check</td>
 </tr>
 <tr>
 <td>Document processing</td>
@@ -4471,7 +4532,7 @@ changing anything on this path.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>OpenAI</strong></td>
+<td><strong>Model endpoint</strong> (OpenAI-compatible, <code>LLM_BASE_URL</code>)</td>
 <td>Chat completions, text embeddings, and vision (image captioning)</td>
 </tr>
 <tr>
@@ -4502,10 +4563,10 @@ changing anything on this path.</p>
 </table>
 <h2 id="data-flow">Data Flow</h2>
 <p>Upload path:</p>
-<pre><code>POST /upload -&gt; parse file -&gt; (if image: caption via vision model) -&gt; split into chunks -&gt; embed (OpenAI) -&gt; upsert (Qdrant) -&gt; store metadata (PostgreSQL)
+<pre><code>POST /upload -&gt; parse file -&gt; (if image: caption via vision model) -&gt; split into chunks -&gt; embed (model endpoint) -&gt; upsert (Qdrant) -&gt; store metadata (PostgreSQL)
 </code></pre>
 <p>Chat path:</p>
-<pre><code>POST /chat -&gt; verify JWT -&gt; load history -&gt; load authorized attachments -&gt; retrieve context (Qdrant) -&gt; build prompt -&gt; stream (OpenAI SSE with agentic tool-calling loop)
+<pre><code>POST /chat -&gt; verify JWT -&gt; load history -&gt; load authorized attachments -&gt; retrieve context (Qdrant) -&gt; build prompt -&gt; stream (model endpoint, SSE with agentic tool-calling loop)
 </code></pre>
 <h2 id="database-models">Database Models</h2>
 <p>PostgreSQL (async via SQLAlchemy + asyncpg). Alembic handles migrations. Models:</p>

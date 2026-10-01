@@ -2285,6 +2285,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataspace row filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPS data plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4524,7 +4580,8 @@ run lists it in <code>refusals</code>.</p>
 refuses the next write that would make one, not the past ones; a duplicate already stored
 blocks re-sending either holder's point, reactivating either holder, and re-importing either
 community, until it is resolved. <code>celine-rec-registry duplicate-delivery-points</code> lists them
-(REQ-0086).</p>
+(REQ-0086), and <code>GET …/communities/{ck}/delivery-points/duplicates</code> lists one community's
+(REQ-0087).</p>
 <p>A mistyped POD that happens to be somebody else's is the case this catches: two holders would
 attribute one supply to two people in every consumer that joins supply to members. Decided
 in <a href="../../decisions/ADR-0012-a-delivery-point-has-one-active-holder-and-is-corrected-in-one-write/">ADR-0012</a>.</p>

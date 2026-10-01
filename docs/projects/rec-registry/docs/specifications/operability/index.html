@@ -2285,6 +2285,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataspace row filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPS data plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4113,6 +4169,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0087 — a community's shared delivery points are readable per community, naming no one outside it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4261,6 +4328,54 @@ operator finds them and resolves each, with a correction (REQ-0084) or a deactiv
 the check blocks either. Decided in
 <a href="../../decisions/ADR-0013-duplicate-delivery-points-are-reported-to-the-operator/">ADR-0013</a>,
 which amends ADR-0012.</p>
+<h3 id="req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it">REQ-0087 — a community's shared delivery points are readable per community, naming no one outside it</h3>
+<p><code>GET /admin/communities/{ck}/delivery-points/duplicates</code> answers <code>200</code> with
+<code>{"community_key": "&lt;ck&gt;", "items": [...]}</code>: one item per delivery point that an <strong>active</strong>
+member of this community holds and at least one other <strong>active</strong> member also holds — in this
+community or any other — sorted by point:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delivery_point</code></td>
+<td>the point in its compared form, trimmed and lower-cased (REQ-0085)</td>
+</tr>
+<tr>
+<td><code>holders</code></td>
+<td><code>[{"member_key", "id"}]</code>: each active holder <strong>in this community</strong>, by member key, with the spelling its row stores; a member storing the point under two spellings appears once per spelling</td>
+</tr>
+<tr>
+<td><code>held_elsewhere</code></td>
+<td>how many active members of <strong>other</strong> communities hold it — a count, never a member key, never a community</td>
+</tr>
+<tr>
+<td><code>active_holders</code></td>
+<td>every active member holding it, here and elsewhere</td>
+</tr>
+</tbody>
+</table>
+<p>A point held twice only in other communities is not listed; a point only this community's one
+member holds is not either, even listed twice by that member. Members who are not <code>active</code> hold
+nothing. No duplicates is <code>{"community_key": "&lt;ck&gt;", "items": []}</code>; an unknown community is
+<code>404</code> (plain <code>{"detail"}</code>, as the other community reads). It is not paginated.</p>
+<p><strong>Who is a duplicate is decided by REQ-0086's finder</strong>, <code>find_duplicate_delivery_points</code> in
+<code>core/delivery_point_id.py</code>, fed one query's rows — every active holder of every point this
+community's active members hold — so the read and the CLI report cannot disagree. Holders
+outside the community are counted, never named, as the <code>delivery_point_held</code> refusal does not
+name them (REQ-0085).</p>
+<p>It is a read: any <code>GET</code> under <code>/admin</code> derives <code>read</code> (REQ-0001), so <code>rec-registry.read</code> — which
+the operator console's onboarding holds — or <code>.admin</code> reaches it, and no write or other grant
+does. <code>duplicates</code> is a fixed route segment: any other method on it derives <code>admin</code>
+(REQ-0065), a community keyed <code>duplicates</code> derives what any key derives, and a member's
+delivery point named <code>duplicates</code> is still a delivery-point write. The path is logged as it is,
+not as a delivery-point id (REQ-0080). The CLI report (REQ-0086) stays the cross-community view.
+Decided in
+<a href="../../decisions/ADR-0014-a-communitys-shared-delivery-points-are-readable-per-community/">ADR-0014</a>.</p>
 <h3 id="req-0077-the-cli-reports-members-whose-role-status-or-area-is-out-of-set-and-writes-nothing">REQ-0077 — the CLI reports members whose role, status or area is out of set, and writes nothing</h3>
 <p><code>celine-rec-registry out-of-set-values</code> reads every community through <code>GET /admin/export</code> and
 prints one line per offending field: the community key, the member key, the field (<code>role</code>,
@@ -4309,7 +4424,8 @@ id:</p>
   which is an asset key or a delivery-point id, is logged as <code>{redacted}</code>, and so is a
   <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>,
   <code>delivery_point_ids</code> or <code>replaces</code> query value on any route — <code>replaces</code> is the old POD of
-  a delivery-point correction (REQ-0084); no route takes the others today.</li>
+  a delivery-point correction (REQ-0084); no route takes the others today. A community's
+  <code>…/delivery-points/duplicates</code> (REQ-0087) is a route, not an id, and is logged as it is.</li>
 </ul>
 <p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, so without this every attach, detach and lookup
 wrote a member's sensor id — the key that joins them to their readings — to the log, where
