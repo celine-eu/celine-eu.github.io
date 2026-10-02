@@ -4364,7 +4364,8 @@ and <code>cadence</code> already resolved to one language, plus <code>enabled</c
 never sees the i18n maps.</p>
 <p>An update stores only kinds the catalogue lists, so an invented kind does not poison the
 row, and appends every non-editable kind whether or not it was sent (REQ-0037).</p>
-<p>What the catalogue does <em>not</em> list cannot be refused at all (REQ-0036).</p>
+<p>What the catalogue does <em>not</em> list is suppressed, except the operator kinds the
+orchestrator always delivers (REQ-0036).</p>
 <h2 id="subscriptions">Subscriptions</h2>
 <h3 id="req-0061-a-subscription-is-registered-against-the-caller-and-nobody-else">REQ-0061 — a subscription is registered against the caller and nobody else</h3>
 <p><code>POST /webpush/subscribe</code>. There is no <code>user_id</code> field in the request body, so this is

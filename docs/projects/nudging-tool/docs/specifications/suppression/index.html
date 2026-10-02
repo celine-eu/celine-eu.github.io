@@ -4277,16 +4277,19 @@ The suite pins the literal against the model and the migration, and simulates
 PostgreSQL's wording for that one constraint — see
 <a href="../../decisions/ADR-0003-the-database-is-real-and-sqlite/">ADR-0003</a>.</p>
 <h3 id="req-0036-a-participant-receives-a-kind-only-if-it-is-in-their-enabled-list">REQ-0036 — a participant receives a kind only if it is in their enabled list</h3>
-<p>A rule declares <code>definition.kind</code>; the orchestrator suppresses the notification when that
-kind is known and not in the participant's enabled list, recording <code>kind_disabled</code> on
-every job and marking the notification <code>suppressed</code>.</p>
-<p>Two ways a rule escapes this entirely, and both are the current state of the seed:</p>
+<p>A rule declares <code>definition.kind</code>; the orchestrator suppresses the notification when
+that kind is not in the participant's enabled list, recording <code>kind_disabled</code> on every job
+and marking the notification <code>suppressed</code>. A kind the catalogue (<code>active_kinds.yaml</code>) does
+not list is in nobody's enabled list, so it is <strong>suppressed too</strong>: the catalogue is an
+allow-list, and the ten-odd shipped kinds that are not in it (<code>kpi_conditions</code>,
+<code>static_message</code>, <code>price_*</code>, ...) are not delivered until catalogued.</p>
+<p>Two things escape this:</p>
 <ul>
 <li>a rule with <strong>no kind</strong>, or a blank one, is matched against nothing and always
   delivered;</li>
-<li>a rule whose kind is <strong>not in <code>active_kinds.yaml</code></strong> is likewise always delivered. The
-  catalogue lists three kinds; ten of the kinds the shipped rules declare are not among
-  them, so most notifications cannot be refused by anyone.</li>
+<li>the operator kinds in <code>ALWAYS_DELIVERED_KINDS</code> (<code>orchestrator.py</code>) are always
+  delivered. Today that is only <code>grid_risk_report</code>, the DSO grid risk report: an operator
+  report, not a participant preference, so it is deliberately kept out of the catalogue.</li>
 </ul>
 <p>A stored consent naming a kind the catalogue no longer lists is dropped rather than
 carried forward.</p>

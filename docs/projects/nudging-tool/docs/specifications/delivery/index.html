@@ -4173,6 +4173,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0079-a-templates-html-body-is-sent-as-a-multipartalternative-beside-the-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0079 — a template's HTML body is sent as a multipart/alternative beside the text
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4276,12 +4287,18 @@ the error and <code>sent_at</code> when it was sent.</p>
 Nothing depends on the agreement, because the cap counts by destination prefix rather
 than by channel.</p>
 <h3 id="req-0049-email-is-textplain-over-starttls-unless-ssl-is-configured">REQ-0049 — email is <code>text/plain</code>, over STARTTLS unless SSL is configured</h3>
-<p>Subject is the rendered title, body the rendered body. <code>SMTP_USE_SSL</code> selects implicit
+<p>Subject is the rendered title, body the rendered body (an HTML alternative may ride
+along — REQ-0079 — but the text part is always there). <code>SMTP_USE_SSL</code> selects implicit
 TLS and makes <code>SMTP_USE_TLS</code> irrelevant; the default is STARTTLS on port 587. With no
 <code>SMTP_USERNAME</code> the login step is skipped rather than attempted empty — an
 unauthenticated relay is a supported configuration.</p>
 <p>Every exception is caught and recorded, so one channel failing never stops the other from
 being tried.</p>
+<h3 id="req-0079-a-templates-html-body-is-sent-as-a-multipartalternative-beside-the-text">REQ-0079 — a template's HTML body is sent as a <code>multipart/alternative</code> beside the text</h3>
+<p>When the template carries <code>html_jinja</code>, the e-mail is <code>multipart/alternative</code> with the
+rendered text part first and the rendered HTML part second; the notification stores the
+rendered HTML in <code>body_html</code>. Without <code>html_jinja</code> nothing changes: the message is the
+<code>text/plain</code> of REQ-0049 and <code>body_html</code> is null. Web push never carries the HTML.</p>
 
 
 
