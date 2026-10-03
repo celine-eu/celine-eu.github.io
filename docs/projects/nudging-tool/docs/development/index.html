@@ -1458,6 +1458,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#deployment-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4309,6 +4320,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#deployment-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#taskfile-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4404,6 +4426,15 @@ task alembic:migrate       # apply database migrations
 task seed                  # seed rules and templates
 task run                   # start on port 8016
 </code></pre>
+<h2 id="deployment-posture">Deployment posture</h2>
+<p><code>task run</code> and <code>task debug</code> export <code>CELINE_ENV=dev</code>, which is what lets the zero-config
+defaults start. Unset or any other value (<code>staging</code>, <code>prod</code>, …) is hardened
+(<code>celine.sdk.posture</code>), and <code>create_app()</code> refuses to start on a local database password, a
+client secret equal to the client id, the SDK's default issuer, or a missing
+<code>VAPID_PUBLIC_KEY</code> / <code>VAPID_PRIVATE_KEY</code> / <code>CLICK_TRACKING_SECRET</code> (REQ-0081). In dev the same
+findings are one warning. <code>CELINE_ENV=staging task run</code> runs the same entry point hardened.</p>
+<p><code>celine.sdk.posture</code> ships in the next celine-sdk release; until then link the local checkout
+(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
 <h2 id="taskfile-commands">Taskfile Commands</h2>
 <table>
 <thead>

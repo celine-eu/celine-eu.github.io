@@ -4180,6 +4180,11 @@ from "something else did".</p>
 <code>AccessPolicy.allow_user_commitment</code>, because that method is unreachable — nothing calls
 it. Borrowing its shape would tie the tests to code no request executes. If a route starts
 calling it, the tests should switch to it.</p>
+<h2 id="update-2026-10-03">Update — 2026-10-03</h2>
+<p>The fallback is now <strong>development-only</strong> (NIS2 finding R23): outside <code>CELINE_ENV=dev</code> a
+missing bundle refuses startup and a missing or raising engine denies (REQ-0011,
+REQ-0055). The reasoning above still holds for the suite, which pins <code>CELINE_ENV=dev</code> and
+therefore still runs with the permissive fallback in reach.</p>
 
 
 

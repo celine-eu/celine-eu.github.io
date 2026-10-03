@@ -4086,6 +4086,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#req-0055-outside-development-the-dev-defaults-refuse-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0055 — outside development, the dev defaults refuse startup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0051-a-message-this-service-cannot-use-is-dropped-not-raised" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4136,13 +4147,32 @@
 
 
 <h1 id="operability">Operability</h1>
-<p>Running, degrading, and the entry point that is not a request.</p>
+<p>Running, degrading, refusing to start, and the entry point that is not a request.</p>
 <p><code>pipeline_listener</code> subscribes to <code>celine/pipelines/runs/+</code> and is <strong>the only way work
 starts in this service that a participant did not ask for</strong>. Nothing calls this service to
 make a pipeline event happen, so a broker that is down means opportunities stop being
 scheduled and commitments stop being settled — with no failing response anywhere to
 notice.</p>
 <hr />
+<h3 id="req-0055-outside-development-the-dev-defaults-refuse-startup">REQ-0055 — outside development, the dev defaults refuse startup</h3>
+<p><code>core/config.py</code> ships zero-config development defaults on purpose: the local stack's
+database password, <code>CELINE_OIDC_CLIENT_SECRET</code> equal to the client id
+(<code>svc-flexibility</code>), and the SDK's local Keycloak as issuer and JWKS. They are safe only
+because the lifespan refuses them, <strong>first</strong> — before the MQTT broker is created and
+before the settlement fallback is scheduled — unless the environment is development.</p>
+<p>The signal is <code>celine.sdk.posture</code>'s: <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; <strong>only <code>dev</code>
+relaxes</strong>. Unset, empty, <code>staging</code>, <code>prod</code> or a typo is hardened. <code>task run</code> exports
+<code>CELINE_ENV=dev</code>; <code>CELINE_ENV=staging task run</code> is the prod-like local mode.</p>
+<p>Outside dev, startup raises <code>InsecureConfiguration</code> naming every violation at once:</p>
+<ul>
+<li><code>DATABASE_URL</code> carries a development password (<code>securepassword123</code>, <code>postgres</code>, or a
+  trivially weak one);</li>
+<li><code>CELINE_OIDC_CLIENT_SECRET</code> is empty or equal to the client id;</li>
+<li><code>CELINE_OIDC_BASE_URL</code> / <code>CELINE_OIDC_JWKS_URI</code> were not set, so the SDK's local
+  default is in use;</li>
+<li>the policy bundle (<code>policies/flexibility.rego</code>) did not load — REQ-0011.</li>
+</ul>
+<p>In dev the same values are logged as one warning and startup proceeds.</p>
 <h3 id="req-0051-a-message-this-service-cannot-use-is-dropped-not-raised">REQ-0051 — a message this service cannot use is dropped, not raised</h3>
 <p>A payload that will not parse as a <code>PipelineRunEvent</code>, a run whose status is not
 <code>completed</code>, and a flow this service does not handle are all ignored.</p>

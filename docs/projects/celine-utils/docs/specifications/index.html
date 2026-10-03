@@ -4184,6 +4184,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0009-outside-dev-a-pipeline-config-never-falls-back-to-the-client-id-as-its-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0009 — Outside dev a pipeline config never falls back to the client id as its secret
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4264,6 +4275,11 @@ documentation of behaviour, which lives in the pages these link to.</p>
 <td>REQ-0008</td>
 <td>An ownership name leaves the library as an organisation id</td>
 <td><code>tests/test_governance_ownership.py</code></td>
+</tr>
+<tr>
+<td>REQ-0009</td>
+<td>Outside dev a pipeline config never falls back to the client id as its secret</td>
+<td><code>tests/test_pipeline_config_posture.py</code></td>
 </tr>
 </tbody>
 </table>
@@ -4428,6 +4444,17 @@ label, an ODRL assigner or a recipient — so a placeholder reaches the wire, ma
 organisation, and the dataset is unreachable while every file validates. Resolving
 before the overlay fails a load on a placeholder the deployment has already withdrawn.</p>
 <p>Behaviour: <a href="../governance-owners/#resolving-ownership-names">resolving ownership names</a>.</p>
+<h2 id="req-0009-outside-dev-a-pipeline-config-never-falls-back-to-the-client-id-as-its-secret">REQ-0009 — Outside dev a pipeline config never falls back to the client id as its secret</h2>
+<p>Building a <code>PipelineConfig</code> MUST raise <code>celine.sdk.posture.InsecureConfiguration</code> when the
+OIDC client secret is empty or equal to the client id (<code>svc-pipelines</code>, the value
+<code>CELINE_OIDC_CLIENT_SECRET</code> falls back to), unless the posture signal is exactly <code>dev</code>:
+<code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>. Unset, <code>prod</code>, <code>staging</code>, <code>test</code> or a typo is hardened. In
+<code>dev</code> the fallback MUST be accepted with a warning. <code>PREFECT_MODE</code> MUST NOT influence it: it
+selects how a flow is scheduled, not what it may authenticate with.</p>
+<p>The secret MUST be read when the config is built, not when the module is imported.</p>
+<p><strong>Consequence if violated:</strong> a deployed pipeline authenticates to the broker with a credential
+anyone can derive from the client list, and nothing downstream objects.</p>
+<p>Behaviour: <a href="../environment/#pipeline-execution">environment</a>.</p>
 
 
 

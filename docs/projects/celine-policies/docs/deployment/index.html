@@ -5128,9 +5128,24 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 </thead>
 <tbody>
 <tr>
+<td><code>CELINE_ENV</code></td>
+<td>unset (hardened)</td>
+<td>Posture signal (<code>celine.sdk.posture</code>, then <code>ENVIRONMENT</code>); <strong>only <code>dev</code> relaxes</strong></td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_AUDIENCE</code></td>
+<td>unset</td>
+<td>Audience every MQTT token must carry. <strong>Required outside dev</strong> (<a href="../specifications/mqtt-auth/">REQ-0009</a>); enforced whenever set</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_JWKS_URI</code></td>
+<td>local Keycloak (SDK)</td>
+<td>Issuer and JWKS; the SDK default is refused outside dev</td>
+</tr>
+<tr>
 <td><code>CELINE_OIDC_*</code></td>
 <td>(from celine-sdk)</td>
-<td>OIDC/JWT validation</td>
+<td>Other OIDC/JWT validation settings</td>
 </tr>
 <tr>
 <td><code>CELINE_POLICIES_DIR</code></td>
@@ -5174,6 +5189,14 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 </tr>
 </tbody>
 </table>
+<p>Outside <code>CELINE_ENV=dev</code> the service refuses to start without an audience or on the SDK's
+OIDC defaults, and installs no CORS middleware (its only callers are mosquitto-go-auth and
+health probes). <strong>No MQTT audience exists in the realm yet</strong> — see <code>.env.example</code> — so a
+hardened deployment needs an audience mapper onto one MQTT audience for every broker client
+first. The image needs the celine-sdk release that ships <code>celine.sdk.posture</code>.</p>
+<p>The <code>/superuser</code> check accepts the <code>admin</code> and <code>mqtt.admin</code> groups from the <strong>merged</strong> realm
+and organization group claims (<code>extract_groups</code>), so an organization-level <code>admin</code> group is an
+MQTT superuser wherever <code>auth_opt_disable_superuser</code> is off.</p>
 <h3 id="keycloak-cli">Keycloak CLI</h3>
 <p>Environment variables with <code>CELINE_KEYCLOAK_</code> prefix:</p>
 <table>
@@ -5286,9 +5309,9 @@ leaves out everybody <code>onboarding</code> has approved since it was taken. A 
 the <strong>registry</strong> reconciles what is true. Both are supported <strong>for local
 development</strong>: a developer's realm is set up before the registry holds anything,
 and an offline run is a real case there.</p>
-<p><strong><code>sync-users</code> runs only with <code>ENV=dev</code></strong> (or <code>local</code>, <code>test</code>, <code>ci</code>: the guard
-<code>seed-dev-users</code> uses, <code>KeycloakSettings.is_production</code>). Unset, <code>prod</code>, <code>staging</code> or
-any other value, it exits 1 before it reads a source or asks Keycloak anything,
+<p><strong><code>sync-users</code> runs only with <code>ENV=dev</code></strong> (exactly <code>dev</code>: the guard <code>seed-dev-users</code>
+uses, <code>KeycloakSettings.is_production</code>). Unset, <code>prod</code>, <code>staging</code>, <code>development</code>,
+<code>local</code>, <code>test</code>, <code>ci</code> or any other value, it exits 1 before it reads a source or asks Keycloak anything,
 <code>--dry-run</code> and <code>--check</code> included, and says to set <code>ENV=dev</code> if the realm is a
 development one. <code>CELINE_KEYCLOAK_ENV</code> and <code>CELINE_ENV</code> outrank <code>ENV</code>.</p>
 <p><strong>On a deployed realm <code>sync-users</code> writes nothing, from either source.</strong> Members

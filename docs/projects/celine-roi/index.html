@@ -3863,6 +3863,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4298,6 +4309,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4434,8 +4456,46 @@
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash">uv sync
 uv run alembic upgrade head
-uv run uvicorn celine.roi.api.app:create_app --factory --reload --port 8013
+CELINE_ENV=dev uv run uvicorn celine.roi.api.app:create_app --factory --reload --port 8013
+# or: task run   (port 8018, sets CELINE_ENV=dev unless it is already set)
 </code></pre>
+<h2 id="environment">Environment</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_ENV</code></td>
+<td>Deployment posture; only <code>dev</code> accepts the development defaults below (<code>ENVIRONMENT</code> is read when it is unset)</td>
+<td>unset = <strong>hardened</strong></td>
+</tr>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>PostgreSQL for estimates and feedback; <code>""</code> disables persistence</td>
+<td>local stack, dev password (dev only)</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_JWKS_URI</code></td>
+<td>Issuer and keys tokens are verified against</td>
+<td>SDK's local Keycloak (dev only)</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_AUDIENCE</code>, <code>CELINE_OIDC_CLIENT_ID</code></td>
+<td>Expected audience</td>
+<td><code>oauth2_proxy</code></td>
+</tr>
+</tbody>
+</table>
+<p>Outside <code>CELINE_ENV=dev</code> — including when it is unset — the service refuses to start while
+<code>DATABASE_URL</code> carries the local stack's password or the OIDC issuer/JWKS are left at the
+SDK's local default, and lists every such setting at once (REQ-1201). <code>CELINE_ENV=staging
+task run</code> is the prod-like mode of the local runner. The check uses <code>celine.sdk.posture</code>,
+which needs the celine-sdk release after 1.24.0.</p>
 <h2 id="configuration">Configuration</h2>
 <p>Configuration is loaded from YAML files under the config directory and can be overridden via API request parameters. Key config files:
 - <code>config.yaml</code> — main configuration (tariffs, rates, horizons)

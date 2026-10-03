@@ -4150,8 +4150,8 @@
 <p>What this repository must do, stated so that a test can name it.</p>
 <p>This directory started on 2026-09-27 with the provisioning service's part in a community
 that starts clean (<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).
-It does not yet describe the rest of the repository: the Keycloak CLI, the MQTT auth backend
-and the Rego policies are described in <a href="../architecture/"><code>docs/</code></a> and pinned by their
+It does not yet describe the rest of the repository: the Keycloak CLI, most of the MQTT auth
+backend and the Rego policies are described in <a href="../architecture/"><code>docs/</code></a> and pinned by their
 tests, and gain requirements here when a change needs one.</p>
 <h2 id="planned-and-implemented">Planned and implemented</h2>
 <p>A requirement is <strong>implemented</strong> unless it says otherwise: it describes what the code does
@@ -4198,6 +4198,10 @@ naming a requirement that does not exist is a typo.</p>
 <tr>
 <td>REQ-0006</td>
 <td><a href="keycloak-cli/">Keycloak CLI</a> — what a <code>celine-policies keycloak</code> command may do, where a decision fixed it</td>
+</tr>
+<tr>
+<td>REQ-0009 – REQ-0010</td>
+<td><a href="mqtt-auth/">MQTT auth</a> — what the MQTT auth backend refuses outside dev</td>
 </tr>
 </tbody>
 </table>

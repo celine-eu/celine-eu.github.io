@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/training-materials/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-sdk/docs/specifications/posture/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Training materials - CELINE Project</title>
+        <title>Deployment posture - CELINE Project</title>
       
     
     
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#training-materials" class="md-skip">
+        <a href="#deployment-posture" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Training materials
+              Deployment posture
             
           </span>
         </div>
@@ -191,7 +191,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -434,7 +434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -462,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -490,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -518,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -634,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-sdk/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -662,7 +662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
+      <a href="../../auth/" class="md-nav__link">
         
   
   
@@ -690,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
+      <a href="../../broker/" class="md-nav__link">
         
   
   
@@ -718,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
+      <a href="../../settings/" class="md-nav__link">
         
   
   
@@ -746,7 +746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
+      <a href="../../spec-management/" class="md-nav__link">
         
   
   
@@ -4086,10 +4086,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#req-0031-a-markdown-document-is-indexed-with-a-title-and-a-public-location" class="md-nav__link">
+  <a href="#req-0180-only-dev-relaxes-unset-is-hardened" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0031 — a Markdown document is indexed with a title and a public location
+        REQ-0180 — only dev relaxes; unset is hardened
       
     </span>
   </a>
@@ -4097,10 +4097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0032-ingestion-is-incremental-keyed-on-content" class="md-nav__link">
+  <a href="#req-0181-the-guard-collects-every-violation-and-raises-once-outside-dev" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0032 — ingestion is incremental, keyed on content
+        REQ-0181 — the guard collects every violation and raises once outside dev
       
     </span>
   </a>
@@ -4108,10 +4108,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0033-a-sync-refuses-rather-than-discarding-work" class="md-nav__link">
+  <a href="#req-0182-the-local-stacks-credentials-are-recognised" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0033 — a sync refuses rather than discarding work
+        REQ-0182 — the local stack's credentials are recognised
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0183-an-issuer-nobody-configured-is-refused-outside-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0183 — an issuer nobody configured is refused outside dev
       
     </span>
   </a>
@@ -4135,28 +4146,40 @@
 
 
 
-<h1 id="training-materials">Training materials</h1>
-<p>The curated corpus is a <strong>git checkout of <code>celine-training-materials</code></strong>, indexed into the
-vector collection. Its content shape is a dependency: what that repository publishes is
-what this service can answer questions about.</p>
+<h1 id="deployment-posture">Deployment posture</h1>
+<p><code>celine.sdk.posture</code>. The SDK's defaults describe the local platform (REQ-0003), and so do
+every service's: a guessable database password, a client secret equal to the client id, a
+policy engine that may be missing. They are safe only because something refuses them when
+the environment does not say it is development. This module is that something, shared, so
+every service applies the same rule.</p>
 <hr />
-<h3 id="req-0031-a-markdown-document-is-indexed-with-a-title-and-a-public-location">REQ-0031 — a Markdown document is indexed with a title and a public location</h3>
-<p>YAML front matter is stripped. The title is the first heading, or the filename stem when
-there is none. The location mirrors the docs site's routing rather than the file layout:
-<code>guide/index.md</code> publishes as <code>guide/</code>, <code>guide/solar.md</code> as <code>guide/solar/</code>. Every
-document is indexed <code>hidden</code>, so it reaches the model and not the citation list. A
-root-level <code>index.md</code> publishes as the site root, <code>/</code>.</p>
-<h3 id="req-0032-ingestion-is-incremental-keyed-on-content">REQ-0032 — ingestion is incremental, keyed on content</h3>
-<p>A manifest records a hash of each document's text. A document whose hash is unchanged is
-skipped; an edited one is re-indexed; a forced run ignores the manifest entirely. An
-empty document is neither indexed nor counted. The manifest file is shared with the other
-ingester, so a save merges rather than replaces.</p>
-<h3 id="req-0033-a-sync-refuses-rather-than-discarding-work">REQ-0033 — a sync refuses rather than discarding work</h3>
-<p>The sync is <code>git fetch</code> and <code>git checkout --detach</code>, which would silently discard a local
-edit. It refuses when the checkout is dirty, when the configured path exists but is not a
-checkout, and when there is nothing to clone from. A refusal is reported to the caller as
-<code>409</code>. Startup tolerates all of it: a deployment with neither a checkout nor a URL boots
-and says it skipped.</p>
+<h3 id="req-0180-only-dev-relaxes-unset-is-hardened">REQ-0180 — only <code>dev</code> relaxes; unset is hardened</h3>
+<p><code>current_env()</code> reads <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>, then any legacy names the caller
+passes, and returns the first non-empty value stripped and lowercased, or <code>""</code>. <code>is_dev()</code> is
+true <strong>only</strong> for <code>dev</code>. Unset, empty, <code>prod</code>, <code>staging</code>, <code>test</code> and any misspelling are
+hardened (<code>is_hardened()</code>).</p>
+<p>The one relaxed value is enumerated, never the hardened ones: forgetting the variable, or
+mistyping it, must leave a deployment strict. Development opts in, in each component's own
+<code>task run</code>.</p>
+<h3 id="req-0181-the-guard-collects-every-violation-and-raises-once-outside-dev">REQ-0181 — the guard collects every violation and raises once outside dev</h3>
+<p><code>PostureGuard(service)</code> collects violations; <code>enforce()</code> raises <code>InsecureConfiguration</code>
+listing all of them when hardened and logs one warning when <code>dev</code>. A guard with no violations
+never raises. A deployment learns every missing value in one cycle.</p>
+<h3 id="req-0182-the-local-stacks-credentials-are-recognised">REQ-0182 — the local stack's credentials are recognised</h3>
+<ul>
+<li><code>forbid_dev_database_url</code> flags a URL whose password is a local-stack password
+  (<code>securepassword123</code>, <code>postgres</code>) or trivially weak. A URL without a password is not
+  flagged.</li>
+<li><code>forbid_secret_equal_to_client_id</code> flags a client secret that is empty or equal to the
+  client id. A service with no client id holds no client identity and is not flagged.</li>
+<li><code>forbid_default</code>, <code>forbid_true</code>, <code>forbid_false</code> and <code>require_set</code> register a service's own
+  dev defaults and switches.</li>
+</ul>
+<h3 id="req-0183-an-issuer-nobody-configured-is-refused-outside-dev">REQ-0183 — an issuer nobody configured is refused outside dev</h3>
+<p><code>require_explicit_oidc(oidc)</code> flags <code>CELINE_OIDC_BASE_URL</code> and <code>CELINE_OIDC_JWKS_URI</code> when
+the value is the SDK's default rather than one set by the environment or by code, and,
+with <code>require_audience=True</code>, an unset audience. TLS on the issuer is a deployment property
+and is not checked: a prod-like local run names the local realm explicitly and passes.</p>
 
 
 

@@ -4096,6 +4096,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0045-outside-dev-startup-refuses-every-development-only-setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0045 — outside dev, startup refuses every development-only setting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0046-wildcard-cors-is-served-in-dev-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0046 — wildcard CORS is served in dev only
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4126,6 +4148,24 @@ library still formats.</p>
 that collides takes down the handler that was meant to contain the problem.</p>
 <p>A test scans every <code>extra={...}</code> in <code>src/</code> for a collision, so the next one fails a test
 rather than a request.</p>
+<h3 id="req-0045-outside-dev-startup-refuses-every-development-only-setting">REQ-0045 — outside dev, startup refuses every development-only setting</h3>
+<p>The environment signal is <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>, then the legacy <code>APP_ENV</code>
+(from the environment, or explicitly from <code>.env</code>); the first non-empty one wins. <strong>Only
+<code>dev</code> relaxes</strong>: unset, empty, <code>prod</code>, <code>production</code>, <code>staging</code>, <code>test</code> or a typo is
+hardened. <code>APP_ENV</code>'s own default is not a signal.</p>
+<p>Hardened, startup refuses to run — before Qdrant or the database is reached, naming every
+offending setting in one message — while any of these is in force:</p>
+<ul>
+<li><code>OAUTH2_TRUST_HEADERS=true</code>, which makes unverified <code>x-auth-request-*</code> headers, groups
+  included, an identity (REQ-0003);</li>
+<li><code>OAUTH2_ISSUER</code> unset — with <code>OAUTH2_JWKS_URL</code> alone the token's <code>iss</code> is not checked;</li>
+<li><code>QDRANT_API_KEY</code> unset;</li>
+<li>a <code>DATABASE_URL</code> carrying a development database password.</li>
+</ul>
+<p>In dev the same list is logged as one warning and startup proceeds.</p>
+<h3 id="req-0046-wildcard-cors-is-served-in-dev-only">REQ-0046 — wildcard CORS is served in dev only</h3>
+<p><code>Access-Control-Allow-Origin: *</code> (with credentials) is configured only when the signal of
+REQ-0045 is <code>dev</code>. Anywhere else no cross-origin caller is allowed.</p>
 
 
 

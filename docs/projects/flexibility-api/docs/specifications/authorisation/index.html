@@ -4290,17 +4290,34 @@ is a message; an allow is an authorisation, and REQ-0012 is what a broken messag
 like. A reason that cannot be read now costs the message and nothing else.</p>
 <p>The bundle loads from an absolute path derived from <code>__file__</code> rather than the working
 directory, so the service finds it wherever it is started from.</p>
-<p><strong>Fail-open remains, deliberately</strong>, in two branches that are indistinguishable — from a
-response alone — from a policy that ran and permitted:</p>
-<ul>
-<li>the bundle did not load — <code>Decision(True, "no-policy-engine")</code></li>
-<li>the <code>allow</code> evaluation raised — <code>Decision(True, "policy-error-permissive")</code></li>
-</ul>
-<p>Neither is reached in normal operation any more. Whether authorisation should instead fail
-<em>closed</em> is an open product decision with a real operational cost — a bad bundle would
-take the service down rather than open it — and nobody has been asked. Until then the
-reason string is the only signal, and it is what a deployment intolerant of fail-open must
-alert on.</p>
+<p><strong>Outside development the two fallback branches fail closed</strong>; only <code>CELINE_ENV=dev</code>
+(see REQ-0055) keeps them permissive:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>outside dev (unset included)</th>
+<th><code>CELINE_ENV=dev</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the bundle did not load</td>
+<td><code>Decision(False, "no-policy-engine")</code>, and startup is refused (REQ-0055)</td>
+<td><code>Decision(True, "no-policy-engine")</code> + warning</td>
+</tr>
+<tr>
+<td>the <code>allow</code> evaluation raised</td>
+<td><code>Decision(False, "policy-error")</code></td>
+<td><code>Decision(True, "policy-error-permissive")</code> + warning</td>
+</tr>
+</tbody>
+</table>
+<p>Neither is reached in normal operation any more. Failing closed has a real operational
+cost — a bad bundle takes the service down rather than opening it — and that is the trade
+NIS2 finding R23 made (decided 2026-10-03; it was an open question until then). The dev
+allows remain indistinguishable, from a response alone, from a policy that ran and
+permitted; the reason string is the only signal there. The posture is read per decision.</p>
 <p><strong>The test suite refuses to run its policy tests unless the bundle loaded</strong>, because
 otherwise every assertion about authorisation would pass for the wrong reason.</p>
 <h3 id="req-0012-every-denial-produces-exactly-one-reason">REQ-0012 — every denial produces exactly one reason</h3>

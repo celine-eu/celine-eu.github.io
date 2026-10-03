@@ -4163,10 +4163,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0013-the-policy-denies-by-default-and-the-engine-allows-by-default" class="md-nav__link">
+  <a href="#req-0013-the-policy-denies-by-default-and-the-engine-fails-closed-outside-dev" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0013 — the policy denies by default, and the engine allows by default
+        REQ-0013 — the policy denies by default, and the engine fails closed outside dev
       
     </span>
   </a>
@@ -4238,17 +4238,36 @@ never consults the policy.</p>
 <p>The <code>alerts.*</code> rules are all gated on the subject not being a service, so the only rule a
 service can satisfy is the blanket <code>grid.admin</code> one. <code>grid.read</code> — enough to read every
 network's risk data — is not enough to read one operator's rules.</p>
-<h3 id="req-0013-the-policy-denies-by-default-and-the-engine-allows-by-default">REQ-0013 — the policy denies by default, and the engine allows by default</h3>
+<h3 id="req-0013-the-policy-denies-by-default-and-the-engine-fails-closed-outside-dev">REQ-0013 — the policy denies by default, and the engine fails closed outside dev</h3>
 <p><code>default allow := false</code>: an action the policy does not name is refused, so a route that
 grows a new action and no rule for it fails closed.</p>
-<p><code>GridAccessPolicy</code> inverts this in two cases, both deliberate:</p>
-<ul>
-<li>the Rego bundle did not load — <code>Decision(True, "no-policy-engine")</code></li>
-<li>the evaluation raised — <code>Decision(True, "policy-error-permissive")</code></li>
-</ul>
-<p>Both are development conveniences and both are indistinguishable, from a response alone,
-from a policy that ran and permitted. The reason string is the only signal, and it is
-what a deployment intolerant of fail-open must alert on. The test suite refuses to run at
+<p>When no decision can be computed, <code>GridAccessPolicy</code> also fails closed — unless the
+environment says development (<code>CELINE_ENV=dev</code>, see REQ-0050):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>outside dev (unset included)</th>
+<th><code>CELINE_ENV=dev</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the Rego bundle did not load</td>
+<td><code>Decision(False, "no-policy-engine")</code>, and startup is refused (REQ-0050)</td>
+<td><code>Decision(True, "no-policy-engine")</code> + warning</td>
+</tr>
+<tr>
+<td>the evaluation raised</td>
+<td><code>Decision(False, "policy-error")</code></td>
+<td><code>Decision(True, "policy-error-permissive")</code> + warning</td>
+</tr>
+</tbody>
+</table>
+<p>The two dev allows are development conveniences, indistinguishable from a response alone
+from a policy that ran and permitted. They used to apply everywhere; since NIS2 finding
+R23 they are reachable only when development is stated explicitly. The posture is read
+per decision, not at import. The test suite pins <code>CELINE_ENV=dev</code> and refuses to run at
 all unless the bundle loaded, because otherwise every assertion in this file would pass
 for the wrong reason.</p>
 

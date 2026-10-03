@@ -612,10 +612,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#training-materials" class="md-nav__link">
+  <a href="#knowledge-bases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Training Materials
+        Knowledge bases
       
     </span>
   </a>
@@ -4353,10 +4353,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#training-materials" class="md-nav__link">
+  <a href="#knowledge-bases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Training Materials
+        Knowledge bases
       
     </span>
   </a>
@@ -4536,7 +4536,7 @@ collection until they are uploaded again.</p>
 <td><code>QDRANT_API_KEY</code></td>
 <td><code>str?</code></td>
 <td>—</td>
-<td>Optional Qdrant API key</td>
+<td>Qdrant API key. Required outside <code>CELINE_ENV=dev</code></td>
 </tr>
 <tr>
 <td><code>QDRANT_COLLECTION</code></td>
@@ -4604,7 +4604,7 @@ collection until they are uploaded again.</p>
 <td><code>OAUTH2_TRUST_HEADERS</code></td>
 <td><code>bool</code></td>
 <td><code>false</code></td>
-<td>Trust unverified <code>x-auth-request-*</code> headers for requests carrying no token. Opt-in; safe only behind a trusted proxy on an isolated network</td>
+<td>Trust unverified <code>x-auth-request-*</code> headers for requests carrying no token. Opt-in; safe only behind a trusted proxy on an isolated network. Refused at startup outside <code>CELINE_ENV=dev</code></td>
 </tr>
 <tr>
 <td><code>OAUTH2_JWKS_URL</code></td>
@@ -4616,7 +4616,7 @@ collection until they are uploaded again.</p>
 <td><code>OAUTH2_ISSUER</code></td>
 <td><code>str?</code></td>
 <td>—</td>
-<td>Expected token issuer; the JWKS is discovered from it. A token whose <code>iss</code> differs is refused</td>
+<td>Expected token issuer; the JWKS is discovered from it. A token whose <code>iss</code> differs is refused. Required outside <code>CELINE_ENV=dev</code>: with <code>OAUTH2_JWKS_URL</code> alone <code>iss</code> is not checked</td>
 </tr>
 <tr>
 <td><code>OAUTH2_ALGORITHMS</code></td>
@@ -4640,11 +4640,23 @@ collection until they are uploaded again.</p>
 <td><code>ADMIN_GROUP</code></td>
 <td><code>str</code></td>
 <td><code>admins</code></td>
-<td>Group name for admin access</td>
+<td>Realm group for administrator access. Read from the top-level <code>groups</code> claim only — a group inside an organization never makes a realm administrator</td>
+</tr>
+<tr>
+<td><code>REC_ORGANIZATION_TYPE</code></td>
+<td><code>str</code></td>
+<td><code>rec</code></td>
+<td>Organization type marking a REC in the token's <code>organization</code> claim; its alias is the caller's community</td>
+</tr>
+<tr>
+<td><code>REC_MANAGER_GROUPS</code></td>
+<td><code>list[str]</code></td>
+<td><code>["managers", "admins"]</code></td>
+<td>Groups inside a REC's own organization that may share documents with it and sync its sources</td>
 </tr>
 </tbody>
 </table>
-<h2 id="training-materials">Training Materials</h2>
+<h2 id="knowledge-bases">Knowledge bases</h2>
 <table>
 <thead>
 <tr>
@@ -4656,31 +4668,43 @@ collection until they are uploaded again.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>TRAINING_MATERIALS_PATH</code></td>
+<td><code>QDRANT_COLLECTION</code></td>
 <td><code>str</code></td>
-<td><code>/workspace/repositories/celine-training-materials</code></td>
-<td>Local checkout path for training materials</td>
+<td><code>celine_docs</code></td>
+<td>Prefix of every knowledge-base alias, <code>&lt;prefix&gt;__&lt;community_id&gt;__&lt;fingerprint&gt;</code>. Before 2026-10-02 the one collection; <code>kb migrate-legacy</code> moves it</td>
 </tr>
 <tr>
-<td><code>TRAINING_MATERIALS_REPO_URL</code></td>
+<td><code>KB_SOURCES_DIR</code></td>
+<td><code>str</code></td>
+<td><code>./data/kb-sources</code></td>
+<td>Where git sources are cloned, one directory per source</td>
+</tr>
+<tr>
+<td><code>KB_SYNC_ON_START</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Sync every registered source when the service starts</td>
+</tr>
+<tr>
+<td><code>KB_GIT_TOKEN</code></td>
 <td><code>str</code></td>
 <td>—</td>
-<td>Git URL to clone/pull training materials</td>
+<td>Token for cloning private git sources over HTTPS (GitHub: fine-grained, read-only Contents). Sent as a header to <code>KB_GIT_TOKEN_HOST</code> only; never stored</td>
 </tr>
 <tr>
-<td><code>TRAINING_MATERIALS_REF</code></td>
+<td><code>KB_GIT_TOKEN_HOST</code></td>
 <td><code>str</code></td>
-<td><code>origin/main</code></td>
-<td>Git ref checked out before ingestion</td>
-</tr>
-<tr>
-<td><code>TRAINING_MATERIALS_SYNC_ON_START</code></td>
-<td><code>bool</code></td>
-<td><code>true</code></td>
-<td>Auto-sync training materials on startup</td>
+<td><code>github.com</code></td>
+<td>The host the token is sent to</td>
 </tr>
 </tbody>
 </table>
+<p>Sources themselves are not configuration: they are registered per community with
+<code>celine-assistant kb source add</code> and stored in the database.</p>
+<p><strong>No longer read</strong> — reported at startup when set: <code>TRAINING_MATERIALS_PATH</code>,
+<code>TRAINING_MATERIALS_REPO_URL</code>, <code>TRAINING_MATERIALS_REF</code>,
+<code>TRAINING_MATERIALS_SYNC_ON_START</code>, <code>MANIFEST_PATH</code>, <code>INGEST_ENABLE</code>,
+<code>INGEST_FORCE_RELOAD_ON_START</code>, <code>DOCS_POLL_INTERVAL_SECONDS</code>.</p>
 <h2 id="uploads-and-ingestion">Uploads and Ingestion</h2>
 <table>
 <thead>
@@ -4703,30 +4727,6 @@ collection until they are uploaded again.</p>
 <td><code>int</code></td>
 <td><code>25</code></td>
 <td>Maximum upload file size in MB</td>
-</tr>
-<tr>
-<td><code>INGEST_ENABLE</code></td>
-<td><code>bool</code></td>
-<td><code>true</code></td>
-<td>Enable RAG ingestion</td>
-</tr>
-<tr>
-<td><code>INGEST_FORCE_RELOAD_ON_START</code></td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td>Force re-ingest all documents on startup</td>
-</tr>
-<tr>
-<td><code>MANIFEST_PATH</code></td>
-<td><code>str</code></td>
-<td><code>/app/data/manifest.json</code></td>
-<td>Manifest file for tracking ingested documents</td>
-</tr>
-<tr>
-<td><code>DOCS_POLL_INTERVAL_SECONDS</code></td>
-<td><code>int</code></td>
-<td><code>60</code></td>
-<td>Polling interval for document changes</td>
 </tr>
 </tbody>
 </table>
@@ -4822,10 +4822,22 @@ collection until they are uploaded again.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>CELINE_ENV</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Deployment posture. Only <code>dev</code> relaxes: wildcard CORS, header trust, SQL echo, and the values below accepted with a warning. Unset, <code>prod</code>, <code>staging</code> or anything else is hardened and startup refuses them. Read from the process environment; <code>task run</code> exports <code>dev</code></td>
+</tr>
+<tr>
+<td><code>ENVIRONMENT</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Read when <code>CELINE_ENV</code> is unset</td>
+</tr>
+<tr>
 <td><code>APP_ENV</code></td>
 <td><code>str</code></td>
-<td><code>prod</code></td>
-<td>Application environment</td>
+<td>—</td>
+<td>Legacy name, read after <code>CELINE_ENV</code> and <code>ENVIRONMENT</code> (also from <code>.env</code>). Its old <code>prod</code> default no longer decides anything</td>
 </tr>
 <tr>
 <td><code>LOG_LEVEL</code></td>
@@ -4837,7 +4849,8 @@ collection until they are uploaded again.</p>
 </table>
 <h2 id="notes">Notes</h2>
 <ul>
-<li><code>DATABASE_URL</code> must use the <code>asyncpg</code> driver for async SQLAlchemy compatibility.</li>
+<li><code>DATABASE_URL</code> must use the <code>asyncpg</code> driver for async SQLAlchemy compatibility. Outside <code>CELINE_ENV=dev</code> a development database password is refused at startup.</li>
+<li>Outside <code>CELINE_ENV=dev</code>, startup refuses <code>OAUTH2_TRUST_HEADERS=true</code>, an unset <code>OAUTH2_ISSUER</code> or <code>QDRANT_API_KEY</code>, and a development database password, all named in one message (REQ-0045). Wildcard CORS is served in dev only (REQ-0046).</li>
 <li>A presented token is always verified against a configured trust anchor (<code>OAUTH2_JWKS_URL</code> or <code>OAUTH2_ISSUER</code>); it is never trusted on the strength of the issuer it names for itself, and the algorithm is taken from <code>OAUTH2_ALGORITHMS</code>, not the token header. A token that does not verify is refused, never downgraded to header trust.</li>
 <li><code>OAUTH2_TRUST_HEADERS</code> governs only requests that carry <em>no</em> token: with it on, <code>x-auth-request-user</code>/<code>-email</code>/<code>-groups</code> are accepted as identity. This is safe only when the network guarantees those headers can be set by the proxy alone (see ADR-0003).</li>
 <li>Upload storage defaults to local disk. The <code>UPLOADS_URI</code> supports <code>file://</code> and <code>s3://</code> schemes.</li>

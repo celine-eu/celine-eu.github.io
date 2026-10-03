@@ -4118,6 +4118,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#update-2026-10-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update — 2026-10-03
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4180,6 +4191,11 @@ where any of those three would leave the suite green and the service open.</p>
 <p><code>regorus</code> is a compiled dependency of <code>celine-sdk</code>. If a future SDK release drops it or
 moves policy evaluation to an out-of-process OPA server, this decision needs revisiting
 and the session fixture will say so loudly on the first run.</p>
+<h2 id="update-2026-10-03">Update — 2026-10-03</h2>
+<p>Both fallbacks are now <strong>development-only</strong> (NIS2 finding R23): outside <code>CELINE_ENV=dev</code>
+a missing bundle refuses startup and a missing or raising engine denies (REQ-0013,
+REQ-0050). The reasoning above still holds for the suite, which pins <code>CELINE_ENV=dev</code> and
+therefore still runs with the permissive fallback in reach.</p>
 
 
 

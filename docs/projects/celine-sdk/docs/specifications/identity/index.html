@@ -4455,6 +4455,12 @@ raising.</p>
 <p><strong>Merging is correct only for a single-tenant service.</strong> For a service acting for several
 communities, flattening lets a badge held in one community satisfy a check about another;
 such a service must read the two levels apart and not call this function.</p>
+<p><strong>Deprecated (2026-10-03): calling it emits a <code>DeprecationWarning</code>.</strong> Its behaviour is
+unchanged so that no consumer's authorization moves silently on an SDK release; the
+consumers are migrated one by one to REQ-0041's readers. The merge turned a community's
+own <code>admins</code> into dataset-api's platform administrator (NIS2 R1). Never authorize on it.
+<code>is_service_account</code> still uses the merge internally, as a "is there a human" signal, and
+does not warn.</p>
 <h3 id="req-0031-a-service-account-is-distinguished-from-a-user">REQ-0031 — a service account is distinguished from a user</h3>
 <p><code>is_service_account</code> treats a <code>preferred_username</code> beginning <code>service-account-</code> as
 authoritative (Keycloak's client-credentials convention) and <code>gty=client-credentials</code> as an

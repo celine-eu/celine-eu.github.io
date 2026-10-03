@@ -4460,14 +4460,24 @@ changing anything on this path.</p>
 <td>Localized prompt suggestions and tool labels</td>
 </tr>
 <tr>
-<td>Training materials</td>
-<td><code>training_materials.py</code></td>
-<td>Git clone/checkout <strong>and</strong> incremental indexing of the Markdown corpus</td>
+<td>Knowledge bases</td>
+<td><code>kb_collections.py</code></td>
+<td>Per-community alias naming, embedding fingerprint, generations, startup check (ADR-0008)</td>
 </tr>
 <tr>
-<td>Qdrant setup</td>
-<td><code>qdrant_setup.py</code></td>
-<td>Collection initialization and management</td>
+<td>Knowledge sources</td>
+<td><code>kb_sources.py</code>, <code>kb_store.py</code></td>
+<td>Registered git/directory sources per community; incremental Markdown indexing</td>
+</tr>
+<tr>
+<td>Attachment indexing</td>
+<td><code>attachment_index.py</code></td>
+<td>Extraction and indexing shared by uploads and rebuilds</td>
+</tr>
+<tr>
+<td>Knowledge-base operations</td>
+<td><code>kb_admin.py</code>, <code>cli.py</code></td>
+<td><code>celine-assistant kb</code>: status, sync, reindex, prune, migrate-legacy</td>
 </tr>
 <tr>
 <td>Settings</td>
@@ -4487,21 +4497,6 @@ changing anything on this path.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>ingest.py</code></td>
-<td>the way to index an uploaded file</td>
-<td>uncalled. Uploads are indexed by <code>routes._process_upload</code></td>
-</tr>
-<tr>
-<td><code>site_docs.py</code></td>
-<td>a second corpus ingester</td>
-<td>a near-exact copy of <code>training_materials.py</code></td>
-</tr>
-<tr>
-<td><code>training_materials_sync.py</code></td>
-<td>the sync entry point</td>
-<td>an older one; the routes import <code>training_materials.py</code>'s</td>
-</tr>
 <tr>
 <td><code>src/celine/assistant/skills/datasets.py</code></td>
 <td>a dataset-query skill</td>

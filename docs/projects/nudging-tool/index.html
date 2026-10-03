@@ -4402,6 +4402,11 @@ task seed                    # seed rules from ./seed directory
 task run                     # runs on port 8016
 </code></pre>
 <h2 id="configuration">Configuration</h2>
+<p>The service follows <code>celine.sdk.posture</code>: <strong>only <code>CELINE_ENV=dev</code> accepts the development
+defaults</strong> below (<code>task run</code> exports it). Unset, or any other value, is hardened and
+<code>create_app()</code> refuses to start while the database password is a local one, the client secret
+equals the client id, the issuer is the SDK's local default, or <code>VAPID_PUBLIC_KEY</code>,
+<code>VAPID_PRIVATE_KEY</code> or <code>CLICK_TRACKING_SECRET</code> is unset — see REQ-0081.</p>
 <table>
 <thead>
 <tr>
@@ -4411,6 +4416,11 @@ task run                     # runs on port 8016
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>CELINE_ENV</code></td>
+<td>— (hardened)</td>
+<td><code>dev</code> relaxes the posture; <code>ENVIRONMENT</code> is read when it is empty</td>
+</tr>
 <tr>
 <td><code>DATABASE_URL</code></td>
 <td><code>postgresql+asyncpg://...host.docker.internal:15432/nudging</code></td>
@@ -4457,6 +4467,11 @@ task run                     # runs on port 8016
 <td>VAPID contact URI</td>
 </tr>
 <tr>
+<td><code>CLICK_TRACKING_SECRET</code></td>
+<td>—</td>
+<td>Signs click-tracking tokens; required outside dev (in dev it falls back to the VAPID private key)</td>
+</tr>
+<tr>
 <td><code>SMTP_HOST</code></td>
 <td>—</td>
 <td>SMTP server hostname</td>
@@ -4487,9 +4502,9 @@ task run                     # runs on port 8016
 <td>Sender email address</td>
 </tr>
 <tr>
-<td><code>OIDC__*</code></td>
+<td><code>CELINE_OIDC_*</code></td>
 <td>(from celine-sdk)</td>
-<td>OIDC settings (audience: <code>svc-nudging</code>)</td>
+<td>OIDC settings; client id, secret and audience default to <code>svc-nudging</code> (dev only)</td>
 </tr>
 </tbody>
 </table>

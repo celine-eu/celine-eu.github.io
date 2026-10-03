@@ -4442,10 +4442,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-1061-the-environment-is-production-unless-its-name-is-one-of-dev-development-local-test-or-ci" class="md-nav__link">
+  <a href="#req-1061-the-environment-is-production-unless-its-name-is-exactly-dev" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-1061 — The environment is production unless its name is one of dev, development, local, test or ci.
+        REQ-1061 — The environment is production unless its name is exactly dev.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1062-in-a-production-environment-startup-must-fail-when-celine_oidc_base_url-or-celine_oidc_jwks_uri-was-not-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1062 — In a production environment, startup MUST fail when CELINE_OIDC_BASE_URL or CELINE_OIDC_JWKS_URI was not set.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1063-in-a-production-environment-startup-must-fail-when-database_url-carries-a-local-stack-or-trivially-weak-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1063 — In a production environment, startup MUST fail when DATABASE_URL carries a local-stack or trivially weak password.
       
     </span>
   </a>
@@ -4594,13 +4616,25 @@ The error MUST name the client id and say how to proceed.</p>
 id is public. The rule is the one celine-policies applies before writing a secret into
 a realm.</p>
 </blockquote>
-<h3 id="req-1061-the-environment-is-production-unless-its-name-is-one-of-dev-development-local-test-or-ci">REQ-1061 — The environment is production unless its name is one of <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> or <code>ci</code>.</h3>
-<p>The name is read from <code>APP_ENV</code>, <code>CELINE_ENV</code> or <code>ENV</code>, in that order, case-insensitively.
-An unset or unrecognised name MUST be production.</p>
+<h3 id="req-1061-the-environment-is-production-unless-its-name-is-exactly-dev">REQ-1061 — The environment is production unless its name is exactly <code>dev</code>.</h3>
+<p>The name is read from the process environment: <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>, then the
+legacy <code>APP_ENV</code> and <code>ENV</code>; the first non-empty one wins, case-insensitively. An unset or
+unrecognised name — and <code>development</code>, <code>local</code>, <code>test</code>, <code>ci</code> — MUST be production. A
+<code>.env</code> file does not set it.</p>
 <blockquote>
 <p>The strict side is the default: the cost of being strict in development is one
-exported variable; the cost the other way is a guessable secret in a live deployment.</p>
+exported variable; the cost the other way is a guessable secret in a live deployment.
+The rule is the platform's (<code>celine.sdk.posture</code>); until 2026-10 this service also
+relaxed <code>development</code>, <code>local</code>, <code>test</code> and <code>ci</code>.</p>
 </blockquote>
+<h3 id="req-1062-in-a-production-environment-startup-must-fail-when-celine_oidc_base_url-or-celine_oidc_jwks_uri-was-not-set">REQ-1062 — In a production environment, startup MUST fail when <code>CELINE_OIDC_BASE_URL</code> or <code>CELINE_OIDC_JWKS_URI</code> was not set.</h3>
+<p>The SDK defaults both to the local Keycloak, and incoming JWTs are verified against that
+JWKS. A value from the environment or from code is accepted; the SDK default is not.
+Every violation of REQ-1060, REQ-1062 and REQ-1063 MUST be reported in one error; in <code>dev</code>
+they are logged as one warning and startup proceeds.</p>
+<h3 id="req-1063-in-a-production-environment-startup-must-fail-when-database_url-carries-a-local-stack-or-trivially-weak-password">REQ-1063 — In a production environment, startup MUST fail when <code>DATABASE_URL</code> carries a local-stack or trivially weak password.</h3>
+<p>The runtime opens no database itself; the check covers domains and plugins that read
+<code>DATABASE_URL</code> from the same process environment. Unset is not a violation.</p>
 <hr />
 <h2 id="event-subscriptions">Event subscriptions</h2>
 <h3 id="req-1070-an-on_event-handler-that-names-no-broker-must-subscribe-on-the-broker-its-domains-overridesbroker-names-a-broker-named-on-the-handler-must-take-precedence">REQ-1070 — An <code>@on_event</code> handler that names no broker MUST subscribe on the broker its domain's <code>overrides.broker</code> names; a broker named on the handler MUST take precedence.</h3>

@@ -4423,6 +4423,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-12xx-deployment-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-12xx — deployment posture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="REQ-12xx — deployment posture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1201-outside-celine_envdev-the-service-refuses-to-start-on-a-development-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1201 — outside CELINE_ENV=dev the service refuses to start on a development default
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4608,6 +4636,37 @@ feedback row or screenshot is read.</p>
 contain per-state counts, and stored subject, IP and user-agent diagnostics are not returned.</p>
 <p><em>Verified by</em>
 <code>tests/test_feedback.py::test_manager_reviews_only_feedback_from_the_authorized_rec</code></p>
+<hr />
+<h2 id="req-12xx-deployment-posture">REQ-12xx — deployment posture</h2>
+<h3 id="req-1201-outside-celine_envdev-the-service-refuses-to-start-on-a-development-default">REQ-1201 — outside <code>CELINE_ENV=dev</code> the service refuses to start on a development default</h3>
+<p><code>create_app</code> checks its configuration before the lifespan opens the database pool, through
+<code>celine.sdk.posture</code>'s <code>PostureGuard</code> (<code>src/celine/roi/posture.py</code>). It registers:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Refused when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>its password is a local-stack password (<code>securepassword123</code>, <code>postgres</code>) or trivially weak</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_JWKS_URI</code></td>
+<td>not stated, so the SDK's local Keycloak default is in use</td>
+</tr>
+</tbody>
+</table>
+<p>The signal is <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; the first non-empty one wins. <strong>Only <code>dev</code>
+relaxes</strong>: unset, empty, <code>staging</code>, <code>prod</code> or a typo is hardened. Hardened, startup raises
+<code>InsecureConfiguration</code> naming every violation at once; in dev the same list is logged as
+one warning and the service starts. <code>DATABASE_URL=""</code> (no persistence, REQ-0401) carries
+no password and is accepted everywhere. <code>task run</code> exports <code>CELINE_ENV=dev</code> unless it is
+already set.</p>
+<p>This check is about configuration only. Which routes require a token is not changed by it.</p>
+<p><em>Verified by</em> <code>tests/test_posture.py::TestOnlyDevAcceptsDevelopmentDefaults</code></p>
 
 
 

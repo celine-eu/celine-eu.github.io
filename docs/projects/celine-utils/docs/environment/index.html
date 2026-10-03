@@ -4314,7 +4314,12 @@ default set means the behaviour changes with which class happens to read it.</p>
 <tr>
 <td><code>PREFECT_MODE</code></td>
 <td><code>dev</code></td>
-<td>Anything other than <code>dev</code> disables development behaviour</td>
+<td>Scheduling only (<code>DEV_MODE</code>): <code>dev</code> lets a celine-pipelines flow <code>serve()</code> on its cron, anything else runs it once. Not a security posture</td>
+</tr>
+<tr>
+<td><code>CELINE_ENV</code></td>
+<td><em>(unset: hardened)</em></td>
+<td>Security posture (<code>celine.sdk.posture</code>, then <code>ENVIRONMENT</code>). Only <code>dev</code> accepts the <code>svc-pipelines</code> secret fallback (<a href="../specifications/#req-0009--outside-dev-a-pipeline-config-never-falls-back-to-the-client-id-as-its-secret">REQ-0009</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -4465,7 +4470,7 @@ together with the <code>celine-utils admin</code> command tree. Keycloak provisi
 </tr>
 <tr>
 <td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_CLIENT_ID</code>, <code>CELINE_OIDC_CLIENT_SECRET</code></td>
-<td>OIDC client credentials for authenticating to the broker</td>
+<td>OIDC client credentials for authenticating to the broker. <code>PipelineConfig</code> fixes the client id to <code>svc-pipelines</code>; the secret falls back to it, and building the config refuses that fallback unless <code>CELINE_ENV=dev</code></td>
 </tr>
 </tbody>
 </table>

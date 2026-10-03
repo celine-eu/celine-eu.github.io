@@ -556,6 +556,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#knowledge-bases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Knowledge bases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#skills" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4320,6 +4331,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#knowledge-bases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Knowledge bases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#skills" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4378,11 +4400,13 @@
 <li><strong>Skill system</strong> — modular skills for energy data (Digital Twin), weather/forecasts, flexibility/gamification, REC registry, and document search</li>
 <li>Streaming chat via Server-Sent Events (SSE) with tool progress events</li>
 <li>Conversation history persisted in PostgreSQL</li>
-<li>File upload with automatic RAG ingestion into Qdrant</li>
+<li><strong>One knowledge base per REC</strong> — each community's documents in a Qdrant collection of its own, resolved from the REC organization in the caller's token</li>
+<li>File upload with automatic RAG ingestion into the caller's community</li>
 <li>Vision support for image attachments (captioning via the vision model)</li>
-<li>Automatic sync of <code>celine-training-materials</code> from a Git repository</li>
+<li>Knowledge sources (git repositories or directories) registered per community</li>
+<li><code>celine-assistant kb</code> CLI to sync sources, rebuild knowledge bases and switch embedding models</li>
 <li>JWT authentication (trusted headers from oauth2_proxy or JWKS verification)</li>
-<li>Admin endpoints for system uploads and training materials sync</li>
+<li>Admin endpoints for REC managers: shared uploads and source sync</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
 <pre><code class="language-bash">uv sync
@@ -4390,6 +4414,15 @@ uv run alembic upgrade head
 task run
 # Listens on http://localhost:8012
 </code></pre>
+<p><code>task run</code> exports <code>CELINE_ENV=dev</code>, the only value that relaxes anything: wildcard
+CORS, <code>OAUTH2_TRUST_HEADERS=true</code>, an unset <code>OAUTH2_ISSUER</code> or <code>QDRANT_API_KEY</code>, and the
+development database password are accepted in dev with one warning, and refused at
+startup anywhere else. <strong>Unset is hardened.</strong> The signal is <code>CELINE_ENV</code>, then
+<code>ENVIRONMENT</code>, then the legacy <code>APP_ENV</code> (still accepted as a fallback name);
+<code>CELINE_ENV=staging task run</code> is the prod-like mode of the same entry point.</p>
+<p>The check comes from <code>celine.sdk.posture</code>, which is not in a released celine-sdk yet:
+until it is, install the SDK checkout editable
+(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
 <h2 id="configuration">Configuration</h2>
 <table>
 <thead>
@@ -4443,12 +4476,37 @@ task run
 <tr>
 <td><code>QDRANT_API_KEY</code></td>
 <td>—</td>
-<td>Optional Qdrant API key</td>
+<td>Qdrant API key; required outside <code>CELINE_ENV=dev</code></td>
 </tr>
 <tr>
 <td><code>QDRANT_COLLECTION</code></td>
 <td><code>celine_docs</code></td>
-<td>Qdrant collection name</td>
+<td>Prefix of every community's knowledge-base alias</td>
+</tr>
+<tr>
+<td><code>KB_SOURCES_DIR</code></td>
+<td><code>./data/kb-sources</code></td>
+<td>Where git sources are cloned</td>
+</tr>
+<tr>
+<td><code>KB_SYNC_ON_START</code></td>
+<td><code>false</code></td>
+<td>Sync every registered source when the service starts</td>
+</tr>
+<tr>
+<td><code>KB_GIT_TOKEN</code></td>
+<td>—</td>
+<td>Token for private git sources (sent only to <code>KB_GIT_TOKEN_HOST</code>, default <code>github.com</code>)</td>
+</tr>
+<tr>
+<td><code>REC_ORGANIZATION_TYPE</code></td>
+<td><code>rec</code></td>
+<td>Organization type that marks a REC in the token's <code>organization</code> claim</td>
+</tr>
+<tr>
+<td><code>REC_MANAGER_GROUPS</code></td>
+<td><code>["managers","admins"]</code></td>
+<td>Groups inside a REC's organization that manage its knowledge</td>
 </tr>
 <tr>
 <td><code>DATABASE_URL</code></td>
@@ -4458,7 +4516,7 @@ task run
 <tr>
 <td><code>OAUTH2_TRUST_HEADERS</code></td>
 <td><code>false</code></td>
-<td>Trust unverified proxy headers when no token is present (opt-in)</td>
+<td>Trust unverified proxy headers when no token is present (opt-in, <code>CELINE_ENV=dev</code> only)</td>
 </tr>
 <tr>
 <td><code>OAUTH2_JWKS_URL</code></td>
@@ -4468,7 +4526,7 @@ task run
 <tr>
 <td><code>OAUTH2_ISSUER</code></td>
 <td>—</td>
-<td>Expected issuer; JWKS discovered from it, and a mismatching token <code>iss</code> is refused</td>
+<td>Expected issuer; JWKS discovered from it, and a mismatching token <code>iss</code> is refused. Required outside <code>CELINE_ENV=dev</code></td>
 </tr>
 <tr>
 <td><code>OAUTH2_ALGORITHMS</code></td>
@@ -4483,7 +4541,7 @@ task run
 <tr>
 <td><code>ADMIN_GROUP</code></td>
 <td><code>admins</code></td>
-<td>Group name for admin access</td>
+<td>Realm group for administrator access (top-level <code>groups</code> claim only)</td>
 </tr>
 <tr>
 <td><code>DIGITAL_TWIN_API_URL</code></td>
@@ -4516,26 +4574,6 @@ task run
 <td>Max prior messages included in the prompt</td>
 </tr>
 <tr>
-<td><code>TRAINING_MATERIALS_PATH</code></td>
-<td><code>/workspace/repositories/celine-training-materials</code></td>
-<td>Local path for training materials</td>
-</tr>
-<tr>
-<td><code>TRAINING_MATERIALS_REPO_URL</code></td>
-<td>—</td>
-<td>Git URL for auto-cloning training materials</td>
-</tr>
-<tr>
-<td><code>TRAINING_MATERIALS_REF</code></td>
-<td><code>origin/main</code></td>
-<td>Git ref for training materials</td>
-</tr>
-<tr>
-<td><code>TRAINING_MATERIALS_SYNC_ON_START</code></td>
-<td><code>true</code></td>
-<td>Auto-sync training materials on startup</td>
-</tr>
-<tr>
 <td><code>UPLOADS_URI</code></td>
 <td><code>file://./data/uploads</code></td>
 <td>Upload storage URI</td>
@@ -4545,13 +4583,10 @@ task run
 <td><code>25</code></td>
 <td>Max upload size in MB</td>
 </tr>
-<tr>
-<td><code>INGEST_ENABLE</code></td>
-<td><code>true</code></td>
-<td>Enable RAG ingestion</td>
-</tr>
 </tbody>
 </table>
+<p><code>TRAINING_MATERIALS_*</code>, <code>MANIFEST_PATH</code>, <code>INGEST_ENABLE</code>, <code>INGEST_FORCE_RELOAD_ON_START</code>
+and <code>DOCS_POLL_INTERVAL_SECONDS</code> are no longer read; a leftover is logged at startup.</p>
 <h2 id="api-overview">API Overview</h2>
 <table>
 <thead>
@@ -4583,11 +4618,11 @@ task run
 </tr>
 <tr>
 <td><strong>uploads</strong></td>
-<td><code>POST /upload</code> (user), <code>POST /admin/uploads</code> (system)</td>
+<td><code>POST /upload</code> (user), <code>POST /admin/uploads</code> (shared with a community)</td>
 </tr>
 <tr>
 <td><strong>admin</strong></td>
-<td><code>POST /admin/training-materials/sync</code></td>
+<td><code>POST /admin/kb/sync</code></td>
 </tr>
 <tr>
 <td><strong>user</strong></td>
@@ -4599,6 +4634,40 @@ task run
 </tr>
 </tbody>
 </table>
+<h2 id="knowledge-bases">Knowledge bases</h2>
+<p>Each REC has its own knowledge base: the sources registered for it, the documents its
+managers shared, and its members' own uploads. A caller's community is the one
+organization of type <code>rec</code> in their token; a token naming several is refused. See
+<a href="docs/decisions/ADR-0008-one-knowledge-base-per-community/">ADR-0008</a>.</p>
+<p>They are operated with <code>celine-assistant kb</code>, run in the service image (it needs the
+service's <code>DATABASE_URL</code>, <code>QDRANT_*</code> and <code>LLM_EMBED_*</code>). Every command prints JSON.</p>
+<pre><code class="language-bash"># register sources: a git repository (optionally a ref and a subdirectory) or a directory
+celine-assistant kb source add --community example-rec --git https://git.example/handbook.git --ref main --path docs
+celine-assistant kb source add --community example-rec --dir /data/example-rec-handbook
+celine-assistant kb source list
+celine-assistant kb sync [--community example-rec] [--full]
+
+# rebuild from the sources and the stored attachment text, then switch atomically
+celine-assistant kb reindex --community example-rec [--re-extract]
+celine-assistant kb reindex --all
+celine-assistant kb status
+celine-assistant kb prune [--keep 1] [--dry-run]
+</code></pre>
+<p><strong>Switching the embedding model.</strong> Build the new model's knowledge bases beside the
+current ones, deploy with the new model, then drop the old generations:</p>
+<pre><code class="language-bash">celine-assistant kb reindex --all --embed-model &lt;new-model&gt; --embed-dimensions &lt;size&gt;
+# deploy with LLM_EMBED_MODEL=&lt;new-model&gt;
+celine-assistant kb prune
+</code></pre>
+<p>The service refuses to start if a community has knowledge bases only for a model other
+than <code>LLM_EMBED_MODEL</code>.</p>
+<p><strong>Upgrading from the single collection.</strong> Once, after <code>alembic upgrade head</code>: assign
+every existing upload to one community, register the old training-materials repository
+as its source, and rebuild it. The community is always named; there is no default.</p>
+<pre><code class="language-bash">celine-assistant kb migrate-legacy --community &lt;community&gt; --git &lt;training-materials repo&gt; --dry-run
+celine-assistant kb migrate-legacy --community &lt;community&gt; --git &lt;training-materials repo&gt;
+celine-assistant kb prune --legacy   # once satisfied: deletes the old collection
+</code></pre>
 <h2 id="skills">Skills</h2>
 <p>The assistant uses a modular skill system. Each skill exposes OpenAI-style function-calling tools that the LLM invokes autonomously during conversation. Skills are registered per-request based on available API endpoints and user authentication.</p>
 <table>

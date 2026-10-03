@@ -4119,10 +4119,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0004-administrator-status-is-group-membership" class="md-nav__link">
+  <a href="#req-0004-administrator-status-is-realm-group-membership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0004 — administrator status is group membership
+        REQ-0004 — administrator status is realm group membership
       
     </span>
   </a>
@@ -4130,10 +4130,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0005-administrator-routes-refuse-everyone-else" class="md-nav__link">
+  <a href="#req-0005-a-communitys-knowledge-is-managed-by-its-managers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0005 — administrator routes refuse everyone else
+        REQ-0005 — a community's knowledge is managed by its managers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0040-the-callers-community-is-the-one-rec-organization-in-their-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0040 — the caller's community is the one REC organization in their token
       
     </span>
   </a>
@@ -4186,14 +4197,51 @@ whose <code>iss</code> differs is refused. The signature algorithm is taken from
 identifies the caller and <code>x-auth-request-groups</code> carries their groups, comma-separated,
 with blank entries dropped. <strong>The switch is off by default</strong>: unless a deployment opts in,
 headers alone are not an identity and a request carrying no verifiable token is answered
-<code>401</code>.</p>
-<h3 id="req-0004-administrator-status-is-group-membership">REQ-0004 — administrator status is group membership</h3>
-<p>A caller is an administrator exactly when their groups contain <code>ADMIN_GROUP</code>. Groups are
-read from the top-level <code>groups</code> claim and from <code>organization.&lt;alias&gt;.groups</code>, with a
-leading <code>/</code> stripped from each. No user id is ever special-cased.</p>
-<h3 id="req-0005-administrator-routes-refuse-everyone-else">REQ-0005 — administrator routes refuse everyone else</h3>
-<p><code>POST /admin/uploads</code> and <code>POST /admin/training-materials/sync</code> answer <code>403</code> to an
-identified non-administrator, and the underlying operation does not run.</p>
+<code>401</code>. Outside dev a deployment cannot opt in: startup refuses the switch (REQ-0045).</p>
+<h3 id="req-0004-administrator-status-is-realm-group-membership">REQ-0004 — administrator status is realm group membership</h3>
+<p>A caller is a realm administrator exactly when the top-level <code>groups</code> claim contains
+<code>ADMIN_GROUP</code>, with a leading <code>/</code> stripped. <strong>Groups inside an organization
+(<code>organization.&lt;alias&gt;.groups</code>) never make a realm administrator</strong>: read that way, an
+<code>admins</code> group inside one REC made its holder an administrator of every REC (closed
+2026-10-02). No user id is ever special-cased.</p>
+<p><code>GET /user</code> reports <code>community_id</code>, <code>is_realm_admin</code>, and <code>is_admin</code> — true for a realm
+administrator and for a manager of the caller's own community (REQ-0005), which is what
+the UI gates its administrator features on.</p>
+<h3 id="req-0005-a-communitys-knowledge-is-managed-by-its-managers">REQ-0005 — a community's knowledge is managed by its managers</h3>
+<p><code>POST /admin/uploads</code> and <code>POST /admin/kb/sync</code> act on one community. A caller may use
+them for a community when they are a realm administrator, or hold one of
+<code>REC_MANAGER_GROUPS</code> (default <code>managers</code>, <code>admins</code>) <strong>inside that REC's own
+organization</strong> — the rule onboarding applies. A manager acts on their own community; a
+realm administrator, who has none, names one (<code>community_id</code>), and naming none is <code>400</code>.
+Anyone else is answered <code>403</code> and the operation does not run.</p>
+<h3 id="req-0040-the-callers-community-is-the-one-rec-organization-in-their-token">REQ-0040 — the caller's community is the one REC organization in their token</h3>
+<p>The community is the alias of the organization in the token's <code>organization</code> claim
+whose type is <code>REC_ORGANIZATION_TYPE</code> (default <code>rec</code>), read flattened (<code>type</code>) first and
+nested (<code>attributes.type</code>) second. The alias is also the Digital Twin community id.</p>
+<table>
+<thead>
+<tr>
+<th>The token names</th>
+<th>The caller's community</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>one REC organization</td>
+<td>its alias</td>
+</tr>
+<tr>
+<td>none (or only other organization types)</td>
+<td>none: nothing is retrieved, uploads are stored and not indexed</td>
+</tr>
+<tr>
+<td>more than one</td>
+<td><strong>refused, <code>403</code></strong>, before anything is written. Choosing one would answer from one REC's documents to a member of another</td>
+</tr>
+</tbody>
+</table>
+<p>A trusted-header identity (ADR-0003) carries no organization claim and so has no
+community.</p>
 
 
 

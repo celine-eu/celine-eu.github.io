@@ -4097,6 +4097,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0050-outside-development-the-dev-defaults-refuse-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0050 — outside development, the dev defaults refuse startup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0040-an-unavailable-mqtt-broker-does-not-stop-the-service" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4169,7 +4180,7 @@
 
 
 <h1 id="operability">Operability</h1>
-<p>Running, degrading, and the one thing that is currently wrong.</p>
+<p>Running, degrading, refusing to start, and the one thing that is currently wrong.</p>
 <hr />
 <h3 id="req-0039-the-service-is-observable-without-an-identity-and-cheap-to-ask">REQ-0039 — the service is observable without an identity, and cheap to ask</h3>
 <p><code>GET /health</code> answers <code>{"status": "ok"}</code> with no authentication, because a liveness probe
@@ -4181,6 +4192,25 @@ and a deliberate cost of keeping the schema available to the frontend.</p>
 asks whether its token is still good.</p>
 <p>The public set is matched by exact path, so <code>/api/docs/oauth2-redirect</code> is <strong>not</strong> public
 and Swagger UI's interactive OAuth2 flow cannot complete here.</p>
+<h3 id="req-0050-outside-development-the-dev-defaults-refuse-startup">REQ-0050 — outside development, the dev defaults refuse startup</h3>
+<p><code>settings.py</code> ships zero-config development defaults on purpose: the local stack's
+database password, <code>CELINE_OIDC_CLIENT_SECRET</code> equal to the client id (<code>svc-grid</code>), and the
+SDK's local Keycloak as issuer and JWKS. They are safe only because the lifespan refuses
+them, <strong>first</strong> — before <code>init_db()</code> and before the MQTT broker is created — unless the
+environment is development.</p>
+<p>The signal is <code>celine.sdk.posture</code>'s: <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; <strong>only <code>dev</code>
+relaxes</strong>. Unset, empty, <code>staging</code>, <code>prod</code> or a typo is hardened. <code>task run</code> exports
+<code>CELINE_ENV=dev</code>; <code>CELINE_ENV=staging task run</code> is the prod-like local mode.</p>
+<p>Outside dev, startup raises <code>InsecureConfiguration</code> naming every violation at once:</p>
+<ul>
+<li><code>DATABASE_URL</code> carries a development password (<code>securepassword123</code>, <code>postgres</code>, or a
+  trivially weak one);</li>
+<li><code>CELINE_OIDC_CLIENT_SECRET</code> is empty or equal to the client id;</li>
+<li><code>CELINE_OIDC_BASE_URL</code> / <code>CELINE_OIDC_JWKS_URI</code> were not set, so the SDK's local
+  default is in use;</li>
+<li>the policy bundle did not load (<code>CELINE_POLICIES_POLICIES_DIR</code>) — REQ-0013.</li>
+</ul>
+<p>In dev the same values are logged as one warning and startup proceeds.</p>
 <h3 id="req-0040-an-unavailable-mqtt-broker-does-not-stop-the-service">REQ-0040 — an unavailable MQTT broker does not stop the service</h3>
 <p>Startup waits <code>MQTT_STARTUP_TIMEOUT_SECONDS</code> for the broker, then logs a warning and
 carries on. The HTTP API is fully functional; alert dispatch is simply inactive, and

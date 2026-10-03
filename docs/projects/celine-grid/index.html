@@ -3791,6 +3791,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#posture-celine_envdev-is-required-for-the-dev-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Posture: CELINE_ENV=dev is required for the dev defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4395,6 +4412,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#posture-celine_envdev-is-required-for-the-dev-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Posture: CELINE_ENV=dev is required for the dev defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4525,6 +4559,23 @@ task run                             # hot-reload on :8015
 <p>This runs <code>db-create</code>, <code>migrate</code>, and the <code>api</code> container in order.</p>
 <h2 id="configuration">Configuration</h2>
 <p>All settings are read from environment variables or a <code>.env</code> file. The table below lists the most relevant variables.</p>
+<h3 id="posture-celine_envdev-is-required-for-the-dev-defaults">Posture: <code>CELINE_ENV=dev</code> is required for the dev defaults</h3>
+<p>The defaults below are <strong>development</strong> defaults (the local database password, a client
+secret equal to the client id, the local Keycloak). They are accepted only when the
+process environment says <code>CELINE_ENV=dev</code> (or <code>ENVIRONMENT=dev</code>). <strong>Unset means
+hardened</strong>: so does <code>staging</code>, <code>prod</code> or anything else. Outside dev the service refuses
+to start (<code>InsecureConfiguration</code>, listing every offending variable) while any of them is
+still in use or the policy bundle did not load, and a policy engine that is missing or
+raises denies instead of allowing. See REQ-0013 and REQ-0050.</p>
+<ul>
+<li><code>task run</code> / <code>task debug</code> export <code>CELINE_ENV=dev</code> for you.</li>
+<li><code>CELINE_ENV=staging task run</code> is the prod-like local mode; set real values first.</li>
+<li><code>docker compose up</code> passes only what <code>.env</code> holds — add <code>CELINE_ENV=dev</code> there for a
+  local container.</li>
+<li>The check reads the real process environment, not <code>.env</code> via pydantic.</li>
+</ul>
+<p>This needs <code>celine.sdk.posture</code>, which is <strong>not yet in a released celine-sdk</strong> — the
+next release after 1.24.0. Until then it works only against an editable SDK checkout.</p>
 <table>
 <thead>
 <tr>
@@ -4534,6 +4585,11 @@ task run                             # hot-reload on :8015
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>CELINE_ENV</code></td>
+<td>— (unset = hardened)</td>
+<td><code>dev</code> relaxes the posture checks; anything else is hardened</td>
+</tr>
 <tr>
 <td><code>DATABASE_URL</code></td>
 <td><code>postgresql+asyncpg://postgres:securepassword123@host.docker.internal:15432/grid</code></td>
@@ -4556,8 +4612,8 @@ task run                             # hot-reload on :8015
 </tr>
 <tr>
 <td><code>CELINE_OIDC_CLIENT_SECRET</code></td>
-<td><code>svc-grid</code></td>
-<td>OIDC client secret</td>
+<td><code>svc-grid</code> (dev only)</td>
+<td>OIDC client secret — must differ from the client id outside dev</td>
 </tr>
 <tr>
 <td><code>CELINE_OIDC_BASE_URL</code></td>
@@ -4632,8 +4688,9 @@ task test -- tests/unit/test_policy.py
 </code></pre>
 <p>No PostgreSQL, no Digital Twin, no nudging-tool, no MQTT broker and no network. The
 database is real SQLAlchemy on SQLite, and <code>policies/grid.rego</code> is evaluated for real —
-the suite refuses to start if the bundle does not load, because the policy fails open and
-an unloaded bundle would make every authorisation test pass for the wrong reason.</p>
+the suite refuses to start if the bundle does not load, because the suite pins
+<code>CELINE_ENV=dev</code>, where the policy fails open, and an unloaded bundle would make every
+authorisation test pass for the wrong reason.</p>
 <ul>
 <li>What the service must do, as numbered requirements: <code>docs/specifications/</code></li>
 <li>Why the suite is shaped this way: <code>docs/decisions/</code></li>

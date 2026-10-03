@@ -1256,6 +1256,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#deployment-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment posture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#data-sharing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4377,6 +4388,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#deployment-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment posture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#data-sharing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4613,8 +4635,30 @@
 <td>(from celine-sdk defaults)</td>
 <td>OIDC settings — issuer, JWKS URI, audience</td>
 </tr>
+<tr>
+<td><code>CELINE_ENV</code></td>
+<td>— (hardened)</td>
+<td><code>dev</code> accepts the local defaults; see <a href="#deployment-posture">Deployment posture</a>. <code>ENVIRONMENT</code> is read when it is empty</td>
+</tr>
 </tbody>
 </table>
+<h3 id="deployment-posture">Deployment posture</h3>
+<p>The service follows <code>celine.sdk.posture</code>: <strong>only <code>CELINE_ENV=dev</code> relaxes</strong>. Unset, empty,
+<code>staging</code>, <code>prod</code> or a typo is hardened, and <code>create_app()</code> refuses to start — before the
+database is opened — while:</p>
+<ul>
+<li><code>DATABASE_URL</code> carries a local-stack password;</li>
+<li><code>CELINE_OIDC_CLIENT_SECRET</code> is empty or equal to <code>CELINE_OIDC_CLIENT_ID</code> (only checked when a
+  client id is set; it is used for nudging reminders);</li>
+<li><code>CELINE_OIDC_BASE_URL</code> / <code>CELINE_OIDC_JWKS_URI</code> are left on the SDK's local Keycloak default.</li>
+</ul>
+<p>In dev the same list is one startup warning. <code>task run</code> exports <code>CELINE_ENV=dev</code>;
+<code>CELINE_ENV=staging task run</code> runs the same entry point hardened.</p>
+<p><code>CELINE_OIDC_AUDIENCE</code> is not required: with it unset the member token's audience is not
+checked (issuer, signature and expiry are). Requiring it needs the realm to put this service's
+audience into the member's token first.</p>
+<p><code>celine.sdk.posture</code> ships in the next celine-sdk release; until then link the local checkout
+(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
 <h3 id="data-sharing">Data sharing</h3>
 <p>Off by default. The section is hidden in the app and the routes answer 404 until the
 dataspace is deployed, because a sharing screen that cannot record a decision is worse

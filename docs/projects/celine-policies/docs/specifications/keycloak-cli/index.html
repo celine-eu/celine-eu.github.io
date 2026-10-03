@@ -4120,9 +4120,14 @@ commands are described in <a href="../../architecture/">architecture.md</a> and
 <hr />
 <h3 id="req-0006-sync-users-runs-only-in-a-development-environment">REQ-0006 — <code>sync-users</code> runs only in a development environment</h3>
 <p><code>celine-policies keycloak sync-users</code> <strong>refuses to run unless the environment names a
-development one</strong>: <code>ENV</code> (or <code>CELINE_KEYCLOAK_ENV</code>, <code>CELINE_ENV</code>, which outrank it) is <code>dev</code>,
-<code>development</code>, <code>local</code>, <code>test</code> or <code>ci</code> — the guard <code>seed-dev-users</code> uses. Unset, <code>prod</code>,
-<code>staging</code> or any other value exits <code>1</code> with a message that names <code>ENV=dev</code>.</p>
+development one</strong>: <code>ENV</code> (or <code>CELINE_KEYCLOAK_ENV</code>, <code>CELINE_ENV</code>, which outrank it) is
+exactly <code>dev</code> — the guard <code>seed-dev-users</code> uses. Unset, <code>prod</code>, <code>staging</code>, <code>development</code>,
+<code>local</code>, <code>test</code>, <code>ci</code> or any other value exits <code>1</code> with a message that names <code>ENV=dev</code>.</p>
+<blockquote>
+<p>Until 2026-10 <code>development</code>, <code>local</code>, <code>test</code> and <code>ci</code> relaxed it too. The platform rule
+(<code>celine.sdk.posture</code>) is that only <code>dev</code> relaxes, and ADR-0010's wording "<code>ENV=dev</code>" now
+means exactly that value.</p>
+</blockquote>
 <p>The refusal comes <strong>before a source is read or Keycloak is asked anything</strong>, and holds for
 <code>--dry-run</code> and <code>--check</code> too.</p>
 <p>On a deployed realm members arrive through onboarding and a community's organization through

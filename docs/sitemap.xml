@@ -109,6 +109,10 @@
          <lastmod>2026-10-03</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/decisions/ADR-0008-one-knowledge-base-per-community/</loc>
+         <lastmod>2026-10-03</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/</loc>
          <lastmod>2026-10-03</lastmod>
     </url>
@@ -125,6 +129,10 @@
          <lastmod>2026-10-03</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/knowledge-sources/</loc>
+         <lastmod>2026-10-03</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/operability/</loc>
          <lastmod>2026-10-03</lastmod>
     </url>
@@ -134,10 +142,6 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/skills/</loc>
-         <lastmod>2026-10-03</lastmod>
-    </url>
-    <url>
-         <loc>https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/training-materials/</loc>
          <lastmod>2026-10-03</lastmod>
     </url>
     <url>
@@ -657,6 +661,10 @@
          <lastmod>2026-10-03</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/mqtt-auth/</loc>
+         <lastmod>2026-10-03</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-policies/docs/specifications/provisioning/</loc>
          <lastmod>2026-10-03</lastmod>
     </url>
@@ -754,6 +762,10 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/celine-sdk/docs/specifications/policy-evaluation/</loc>
+         <lastmod>2026-10-03</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/celine-sdk/docs/specifications/posture/</loc>
          <lastmod>2026-10-03</lastmod>
     </url>
     <url>

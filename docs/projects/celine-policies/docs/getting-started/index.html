@@ -4620,7 +4620,7 @@ environment; <code>--additive</code> / <code>--no-additive</code> override it.</
 <h3 id="step-4-sync-users-optional">Step 4: Sync Users (optional)</h3>
 <p>Local development only: on a deployed realm members arrive through onboarding
 (<a href="../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).
-<code>sync-users</code> runs only with <code>ENV=dev</code> (or <code>local</code>, <code>test</code>, <code>ci</code>), the guard <code>seed-dev-users</code>
+<code>sync-users</code> runs only with <code>ENV=dev</code> (exactly <code>dev</code>), the guard <code>seed-dev-users</code>
 uses: unset, <code>prod</code>, <code>staging</code> or anything else, it refuses before it reads a source or
 asks Keycloak anything, <code>--dry-run</code> and <code>--check</code> included. <code>task keycloak:sync-users*</code>
 and the compose stack's <code>sync-users</code> service set it.</p>

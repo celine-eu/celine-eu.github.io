@@ -4286,10 +4286,11 @@ from the models, so a model that has drifted from its migrations passes everythi
 server. It is reached from exactly one place, <code>PolicyMiddleware</code>, guarding two routes.</p>
 <p>Everything else is SQL: the participant-facing routes never consult a policy, and
 <code>WHERE user_id = :sub</code> is the whole of the separation between two participants.</p>
-<p><strong>The evaluation fails open.</strong> A bundle that will not load and an <code>allow</code> query that
-raises both return an allow, and neither is distinguishable from a policy that ran and
-permitted. The reason string is the only signal — <code>no-policy-engine</code> and
-<code>policy-error-permissive</code> are what an intolerant deployment must alert on.</p>
+<p><strong>The evaluation fails closed outside development.</strong> A bundle that will not load and an
+<code>allow</code> query that raises both return a denial — and a missing bundle refuses startup —
+unless <code>CELINE_ENV=dev</code>, where both return an allow with a warning (REQ-0011, REQ-0055).
+In dev neither is distinguishable from a policy that ran and permitted; the reason string
+(<code>no-policy-engine</code>, <code>policy-error-permissive</code>) is the only signal.</p>
 <p>Until 2026-08-15 that fallback was taken on <strong>every</strong> call: the wrapper built its query by
 joining the package path with slashes, which is not valid Rego, so the bundle was never
 consulted (<a href="https://github.com/celine-eu/flexibility-api/issues/21">#21</a>); and the bundle

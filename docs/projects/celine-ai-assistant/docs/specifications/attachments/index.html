@@ -4108,10 +4108,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-an-administrator" class="md-nav__link">
+  <a href="#req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-a-realm-administrator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0016 — a user-scoped attachment is reachable only by its owner or an administrator
+        REQ-0016 — a user-scoped attachment is reachable only by its owner or a realm administrator
       
     </span>
   </a>
@@ -4119,10 +4119,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0017-a-system-scoped-attachment-is-readable-by-any-identified-caller" class="md-nav__link">
+  <a href="#req-0017-a-system-scoped-attachment-is-readable-by-the-members-of-its-community" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0017 — a system-scoped attachment is readable by any identified caller
+        REQ-0017 — a system-scoped attachment is readable by the members of its community
       
     </span>
   </a>
@@ -4130,10 +4130,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0018-a-system-scoped-attachment-is-deletable-only-by-an-administrator" class="md-nav__link">
+  <a href="#req-0018-a-system-scoped-attachment-is-deletable-only-by-a-manager-of-its-community-or-a-realm-administrator" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0018 — a system-scoped attachment is deletable only by an administrator
+        REQ-0018 — a system-scoped attachment is deletable only by a manager of its community or a realm administrator
       
     </span>
   </a>
@@ -4141,10 +4141,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0019-a-listing-returns-the-callers-own-attachments-and-every-system-one" class="md-nav__link">
+  <a href="#req-0019-a-listing-returns-the-callers-own-attachments-and-their-communitys-system-ones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0019 — a listing returns the caller's own attachments and every system one
+        REQ-0019 — a listing returns the caller's own attachments and their community's system ones
       
     </span>
   </a>
@@ -4208,14 +4208,16 @@ sanitiser reduces the name to a basename and drops anything outside
 <code>OAUTH2_TRUST_HEADERS</code> on, a request header — so separators are stripped rather than
 honoured, <code>@</code> and <code>.</code> are kept because an id is usually an email, and an id that reduces
 to nothing usable is refused rather than coerced.</p>
-<h3 id="req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-an-administrator">REQ-0016 — a user-scoped attachment is reachable only by its owner or an administrator</h3>
+<h3 id="req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-a-realm-administrator">REQ-0016 — a user-scoped attachment is reachable only by its owner or a realm administrator</h3>
 <p>Reading it, downloading it, deleting it and attaching it to a chat turn all enforce this.
 The tool the model calls answers "not found" rather than "forbidden", because the model
 relays tool output to the user.</p>
-<h3 id="req-0017-a-system-scoped-attachment-is-readable-by-any-identified-caller">REQ-0017 — a system-scoped attachment is readable by any identified caller</h3>
-<p>That is what the scope is for.</p>
-<h3 id="req-0018-a-system-scoped-attachment-is-deletable-only-by-an-administrator">REQ-0018 — a system-scoped attachment is deletable only by an administrator</h3>
-<h3 id="req-0019-a-listing-returns-the-callers-own-attachments-and-every-system-one">REQ-0019 — a listing returns the caller's own attachments and every system one</h3>
+<h3 id="req-0017-a-system-scoped-attachment-is-readable-by-the-members-of-its-community">REQ-0017 — a system-scoped attachment is readable by the members of its community</h3>
+<p>That is what the scope is for: a manager shared it with their REC (REQ-0005). A member of
+another community, or a caller with none, is refused — by the tool the model calls, as
+"not found". A realm administrator reads any.</p>
+<h3 id="req-0018-a-system-scoped-attachment-is-deletable-only-by-a-manager-of-its-community-or-a-realm-administrator">REQ-0018 — a system-scoped attachment is deletable only by a manager of its community or a realm administrator</h3>
+<h3 id="req-0019-a-listing-returns-the-callers-own-attachments-and-their-communitys-system-ones">REQ-0019 — a listing returns the caller's own attachments and their community's system ones</h3>
 <h3 id="req-0020-an-unknown-attachment-is-not-found">REQ-0020 — an unknown attachment is not found</h3>
 <p>Reading or deleting one is <code>404</code>. Naming one in a chat request is ignored, so that a
 client holding a stale id does not lose the turn.</p>
@@ -4225,7 +4227,9 @@ rendering pages for the vision model; everything else goes through MarkItDown. T
 is decided by the file's own magic bytes, and only falls back to what the client
 declared. Extraction that yields text is indexed and reported as <code>indexed</code>; extraction
 that yields nothing, or fails, leaves the file stored and reported as <code>stored</code>.</p>
-<p>An indexed upload is written under a document id derived from its attachment id, and
+<p>An upload is recorded with the caller's community (REQ-0040) and indexed into that
+community's knowledge base; with no community it is stored and reported as <code>stored</code>.
+An indexed upload is written under a document id derived from its attachment id, and
 <strong>deleting the attachment deletes the row, the blob and the indexed document</strong>. Content
 left retrievable has not been deleted; a storage or vector-store failure is logged and
 does not strand the row.</p>

@@ -4247,8 +4247,8 @@ logs, not in a response.</strong> Nothing will page you.</p>
 <p><em>Verified by</em> <code>tests/test_persistence_optional.py::TestAFailedWriteDoesNotFailTheRequest</code></p>
 <h3 id="req-0404-an-unset-database_url-selects-the-development-default">REQ-0404 — an unset <code>DATABASE_URL</code> selects the development default</h3>
 <p><code>Settings.database_url</code> has a non-empty built-in default pointing at the local
-development database, so a fresh checkout runs with nothing exported. Every deployment
-overrides it through the environment.</p>
+development database, so a fresh checkout run with <code>CELINE_ENV=dev</code> (as <code>task run</code> does)
+needs nothing else exported. Every deployment overrides it through the environment.</p>
 <p>The consequence is that there are <strong>two knobs, not one</strong>:</p>
 <table>
 <thead>
@@ -4275,8 +4275,10 @@ overrides it through the environment.</p>
 <p>This is worth stating because the code reads the other way round: the guard in
 <code>init_pool</code> is <code>if not database_url</code>, which looks like "unset means off". It is not —
 unset means <em>default</em>, and only the empty string means off.</p>
-<p>The default's credentials are development ones, deliberately committed so the compose
-stack works out of the box. They are not a secret and are not used anywhere real.</p>
+<p>The default's credentials are development ones, deliberately committed so the local
+stack works out of the box. They are not a secret, and outside <code>CELINE_ENV=dev</code> the
+service refuses to start with them (REQ-1201): the default is selected only in dev, and
+a deployment must set its own <code>DATABASE_URL</code> or <code>DATABASE_URL=""</code>.</p>
 <p><em>Verified by</em> <code>tests/test_persistence_optional.py::TestUnsetIsNotTheSameAsDisabled</code></p>
 <h3 id="req-0405-a-configured-but-unreachable-database-is-fatal-at-startup">REQ-0405 — a configured but unreachable database is fatal at startup</h3>
 <p>If <code>DATABASE_URL</code> is set and nothing is listening, <code>init_pool()</code> raises inside the

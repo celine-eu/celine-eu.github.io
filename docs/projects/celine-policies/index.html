@@ -4551,7 +4551,7 @@
 <p>Authentication, authorization, and identity management for the CELINE platform.</p>
 <p>This repository provides three services:</p>
 <ol>
-<li><strong><code>mqtt_auth</code></strong> — A FastAPI HTTP backend for <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a> that validates JWTs and evaluates OPA (Rego) policies to control MQTT topic access.</li>
+<li><strong><code>mqtt_auth</code></strong> — A FastAPI HTTP backend for <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a> that validates JWTs and evaluates OPA (Rego) policies to control MQTT topic access. Outside <code>CELINE_ENV=dev</code> it requires <code>CELINE_OIDC_AUDIENCE</code> and an explicit issuer/JWKS (<a href="docs/specifications/mqtt-auth/">REQ-0009</a>).</li>
 <li><strong><code>provisioning</code></strong> — A FastAPI service that is the <strong>only writer of participant accounts</strong> in the celine realm: it ensures an account, its REC organization and its org group, and it sweeps a community from the registry. It holds realm-wide Keycloak administration and therefore has <strong>no public route</strong> — see <a href="docs/decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</li>
 <li><strong><code>celine-policies</code> CLI</strong> — A typer-based CLI that performs idempotent synchronization of OAuth scopes, service clients, users, and organizations into Keycloak.</li>
 </ol>
@@ -4702,8 +4702,9 @@ SVC_DATASET_SECRET=... celine-policies keycloak sync   # or supply real secrets
 </code></pre>
 <p><code>taskfile.yaml</code> exports <code>ENV=dev</code> for the whole file, so <code>task keycloak:sync</code> and
 friends behave as before. Resolution order is <code>CELINE_KEYCLOAK_ENV</code>, <code>CELINE_ENV</code>,
-then plain <code>ENV</code>; <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> and <code>ci</code> disable the
-check, and <strong>anything else — including a typo or nothing at all — is production</strong>.
+then plain <code>ENV</code>; only <code>dev</code> disables the check (the platform rule,
+<code>celine.sdk.posture</code>), and <strong>anything else — <code>test</code>, <code>local</code>, <code>ci</code>,
+<code>development</code>, a typo or nothing at all — is production</strong>.
 Declaring no <code>secret:</code> at all is always accepted: Keycloak then generates one,
 which is the recommended production shape.</p>
 <h3 id="one-realm-more-than-one-file">One realm, more than one file</h3>

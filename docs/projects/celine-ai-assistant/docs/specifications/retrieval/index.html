@@ -4119,6 +4119,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0041-a-knowledge-base-can-be-rebuilt-and-an-embedding-model-replaced-without-a-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0041 — a knowledge base can be rebuilt, and an embedding model replaced, without a gap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#known-limits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4147,13 +4158,16 @@
 
 
 <h1 id="retrieval">Retrieval</h1>
-<p>The assistant answers from a vector collection assembled from two sources: curated
-training material, and whatever users upload.</p>
+<p>Each community (REC) has a knowledge base of its own: its registered sources, what its
+managers shared, and what its members uploaded. The assistant answers a member from
+their community's, and from no other.</p>
 <hr />
 <h3 id="req-0022-retrieval-is-scoped-to-what-the-caller-may-read">REQ-0022 — retrieval is scoped to what the caller may read</h3>
-<p>One shared collection holds three things, and the rule that keeps them apart is applied
-on <strong>every</strong> retrieval path — the chat route's, and the <code>search_documents</code> tool the model
-can call for itself:</p>
+<p>Only the caller's community's knowledge base is searched (REQ-0040); a caller with no
+community retrieves nothing, and reading never creates a knowledge base. Inside it, the
+rule below is applied on <strong>every</strong> retrieval path — the chat route's, and the
+<code>search_documents</code> tool the model can call for itself — and every term requires
+<code>community_id</code> to be the caller's:</p>
 <table>
 <thead>
 <tr>
@@ -4163,11 +4177,11 @@ can call for itself:</p>
 </thead>
 <tbody>
 <tr>
-<td>the curated corpus</td>
-<td><code>kind</code> is <code>training_material</code> or <code>site_doc</code></td>
+<td>the community's source material</td>
+<td><code>kind</code> is <code>kb_source</code></td>
 </tr>
 <tr>
-<td>an administrator's shared upload</td>
+<td>a document a manager shared</td>
 <td><code>scope</code> is <code>system</code></td>
 </tr>
 <tr>
@@ -4177,13 +4191,14 @@ can call for itself:</p>
 </tbody>
 </table>
 <p>Anything else is withheld: the rule denies by default, so a document carrying metadata
-this code did not write is not returned.</p>
+this code did not write is not returned, and a point that landed in the wrong
+community's collection is not returned either.</p>
 <p>It is enforced twice — as a metadata filter inside the vector store, which is the real
-mechanism, and again on each returned node in this process, which is the half a
-serviceless test can prove. <code>build_retriever</code> takes the caller id as a keyword argument
-with no default, so omitting it is a <code>TypeError</code> rather than an unfiltered query.</p>
+mechanism, and again on each returned node in this process. <code>build_retriever</code> takes the
+caller id and community as keyword arguments with no default, so omitting one is a
+<code>TypeError</code> rather than an unfiltered query.</p>
 <p>Separately, a chunk marked <code>hidden</code> is withheld from the <code>sources</code> event but still given
-to the model: training material is context a reader cannot follow a citation to. <strong>The
+to the model: source material is context a reader cannot follow a citation to. <strong>The
 <code>hidden</code> flag is not an access control</strong> and must never be used as one.</p>
 <h3 id="req-0023-an-attached-file-leads-the-context">REQ-0023 — an attached file leads the context</h3>
 <p>Files named in a chat request are authorised, summarised into a single context block —
@@ -4192,11 +4207,27 @@ found. The user attached it a second ago; it outranks a similarity score.</p>
 <h3 id="req-0024-a-turn-with-attachments-and-no-text-is-still-a-question">REQ-0024 — a turn with attachments and no text is still a question</h3>
 <p>The route supplies one ("analyse the attached files…"). Retrieval is skipped when there
 is no text to retrieve on.</p>
+<h3 id="req-0041-a-knowledge-base-can-be-rebuilt-and-an-embedding-model-replaced-without-a-gap">REQ-0041 — a knowledge base can be rebuilt, and an embedding model replaced, without a gap</h3>
+<p>A community's knowledge base is the Qdrant alias
+<code>&lt;QDRANT_COLLECTION&gt;__&lt;community_id&gt;__&lt;fingerprint&gt;</code>, where the fingerprint hashes the
+embedding model and vector size, pointing at a timestamped generation (ADR-0008). A
+community id that is not already a valid name (lower case, digits, <code>-</code>, single <code>_</code>, at
+most 64) is refused, never normalised.</p>
+<p><code>celine-assistant kb reindex</code> builds a new generation from the registered sources and
+the community's attachment rows (re-embedding the stored text, or with <code>--re-extract</code>
+running extraction again), checks every expected document reached it, and only then
+moves the alias in one operation; a failed rebuild deletes its generation and leaves the
+live one as it was. Attachments added or deleted during the build are reconciled after
+the move. The previous generation is kept until <code>kb prune</code>.</p>
+<p>Because the model is part of the alias, a new model's knowledge bases are built beside
+the current ones (<code>--embed-model</code>), and the deploy that changes <code>LLM_EMBED_MODEL</code> is the
+switch. The service refuses to start when a community has knowledge bases only for
+another model.</p>
 <hr />
 <h2 id="known-limits">Known limits</h2>
-<p><strong>Documents indexed before 2026-08-15 carry generated document ids</strong>, so REQ-0021's
-deletion does not reach them. They are still scoped correctly for retrieval — the
-metadata the rule reads is metadata they already carry. Clearing them needs a reindex.</p>
+<p>Everything indexed before knowledge bases were per community sits in the single
+<code>QDRANT_COLLECTION</code> collection, which nothing reads any more. <code>kb migrate-legacy</code>
+rebuilds it into a community (REQ-0042); <code>kb prune --legacy</code> then deletes it.</p>
 <p>What is actually in the collection is recorded in the companion's knowledge.</p>
 
 

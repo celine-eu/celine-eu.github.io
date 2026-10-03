@@ -5563,10 +5563,12 @@ env prefix <code>CELINE_OIDC_</code>):</p>
 </tbody>
 </table>
 <p>The client id is fixed to <code>svc-digital-twin</code> in <code>celine.dt.core.config</code>.</p>
-<p>In production, <code>create_app</code> refuses to start while <code>CELINE_OIDC_BASE_URL</code> is set and the
-secret is empty or equal to the client id. The environment name is read from <code>APP_ENV</code>,
-<code>CELINE_ENV</code> or <code>ENV</code>; only <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> and <code>ci</code> are
-non-production, and unset means production.</p>
+<p>Outside dev, <code>create_app</code> refuses to start while <code>CELINE_OIDC_BASE_URL</code> is set and the
+secret is empty or equal to the client id, while <code>CELINE_OIDC_BASE_URL</code> or
+<code>CELINE_OIDC_JWKS_URI</code> was left at the SDK's local-Keycloak default, or while
+<code>DATABASE_URL</code> carries a development password. The environment is read from <code>CELINE_ENV</code>,
+then <code>ENVIRONMENT</code>, then the legacy <code>APP_ENV</code> and <code>ENV</code>; <strong>only <code>dev</code> relaxes</strong> — unset,
+<code>test</code>, <code>local</code>, <code>ci</code> or a typo are hardened (<a href="../specifications/runtime/">REQ-1061</a>).</p>
 <h3 id="custom-token-provider">Custom Token Provider</h3>
 <pre><code class="language-python">from celine.sdk.auth import AccessToken, TokenProvider
 

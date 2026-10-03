@@ -786,10 +786,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-admintraining-materialssync" class="md-nav__link">
+  <a href="#post-adminkbsync" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /admin/training-materials/sync
+        POST /admin/kb/sync
       
     </span>
   </a>
@@ -4634,10 +4634,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#post-admintraining-materialssync" class="md-nav__link">
+  <a href="#post-adminkbsync" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /admin/training-materials/sync
+        POST /admin/kb/sync
       
     </span>
   </a>
@@ -4750,14 +4750,22 @@
 <hr />
 <h2 id="user">User</h2>
 <h3 id="get-user"><code>GET /user</code></h3>
-<p>Return the authenticated user's profile derived from the JWT.</p>
+<p>Return the authenticated user's profile derived from the JWT: <code>community_id</code> (the REC
+organization in the token, or <code>null</code>), <code>is_realm_admin</code>, and <code>is_admin</code> — true for a
+realm administrator and for a manager of the caller's own community.</p>
 <hr />
 <h2 id="admin">Admin</h2>
-<p>The following endpoints require the user to be a member of the admin group.</p>
+<p>These act on one community's knowledge base. The caller must be a realm administrator
+(<code>ADMIN_GROUP</code> in the top-level <code>groups</code> claim) or hold one of <code>REC_MANAGER_GROUPS</code> inside
+that REC's organization. A manager acts on their own community; a realm administrator
+names one with <code>community_id</code> (<code>400</code> without). Anyone else gets <code>403</code>.</p>
 <h3 id="post-adminuploads"><code>POST /admin/uploads</code></h3>
-<p>Upload a file as a system-level attachment (visible to all users).</p>
-<h3 id="post-admintraining-materialssync"><code>POST /admin/training-materials/sync</code></h3>
-<p>Clone or refresh <code>celine-training-materials</code> inside the container, check out the requested ref, and ingest Markdown files.</p>
+<p>Multipart: <code>file</code>, and optionally <code>community_id</code> (a realm administrator's). Shares a file
+with the community as a system-scoped attachment, readable by its members.</p>
+<h3 id="post-adminkbsync"><code>POST /admin/kb/sync</code></h3>
+<p>Body: <code>{"community_id": "…" | null, "full": false}</code>. Syncs every source registered for
+the community and returns one result per source; a failing source carries an <code>error</code>
+and does not stop the others. Replaces <code>POST /admin/training-materials/sync</code>.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

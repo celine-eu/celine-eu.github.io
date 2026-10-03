@@ -4834,10 +4834,14 @@ which parts no longer describe the code:</p>
 task run
 # Listens on http://localhost:8002
 </code></pre>
-<p><code>task run</code>, <code>task debug</code> and <code>docker compose up</code> default <code>APP_ENV</code> to <code>dev</code>. Anywhere else
-an unset environment is production, and production refuses to start with the placeholder
-service secret (<a href="docs/brokers/#configuration-1">Brokers</a>). <code>.env.example</code> lists the
-variables the service reads.</p>
+<p><code>task run</code> and <code>task debug</code> export <code>CELINE_ENV=dev</code> (<code>docker compose up</code> still defaults the
+legacy <code>APP_ENV</code> to <code>dev</code>). Anywhere else an unset environment is hardened — only
+<code>CELINE_ENV=dev</code> relaxes — and a hardened start refuses the placeholder service secret,
+the SDK's local Keycloak issuer/JWKS defaults and a development <code>DATABASE_URL</code> password, all
+listed in one error (<a href="docs/brokers/#configuration-1">Brokers</a>,
+<a href="docs/specifications/runtime/#startup">REQ-1060–1063</a>). <code>CELINE_ENV=staging task run</code> is
+the prod-like mode of the same entry point. <code>.env.example</code> lists the variables the service
+reads.</p>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q   # or: task test
 </code></pre>
