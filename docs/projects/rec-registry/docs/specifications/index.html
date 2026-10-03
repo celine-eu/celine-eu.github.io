@@ -4277,7 +4277,7 @@ reports planned requirements as unverified.</p>
 </thead>
 <tbody>
 <tr>
-<td>REQ-0001 – REQ-0010, REQ-0063 – REQ-0065, REQ-0081 – REQ-0082</td>
+<td>REQ-0001 – REQ-0010, REQ-0063 – REQ-0065, REQ-0081 – REQ-0082, REQ-0088 – REQ-0089</td>
 <td><a href="identity-and-authorisation/">identity and authorisation</a> — who the caller is and what they may do</td>
 </tr>
 <tr>
@@ -4309,8 +4309,8 @@ reports planned requirements as unverified.</p>
 <p>Each page's own block was full and contiguous when the dataspace DID arrived, so
 REQ-0059 – REQ-0061 append to the end of the universe and are listed against the page they
 belong to rather than renumbering three ranges to keep them tidy. Later additions append the
-same way; REQ-0063 – REQ-0075, written planned, did, and so did REQ-0076 – REQ-0080 and
-REQ-0081 – REQ-0087.</p>
+same way; REQ-0063 – REQ-0075, written planned, did, and so did REQ-0076 – REQ-0080,
+REQ-0081 – REQ-0087 and REQ-0088 – REQ-0089.</p>
 <h2 id="what-is-not-covered">What is not covered</h2>
 <p>Unverified by any suite here, whatever this document says. Each area's own page repeats the
 part that belongs to it.</p>
@@ -4326,7 +4326,8 @@ part that belongs to it.</p>
 <li><strong>The middleware.</strong> REQ-0001 – REQ-0008 pin <code>_get_admin_action</code>, a pure function, called
   directly. JWT parsing and verification, the decision cache, and the <code>401</code>/<code>403</code> a real
   request would receive are not exercised — the suite runs with <code>AUTH_ENABLED=false</code> and
-  <code>POLICIES_ENABLED=false</code>.</li>
+  <code>POLICIES_ENABLED=false</code>, under <code>CELINE_ENV=dev</code> — the only signal
+  that lets the app start with them (REQ-0088).</li>
 <li><strong>The migrations, beyond the shape they build.</strong> <code>tests/test_migrations.py</code> runs
   <code>alembic upgrade head</code> into a throwaway schema and asserts it matches <code>Base.metadata</code>, so
   a model that drifts from <code>alembic/versions/</code> no longer passes. What that does not cover:

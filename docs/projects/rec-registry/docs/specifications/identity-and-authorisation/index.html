@@ -4251,6 +4251,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0088-outside-celine_envdev-the-service-refuses-to-start-on-a-development-setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0088 — outside CELINE_ENV=dev the service refuses to start on a development setting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0089-outside-celine_envdev-the-cli-refuses-a-client-secret-equal-to-its-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0089 — outside CELINE_ENV=dev the CLI refuses a client secret equal to its client id
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4508,6 +4530,51 @@ delivery-point <code>PUT</code> (with or without <code>replaces</code>) or <code
 profile route, the status route and a create. As for REQ-0064, the supersets live in the
 policy rules and not in the shared matcher. Pinned by requests through the middleware with the
 policy engine on, for every scope against every member write.</p>
+<h3 id="req-0088-outside-celine_envdev-the-service-refuses-to-start-on-a-development-setting">REQ-0088 — outside <code>CELINE_ENV=dev</code> the service refuses to start on a development setting</h3>
+<p><code>create_app</code> checks its configuration before the policy middleware loads the Rego bundle
+and before any request can open the database pool, through <code>celine.sdk.posture</code>'s
+<code>PostureGuard</code> (<code>src/celine/rec_registry/core/posture.py</code>). It registers:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Refused when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>its password is a local-stack password (<code>securepassword123</code>, <code>postgres</code>) or trivially weak</td>
+</tr>
+<tr>
+<td><code>AUTH_ENABLED</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>POLICIES_ENABLED</code></td>
+<td><code>false</code> — with the engine off <code>/admin</code> asks only for a validly signed token, so any token the issuer signs reads, writes and purges every community</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_JWKS_URI</code></td>
+<td>not stated, so the SDK's local Keycloak default is in use</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_CLIENT_SECRET</code></td>
+<td>a client id is configured and the secret is empty or equal to it</td>
+</tr>
+</tbody>
+</table>
+<p>The signal is <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; the first non-empty one wins. <strong>Only <code>dev</code>
+relaxes</strong>: unset, empty, <code>staging</code>, <code>prod</code> or a typo is hardened. Hardened, startup raises
+<code>InsecureConfiguration</code> naming every violation at once; in dev the same list is logged as
+one warning and the service starts. <code>task run</code> exports <code>CELINE_ENV=dev</code> unless it is
+already set.</p>
+<h3 id="req-0089-outside-celine_envdev-the-cli-refuses-a-client-secret-equal-to-its-client-id">REQ-0089 — outside <code>CELINE_ENV=dev</code> the CLI refuses a client secret equal to its client id</h3>
+<p>Before the client-credentials flow sends anything, the CLI checks the pair it was given
+(<code>--client-id</code>/<code>--client-secret</code>, or <code>REGISTRY_CLIENT_ID</code>/<code>REGISTRY_CLIENT_SECRET</code>). A
+secret that is empty or equal to its client id — the local realm's convention, of which
+<code>celine-cli</code>/<code>celine-cli</code> is the CLI's own — is refused with a non-zero exit unless the
+signal says <code>dev</code>, read as for REQ-0088. A <code>--token</code> and the password flow are not checked.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
@@ -4515,7 +4582,8 @@ policy engine on, for every scope against every member write.</p>
   called directly. Nothing exercises the surrounding request path: JWT parsing and
   verification, the policy engine's decision cache, or the <code>401</code> that an unauthenticated
   caller should receive. The suite runs with <code>AUTH_ENABLED=false</code> and
-  <code>POLICIES_ENABLED=false</code>.</li>
+  <code>POLICIES_ENABLED=false</code>, under <code>CELINE_ENV=dev</code> — the only signal
+  that lets the app start with them (REQ-0088).</li>
 <li><strong>Which community a write reaches.</strong> Every grant is registry-wide: a holder of
   <code>rec-registry.assets.write</code> can write any community's assets, and a holder of
   <code>rec-registry.members.profile.write</code> (REQ-0063) or a field scope (REQ-0081) any community's

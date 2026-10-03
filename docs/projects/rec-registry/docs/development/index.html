@@ -1052,6 +1052,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#development-defaults-and-celine_env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development defaults and CELINE_ENV
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#local-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4298,6 +4309,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#development-defaults-and-celine_env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development defaults and CELINE_ENV
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#local-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4388,6 +4410,11 @@
 </thead>
 <tbody>
 <tr>
+<td><code>CELINE_ENV</code></td>
+<td>Deployment posture; only <code>dev</code> accepts the development defaults below (<code>ENVIRONMENT</code> is read when it is unset). Read from the process environment, not <code>.env</code></td>
+<td>unset = hardened</td>
+</tr>
+<tr>
 <td><code>DATABASE_URL</code></td>
 <td>PostgreSQL async connection string</td>
 <td><code>postgresql+asyncpg://postgres:securepassword123@host.docker.internal:15432/celine_rec_registry</code></td>
@@ -4423,9 +4450,24 @@
 <td><code>authorization</code></td>
 </tr>
 <tr>
-<td><code>OIDC__*</code></td>
-<td>OIDC settings (from <code>celine-sdk</code>)</td>
-<td>audience: <code>svc-rec-registry</code></td>
+<td><code>CELINE_OIDC_BASE_URL</code></td>
+<td>OIDC issuer (from <code>celine-sdk</code>)</td>
+<td>local Keycloak (dev only)</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_JWKS_URI</code></td>
+<td>JWKS every JWT is verified against</td>
+<td>local Keycloak (dev only)</td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_AUDIENCE</code></td>
+<td>Expected token audience</td>
+<td><code>svc-rec-registry</code></td>
+</tr>
+<tr>
+<td><code>CELINE_OIDC_CLIENT_ID</code> / <code>CELINE_OIDC_CLIENT_SECRET</code></td>
+<td>The service's own client, if any</td>
+<td>—</td>
 </tr>
 <tr>
 <td><code>POLICIES_ENABLED</code></td>
@@ -4459,6 +4501,26 @@
 </tr>
 </tbody>
 </table>
+<h2 id="development-defaults-and-celine_env">Development defaults and <code>CELINE_ENV</code></h2>
+<p>The defaults above are for the local stack, and the service refuses them unless
+<code>CELINE_ENV=dev</code> (REQ-0088). <strong>Unset is hardened</strong>, as is any value other than <code>dev</code>
+(<code>staging</code>, <code>prod</code>, a typo). Hardened, startup fails with <code>InsecureConfiguration</code> listing
+every one of these at once; in dev the same list is a single warning:</p>
+<ul>
+<li><code>DATABASE_URL</code> carrying a local-stack password (<code>securepassword123</code>, <code>postgres</code>);</li>
+<li><code>AUTH_ENABLED=false</code> or <code>POLICIES_ENABLED=false</code> — with policies off, any validly signed
+  token is a full administrator of <code>/admin</code>;</li>
+<li><code>CELINE_OIDC_BASE_URL</code> or <code>CELINE_OIDC_JWKS_URI</code> not set (the SDK's local Keycloak);</li>
+<li><code>CELINE_OIDC_CLIENT_SECRET</code> empty or equal to <code>CELINE_OIDC_CLIENT_ID</code>, when a client id
+  is set.</li>
+</ul>
+<p><code>task run</code> and <code>task debug</code> export <code>CELINE_ENV=dev</code> unless it is already set, so the
+local runner needs nothing. <code>CELINE_ENV=staging task run</code> is the prod-like mode of the
+same entry point: it starts only with real values. The CLI applies the same rule to
+client credentials: a <code>--client-secret</code> equal to <code>--client-id</code> (the local
+<code>celine-cli</code>/<code>celine-cli</code>) is refused unless <code>CELINE_ENV=dev</code> (REQ-0089).</p>
+<p>The check lives in <code>celine.sdk.posture</code>, which needs the celine-sdk release after
+1.24.0; until it is published the SDK must be installed from source.</p>
 <h2 id="local-setup">Local Setup</h2>
 <pre><code class="language-bash">uv sync
 
