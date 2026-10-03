@@ -4346,6 +4346,11 @@
 <td><code>/privacy</code></td>
 <td>Privacy policy linked from the AI notice under the chat input. This app has no <code>/privacy</code> route, so set it in any deployment where that path is not served by another app on the same host</td>
 </tr>
+<tr>
+<td><code>PUBLIC_LEGAL_BASE_URL</code></td>
+<td>—</td>
+<td>The legal host. When <code>PUBLIC_PRIVACY_POLICY_URL</code> is unset, the AI notice links <code>&lt;PUBLIC_LEGAL_BASE_URL&gt;/privacy/</code>, the page listing every community's privacy notice (this app does not know the user's community)</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Dev:</strong></p>
@@ -4426,7 +4431,7 @@
 <tr>
 <td><code>PUBLIC_PRIVACY_POLICY_URL</code></td>
 <td><code>/privacy</code></td>
-<td>Privacy policy linked from the AI notice under the assistant's chat input</td>
+<td>Privacy policy linked from the AI notice under the assistant's chat input, when the member's community gives none. The first choice is the community's own <code>privacy_url</code> from <code>GET /api/community</code>, which the BFF resolves (registry link, then the legal host)</td>
 </tr>
 </tbody>
 </table>

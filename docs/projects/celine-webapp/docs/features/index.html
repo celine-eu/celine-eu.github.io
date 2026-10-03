@@ -4481,7 +4481,20 @@
 
 <h1 id="features">Features</h1>
 <h2 id="terms-acceptance">Terms Acceptance</h2>
-<p>Terms acceptance is enforced at the frontend layout level. On every page load, the frontend calls <code>GET /api/me</code>. If the response has <code>terms_required: true</code>, the user is redirected to a terms page. Acceptance is persisted via <code>POST /api/terms/accept</code> and checked against the current <code>POLICY_VERSION</code> — raising that version requires every member to accept again.</p>
+<p>Terms acceptance is enforced at the frontend layout level. On every page load, the frontend calls <code>GET /api/me</code>. If the response has <code>terms_required: true</code>, the user is redirected to a terms page. Acceptance is persisted via <code>POST /api/terms/accept</code>.</p>
+<p><strong>With a legal host (<code>LEGAL_BASE_URL</code>) and a known community</strong>, the gate is per document
+of the member's own community (<code>celine/webapp/legal.py</code>): the terms and the privacy notice,
+read from <code>&lt;LEGAL_BASE_URL&gt;/&lt;community&gt;/current.json</code>. <code>/api/me</code> returns
+<code>legal_documents</code> (each with its url, version, title and <code>required</code>), and the frontend
+posts back the documents and versions it showed. Each acceptance is a row of its own
+(community, document, version, language, url, sha256). A member is asked again for one
+document when its version changes, without being asked about the other. The version
+recorded is the server's; a stale page gets 409. Before the host has ever answered, a
+document is accepted without a version, and the date decides against the version's
+<code>published_at</code> once it is known. <code>current.json</code> is refreshed every five minutes, and the
+last good copy is kept while the host is down.</p>
+<p><strong>Otherwise</strong> (no legal host, or the member's community is unknown) the gate is the
+deployment-wide <code>POLICY_VERSION</code>, as before: raising it asks every member again.</p>
 <h2 id="overview-and-energy-data">Overview and Energy Data</h2>
 <p>The overview page displays energy data fetched from the Digital Twin service:
 - Community-level production and consumption totals
