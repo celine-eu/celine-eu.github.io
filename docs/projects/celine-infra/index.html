@@ -4968,8 +4968,8 @@ static site: one page per document, version and language, and per community
 <strong>public</strong>: legal documents are read before anyone signs in, so there is no oauth2-proxy.
 It is <strong>off</strong> until the environment sets <code>legal.enabled: true</code> and an image.</p>
 <p>The site is the deployment's own content, so the platform ships no image for it. The image
-is a static file server that runs non-root, listens on <code>8080</code> and serves the built site at
-<code>/</code>.</p>
+is a static file server that runs non-root, listens on <code>8080</code>, serves the built site at
+<code>/</code>, and writes only to <code>/tmp</code> (the root filesystem is read-only).</p>
 <table>
 <thead>
 <tr>
