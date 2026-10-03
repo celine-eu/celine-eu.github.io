@@ -4156,6 +4156,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#legal-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legal host
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#keycloak-realm-bootstrap" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4534,6 +4545,17 @@
     <span class="md-ellipsis">
       
         Onboarding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legal-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legal host
       
     </span>
   </a>
@@ -4937,6 +4959,52 @@ runs its Alembic migrations in an init container. After a template changes, impo
 <pre><code class="language-bash">kubectl -n celine-&lt;env&gt; exec deploy/onboarding -- \
   /app/.venv/bin/onboarding-cli import-templates --filter &lt;slug&gt;
 </code></pre>
+<hr />
+<h2 id="legal-host">Legal host</h2>
+<p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices) as a
+static site: one page per document, version and language, and per community
+<code>&lt;community&gt;/current.json</code>, <code>&lt;community&gt;/history.json</code> and one address per document,
+<code>&lt;community&gt;/&lt;slot&gt;/</code>. Release <code>legal</code> (<code>charts/celine-legal</code>), at <code>legal.&lt;domain&gt;</code>,
+<strong>public</strong>: legal documents are read before anyone signs in, so there is no oauth2-proxy.
+It is <strong>off</strong> until the environment sets <code>legal.enabled: true</code> and an image.</p>
+<p>The site is the deployment's own content, so the platform ships no image for it. The image
+is a static file server that runs non-root, listens on <code>8080</code> and serves the built site at
+<code>/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>legal.enabled</code></td>
+<td>installs the release</td>
+</tr>
+<tr>
+<td><code>legal.image</code>, <code>legal.image_tag</code></td>
+<td><strong>required</strong> when enabled: the image holding the built site</td>
+</tr>
+<tr>
+<td><code>legal.host</code></td>
+<td>defaults to <code>legal.&lt;domain&gt;</code></td>
+</tr>
+<tr>
+<td><code>legal.base_url</code></td>
+<td>where applications find the legal host: defaults to <code>https://&lt;legal.host&gt;</code> when the release is installed. Set it alone to use a legal host served elsewhere</td>
+</tr>
+</tbody>
+</table>
+<p>With a base URL, the applications use the community's own documents:</p>
+<ul>
+<li><code>webapp</code> and <code>onboarding</code> get <code>LEGAL_BASE_URL</code>. Community links the registry leaves
+  empty, the terms gate and the onboarding consent documents resolve there;</li>
+<li><code>frontend-assistant</code> gets <code>PUBLIC_LEGAL_BASE_URL</code>, for the AI notice's privacy link;</li>
+<li>Keycloak gets <code>TERMS_URL</code> and <code>PRIVACY_URL</code>, the pages listing every community's
+  documents, for the login and email footer.</li>
+</ul>
+<p>Without one, every application behaves as before.</p>
 <p>The import checks each boundary id with the Digital Twin, so the Digital Twin must be up.</p>
 <hr />
 <h2 id="keycloak-realm-bootstrap">Keycloak realm bootstrap</h2>
@@ -5065,6 +5133,7 @@ the pod is starting. Rolling back is manual: put the platform-level keys back fr
 <li><code>celine-frontend-webapp</code> — Participant webapp</li>
 <li><code>celine-frontend-grid</code> — Grid webapp</li>
 <li><code>celine-frontend-onboarding</code> — REC onboarding UI, and the host the onboarding API answers on</li>
+<li><code>celine-legal</code> — the legal host: the deployment's legal documents as a public static site. See <a href="#legal-host">Legal host</a></li>
 </ul>
 <h3 id="platform">Platform</h3>
 <ul>
