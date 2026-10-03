@@ -4162,6 +4162,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0045-risk-km-forwards-to-the-digital-twins-risk_km-fetcher-through-the-generic-values-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0045 — /risk-km forwards to the Digital Twin's risk_km fetcher through the generic values call
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0047-tree-strike-spans-returns-the-exposure-overlay-as-a-geojson-featurecollection-assembled-like-shapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0047 — /tree-strike-spans returns the exposure overlay as a GeoJSON FeatureCollection, assembled like /shapes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0048-risks-8h-forwards-to-the-digital-twins-risks_8h-fetcher-through-the-generic-values-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0048 — /risks-8h forwards to the Digital Twin's risks_8h fetcher through the generic values call
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0049-shapes-forwards-every-asset_type-value-verbatim-joint-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0049 — /shapes forwards every asset_type value verbatim, joint included
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4180,9 +4224,9 @@
 
 
 <h1 id="the-grid-data-proxy">The grid data proxy</h1>
-<p>Fifteen routes under <code>/api/grid/{network_id}/</code>, fourteen of which forward a request to the
-Digital Twin and return what comes back. The fifteenth, <code>/shapes</code>, is the only place this
-service transforms grid data at all.</p>
+<p>Eighteen routes under <code>/api/grid/{network_id}/</code>, all of which forward a request to the
+Digital Twin and return what comes back. Two of them, <code>/shapes</code> and <code>/tree-strike-spans</code>,
+assemble the rows into GeoJSON — the only transformation this service applies to grid data.</p>
 <hr />
 <h3 id="req-0022-the-grid-routes-fail-loudly-when-the-digital-twin-is-unconfigured">REQ-0022 — the grid routes fail loudly when the Digital Twin is unconfigured</h3>
 <p><code>503</code>, with <code>Digital Twin API not configured</code>, when <code>DIGITAL_TWIN_API_URL</code> is unset.</p>
@@ -4230,6 +4274,43 @@ header, because each changes with every pipeline run and a cached one is a stale
 <p><code>public</code> is safe only because the network is a path segment, so two networks never share a
 cache entry. Moving the network into a header or deriving it from the token would break
 that.</p>
+<h3 id="req-0045-risk-km-forwards-to-the-digital-twins-risk_km-fetcher-through-the-generic-values-call">REQ-0045 — <code>/risk-km</code> forwards to the Digital Twin's <code>risk_km</code> fetcher through the generic values call</h3>
+<p><code>GET /risk-km?dates=…</code> returns the length-weighted risk exposure rows (km at ALERT and
+WARNING, static tree-strike km, a 0–100 index) at the grain named by <code>level</code> — <code>tratta</code>
+(the map's line × municipality × conductor rows, split by operational unit), <code>line</code> or
+<code>unit</code>. <code>dates</code> is required (at least one); <code>level</code>, <code>risk_vector</code>, <code>operational_unit</code>,
+<code>line_name</code>, <code>substation_name</code> and <code>min_level</code> are forwarded only when given, so the
+Digital Twin's own defaults apply. <code>level</code> outside <code>tratta | line | unit</code> and <code>min_level</code>
+outside <code>WARNING | ALERT</code> are refused with <code>422</code> before anything is forwarded.</p>
+<p>The call is <code>fetch_values(network_id, "risk_km", payload, limit=20000)</code> — the SDK's
+generic values entry point — rather than a named client method, so the service reaches the
+fetcher on the SDK version it is already pinned to. The result is returned as the fetch
+result's dictionary (<code>items</code>, <code>count</code>, pagination), not re-shaped.</p>
+<h3 id="req-0047-tree-strike-spans-returns-the-exposure-overlay-as-a-geojson-featurecollection-assembled-like-shapes">REQ-0047 — <code>/tree-strike-spans</code> returns the exposure overlay as a GeoJSON FeatureCollection, assembled like <code>/shapes</code></h3>
+<p><code>GET /tree-strike-spans[?tile_id=…]</code> forwards to the Digital Twin's <code>tree_strike_spans</code>
+fetcher through the generic values call (<code>limit</code> 5000, the whole overlay) — <code>tile_id</code>
+values, the same ids as <code>/shapes</code>, are forwarded as <code>tile_ids</code> only when given — and
+assembles the rows exactly as REQ-0026/REQ-0027 describe for <code>/shapes</code>: the geometry from
+<code>feature_geojson</code>, the raw <code>geom</code> dropped, every other column a property, a row with no
+usable geometry skipped. Being static topology it is cacheable for an hour (REQ-0028).</p>
+<h3 id="req-0048-risks-8h-forwards-to-the-digital-twins-risks_8h-fetcher-through-the-generic-values-call">REQ-0048 — <code>/risks-8h</code> forwards to the Digital Twin's <code>risks_8h</code> fetcher through the generic values call</h3>
+<p><code>GET /risks-8h?dates=…[&amp;slot=…][&amp;risk_vector=…]</code> returns the WARNING/ALERT rows per
+segment and 8-hour window (<code>window_start</code>, <code>slot</code> 0 = 00–08, 1 = 08–16, 2 = 16–24) —
+the intra-day companion of <code>/risks</code>, same row layout otherwise. <code>dates</code> is required (at
+least one); <code>slot</code> values outside 0..2 are refused with <code>422</code> before anything is
+forwarded; <code>slot</code> and <code>risk_vector</code> are forwarded only when given. The call is
+<code>fetch_values(network_id, "risks_8h", payload, limit=30000)</code>; the fetch result is
+returned as its dictionary, not re-shaped, and it is not cached (REQ-0028).</p>
+<h3 id="req-0049-shapes-forwards-every-asset_type-value-verbatim-joint-included">REQ-0049 — <code>/shapes</code> forwards every <code>asset_type</code> value verbatim, <code>joint</code> included</h3>
+<p><code>asset_type</code> is an opaque list of strings passed through to the Digital Twin's <code>shapes</code>
+fetcher unmodified: the proxy applies no allow-list and no rewriting, so <code>?asset_type=joint</code>
+reaches the Digital Twin exactly as <code>?asset_type=line</code> or <code>?asset_type=cable</code> would. A
+joint row is assembled into a GeoJSON feature the same way every other shape row is
+(REQ-0026/REQ-0027): the geometry comes from <code>feature_geojson</code> (here a <code>Point</code> rather
+than a <code>LineString</code>), and every other column, thermal ones included
+(<code>thermal_tier</code>, <code>thermal_margin_c</code>, <code>thermal_theta_max_c</code>, <code>thermal_insulation</code>,
+<code>is_asphalt</code>, <code>anno_posa</code>, <code>technology</code>, <code>m_r_critico</code>), becomes a feature property
+without the endpoint needing to know what any of them mean.</p>
 
 
 

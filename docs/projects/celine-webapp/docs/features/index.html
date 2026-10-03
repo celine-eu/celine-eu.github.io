@@ -4515,6 +4515,13 @@ The response does not say which mode produced it.</p>
 <p><code>GET /api/settings/co2</code> returns carbon emission factors and configuration.</p>
 <h2 id="community">Community</h2>
 <p><code>GET /api/community</code> returns community metadata from the rec-registry, including name, description, areas, and links.</p>
+<p>The legal links (<code>terms_url</code>, <code>privacy_url</code>, <code>statute_url</code>, <code>regulations_url</code>) follow one
+rule (<code>celine/webapp/legal.py</code>):
+1. the community's own registry link, when it is set;
+2. otherwise, when <code>LEGAL_BASE_URL</code> is set, the legal host's address for that document,
+   <code>&lt;LEGAL_BASE_URL&gt;/&lt;community&gt;/&lt;slot&gt;/</code> (slots <code>terms</code>, <code>privacy</code>, <code>statute</code>,
+   <code>regulations</code>);
+3. otherwise none.</p>
 <h2 id="notifications">Notifications</h2>
 <p>The notification system proxies the nudging-tool:
 - List notifications (no filtering is exposed through this API)

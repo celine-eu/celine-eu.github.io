@@ -4187,10 +4187,13 @@ carries on. The HTTP API is fully functional; alert dispatch is simply inactive,
 nothing at any endpoint says so.</p>
 <p>The handler also refuses to dispatch before the Digital Twin and nudging clients exist,
 rather than raising inside the broker's callback.</p>
+<p><strong>Alert dispatch has a kill switch.</strong> <code>GRID_ALERTS_ENABLED</code> (default <code>false</code>) must be
+<code>true</code> for a completed run to dispatch anything; while it is off the listener only logs
+that it skipped the run (see REQ-0029). Nothing at any endpoint reports the setting.</p>
 <h3 id="req-0041-an-unavailable-digital-twin-does-not-stop-dispatch">REQ-0041 — an unavailable Digital Twin does not stop dispatch</h3>
-<p>The wind and heat distributions are fetched independently and each failure is swallowed, so
-a heat rule still fires when the wind query is down.</p>
-<p><strong>When both fail, dispatch sends nothing — the same observation as a genuinely calm day.</strong>
+<p>The single <code>risk_km</code> query is caught and logged; dispatch returns zero and the listener
+moves on to the next network.</p>
+<p><strong>When it fails, dispatch sends nothing — the same observation as a genuinely calm day.</strong>
 A Digital Twin that is down therefore looks exactly like good weather, and nothing raises
 an alarm about the absence of alerts.</p>
 <h3 id="req-0042-the-client-address-is-derived-for-logging-only">REQ-0042 — the client address is derived for logging only</h3>
