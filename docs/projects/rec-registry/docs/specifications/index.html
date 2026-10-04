@@ -4277,7 +4277,7 @@ reports planned requirements as unverified.</p>
 </thead>
 <tbody>
 <tr>
-<td>REQ-0001 – REQ-0010, REQ-0063 – REQ-0065, REQ-0081 – REQ-0082, REQ-0088 – REQ-0089</td>
+<td>REQ-0001 – REQ-0010, REQ-0063 – REQ-0065, REQ-0081 – REQ-0082, REQ-0088 – REQ-0090</td>
 <td><a href="identity-and-authorisation/">identity and authorisation</a> — who the caller is and what they may do</td>
 </tr>
 <tr>
@@ -4310,7 +4310,7 @@ reports planned requirements as unverified.</p>
 REQ-0059 – REQ-0061 append to the end of the universe and are listed against the page they
 belong to rather than renumbering three ranges to keep them tidy. Later additions append the
 same way; REQ-0063 – REQ-0075, written planned, did, and so did REQ-0076 – REQ-0080,
-REQ-0081 – REQ-0087 and REQ-0088 – REQ-0089.</p>
+REQ-0081 – REQ-0087, REQ-0088 – REQ-0089 and REQ-0090.</p>
 <h2 id="what-is-not-covered">What is not covered</h2>
 <p>Unverified by any suite here, whatever this document says. Each area's own page repeats the
 part that belongs to it.</p>
@@ -4334,8 +4334,9 @@ part that belongs to it.</p>
   <code>downgrade</code>, which drops the three tables and has never been run; and what a migration
   does to a database that already holds rows — the check builds an empty schema, so
   locking, backfill and anything a revision does to existing data are unexercised.</li>
-<li><strong>The Keycloak realm.</strong> Operator authorisation depends on organizations and groups that
-  <code>../celine-policies</code> syncs, and nothing here would notice a rename.</li>
+<li><strong>The Keycloak realm.</strong> Operator authorisation depends on the client scopes that
+  <code>../celine-policies</code> declares and syncs, and nothing here would notice a rename. No group
+  and no realm role takes part (REQ-0090).</li>
 <li><strong>Read pagination.</strong> <code>limit</code>, <code>cursor</code> and the filters on the community, member, asset
   and delivery-point listings are used incidentally by other tests and asserted by none.
   <code>MAX_PAGE_SIZE</code> is not exercised at all.</li>

@@ -4740,7 +4740,10 @@
 <h1 id="api-reference">API Reference</h1>
 <p>Interactive OpenAPI docs: <code>http://localhost:8016/docs</code></p>
 <h2 id="admin-routes">Admin Routes</h2>
-<p>All admin routes are under the <code>/admin</code> prefix and require service account authentication with appropriate scopes.</p>
+<p>All admin routes are under the <code>/admin</code> prefix. A route is allowed by a nudging scope
+(<code>nudging.admin</code>, <code>nudging.ingest</code>, <code>nudging.analytics.read</code>) or by the realm role
+<code>platform-admin</code>, the only platform-wide grant. No group grants anything here: neither a
+realm group nor an organisation's own group (REQ-0005, REQ-0082).</p>
 <h3 id="post-adminingest-event"><code>POST /admin/ingest-event</code></h3>
 <p>Ingest an event and trigger rule evaluation, orchestration, and delivery.</p>
 <p><strong>Request body:</strong></p>

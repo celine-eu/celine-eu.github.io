@@ -4273,6 +4273,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0090-no-group-and-no-realm-role-decides-an-admin-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0090 — no group and no realm role decides an /admin request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4575,6 +4586,24 @@ already set.</p>
 secret that is empty or equal to its client id — the local realm's convention, of which
 <code>celine-cli</code>/<code>celine-cli</code> is the CLI's own — is refused with a non-zero exit unless the
 signal says <code>dev</code>, read as for REQ-0088. A <code>--token</code> and the password flow are not checked.</p>
+<h3 id="req-0090-no-group-and-no-realm-role-decides-an-admin-request">REQ-0090 — no group and no realm role decides an <code>/admin</code> request</h3>
+<p>The policy question is answered on the caller's scopes alone. The subject the middleware
+puts into the policy input carries <strong>no group</strong>, whatever the token holds: a realm group
+(<code>groups: ["/admins", "admins"]</code>, the platform's retired mechanism), an organisation's own
+groups (<code>organization.&lt;alias&gt;.groups</code>) and a group named like a grant
+(<code>rec-registry.admin</code>) all reach the decision as nothing. <code>access.rego</code> reads
+<code>input.subject.scopes</code> only, and no rule reads a role, so the realm role <code>platform-admin</code>
+grants nothing here either: a platform administrator or an organisation's <code>admins</code> member
+holding no <code>rec-registry.*</code> scope is refused every <code>/admin</code> action, and a token's scope
+reaches exactly what it reached before.</p>
+<p>The platform has two levels of grant, and neither is read here: <code>platform-admin</code>, a realm
+role, is the only platform-wide one; an organisation's groups are valid only inside that
+organisation, and no <code>/admin</code> action names an organisation. The middleware used to merge
+the realm's groups with every organisation's into one list (<code>celine-sdk</code>'s
+<code>extract_groups</code>, removed in 2.0.0); a policy reading that list would have let one
+community's group act as a platform group or as the same group in another community.
+Pinned by requests through the middleware with the policy engine on, for hand-built claims
+in every shape and for real tokens from the local realm.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
@@ -4589,9 +4618,9 @@ signal says <code>dev</code>, read as for REQ-0088. A <code>--token</code> and t
   <code>rec-registry.members.profile.write</code> (REQ-0063) or a field scope (REQ-0081) any community's
   members. Keeping a manager
   to their own community is the calling dashboard's policy, and nothing here checks it.</li>
-<li><strong>The Keycloak realm.</strong> Operators are authorised by organization and group against state
-  <code>../celine-policies</code> owns and syncs. There is no import to grep for and nothing here
-  would notice a rename.</li>
+<li><strong>The Keycloak realm.</strong> Every grant is a client scope that <code>../celine-policies</code> declares
+  and syncs; no group and no realm role takes part (REQ-0090). There is no import to grep
+  for and nothing here would notice a renamed scope.</li>
 </ul>
 
 

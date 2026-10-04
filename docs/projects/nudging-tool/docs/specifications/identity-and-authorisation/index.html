@@ -4130,10 +4130,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0005-an-administrator-is-one-by-scope-or-by-group" class="md-nav__link">
+  <a href="#req-0005-an-administrator-is-one-by-scope-or-by-the-platform-role" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0005 — an administrator is one by scope or by group
+        REQ-0005 — an administrator is one by scope or by the platform role
       
     </span>
   </a>
@@ -4195,6 +4195,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0082-no-group-grants-anything-at-either-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0082 — no group grants anything, at either level
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4246,10 +4257,11 @@ A bundle that loads without it would deny everything, which is safe and complete
 non-boolean value, a query naming a rule the bundle does not define: every one of them is
 a denial.</p>
 <p>This is what makes a renamed Rego rule a lockout rather than a hole.</p>
-<h3 id="req-0005-an-administrator-is-one-by-scope-or-by-group">REQ-0005 — an administrator is one by scope or by group</h3>
-<p><code>is_admin</code> is granted by the <code>nudging.admin</code> scope <strong>or</strong> membership of the <code>admin</code> group.
-Groups are read with <code>extract_groups</code>, which flattens organisation-level groups too, so a
-member of an organisation whose org group is <code>admin</code> is an administrator here.</p>
+<h3 id="req-0005-an-administrator-is-one-by-scope-or-by-the-platform-role">REQ-0005 — an administrator is one by scope or by the platform role</h3>
+<p><code>is_admin</code> is granted by the <code>nudging.admin</code> scope <strong>or</strong> the realm role
+<code>platform-admin</code>. The role is read from <code>realm_access.roles</code> only and reaches the bundle as
+<code>input.subject.roles</code>; it is the only platform-wide grant there is. What no longer makes an
+administrator is in REQ-0082.</p>
 <p>Scopes arrive as a space-separated string or as a list, and both reach the policy as a
 list — a raw string would match nothing under Rego's <code>in</code> and would silently demote every
 administrator.</p>
@@ -4262,9 +4274,9 @@ send test pushes.</p>
 <p>That asymmetry is the whole of the separation between the four sending services and an
 operator.</p>
 <h3 id="req-0007-a-participant-has-neither-permission">REQ-0007 — a participant has neither permission</h3>
-<p>A logged-in participant carries no scope and no group, so every <code>/admin</code> route answers
-<code>403</code> with a message naming the missing permission. Being a service account grants
-nothing by itself either.</p>
+<p>A logged-in participant carries no nudging scope and not the <code>platform-admin</code> role, so
+every <code>/admin</code> route answers <code>403</code> with a message naming the missing permission. Being a
+service account grants nothing by itself either.</p>
 <h3 id="req-0008-allow-says-only-that-somebody-is-there-and-no-route-uses-it">REQ-0008 — <code>allow</code> says only that somebody is there, and no route uses it</h3>
 <p>The bundle's <code>allow</code> is true for any subject with an id and a non-anonymous type — every
 participant satisfies it. No dependency queries it: <code>require_admin</code> and <code>require_ingest</code>
@@ -4291,6 +4303,18 @@ put in an event. Both are accepted as the caller's own.</p>
 <code>user_id = &lt;subject&gt;</code> predicate for a user — and <strong>nothing in this service reads it</strong>. It
 is pinned so that whoever wires it up finds out that a service account is given no filter
 and would therefore see every row.</p>
+<h3 id="req-0082-no-group-grants-anything-at-either-level">REQ-0082 — no group grants anything, at either level</h3>
+<p>A group is never a grant here. Two kinds reach a token, and neither is read for
+authorisation:</p>
+<ul>
+<li><strong>a realm group</strong> (<code>groups</code>: <code>/admins</code>, <code>admins</code>, <code>admin</code>, …). Realm groups are retired;
+  one still present in an old or misconfigured token grants nothing.</li>
+<li><strong>an organisation's own group</strong> (<code>organization.&lt;alias&gt;.groups</code>). It is valid only inside
+  that organisation, and no decision in this service is about an organisation (REQ-0008),
+  so it grants nothing here. An organisation's <code>admins</code> member is not an administrator.</li>
+</ul>
+<p>The bundle's <code>input.subject.groups</code> is therefore always empty. A realm <strong>role</strong> that is not
+<code>platform-admin</code> (<code>default-roles-celine</code>, or a retired <code>admin</code> role) grants nothing either.</p>
 
 
 

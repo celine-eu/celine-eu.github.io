@@ -4457,6 +4457,10 @@ findings are one warning. <code>CELINE_ENV=staging task run</code> runs the same
 <td>Run pytest</td>
 </tr>
 <tr>
+<td><code>task test:real-tokens</code></td>
+<td>Run the opt-in real-token layer against the local Keycloak</td>
+</tr>
+<tr>
 <td><code>task seed</code></td>
 <td>Seed rules from <code>./seed</code> directory</td>
 </tr>
@@ -4508,6 +4512,11 @@ uv run pytest tests/unit      # the layer without an app
 <p>The suite reaches <strong>no external service</strong> — no PostgreSQL, no Keycloak, no push service,
 no SMTP — so it needs nothing running. The Rego bundle is the exception and is evaluated
 for real, in process; see <a href="../decisions/ADR-0002-the-suite-reaches-no-service/">ADR-0002</a>.</p>
+<p><code>tests/integration/</code> is the one opt-in layer: it mints tokens from the <strong>local</strong> Keycloak,
+verifies them against its JWKS and drives the real middleware and policy. It is skipped
+unless <code>NUDGING_REAL_TOKENS=1</code> (<code>task test:real-tokens</code>) and refuses a non-local issuer; a
+token still carrying a retired realm group is passed in as <code>NUDGING_LEGACY_ADMIN_TOKEN</code>. See
+<a href="../decisions/ADR-0004-real-tokens-are-an-opt-in-layer/">ADR-0004</a>.</p>
 <p>Every test declares the requirement it covers with <code>@verifies REQ-####</code>, and the
 requirements are in <a href="../specifications/"><code>docs/specifications/</code></a>. Adding behaviour
 means adding a requirement and a test naming it, in the same change.</p>
