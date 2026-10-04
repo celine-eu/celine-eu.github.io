@@ -4543,21 +4543,17 @@ only from inside the network; see
 </code></pre>
 <hr />
 <h2 id="post-superuser">POST /superuser</h2>
-<p>Check if a client has MQTT superuser access. Superusers bypass all ACL checks.</p>
-<p>Grants superuser if the JWT contains:
-- The <code>mqtt.admin</code> scope, OR
-- The <code>admin</code> group, OR
-- The <code>mqtt.admin</code> group</p>
+<p>There is no MQTT superuser (REQ-0014, ADR-0012): the endpoint answers <code>403</code> to every request,
+whatever the token carries — no scope, group or realm role (<code>platform-admin</code> included) makes a
+client a superuser. It exists so a broker configured to ask (<code>auth_opt_disable_superuser false</code>)
+gets a definite no, and every operation goes through <code>/acl</code>.</p>
 <p><strong>Request Body (JSON):</strong></p>
 <pre><code class="language-json">{
   &quot;username&quot;: &quot;client-id-or-jwt&quot;
 }
 </code></pre>
-<p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: true, &quot;reason&quot;: &quot;superuser&quot;}
-</code></pre>
-<p><strong>Response (403):</strong></p>
-<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;not superuser&quot;}
+<p><strong>Response (403), always:</strong></p>
+<pre><code class="language-json">{&quot;ok&quot;: false, &quot;reason&quot;: &quot;superuser disabled&quot;}
 </code></pre>
 <hr />
 <h2 id="get-health">GET /health</h2>

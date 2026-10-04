@@ -4207,6 +4207,18 @@ edited to say something else.</p>
 <td><a href="ADR-0011-the-dashboard-writes-registry-data-with-optional-scopes/">ADR-0011</a></td>
 <td>The manager dashboard writes a member's meter, role and area with optional registry scopes; <code>rec-registry.members.profile.write</code> is declared</td>
 </tr>
+<tr>
+<td><a href="ADR-0012-a-platform-administrator-is-a-realm-role/">ADR-0012</a></td>
+<td>A platform administrator is the realm role <code>platform-admin</code>; realm groups carry no authority and are removed; organization groups count only in their organization; MQTT has no superuser and no group grants (supersedes ADR-0009's keeping the operator realm admin in its group)</td>
+</tr>
+<tr>
+<td><a href="ADR-0013-bootstrap-owns-the-admin-second-factor/">ADR-0013</a></td>
+<td><code>bootstrap</code> owns the realm's browser flow and the platform admin's second factor (<code>platform-admin</code>), on unless <code>ENV=dev</code>; the realm import no longer declares it</td>
+</tr>
+<tr>
+<td><a href="ADR-0014-bootstrap-hardens-the-master-realm-through-its-own-client/">ADR-0014</a></td>
+<td><code>bootstrap</code> signs in to master as its own client <code>svc-celine-policies-bootstrap</code> (configured secret), the admin user only to create it; outside dev it hardens master (brute force, a second factor for master admins) with that client's token only</td>
+</tr>
 </tbody>
 </table>
 

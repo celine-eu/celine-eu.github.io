@@ -4676,8 +4676,8 @@ its own instance.</p>
 <h3 id="governance-and-disclosure-model">Governance and disclosure model</h3>
 <p>Access levels:
 - <code>open</code> — no authentication required; <code>downloadURL</code> exposed in DCAT
-- <code>internal</code> — JWT required; services need the <code>dataset.query</code> scope, users one of the <code>admins</code>/<code>managers</code>/<code>viewers</code> groups; ODRL carries <code>ds:accessScope eq "dataspaces.query"</code>
-- <code>restricted</code> — JWT required; only the <code>dataset.admin</code> scope or the <code>admins</code> group (<code>policies/celine/dataset.rego</code>); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code> and <code>ds:consentStatus eq "active"</code>
+- <code>internal</code> — JWT required; services need the <code>dataset.query</code> scope, users the <code>platform-admin</code> realm role, or <code>managers</code>/<code>viewers</code> inside an organization; ODRL carries <code>ds:accessScope eq "dataspaces.query"</code>
+- <code>restricted</code> — JWT required; only the <code>dataset.admin</code> scope or the <code>platform-admin</code> realm role (<code>policies/celine/dataset.rego</code>); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code> and <code>ds:consentStatus eq "active"</code>
 - <code>secret</code> — omitted from every catalogue surface; not queryable (<code>403 Dataset not available</code>, as for an unexposed dataset)</p>
 <p>An entry that states no level is <code>internal</code>, and the import stores it as such; an unknown level is refused at import.</p>
 <p>Row-level filtering via the pluggable governance handler registry. Five built-in handlers are supported:
@@ -4687,7 +4687,7 @@ its own instance.</p>
 - <code>http_in_list</code> — HTTP-based allow list
 - <code>table_pointer</code> — table-based lookup</p>
 <p>Further handlers can be registered through <code>ROW_FILTERS_MODULES</code> or the <code>celine.dataset.row_filters</code> entry-point group (see <code>celine.dataset.ext</code>).</p>
-<p>Users in the <code>admins</code> group bypass row filters entirely. Service accounts bypass the <code>rec_registry</code> filter when they query on their own behalf — never when a dataspace decision delegates the query to them.</p>
+<p>Holders of the <code>platform-admin</code> realm role bypass row filters entirely; no group does, at either level (see <a href="docs/governance-security/#identity-model">Identity Model</a>). Service accounts bypass the <code>rec_registry</code> filter when they query on their own behalf — never when a dataspace decision delegates the query to them.</p>
 <p>On a dataspace request the filter arrives from ds whole, naming the consenting subjects as <code>principals</code> and as <code>keys</code>; a filter this service cannot apply serves no rows. Specification: <a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>.</p>
 <p>Governance overrides are supported via <code>governance.&lt;app_name&gt;.yaml</code> files merged with the base <code>governance.yaml</code>.</p>
 <h3 id="lineage-and-provenance">Lineage and provenance</h3>
@@ -4713,7 +4713,7 @@ its own instance.</p>
 <li><code>POST /catalogue/search</code> — filtered search</li>
 <li><code>GET /</code> — HTML catalogue view</li>
 <li><code>POST /query</code> — governed SQL query; EDR-gated when <code>EDR_ENABLED=true</code></li>
-<li><code>POST /admin/catalogue</code> — catalogue import; requires the <code>dataset.admin</code> scope or the <code>admins</code> group</li>
+<li><code>POST /admin/catalogue</code> — catalogue import; requires the <code>dataset.admin</code> scope or the <code>platform-admin</code> realm role</li>
 <li><code>/dps/v1/dataflows/*</code>, <code>PUT /dps/v1/controlplanes</code>, <code>DELETE /dps/v1/controlplanes/{id}</code>, <code>GET /dps/registration</code> — DPS signalling, when <code>DPS_ENABLED=true</code></li>
 <li><code>POST /dps/public/query</code> — governed SQL query for a DPS pull token, when <code>DPS_ENABLED=true</code></li>
 <li><code>GET /health</code></li>

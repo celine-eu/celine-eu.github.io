@@ -4745,7 +4745,6 @@
 <pre><code>.
 ├── config/
 │   ├── caddy/              # Reverse proxy configuration
-│   ├── keycloak/           # Realm, clients, groups, and demo users
 │   ├── oauth2-proxy/       # oauth2-proxy configuration
 │   ├── superset/           # Superset configuration and env files
 │   └── jupyter/            # Jupyter server configuration
@@ -4773,43 +4772,60 @@
 <li>validates JWT signatures via Keycloak JWKS</li>
 <li>auto‑creates users on first login</li>
 <li>synchronizes roles on each login</li>
-<li>maps Keycloak groups to Superset roles</li>
+<li>maps the Keycloak realm role <code>platform-admin</code> and organisation groups to Superset roles</li>
 </ul>
-<p>Group‑to‑role mapping is defined in:</p>
-<pre><code>src/celine/superset/auth/groups.py
-</code></pre>
-<p>Example:</p>
-<pre><code class="language-python">GROUP_TO_SUPERSET_ROLE = {
-    &quot;admins&quot;: &quot;Admin&quot;,
-    &quot;managers&quot;: &quot;Alpha&quot;,
-    &quot;editors&quot;: &quot;Beta&quot;,
-    &quot;viewers&quot;: &quot;Gamma&quot;,
-}
-</code></pre>
+<p>The mapping is defined in <code>packages/celine-superset/src/celine/superset/auth/groups.py</code>.
+There are exactly two levels:</p>
+<table>
+<thead>
+<tr>
+<th>Token claim</th>
+<th>Superset role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>realm role <code>platform-admin</code> (<code>realm_access.roles</code>)</td>
+<td><code>Admin</code></td>
+</tr>
+<tr>
+<td><code>organization.&lt;slug&gt;.groups</code>: <code>admins</code>, <code>managers</code>, <code>editors</code></td>
+<td><code>org:&lt;slug&gt;:&lt;level&gt;</code></td>
+</tr>
+<tr>
+<td><code>organization.&lt;slug&gt;.groups</code>: <code>viewers</code>, any other group, or membership alone</td>
+<td><code>org:&lt;slug&gt;:viewers</code></td>
+</tr>
+</tbody>
+</table>
+<p>Realm groups (the top-level <code>groups</code> claim, e.g. <code>/admins</code>) and every other realm role grant
+nothing. An organisation's <code>admins</code> is that organisation's admin only.</p>
 <h3 id="jupyter">Jupyter</h3>
 <ul>
-<li>No local token or password authentication</li>
-<li>Access controlled by a custom JWT authorizer</li>
-<li>Authorization decisions based on JWT group claims</li>
+<li>No server token, password or login page: only an access token opens it</li>
+<li>Runs as <code>jupyter celine-server</code>, Jupyter Server with the CELINE identity provider and
+  authorizer built in</li>
+<li>Trusts one issuer, <code>CELINE_JUPYTER_JWT_ISSUER</code> (the realm URL); tokens of any other issuer are
+  refused before any key is fetched</li>
+<li>Fails closed: it does not start when that issuer is unset, when the authentication cannot be
+  loaded, or when configuration replaces it or re-opens unauthenticated access</li>
 <li>Intended for notebook execution under the same SSO boundary</li>
 </ul>
-<p>Only users in the <code>/admins</code> group currently receive full access by default.</p>
+<p>Only holders of the Keycloak realm role <code>platform-admin</code> get access (all or nothing). An
+organisation's <code>admins</code> group and a realm group such as <code>/admins</code> grant nothing.</p>
 <hr />
 <h2 id="authentication-identity">Authentication &amp; Identity</h2>
 <h3 id="keycloak">Keycloak</h3>
-<p>The repository ships with a ready‑to‑import Keycloak realm definition:</p>
+<p>The realm is not defined here: <code>celine-policies</code> reconciles it. This stack consumes:</p>
 <ul>
 <li>Realm: <code>celine</code></li>
 <li>Clients:</li>
-<li><code>oauth2_proxy</code> (browser SSO)</li>
+<li><code>oauth2_proxy</code> (browser SSO); its access token must carry <code>realm_access.roles</code>
+    (the <code>roles</code> client scope) and <code>organization</code> (request <code>organization:*</code>)</li>
 <li><code>celine-cli</code> (service and CLI tokens)</li>
-<li>Groups:</li>
-<li><code>/admins</code></li>
-<li><code>/managers</code></li>
-<li><code>/editors</code></li>
-<li><code>/viewers</code></li>
+<li>Platform administrators: the realm role <code>platform-admin</code></li>
+<li>Organisation roles: each organisation's <code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code> groups</li>
 </ul>
-<p>Demo users are included for local development.</p>
 <h3 id="oauth2proxy">oauth2‑proxy</h3>
 <p>oauth2‑proxy acts as the single authentication gateway:</p>
 <ul>

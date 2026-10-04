@@ -4118,6 +4118,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#addendum-2026-10-03-real-tokens-opt-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Addendum — 2026-10-03: real tokens, opt-in
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4176,6 +4187,13 @@ object. <strong>Nothing exercises the subscription itself</strong> — that a br
 non-delivery is stated in REQ-0051 to REQ-0053 and verified by nothing.</p>
 <p>Closing the gap needs contract tests against a pinned <code>celine-sdk</code>, or the SDK publishing
 example payloads the consumers can assert against. Neither exists.</p>
+<h2 id="addendum-2026-10-03-real-tokens-opt-in">Addendum — 2026-10-03: real tokens, opt-in</h2>
+<p><code>tests/integration/test_real_tokens.py</code> verifies REQ-0056 with tokens a <strong>local</strong> Keycloak
+signs: <code>JwtUser.from_token</code> runs for real against the realm's JWKS and nothing in the
+identity path is faked. It is skipped unless <code>FLEXIBILITY_IT_KEYCLOAK=1</code>, so the default
+run still needs nothing running, and it refuses any issuer that is not a <code>.localhost</code> or
+loopback host. It is the one place the suite observes the token shapes the SDK reads,
+rather than shapes written here.</p>
 
 
 

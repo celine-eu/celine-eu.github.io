@@ -4832,6 +4832,14 @@ dependency maintenance.</p>
 <td>pure mapping and window functions</td>
 </tr>
 <tr>
+<td><code>tests/test_feedback.py</code></td>
+<td>feedback filing and the manager check: realm role <code>platform-admin</code> vs the REC's own groups</td>
+</tr>
+<tr>
+<td><code>tests/integration/test_real_tokens.py</code></td>
+<td>the same two levels with tokens a local Keycloak issued — <strong>opt-in</strong>, skipped by default</td>
+</tr>
+<tr>
 <td><code>tests/fakes.py</code></td>
 <td>the four upstream fakes</td>
 </tr>
@@ -4841,6 +4849,14 @@ dependency maintenance.</p>
 The fakes are written by hand from reading route code, so an invented attribute will
 reproduce whatever you expect of it — that is not a hypothetical, it produced a fully
 reproducible and entirely wrong bug report the day the fakes were written.</p>
+<p><code>tests/integration/</code> is the one exception to "needs nothing running", and it is opt-in so
+the default run and CI stay hermetic. With the local stack's Keycloak up, it mints real
+<code>oauth2_proxy</code> tokens for the dev users and verifies them against the realm's real JWKS:</p>
+<pre><code class="language-bash">CELINE_WEBAPP_REAL_TOKENS=1 uv run pytest tests/integration
+</code></pre>
+<p>It refuses any issuer that is not <code>*.localhost</code> or loopback. The module docstring lists the
+users, aliases and environment variables it reads; the retired-realm-group case runs only
+when a token carrying one is passed in <code>CELINE_WEBAPP_LEGACY_GROUP_TOKEN</code>.</p>
 <p>Tests marked <code>xfail</code> with <code>strict=True</code> are <strong>known defects, pinned deliberately</strong>, each
 with its reason in the marker. Fixing one turns the run red with <code>XPASS(strict)</code> — the
 signal to remove the marker in the same change. There are none at present.</p>

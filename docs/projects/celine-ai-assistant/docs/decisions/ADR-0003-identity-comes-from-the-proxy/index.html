@@ -4160,6 +4160,14 @@ account and each upstream re-verifies for itself. See ADR-0005.</p>
 <code>x-auth-request-groups</code> is whoever it claims to be, including an administrator.</strong> What
 makes that safe is network placement and the proxy stripping those headers from client
 requests. Neither is verifiable from this repository, and no test can assert it.</p>
+<blockquote>
+<p><strong>Update, 2026-10-03.</strong> <code>x-auth-request-groups</code> is no longer read at all. A header
+identity is an identity and nothing more: the only platform-wide grant is the Keycloak
+realm role <code>platform-admin</code>, taken only from a verified token's <code>realm_access.roles</code>
+(REQ-0004), and realm groups grant nothing. A forged header can still claim to be any
+user, so the network-placement requirement above stands, but it can no longer claim to
+be an administrator.</p>
+</blockquote>
 <p>A deployment that exposes this service directly <strong>and turns the switch on</strong> is a full
 authentication bypass. That is the cost of the header path, and it is why
 <code>OAUTH2_TRUST_HEADERS</code> exists as a switch, and now defaults off rather than being assumed.</p>

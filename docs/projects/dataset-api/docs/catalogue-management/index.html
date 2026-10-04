@@ -4687,7 +4687,7 @@ exporters (<code>governance</code>, <code>postgres</code>, <code>openlineage</co
 <hr />
 <h2 id="import-semantics">Import Semantics</h2>
 <p><code>POST /admin/catalogue</code> (called by <code>dataset-cli import catalogue</code>) requires the
-<code>dataset.admin</code> scope or the <code>admins</code> group, and upserts on <code>dataset_id</code>:</p>
+<code>dataset.admin</code> scope or the <code>platform-admin</code> realm role, and upserts on <code>dataset_id</code>:</p>
 <ul>
 <li>missing entries are created</li>
 <li>existing entries have every field overwritten</li>

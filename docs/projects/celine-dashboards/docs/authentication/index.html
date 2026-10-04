@@ -4326,34 +4326,34 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Groups:</strong></p>
+<p><strong>Authority — exactly two levels:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Group</th>
-<th>Default Role</th>
+<th>Level</th>
+<th>Carried by</th>
+<th>Grants here</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>/admins</code></td>
-<td>Full access</td>
+<td>platform</td>
+<td>realm role <code>platform-admin</code>, in <code>realm_access.roles</code></td>
+<td>Superset <code>Admin</code>; Jupyter access</td>
 </tr>
 <tr>
-<td><code>/managers</code></td>
-<td>Manager-level access</td>
-</tr>
-<tr>
-<td><code>/editors</code></td>
-<td>Editor-level access</td>
-</tr>
-<tr>
-<td><code>/viewers</code></td>
-<td>Read-only access</td>
+<td>organisation</td>
+<td>the organisation's <code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code> groups, in <code>organization.&lt;alias&gt;.groups</code></td>
+<td>Superset <code>org:&lt;alias&gt;:&lt;level&gt;</code>, in that organisation only</td>
 </tr>
 </tbody>
 </table>
-<p>Demo users for each group are included in the realm export for local development.</p>
+<p>There are no realm groups. A realm group still present in a token (<code>groups: ["/admins"]</code>)
+grants nothing, and neither does any realm role other than <code>platform-admin</code>.
+<code>realm_access.roles</code> is in the <strong>access token</strong> only, which is the token oauth2-proxy
+forwards; the <code>oauth2_proxy</code> client needs the <code>roles</code> client scope for it.</p>
+<p>The dev realm (from <code>celine-policies</code>) has demo users: <code>admin</code> holds <code>platform-admin</code>,
+<code>org-admin</code> is an <code>example_rec</code> admin, <code>org-viewer</code> an <code>example_rec</code> viewer.</p>
 <h2 id="oauth2-proxy-setup">oauth2-proxy Setup</h2>
 <p>oauth2-proxy is the single authentication gateway for all browser sessions.</p>
 <p>Key configuration, which lives with the deployment rather than in this repository:</p>

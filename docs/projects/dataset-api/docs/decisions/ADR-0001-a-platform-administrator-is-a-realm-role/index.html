@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-roi/docs/architecture/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/dataset-api/docs/decisions/ADR-0001-a-platform-administrator-is-a-realm-role/">
       
       
       
@@ -16,16 +16,16 @@
         
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
     
     
       
-        <title>Architecture - CELINE Project</title>
+        <title>ADR-0001 — a platform administrator is the realm role platform-admin; realm groups grant nothing - CELINE Project</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.618322db.min.css">
       
       
 
@@ -38,7 +38,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#adr-0001-a-platform-administrator-is-the-realm-role-platform-admin-realm-groups-grant-nothing" class="md-skip">
           Skip to content
         </a>
       
@@ -70,7 +70,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-header__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture
+              ADR-0001 — a platform administrator is the realm role platform-admin; realm groups grant nothing
             
           </span>
         </div>
@@ -163,7 +163,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../.." class="md-tabs__link">
+      <a href="../../../../.." class="md-tabs__link">
         
   
   
@@ -191,7 +191,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../celine-ai-assistant/" class="md-tabs__link">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -212,7 +212,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-tabs__link">
         
   
   
@@ -231,7 +231,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../ontologies/" class="md-tabs__link">
+      <a href="../../../../../ontologies/" class="md-tabs__link">
         
   
   
@@ -250,7 +250,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../schema/" class="md-tabs__link">
+      <a href="../../../../../schema/" class="md-tabs__link">
         
   
   
@@ -285,7 +285,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
+    <a href="../../../../.." title="CELINE Project" class="md-nav__button md-logo" aria-label="CELINE Project" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -303,7 +303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../../../../.." class="md-nav__link">
         
   
   
@@ -434,7 +434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -462,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -490,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -518,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ai-assistant/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -634,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -662,7 +662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -690,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -718,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -746,7 +746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-sdk/docs/spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -834,7 +834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/" class="md-nav__link">
+      <a href="../../../../rec-registry/" class="md-nav__link">
         
   
   
@@ -862,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/data-model/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/data-model/" class="md-nav__link">
         
   
   
@@ -890,7 +890,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -918,7 +918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/import-export/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/import-export/" class="md-nav__link">
         
   
   
@@ -946,7 +946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../rec-registry/docs/development/" class="md-nav__link">
+      <a href="../../../../rec-registry/docs/development/" class="md-nav__link">
         
   
   
@@ -1034,7 +1034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/" class="md-nav__link">
+      <a href="../../../../celine-webapp/" class="md-nav__link">
         
   
   
@@ -1062,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1090,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1118,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/features/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/features/" class="md-nav__link">
         
   
   
@@ -1146,7 +1146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-webapp/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-webapp/docs/development/" class="md-nav__link">
         
   
   
@@ -1234,7 +1234,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/" class="md-nav__link">
+      <a href="../../../../nudging-tool/" class="md-nav__link">
         
   
   
@@ -1262,7 +1262,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/architecture/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1290,7 +1290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/engine/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/engine/" class="md-nav__link">
         
   
   
@@ -1318,7 +1318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -1346,7 +1346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../nudging-tool/docs/development/" class="md-nav__link">
+      <a href="../../../../nudging-tool/docs/development/" class="md-nav__link">
         
   
   
@@ -1434,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/" class="md-nav__link">
         
   
   
@@ -1462,7 +1462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/architecture/" class="md-nav__link">
         
   
   
@@ -1490,7 +1490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/authentication/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/authentication/" class="md-nav__link">
         
   
   
@@ -1518,7 +1518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/services/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/services/" class="md-nav__link">
         
   
   
@@ -1546,7 +1546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-dashboards/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-dashboards/docs/development/" class="md-nav__link">
         
   
   
@@ -1634,7 +1634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/" class="md-nav__link">
+      <a href="../../../../celine-frontend/" class="md-nav__link">
         
   
   
@@ -1662,7 +1662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/packages/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/packages/" class="md-nav__link">
         
   
   
@@ -1690,7 +1690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/apps/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/apps/" class="md-nav__link">
         
   
   
@@ -1718,7 +1718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/theming/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/theming/" class="md-nav__link">
         
   
   
@@ -1746,7 +1746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-frontend/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-frontend/docs/development/" class="md-nav__link">
         
   
   
@@ -1834,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/" class="md-nav__link">
         
   
   
@@ -1862,7 +1862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
         
   
   
@@ -1890,7 +1890,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/values/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/values/" class="md-nav__link">
         
   
   
@@ -1918,7 +1918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
         
   
   
@@ -1946,7 +1946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/clients/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/clients/" class="md-nav__link">
         
   
   
@@ -1974,7 +1974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
         
   
   
@@ -2002,7 +2002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
         
   
   
@@ -2030,7 +2030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
+      <a href="../../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
         
   
   
@@ -2118,7 +2118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -2146,7 +2146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -2174,7 +2174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/catalogue-management/" class="md-nav__link">
+      <a href="../../catalogue-management/" class="md-nav__link">
         
   
   
@@ -2202,7 +2202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/cli-operations/" class="md-nav__link">
+      <a href="../../cli-operations/" class="md-nav__link">
         
   
   
@@ -2230,7 +2230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/governance-security/" class="md-nav__link">
+      <a href="../../governance-security/" class="md-nav__link">
         
   
   
@@ -2258,7 +2258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/query-engine/" class="md-nav__link">
+      <a href="../../query-engine/" class="md-nav__link">
         
   
   
@@ -2286,7 +2286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/dataspace-row-filters/" class="md-nav__link">
+      <a href="../../dataspace-row-filters/" class="md-nav__link">
         
   
   
@@ -2314,7 +2314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../dataset-api/docs/dps-data-plane/" class="md-nav__link">
+      <a href="../../dps-data-plane/" class="md-nav__link">
         
   
   
@@ -2402,7 +2402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/" class="md-nav__link">
+      <a href="../../../../celine-policies/" class="md-nav__link">
         
   
   
@@ -2430,7 +2430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/getting-started/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/getting-started/" class="md-nav__link">
         
   
   
@@ -2458,7 +2458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/architecture/" class="md-nav__link">
         
   
   
@@ -2486,7 +2486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/scopes-and-permissions/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/scopes-and-permissions/" class="md-nav__link">
         
   
   
@@ -2514,7 +2514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/mqtt-integration/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/mqtt-integration/" class="md-nav__link">
         
   
   
@@ -2542,7 +2542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/api-reference/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -2570,7 +2570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-policies/docs/deployment/" class="md-nav__link">
+      <a href="../../../../celine-policies/docs/deployment/" class="md-nav__link">
         
   
   
@@ -2658,7 +2658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/" class="md-nav__link">
+      <a href="../../../../celine-utils/" class="md-nav__link">
         
   
   
@@ -2686,7 +2686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial/" class="md-nav__link">
         
   
   
@@ -2714,7 +2714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/governance/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/governance/" class="md-nav__link">
         
   
   
@@ -2742,7 +2742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/schemas/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/schemas/" class="md-nav__link">
         
   
   
@@ -2770,7 +2770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/cli/" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/cli/" class="md-nav__link">
         
   
   
@@ -2858,7 +2858,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/" class="md-nav__link">
         
   
   
@@ -2886,7 +2886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipeline-overview/" class="md-nav__link">
         
   
   
@@ -2914,7 +2914,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/pipelines-reference/" class="md-nav__link">
         
   
   
@@ -2942,7 +2942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/local-runtime/" class="md-nav__link">
         
   
   
@@ -2970,7 +2970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/testing/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/testing/" class="md-nav__link">
         
   
   
@@ -2998,7 +2998,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/docs/development/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/docs/development/" class="md-nav__link">
         
   
   
@@ -3026,7 +3026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/om/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/om/" class="md-nav__link">
         
   
   
@@ -3054,7 +3054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/mt/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/mt/" class="md-nav__link">
         
   
   
@@ -3082,7 +3082,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/owm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/owm/" class="md-nav__link">
         
   
   
@@ -3110,7 +3110,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/copernicus/" class="md-nav__link">
         
   
   
@@ -3138,7 +3138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/dwd/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/dwd/" class="md-nav__link">
         
   
   
@@ -3166,7 +3166,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/weather/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/weather/" class="md-nav__link">
         
   
   
@@ -3194,7 +3194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/osm/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/osm/" class="md-nav__link">
         
   
   
@@ -3222,7 +3222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_estimation/" class="md-nav__link">
         
   
   
@@ -3250,7 +3250,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/pv_detection/" class="md-nav__link">
         
   
   
@@ -3278,7 +3278,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/grid/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/grid/" class="md-nav__link">
         
   
   
@@ -3306,7 +3306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_metering/" class="md-nav__link">
         
   
   
@@ -3334,7 +3334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_it/" class="md-nav__link">
         
   
   
@@ -3362,7 +3362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility/" class="md-nav__link">
         
   
   
@@ -3390,7 +3390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_registry/" class="md-nav__link">
         
   
   
@@ -3418,7 +3418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
+      <a href="../../../../celine-pipelines/apps/rec_flexibility_commitments/" class="md-nav__link">
         
   
   
@@ -3506,7 +3506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-ontologies/" class="md-nav__link">
+      <a href="../../../../celine-ontologies/" class="md-nav__link">
         
   
   
@@ -3594,7 +3594,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/" class="md-nav__link">
+      <a href="../../../../celine-grid/" class="md-nav__link">
         
   
   
@@ -3622,7 +3622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-grid/docs/architecture/" class="md-nav__link">
+      <a href="../../../../celine-grid/docs/architecture/" class="md-nav__link">
         
   
   
@@ -3710,7 +3710,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../../celine-roi/" class="md-nav__link">
         
   
   
@@ -3738,7 +3738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../user-guide/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/user-guide/" class="md-nav__link">
         
   
   
@@ -3766,7 +3766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../variables-reference/" class="md-nav__link">
+      <a href="../../../../celine-roi/docs/variables-reference/" class="md-nav__link">
         
   
   
@@ -3854,7 +3854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../flexibility-api/" class="md-nav__link">
+      <a href="../../../../flexibility-api/" class="md-nav__link">
         
   
   
@@ -3942,7 +3942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-infra/" class="md-nav__link">
+      <a href="../../../../celine-infra/" class="md-nav__link">
         
   
   
@@ -3985,7 +3985,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
+      <a href="../../../../celine-utils/docs/pipeline-tutorial" class="md-nav__link">
         
   
   
@@ -4012,7 +4012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../ontologies/" class="md-nav__link">
+      <a href="../../../../../ontologies/" class="md-nav__link">
         
   
   
@@ -4039,7 +4039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../schema/" class="md-nav__link">
+      <a href="../../../../../schema/" class="md-nav__link">
         
   
   
@@ -4086,10 +4086,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-pipeline-is-a-strict-chain" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The pipeline is a strict chain
+        Context
       
     </span>
   </a>
@@ -4097,10 +4097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#every-phase-is-also-an-endpoint" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Every phase is also an endpoint
+        Decision
       
     </span>
   </a>
@@ -4108,43 +4108,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#where-the-layers-are" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Where the layers are
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#external-calls" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        External calls
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-italian-regulatory-domain" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Italian regulatory domain
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#persistence-and-feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Persistence and feedback
+        Consequences
       
     </span>
   </a>
@@ -4168,136 +4135,50 @@
 
 
 
-<h1 id="architecture">Architecture</h1>
-<p><code>celine-roi</code> is a financial decision engine for Italian photovoltaic installations. Given
-system specifications — kWp, location, CAPEX, consumption — it returns 25-year financial
-projections under Italian incentive regimes.</p>
-<p>Its financial pipeline is a <strong>pure computation service</strong>: it owns no data schema shared with
-other components and calls no other CELINE service. Alongside that pipeline, the service owns the
-feedback submitted from its browser application, scoped to the caller's Keycloak REC membership.</p>
-<h2 id="the-pipeline-is-a-strict-chain">The pipeline is a strict chain</h2>
-<p>Executed in <code>run_scenario</code>, in <code>src/celine/roi/main.py</code>:</p>
-<pre><code class="language-text">SystemInput
-  → fetch_production      PVGIS, or Trentino Solar LIDAR
-  → compute_energy        hourly and monthly production vs consumption
-  → compute_incentives    25-year RID, CER TIP/Cacv, IRPEF deduction, depreciation
-  → compute_finance       NPV, IRR, payback, DSCR, cumulative cashflows
-  → validate_model        regulatory and parameter sanity checks
-  → ScenarioResult
-</code></pre>
-<p><strong>The order is load-bearing.</strong> Each stage consumes the previous stage's output, so a phase
-cannot be reordered or skipped — and a change to what one stage returns is a change to
-every stage after it.</p>
-<h2 id="every-phase-is-also-an-endpoint">Every phase is also an endpoint</h2>
-<p>Each stage is exposed twice:</p>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Runs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/api/v1/{phase}</code></td>
-<td>that phase alone, with its inputs supplied directly</td>
-</tr>
-<tr>
-<td><code>/api/v1/scenario</code></td>
-<td>the whole chain</td>
-</tr>
-<tr>
-<td><code>/api/v1/compare</code></td>
-<td>several scenarios side by side, via <code>src/celine/roi/scenarios/comparator.py</code></td>
-</tr>
-</tbody>
-</table>
-<p>That duality is the thing to remember when changing a phase: a signature change affects
-both the chain <em>and</em> a public endpoint, and the endpoint is the one nobody re-runs while
-testing the chain.</p>
-<h2 id="where-the-layers-are">Where the layers are</h2>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Holds</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>models.py</code></td>
-<td>the domain: frozen dataclasses carrying numpy arrays. No database, no serialization</td>
-</tr>
-<tr>
-<td><code>engines/</code></td>
-<td>the computation — <code>energy.py</code>, <code>incentives.py</code>, <code>finance.py</code></td>
-</tr>
-<tr>
-<td><code>src/celine/roi/validation/warnings.py</code></td>
-<td>regulatory and parameter sanity checks</td>
-</tr>
-<tr>
-<td><code>api/</code></td>
-<td>the boundary: FastAPI app, request/response schemas, dependencies, one file per route</td>
-</tr>
-<tr>
-<td><code>api/routes/feedback.py</code></td>
-<td>authenticated feedback submission and REC-scoped manager review</td>
-</tr>
-<tr>
-<td><code>config/*.yaml</code></td>
-<td>the parameters, merged flat at startup by <code>config_loader.py</code></td>
-</tr>
-</tbody>
-</table>
-<p>The source tree itself is the reference for what exists; this table is about what each
-layer is <em>for</em>. What must not cross between them is in the companion's knowledge.</p>
-<h2 id="external-calls">External calls</h2>
-<p><code>pvgis_client.py</code> is the <strong>only computation path</strong> that reaches the network: the EU
-PVGIS API, and optionally the Trentino Solar LIDAR API. Both can be bypassed —
-<code>annual_production_kwh</code> supplies a synthetic distribution, <code>rooftop_wkt</code> selects the
-Trentino path.</p>
-<h2 id="the-italian-regulatory-domain">The Italian regulatory domain</h2>
-<p>Every financial figure is Italian-specific: IRPEF deduction at 50% or 36% depending on
-primary residence, IRES and IRAP taxation, RID feed-in tariffs, CER TIP and Cacv
-incentives over 20 years, and IVA handling.</p>
-<p>The <code>regime</code> field selects the incentive stack:</p>
-<table>
-<thead>
-<tr>
-<th><code>regime</code></th>
-<th>Applies</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>RID</code></td>
-<td>feed-in only</td>
-</tr>
-<tr>
-<td><code>CER</code></td>
-<td>community energy only</td>
-</tr>
-<tr>
-<td><code>RID_CER</code></td>
-<td>both, combined</td>
-</tr>
-</tbody>
-</table>
-<p>The parameter values behind all of this are in <code>docs/variables-reference.md</code>, which is the
-reference and is not restated here.</p>
-<h2 id="persistence-and-feedback">Persistence and feedback</h2>
-<p>If <code>DATABASE_URL</code> is set to the empty string the service runs and computes normally; only
-the storing of results is lost. Unset selects the local development database, which is
-accepted only with <code>CELINE_ENV=dev</code> (REQ-0404, REQ-1201). Feedback, unlike calculation, inherently requires persistence: its endpoints
-return 503 when persistence is explicitly disabled.</p>
-<p>The feedback row stores its REC key as a first-class column. The browser may choose only one of the
-REC organizations in its verified token. Reading screenshots and advancing an item from <code>new</code> to
-<code>seen</code> to <code>resolved</code> additionally requires <code>community.read</code> and either a matching REC
-<code>admins</code>/<code>managers</code> group of that same REC organization, or the realm role <code>platform-admin</code> (REQ-1105).
-A realm group grants nothing. <code>celine-community</code> repeats its
-own REC authorization before proxying these manager operations; neither service reads the other's
-database.</p>
+<h1 id="adr-0001-a-platform-administrator-is-the-realm-role-platform-admin-realm-groups-grant-nothing">ADR-0001 — a platform administrator is the realm role <code>platform-admin</code>; realm groups grant nothing</h1>
+<p><strong>Date:</strong> 2026-10-03
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p>The API decided "platform administrator" from a flat list of group names that merged the
+realm <code>groups</code> claim with every organization's <code>organization.&lt;alias&gt;.groups</code>. Keycloak gives a
+realm group and an organization's group of the same name the same path (<code>/admins</code>), so an
+organization's own <code>admins</code> read as the platform's: its holder skipped every row filter, read
+<code>restricted</code> datasets and could write the catalogue. Realm <code>managers</code> and <code>viewers</code> also read
+<code>internal</code> datasets on every organization's behalf.</p>
+<p>The platform settled the authority model in one realm for every service (<code>celine-policies</code>
+ADR-0012, requester 2026-10-03): exactly two levels, the realm role <code>platform-admin</code> and an
+organization's own groups, valid only inside that organization. Realm groups and the realm
+roles <code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code> are removed from the realm.</p>
+<h2 id="decision">Decision</h2>
+<ul>
+<li><strong>The platform level is the realm role <code>platform-admin</code>, read from <code>realm_access.roles</code>.</strong>
+  Its holder skips row filters, reads <code>restricted</code> datasets and may write the catalogue
+  (besides a service holding <code>dataset.admin</code>). Nothing else is a platform grant: not a realm
+  group, not a retired realm role, not a client role, not an organization group named
+  <code>platform-admin</code>.</li>
+<li><strong>The organization level is read only from <code>organization.&lt;alias&gt;.groups</code>.</strong> <code>managers</code> and
+  <code>viewers</code> read <code>internal</code> datasets, with row filters applied; an organization's <code>admins</code> and
+  <code>editors</code> grant nothing here.</li>
+<li><strong>The top-level <code>groups</code> claim is not read.</strong> A realm group still present in a token grants
+  nothing.</li>
+<li><strong>Policy input keeps the levels apart:</strong> realm roles in <code>input.subject.roles</code>, organization
+  groups in <code>input.subject.groups</code>. <code>dataset.rego</code> tests <code>"platform-admin" in
+  input.subject.roles</code> and never reads the platform level from <code>groups</code> or <code>claims</code>.</li>
+<li>No compatibility path for the old realm groups; the change ships with the realm convergence.</li>
+</ul>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li><strong>Operators who were in realm <code>/admins</code> lose access</strong> until the deployment lists them as
+  <code>platform-admin</code> holders. The API fails closed rather than guessing.</li>
+<li><strong>The organization is not yet matched against the dataset.</strong> A <code>viewers</code> membership in any
+  organization reads every <code>internal</code> dataset, narrowed only by row filters. Scoping that read
+  to the dataset's own organization is separate work; this record does not decide it.</li>
+<li><strong>Depends on <code>celine-sdk</code> 2.0.0</strong> (<code>realm_roles</code>, <code>is_platform_admin</code>, <code>Grants</code>, and
+  <code>Subject.roles</code>, which its policy engine emits as <code>input.subject.roles</code>), which removed the
+  merging helpers <code>extract_groups</code> and <code>realm_groups</code>.</li>
+<li><strong>The tempting undo</strong> is re-reading the <code>groups</code> claim "for compatibility", or a realm group
+  named <code>platform-admins</code>. Either brings back a name an organization's group can collide with.</li>
+</ul>
 
 
 
@@ -4347,10 +4228,10 @@ database.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
     
   </body>

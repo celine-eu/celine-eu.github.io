@@ -4173,6 +4173,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0051-there-is-no-platform-wide-grant-and-an-organisations-groups-reach-the-policy-only-for-the-organisation-the-request-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0051 — there is no platform-wide grant, and an organisation's groups reach the policy only for the organisation the request concerns
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4270,6 +4281,21 @@ R23 they are reachable only when development is stated explicitly. The posture i
 per decision, not at import. The test suite pins <code>CELINE_ENV=dev</code> and refuses to run at
 all unless the bundle loaded, because otherwise every assertion in this file would pass
 for the wrong reason.</p>
+<h3 id="req-0051-there-is-no-platform-wide-grant-and-an-organisations-groups-reach-the-policy-only-for-the-organisation-the-request-concerns">REQ-0051 — there is no platform-wide grant, and an organisation's groups reach the policy only for the organisation the request concerns</h3>
+<p>This service has no platform level. Nothing in a token outside the caller's
+organisations widens what the caller may do: the realm role <code>platform-admin</code> grants
+nothing here, and neither does a realm group (<code>/admins</code>, <code>admins</code>, …) or a realm role
+that a token from an older realm may still carry. None of them enters the policy input.
+A platform administrator reads a network only as a member of that DSO organisation, like
+any other operator.</p>
+<p><code>input.subject.groups</code> holds the caller's groups in <strong>one</strong> organisation: the one the
+request names in <code>network_id</code>, or, for an action that names none, the caller's own DSO
+organisation. Groups held in any other organisation never appear, and the list is never
+a merge of the realm's groups with an organisation's, or of two organisations'. A
+service account's list is empty.</p>
+<p><code>grid.rego</code> reads no groups today (REQ-0006 – REQ-0012). This requirement is what keeps a
+future rule that does from reading one organisation's <code>admins</code> as another's, or as the
+platform's.</p>
 
 
 

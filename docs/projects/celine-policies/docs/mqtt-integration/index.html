@@ -4664,7 +4664,7 @@
 <li>Auth service validates JWT signature, issuer, and expiry</li>
 <li>On publish/subscribe, Mosquitto calls <code>POST /acl</code></li>
 <li>Auth service evaluates the <code>celine.mqtt.acl</code> Rego policy</li>
-<li>Superuser check via <code>POST /superuser</code> is disabled by default in the mosquitto config (<code>auth_opt_disable_superuser true</code>)</li>
+<li>Superuser check via <code>POST /superuser</code> is disabled in the mosquitto config (<code>auth_opt_disable_superuser true</code>), and the endpoint answers <code>403</code> to every token anyway (REQ-0014)</li>
 </ol>
 <h2 id="topic-naming-convention">Topic Naming Convention</h2>
 <pre><code>celine/{service}/{resource}/{...}
@@ -4705,23 +4705,20 @@
 <h2 id="acl-policy-rules">ACL Policy Rules</h2>
 <p>The policy (<code>policies/celine/mqtt/acl.rego</code>) evaluates access based on topic shape:</p>
 <h3 id="service-level-topics-celineservice">Service-level topics (<code>celine/{service}</code>)</h3>
-<p>Access to <code>celine/{service}</code> (no resource path) requires one of:
-- Service admin scope (<code>{service}.admin</code>)
-- Global admin group (<code>admin</code> or <code>mqtt.admin</code>)
-- Service admin group (<code>{service}.admin</code> or <code>mqtt:{service}:admin</code>)</p>
+<p>Access to <code>celine/{service}</code> (no resource path) requires the service admin scope
+(<code>{service}.admin</code>), held by a service account.</p>
 <h3 id="service-wildcard-topics-celineservice-or-celineservice">Service wildcard topics (<code>celine/{service}/#</code> or <code>celine/{service}/+</code>)</h3>
-<p>Same requirements as service-level topics — only admins can use service-wide wildcards.</p>
+<p>Same requirement as service-level topics — only a service admin scope opens a service-wide wildcard.</p>
 <h3 id="resource-topics-celineserviceresource">Resource topics (<code>celine/{service}/{resource}/{...}</code>)</h3>
-<p>Standard topic access requires either:</p>
-<p><strong>For service clients:</strong>
+<p>A <strong>service account</strong> needs one of:
 - Exact scope match (<code>{service}.{resource}.{verb}</code>)
 - Service admin scope (<code>{service}.admin</code>)
 - Resource wildcard scope (<code>{service}.{resource}.*</code>)</p>
-<p><strong>For users:</strong>
-- Exact group match (<code>{service}.{resource}.{verb}</code> or <code>mqtt:{service}:{resource}:{verb}</code>)
-- Resource wildcard group (<code>{service}.{resource}.*</code> or <code>mqtt:{service}:{resource}:*</code>)
-- Service admin group
-- Global admin group</p>
+<p><strong>A person's token reaches no topic</strong> (REQ-0014, ADR-0012). User or service is the token's kind
+(<code>is_service_account</code>), never whether it holds a group; the policy input carries no group of
+either level, so a realm group, an organization group or a group named like a grant (<code>admin</code>,
+<code>mqtt.admin</code>, <code>{service}.admin</code>, <code>{service}.{resource}.{verb}</code>, <code>mqtt:...</code>) grants nothing, and
+neither do the scopes a browser token carries or the realm role <code>platform-admin</code>.</p>
 <h3 id="action-mapping">Action mapping</h3>
 <table>
 <thead>
@@ -4787,10 +4784,10 @@ client = mqtt.Client()
 client.username_pw_set(username=&quot;&quot;, password=token)
 client.connect(&quot;localhost&quot;, 1883)
 
-# Subscribe (requires {service}.{resource}.read scope/group)
+# Subscribe (requires the {service}.{resource}.read scope, on a service account)
 client.subscribe(&quot;celine/digital-twin/events/#&quot;)
 
-# Publish (requires {service}.{resource}.write scope/group)
+# Publish (requires the {service}.{resource}.write scope, on a service account)
 client.publish(&quot;celine/digital-twin/events/pump/pump-001&quot;, payload='{&quot;state&quot;: &quot;running&quot;}')
 </code></pre>
 <h3 id="service-account">Service Account</h3>

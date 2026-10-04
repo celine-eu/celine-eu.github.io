@@ -5552,8 +5552,10 @@ trusted. Returns <code>201</code> on success.</p>
 <h3 id="get-apifeedbackmanagercommunity_key"><code>GET /api/feedback/manager/{community_key}</code></h3>
 <p>List participant feedback for one REC, optionally filtered by <code>status</code> (<code>new</code>, <code>seen</code>, or
 <code>resolved</code>) and paginated with <code>page</code> and <code>pageSize</code>. Requires <code>community.read</code> and either
-the REC's <code>admins</code>/<code>managers</code> organization group or the realm <code>admins</code> group. User identity,
-IP address, user agent, and raw screenshot bytes are not included in the response.</p>
+the REC's own <code>admins</code>/<code>managers</code> organization group or the realm role <code>platform-admin</code>. A
+group held in another organization, and a top-level realm <code>groups</code> claim, grant nothing.
+User identity, IP address, user agent, and raw screenshot bytes are not included in the
+response.</p>
 <h3 id="get-apifeedbackmanagercommunity_keyfeedback_idscreenshot"><code>GET /api/feedback/manager/{community_key}/{feedback_id}/screenshot</code></h3>
 <p>Return the stored PNG, JPEG, or WebP screenshot after the same REC authorization check.</p>
 <h3 id="patch-apifeedbackmanagercommunity_keyfeedback_id"><code>PATCH /api/feedback/manager/{community_key}/{feedback_id}</code></h3>

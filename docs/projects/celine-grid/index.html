@@ -4691,6 +4691,12 @@ database is real SQLAlchemy on SQLite, and <code>policies/grid.rego</code> is ev
 the suite refuses to start if the bundle does not load, because the suite pins
 <code>CELINE_ENV=dev</code>, where the policy fails open, and an unloaded bundle would make every
 authorisation test pass for the wrong reason.</p>
+<p>One opt-in layer does reach a service: <code>tests/integration/</code> mints real tokens from a
+<strong>local</strong> Keycloak and sends them through the real token check and policy. It is skipped
+unless <code>CELINE_GRID_IT_KEYCLOAK</code> names the realm issuer; its docstring lists the users and
+variables it expects.</p>
+<pre><code class="language-bash">CELINE_GRID_IT_KEYCLOAK=http://keycloak.celine.localhost/realms/celine task test -- tests/integration
+</code></pre>
 <ul>
 <li>What the service must do, as numbered requirements: <code>docs/specifications/</code></li>
 <li>Why the suite is shaped this way: <code>docs/decisions/</code></li>

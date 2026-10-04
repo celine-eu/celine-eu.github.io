@@ -4567,9 +4567,9 @@ not how often it changes:</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>platform</strong>: realm features (Organizations, fine-grained admin permissions), sign-in settings, languages, themes, token lifespans, brute force, <code>smtpServer</code>, the realm role groups</td>
+<td><strong>platform</strong>: realm features (Organizations, fine-grained admin permissions), sign-in settings, languages, themes, token lifespans, brute force, <code>smtpServer</code>, the realm role <code>platform-admin</code> and its holders, the retired realm groups and roles (ADR-0012)</td>
 <td><code>keycloak bootstrap</code></td>
-<td><a href="platform.yaml"><code>platform.yaml</code></a>, <code>CELINE_KEYCLOAK_PLATFORM_*</code> overrides, <code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, <code>CELINE_KEYCLOAK_SMTP_*</code></td>
+<td><a href="platform.yaml"><code>platform.yaml</code></a>, <code>CELINE_KEYCLOAK_PLATFORM_*</code> overrides, <code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, <code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code>, <code>CELINE_KEYCLOAK_SMTP_*</code>; the master realm through <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> (ADR-0014)</td>
 </tr>
 <tr>
 <td><strong>clients</strong>: clients, scopes, scope bindings, audience mappers, realm claim scopes, service-account grants</td>
@@ -4642,7 +4642,7 @@ curl http://localhost:8009/health
 ├── src/celine/
 │   ├── mqtt_auth/          # FastAPI MQTT auth service
 │   │   ├── main.py         # App factory (create_app)
-│   │   ├── routes.py       # /user, /acl, /superuser endpoints
+│   │   ├── routes.py       # /user, /acl, /superuser (always 403) endpoints
 │   │   ├── models.py       # Pydantic request/response models
 │   │   └── config.py       # MqttAuthSettings (pydantic-settings)
 │   ├── provisioning/       # The only writer of participant accounts

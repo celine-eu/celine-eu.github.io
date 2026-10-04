@@ -4697,8 +4697,8 @@ file, which the connector reads and this service must recognise.</p>
 <h3 id="rec_registry-on-the-normal-api-path"><code>rec_registry</code> on the normal API path</h3>
 <p>The same handler serves requests that do not come through the dataspace, where
 <code>principals</code> is absent. Before any handler runs, the normal path answers an
-unauthenticated caller with <code>401</code> and skips row filters for members of the
-<code>admins</code> group. The handler then decides by who the caller is, in this order:</p>
+unauthenticated caller with <code>401</code> and skips row filters for holders of the
+<code>platform-admin</code> realm role. The handler then decides by who the caller is, in this order:</p>
 <ol>
 <li><strong><code>principals</code> present</strong> (dataspace path only), even empty: a delegated
    request, resolved for the named members on this service's identity (RF-05).</li>

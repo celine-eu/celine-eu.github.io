@@ -4225,17 +4225,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-0030-groups-are-read-from-both-the-realm-level-and-the-organization-level" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0030 — groups are read from both the realm level and the organization level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#req-0031-a-service-account-is-distinguished-from-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4280,10 +4269,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-0041-realm-groups-and-organization-groups-can-be-read-apart" class="md-nav__link">
+  <a href="#req-0042-a-platform-grant-comes-only-from-the-realm-role-platform-admin-an-organizations-groups-count-only-inside-that-organization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0041 — realm groups and organization groups can be read apart
+        REQ-0042 — a platform grant comes only from the realm role platform-admin; an organization's groups count only inside that organization
       
     </span>
   </a>
@@ -4447,20 +4436,6 @@ the Digital Twin network id. <code>type</code> is a single-element list in Keycl
 a string; <code>attributes</code> are normalised so every value is a list, whatever the claim shape.</p>
 <p><code>organization_aliases</code>, <code>get_organization(alias)</code> and <code>is_member_of(alias)</code> read them. An
 unparseable or absent claim yields no memberships rather than an error.</p>
-<h3 id="req-0030-groups-are-read-from-both-the-realm-level-and-the-organization-level">REQ-0030 — groups are read from both the realm level and the organization level</h3>
-<p><code>extract_groups</code> merges the top-level <code>groups</code> claim with every
-<code>organization.&lt;alias&gt;.groups</code> into one deduplicated list, leading slashes stripped,
-first-seen order preserved. Non-list claims and non-string entries are skipped rather than
-raising.</p>
-<p><strong>Merging is correct only for a single-tenant service.</strong> For a service acting for several
-communities, flattening lets a badge held in one community satisfy a check about another;
-such a service must read the two levels apart and not call this function.</p>
-<p><strong>Deprecated (2026-10-03): calling it emits a <code>DeprecationWarning</code>.</strong> Its behaviour is
-unchanged so that no consumer's authorization moves silently on an SDK release; the
-consumers are migrated one by one to REQ-0041's readers. The merge turned a community's
-own <code>admins</code> into dataset-api's platform administrator (NIS2 R1). Never authorize on it.
-<code>is_service_account</code> still uses the merge internally, as a "is there a human" signal, and
-does not warn.</p>
 <h3 id="req-0031-a-service-account-is-distinguished-from-a-user">REQ-0031 — a service account is distinguished from a user</h3>
 <p><code>is_service_account</code> treats a <code>preferred_username</code> beginning <code>service-account-</code> as
 authoritative (Keycloak's client-credentials convention) and <code>gty=client-credentials</code> as an
@@ -4470,11 +4445,16 @@ no email is a service, and so is a token whose Keycloak grant marker (the <code>
 26 writes, e.g. <code>trrtcc:</code>) names client credentials. A realm that does not assign Keycloak's
 built-in <code>service_account</code> scope issues such tokens with neither <code>preferred_username</code> nor
 <code>client_id</code>.</p>
-<p>The platform authorises services by scope and users by group membership; this is the
-function that decides which of the two a caller is.</p>
+<p>"Any group" means a group at either level, realm or organization. It is a signal that a
+person is behind the token, <strong>not a grant</strong>: a realm group present in a token classifies it
+as a user's and authorises nothing (REQ-0042). Classifying by group errs towards "user",
+which is the safe direction — a user is never authorised by scope.</p>
+<p>The platform authorises services by scope and users by their platform role and organization
+groups (REQ-0042); this is the function that decides which of the two a caller is.</p>
 <h3 id="req-0032-claims-are-reachable-by-name-role-and-scope">REQ-0032 — claims are reachable by name, role and scope</h3>
-<p><code>get_claim</code>, <code>has_role</code> (a list or a bare string), <code>has_scope</code> (a space-separated string or
-a list), <code>display_name</code> (name, then username, then email, then <code>user-&lt;sub&gt;</code>), <code>get_username</code>
+<p><code>get_claim</code>, <code>has_role</code> (a realm role, read from <code>realm_access.roles</code> as REQ-0042 states;
+until 2.0.0 it read a top-level <code>roles</code> claim, which no Keycloak mapper on the platform
+emits), <code>has_scope</code> (a space-separated string or a list), <code>display_name</code> (name, then username, then email, then <code>user-&lt;sub&gt;</code>), <code>get_username</code>
 (username, else <code>user-&lt;sub&gt;</code>) and <code>to_dict</code>. Each tolerates the claim being absent or of the
 wrong shape, because the claim set is the identity provider's to change.</p>
 <h3 id="req-0033-a-parsed-token-can-report-its-own-expiry">REQ-0033 — a parsed token can report its own expiry</h3>
@@ -4490,15 +4470,41 @@ are then an empty value rather than an error.</p>
 <p><code>type</code> is read from the flattened <code>type</code> key first and from <code>attributes.type</code> second.
 Keycloak's own organization mapper emits the flattened shape; the nested one is what a
 differently configured mapper produces, and both must parse.</p>
-<h3 id="req-0041-realm-groups-and-organization-groups-can-be-read-apart">REQ-0041 — realm groups and organization groups can be read apart</h3>
-<p><code>realm_groups(claims)</code> returns the top-level <code>groups</code> claim alone.
-<code>organization_groups(claims, alias)</code> returns one organization's groups alone.
-<code>organization_aliases(claims)</code> returns every alias, sorted. All three normalise as
-REQ-0030 does and tolerate a claim of the wrong shape.</p>
-<p>These exist because REQ-0030's merge is unsafe for a multi-tenant service, and a service
-that must not merge should not have to re-implement the reading. A caller authorising
-<code>(subject, action, tenant)</code> uses these; a single-tenant caller asking "is this user a
-viewer?" uses <code>extract_groups</code>.</p>
+<h3 id="req-0042-a-platform-grant-comes-only-from-the-realm-role-platform-admin-an-organizations-groups-count-only-inside-that-organization">REQ-0042 — a platform grant comes only from the realm role <code>platform-admin</code>; an organization's groups count only inside that organization</h3>
+<p>There are exactly two levels of authority in a token, and nothing in this package merges
+them:</p>
+<ul>
+<li><strong>Platform.</strong> <code>realm_roles(claims)</code> reads <code>realm_access.roles</code> and nothing else: not a
+  top-level <code>roles</code> claim, not <code>resource_access.&lt;client&gt;.roles</code>, not <code>groups</code>. The one
+  platform-wide grant is the realm role <code>PLATFORM_ADMIN_ROLE</code> (<code>"platform-admin"</code>), and
+  <code>is_platform_admin(claims)</code> is true exactly when that role is among them. A missing or
+  malformed <code>realm_access</code> yields no roles and is not an error.</li>
+<li><strong>Organization.</strong> <code>organization_groups(claims, alias)</code> reads
+  <code>organization.&lt;alias&gt;.groups</code> for that one alias, leading slashes stripped. A group held in
+  one organization is never visible through another alias, and is never a platform grant,
+  whatever it is called — an organization's <code>admins</code> is not a platform administrator.</li>
+</ul>
+<p>A <strong>realm group grants nothing.</strong> The top-level <code>groups</code> claim (<code>/admins</code>, <code>admins</code>, …) is not
+read by any authorization helper; a token that still carries one is treated exactly as if it
+did not.</p>
+<p><code>Grants.from_claims(claims)</code> (also <code>JwtUser.grants</code>) is the structured reader for callers that
+need both levels: <code>.platform</code> holds the realm roles, <code>.in_org(alias)</code> one organization's
+groups, <code>.is_platform_admin</code> the platform check. It offers no flat list of both levels.
+<code>JwtUser.realm_roles</code>, <code>JwtUser.is_platform_admin</code> and <code>JwtUser.has_role(role)</code> read the same
+realm roles.</p>
+<p><strong>In a policy decision</strong> the two levels stay in two fields of <code>celine.sdk.policies.Subject</code>:
+<code>roles</code> (the realm roles, filled from <code>realm_roles</code>) reaches Rego as <code>input.subject.roles</code>,
+and <code>groups</code> (one organization's groups) as <code>input.subject.groups</code>. A policy checks the
+platform grant as <code>"platform-admin" in input.subject.roles</code>. The engine never copies a role
+into <code>groups</code> or a group into <code>roles</code>, and a subject built without roles has an empty list,
+never a missing key (REQ-0056).</p>
+<p><code>organization_aliases(claims)</code> returns every alias the caller is a member of, sorted. Every
+reader tolerates a claim of the wrong shape and answers empty.</p>
+<p><strong>Removed in the same change (breaking):</strong> <code>extract_groups</code>, which merged the realm <code>groups</code>
+claim with every organization's groups (formerly REQ-0030, deprecated 2026-10-03 after it made
+a community's own <code>admins</code> dataset-api's platform administrator, NIS2 R1), and
+<code>realm_groups</code>, which read the realm <code>groups</code> claim as a platform grant (formerly REQ-0041).
+Realm groups are no longer a platform mechanism at all; the platform level is the realm role.</p>
 <h2 id="obtaining-a-token">Obtaining a token</h2>
 <h3 id="req-0034-an-access-token-carries-its-expiry-and-answers-whether-it-is-still-usable">REQ-0034 — an access token carries its expiry and answers whether it is still usable</h3>
 <p><code>AccessToken(access_token, expires_at, refresh_token=None, token_type="Bearer")</code>.</p>

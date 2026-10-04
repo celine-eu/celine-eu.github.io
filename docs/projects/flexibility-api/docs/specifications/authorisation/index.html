@@ -4206,6 +4206,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0056-the-policy-input-carries-platform-roles-apart-and-no-group-grants-anything" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0056 — the policy input carries platform roles apart, and no group grants anything
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4228,7 +4239,8 @@
 <p><strong><code>policies/flexibility.rego</code></strong>, evaluated in process, is the specification of record for
 what a subject may do — and it is reached from exactly one place, <code>PolicyMiddleware</code>,
 guarding two routes. REQ-0005 to REQ-0010 state what the bundle decides; REQ-0054 states
-that a request actually gets that answer.</p>
+that a request actually gets that answer; REQ-0056 states what the bundle is told about
+the caller.</p>
 <p><strong>Everything else is SQL.</strong> No participant-facing route consults the policy at all. The
 separation between Alice's commitments and Bob's is <code>WHERE user_id = :sub</code> in
 <code>src/celine/flexibility/api/commitments.py</code>, and it is specified with the commitments (REQ-0021, REQ-0024).</p>
@@ -4362,6 +4374,33 @@ extraction raises, and returns <code>403 unauthenticated</code>.</p>
 not enough" on the two guarded routes, and a proxy that refreshes on <code>401</code> will not
 refresh here.</p>
 <p>Stated because it is surprising, not because it is right.</p>
+<h3 id="req-0056-the-policy-input-carries-platform-roles-apart-and-no-group-grants-anything">REQ-0056 — the policy input carries platform roles apart, and no group grants anything</h3>
+<p>The subject document <code>AccessPolicy</code> hands the bundle is <code>id</code>, <code>is_service</code>, <code>scopes</code> and
+<code>roles</code>, and nothing else:</p>
+<ul>
+<li><code>roles</code> is the token's <strong>realm roles</strong> (<code>realm_access.roles</code>, read with
+  <code>celine.sdk.auth.realm_roles</code>). It is the only platform-level grant a token can carry;
+  <code>platform-admin</code> is the one that means anything platform-wide.</li>
+<li>There is <strong>no <code>groups</code> key</strong>. Neither the realm <code>groups</code> claim nor any organisation's
+  <code>organization.&lt;alias&gt;.groups</code> is read, and the two are never merged into one list. No
+  request here concerns an organisation — a commitment belongs to a participant — so there is
+  no organisation whose groups could apply.</li>
+</ul>
+<p>The bundle decides on ownership, account type and scope (REQ-0006 to REQ-0010) and on
+nothing else, so:</p>
+<ul>
+<li>an organisation's <code>admins</code> member is <strong>not</strong> a platform administrator and gains nothing
+  here;</li>
+<li>a <code>platform-admin</code> holder is a platform administrator — <code>subject.roles</code> says so — and
+  still gains nothing here: this service has no platform-wide operation, so the bundle has
+  no rule that reads the role;</li>
+<li>a realm group still present in a token (<code>groups: ["/admins", "admins"]</code>, the shape
+  tokens had before realm groups were removed) grants nothing and is not read.</li>
+</ul>
+<p>Before 2026-10-03 the input carried <code>groups</code> built with <code>celine.sdk.auth.extract_groups</code>,
+the realm groups merged with every organisation's groups. The bundle never read it, so
+removing it changes no decision; it removes a list that would have let one community's
+group act as another's, or as the platform's, the day a rule did read it.</p>
 
 
 

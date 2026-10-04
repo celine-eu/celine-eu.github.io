@@ -4454,7 +4454,7 @@
 <h3 id="1-mqtt-auth-service">1. MQTT Auth Service</h3>
 <p>A FastAPI application (<code>src/celine/mqtt_auth/</code>) that acts as the HTTP backend for <a href="https://github.com/iegomez/mosquitto-go-auth">mosquitto-go-auth</a>. Mosquitto delegates authentication and authorization decisions to this service over HTTP.</p>
 <p>The service uses <code>celine-sdk</code>'s <code>PolicyEngine</code> (built on <a href="https://github.com/nicholasgasior/regorus">regorus</a>, a Rust OPA implementation) to evaluate Rego policies at request time. An optional in-memory decision cache (<code>CachedPolicyEngine</code>) reduces repeated evaluations.</p>
-<p><strong>Endpoints:</strong> <code>/user</code> (auth), <code>/acl</code> (topic access), <code>/superuser</code> (admin check), <code>/health</code>.</p>
+<p><strong>Endpoints:</strong> <code>/user</code> (auth), <code>/acl</code> (topic access), <code>/superuser</code> (always <code>403</code>: no superuser, REQ-0014), <code>/health</code>.</p>
 <h3 id="2-provisioning-service">2. Provisioning Service</h3>
 <p>A FastAPI application (<code>src/celine/provisioning/</code>) that is the <strong>only thing that writes a
 participant account</strong> into the celine realm. <code>keycloak sync-users</code> calls the same package;
@@ -4500,10 +4500,17 @@ run instead of writing them:</p>
 - <code>bootstrap</code> — converge the platform level from <code>platform.yaml</code> (only the keys it declares;
   a deployment overlay may narrow <code>supportedLocales</code> and nothing else), brute force from
   <code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, <code>smtpServer</code> from <code>CELINE_KEYCLOAK_SMTP_*</code>, the
-  built-in <code>account-console</code> client's missing default client scopes; then
+  built-in <code>account-console</code> client's missing default client scopes, the platform admin's
+  second factor (the browser flow, <code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code>, ADR-0013); then
   create or refresh the <code>celine-admin-cli</code> service account with realm-management roles.
+  It reaches master through its own client <code>svc-celine-policies-bootstrap</code>
+  (<code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>), the admin user only to create it, and outside
+  dev hardens master with that client's token: brute force and a second factor for master
+  admins (ADR-0014).
   It refuses a theme the server does not list. With <code>CELINE_KEYCLOAK_REALM_ADMIN_USERNAME</code> set
-  it creates the operator realm admin once and keeps it in <code>/admins</code>. With the admin CLI
+  it creates the operator realm admin once and gives it the realm role <code>platform-admin</code>
+  (ADR-0012), as it does to every user <code>platform_admin.users</code> lists; it deletes the retired
+  realm groups and roles. With the admin CLI
   client's own credentials it converges the platform and skips the client
 - <code>sync</code> — reconcile scopes, clients, audience mappers, the realm claim scopes and
   service-account administration rights in Keycloak to match <code>clients.yaml</code>. It refuses to
@@ -4531,14 +4538,13 @@ run instead of writing them:</p>
 <p>Two policy files under <code>policies/celine/</code>:</p>
 <ul>
 <li>
-<p><strong><code>scopes.rego</code></strong> — shared helpers for checking subject type (user vs service), scope membership, group membership, and admin detection. Supports multiple group naming conventions (<code>service.resource.verb</code>, <code>mqtt:service:resource:verb</code>, wildcards).</p>
+<p><strong><code>scopes.rego</code></strong> — shared helpers for checking subject type (user vs service) and scope membership. Grants come from a service account's scopes only (REQ-0014): no group grants anything, and a user holds no MQTT grant.</p>
 </li>
 <li>
 <p><strong><code>mqtt/acl.rego</code></strong> — MQTT topic ACL rules. Parses topics following the <code>celine/{service}/{resource}/{...}</code> convention and decides allow/deny based on:</p>
 </li>
 <li>Service admin scopes (e.g. <code>digital-twin.admin</code>)</li>
-<li>User admin groups (<code>admin</code>, <code>mqtt.admin</code>, <code>{service}.admin</code>)</li>
-<li>Fine-grained scopes/groups matching <code>{service}.{resource}.{verb}</code></li>
+<li>Fine-grained scopes matching <code>{service}.{resource}.{verb}</code>, or `{service}.{resource}.*</li>
 </ul>
 <h2 id="mqtt-authorization-flow">MQTT Authorization Flow</h2>
 <pre><code>MQTT Client ──(JWT as password)──&gt; Mosquitto
@@ -4549,15 +4555,15 @@ run instead of writing them:</p>
                           │           │           │
                       /user       /acl      /superuser
                           │           │           │
-                     JWT valid?   OPA eval    admin scope?
+                     JWT valid?   OPA eval    always 403
                           │           │           │
                         200/403    200/403     200/403
 </code></pre>
 <ol>
 <li>Client connects to Mosquitto with a JWT (obtained from Keycloak) as the MQTT password.</li>
 <li>Mosquitto calls <code>/user</code> — the service validates the JWT signature, issuer, and expiry.</li>
-<li>On publish/subscribe, Mosquitto calls <code>/acl</code> — the service builds a <code>PolicyInput</code> from the JWT claims (subject, scopes, groups) and the requested topic/action, then evaluates <code>celine.mqtt.acl</code> via regorus.</li>
-<li>Optionally, <code>/superuser</code> is checked — grants bypass if the JWT carries <code>mqtt.admin</code> scope or <code>admin</code> group.</li>
+<li>On publish/subscribe, Mosquitto calls <code>/acl</code> — the service builds a <code>PolicyInput</code> from the JWT claims (subject type from <code>is_service_account</code>, scopes; no groups) and the requested topic/action, then evaluates <code>celine.mqtt.acl</code> via regorus.</li>
+<li><code>/superuser</code>, if the broker asks, always answers <code>403</code> (REQ-0014).</li>
 </ol>
 <h2 id="keycloak-sync-flow">Keycloak Sync Flow</h2>
 <pre><code>clients.yaml ─────────┐   celine's own services — a whole realm on its own
@@ -4666,11 +4672,6 @@ clients.ds-host.yaml ─┤   the grants celine adds to ds's clients   ┐ only 
 <td><code>CELINE_MQTT_POLICY_PACKAGE</code></td>
 <td><code>celine.mqtt.acl</code></td>
 <td>Rego package to evaluate</td>
-</tr>
-<tr>
-<td><code>CELINE_MQTT_SUPERUSER_SCOPE</code></td>
-<td><code>mqtt.admin</code></td>
-<td>Scope for superuser access</td>
 </tr>
 </tbody>
 </table>

@@ -4096,6 +4096,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0011-the-platform-wide-grant-is-the-realm-role-platform-admin-held-directly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0011 — the platform-wide grant is the realm role platform-admin, held directly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0012-bootstrap-removes-the-retired-realm-groups-and-realm-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0012 — bootstrap removes the retired realm groups and realm roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0013-no-token-carries-a-realm-groups-claim-a-sign-in-client-carries-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0013 — no token carries a realm groups claim; a sign-in client carries roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0015-outside-dev-a-platform-admin-signs-in-with-a-second-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0015 — outside dev, a platform admin signs in with a second factor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0016-bootstrap-reaches-the-master-realm-through-its-own-client-and-hardens-it-outside-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0016 — bootstrap reaches the master realm through its own client, and hardens it outside dev
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4133,6 +4188,153 @@ means exactly that value.</p>
 <p>On a deployed realm members arrive through onboarding and a community's organization through
 the provisioning reconcile; the YAML seed and <code>sync-users</code> are local development
 (<a href="../../decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>).</p>
+<hr />
+<p>The next three fix the realm's authority model: <strong>exactly two levels</strong>. The realm role
+<code>platform-admin</code> is the only platform-wide grant; an organization's own groups
+(<code>admins &gt; managers &gt; editors &gt; viewers</code>) are valid only inside that organization. Realm
+groups carry no authority at all, and a realm group still present in a token grants nothing
+(requester, 2026-10-03; <a href="../../decisions/ADR-0012-a-platform-administrator-is-a-realm-role/">ADR-0012</a>).</p>
+<h3 id="req-0011-the-platform-wide-grant-is-the-realm-role-platform-admin-held-directly">REQ-0011 — the platform-wide grant is the realm role <code>platform-admin</code>, held directly</h3>
+<p><code>celine-policies keycloak bootstrap</code> converges, on every run and from any starting realm:</p>
+<ul>
+<li><strong>The realm role <code>platform-admin</code> exists.</strong> <code>platform.yaml</code> declares it under
+  <code>platform_admin.role</code> and refuses any other name: it is <code>celine-sdk</code>'s
+  <code>PLATFORM_ADMIN_ROLE</code>, the name every service reads from <code>realm_access.roles</code>.</li>
+<li><strong>It is held by the operator realm admin</strong> (<code>CELINE_KEYCLOAK_REALM_ADMIN_USERNAME</code>) <strong>and by
+  every user <code>platform_admin.users</code> lists</strong>, as a direct role mapping. The list is empty in the
+  image; a deployment names its own in its overlay. A listed user who does not exist yet is
+  reported and is not a change.</li>
+<li><strong>It is held directly, never through anything shared.</strong> A mapping of the role onto a realm
+  group is removed, and so is the role inside the realm's default roles or any other composite
+  realm role: each would hand the platform grant to everyone in it. (A realm role mapped onto an
+  organization's group — only the Organization API can — reaches no member's token on 26.7.3,
+  and Keycloak does not list it; bootstrap leaves it alone.)</li>
+<li>A user who holds the role directly but is not declared keeps it and is <strong>reported</strong> by
+  name; bootstrap does not revoke a grant an administrator gave by hand.</li>
+</ul>
+<p><code>--check</code> fails while anything above would change.</p>
+<h3 id="req-0012-bootstrap-removes-the-retired-realm-groups-and-realm-roles">REQ-0012 — bootstrap removes the retired realm groups and realm roles</h3>
+<p><code>platform.yaml</code> names under <code>retired</code> the realm groups <code>/admins</code>, <code>/managers</code>, <code>/editors</code>,
+<code>/viewers</code> and the realm roles <code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code>. On every run
+<code>bootstrap</code> <strong>deletes each one the realm holds</strong>, with its memberships and its group-to-role
+mappings, and leaves every other group and role alone:</p>
+<ul>
+<li>from any starting state — all present, some present, none present — and a second run
+  changes nothing;</li>
+<li>whether or not the groups still carry their roles, and whatever users are in them;</li>
+<li>only top-level realm groups: an organization's own group of the same name (whose path is
+  also <code>/admins</code>) is never touched;</li>
+<li>not gated on <code>--allow-destructive</code>: the removal is the declaration, and a deployment must
+  converge to it whatever it held before;</li>
+<li>the retired names may not include <code>platform-admin</code> or a Keycloak built-in role
+  (<code>offline_access</code>, <code>uma_authorization</code>, <code>default-roles-*</code>).</li>
+</ul>
+<p><code>role_groups</code>, which declared the old groups, is no longer accepted.</p>
+<h3 id="req-0013-no-token-carries-a-realm-groups-claim-a-sign-in-client-carries-roles">REQ-0013 — no token carries a realm <code>groups</code> claim; a sign-in client carries <code>roles</code></h3>
+<p>After <code>celine-policies keycloak sync</code> (a full run, not <code>--additive</code>):</p>
+<ul>
+<li><strong>No mapper in the realm writes a top-level <code>groups</code> claim</strong>: not the <code>groups</code> client
+  scope's group-membership mapper (<code>full.path: true</code>), not a client-level group-membership
+  mapper such as the one <code>oauth2_proxy</code> carried (<code>full.path: false</code>), and not
+  <code>microprofile-jwt</code>'s realm-role mapper writing roles into <code>groups</code>. Each is deleted, and the
+  <code>groups</code> client scope itself is removed from every client and from the realm.</li>
+<li><strong>Organization groups reach a token in exactly one place</strong>, <code>organization.&lt;alias&gt;.groups</code>,
+  through the <code>organization</code> scope's organization-group-membership mapper.</li>
+<li><strong>Every client that declares <code>browser:</code> (signs people in) holds <code>roles</code> as a default
+  scope</strong>, so its tokens carry <code>realm_access.roles</code>. A <code>clients.yaml</code> with a browser client
+  that does not is refused at load time. Service-account clients are unaffected.</li>
+</ul>
+<p><code>sync --additive</code> removes none of these; it names each mapper and assignment it kept.</p>
+<hr />
+<h3 id="req-0015-outside-dev-a-platform-admin-signs-in-with-a-second-factor">REQ-0015 — outside dev, a platform admin signs in with a second factor</h3>
+<p><code>celine-policies keycloak bootstrap</code> owns the realm's browser sign-in flow (it is platform
+level, <a href="../../decisions/ADR-0008-each-cli-command-owns-one-level-of-the-realm/">ADR-0008</a>;
+<a href="../../decisions/ADR-0013-bootstrap-owns-the-admin-second-factor/">ADR-0013</a>).
+<code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code> decides it; <strong>unset, it is on unless the environment is
+exactly <code>dev</code></strong> (<code>ENV</code>, <code>CELINE_ENV</code> or <code>CELINE_KEYCLOAK_ENV</code>, the guard REQ-0006 uses).
+Requester, 2026-10-04.</p>
+<p>When it is on, on every run and from any starting realm (no such flow, the flow a realm import
+declared, the flow with a condition on the retired role <code>admin</code>, a flow of another shape under
+the same name), <code>bootstrap</code> converges:</p>
+<ul>
+<li><strong>the flow <code>browser-admin-second-factor</code>, bound as the realm's browser flow.</strong> Everyone signs
+  in with a password, or a passkey from the same page; a user holding the realm role
+  <code>platform-admin</code> who did not use a passkey must then give a one-time code (TOTP) or a
+  recovery code, and one who has neither enrols both before the sign-in completes. A user
+  without the role is never asked. The condition tests <code>platform-admin</code> and nothing else.</li>
+<li><strong>its shape exactly</strong>, the one measured on Keycloak 26.7.3: a flow of another shape under that
+  name is replaced; a wrong condition value (a role, the credential, the sub-flow checked) is
+  corrected in place.</li>
+<li><strong>the required actions <code>CONFIGURE_TOTP</code> and <code>CONFIGURE_RECOVERY_AUTHN_CODES</code> are enabled</strong>;
+  without them the enrolment cannot run.</li>
+<li>it refuses, before any write, a Keycloak that does not list every authenticator the flow
+  names: an unknown provider id fails every browser sign-in, for every user.</li>
+</ul>
+<p>When it is off, the realm's browser flow is Keycloak's own <code>browser</code>. The custom flow, if
+present, stays in place, unbound. Outside dev, turning it off on a realm that has it bound is
+destructive and needs <code>--allow-destructive</code>.</p>
+<p>In either case, a <code>Condition - user role</code> in any other flow that names a role <code>retired</code> lists
+(<code>admin</code>, …) is repointed to <code>platform-admin</code>: the retired role is deleted (REQ-0012), and a
+condition on it would silently match nobody.</p>
+<p><code>--check</code> fails while anything above would change. The flow is the browser flow only: the
+password grant (<code>directAccessGrantsEnabled</code>) does not run it.</p>
+<hr />
+<h3 id="req-0016-bootstrap-reaches-the-master-realm-through-its-own-client-and-hardens-it-outside-dev">REQ-0016 — <code>bootstrap</code> reaches the master realm through its own client, and hardens it outside dev</h3>
+<p>The master realm holds the Keycloak-wide administrator, the account that configures the
+platform, and Keycloak is public (requester, 2026-10-04;
+<a href="../../decisions/ADR-0014-bootstrap-hardens-the-master-realm-through-its-own-client/">ADR-0014</a>).
+<code>celine-policies keycloak bootstrap</code>, on every run:</p>
+<ol>
+<li><strong>Signs in to master with its dedicated client first.</strong> That client is
+   <code>svc-celine-policies-bootstrap</code> (<code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_ID</code>), with the secret
+   <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, a configured value: the deployment takes it from
+   its secrets. Only when that sign-in fails (the client does not exist yet, or holds another
+   secret) does it sign in as the master admin user (<code>CELINE_KEYCLOAK_ADMIN_USER</code> /
+   <code>_PASSWORD</code>).</li>
+<li><strong>Converges the client in master</strong>: confidential, enabled, service account on, standard
+   flow, implicit flow and direct access grants off; its secret set to the configured value;
+   and holding master's realm role <code>admin</code>. Nothing narrower can do <code>bootstrap</code>'s work: in a
+   realm with fine-grained admin permissions (<code>adminPermissionsEnabled</code>, which <code>platform.yaml</code>
+   declares) only a master <code>admin</code> may grant the admin CLI client its realm-management roles
+   (measured on 26.7.3, ADR-0014). The secret, never generated and never printed, is what
+   protects it.</li>
+<li><strong>Switches to that client's <code>client_credentials</code> token for everything else</strong>, the target
+   realm included, after checking the token is the client's (<code>azp</code>, issued by master). The
+   other commands (<code>sync</code>, …) sign in as that client too, when its secret is set and the admin
+   CLI client's is not, before trying the admin user.</li>
+<li><strong>Outside dev, then hardens master</strong>, only with that token:</li>
+<li><strong>brute-force detection</strong>: <code>bruteForceProtected</code> as for the platform realm
+     (<code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, on unless <code>ENV=dev</code>), with the same declared
+     tuning (<code>permanentLockout</code>, <code>failureFactor</code>, <code>waitIncrementSeconds</code>,
+     <code>quickLoginCheckMilliSeconds</code>, <code>minimumQuickLoginWaitSeconds</code>, <code>maxFailureWaitSeconds</code>
+     from <code>platform.yaml</code> and its overrides);</li>
+<li><strong>a second factor for every master administrator</strong> (<code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code>,
+     on unless <code>ENV=dev</code>): the browser flow <code>browser-admin-second-factor</code> of REQ-0015, without
+     the organization step and conditioned on master's realm role <code>admin</code>, bound as master's
+     browser flow; and every user holding <code>admin</code> directly who has no one-time code yet (a
+     client's service account excepted, the bootstrap client's own included) gets the
+     required action <code>CONFIGURE_TOTP</code>, so a password alone no longer obtains a token
+     through <code>admin-cli</code> either. The second factor is enrolled at that administrator's next
+     sign-in to the admin console.</li>
+</ol>
+<p><strong>The hardening refuses to run on any other token</strong> — the master admin user's, the admin
+   CLI client's, or a client token this run did not obtain and check itself — before any
+   write. An administrator's own token could otherwise turn on the factor that cuts its own
+   access off mid-run.</p>
+<p><strong>Outside dev the client's secret is required</strong>: without
+<code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, or with one shorter than 32 characters,
+<code>bootstrap</code> exits <code>1</code> before Keycloak is asked anything, <code>--dry-run</code> and <code>--check</code> included.
+After the first run the master admin's password grant fails, which is expected: every later
+run signs in as the client.</p>
+<p><strong>In dev</strong> (<code>ENV=dev</code>, defaults) nothing changes: the client is optional (managed when the
+secret is set), master is not hardened, and with neither switch on the master realm's
+settings and flows are not touched at all.</p>
+<p>Every step above is idempotent and converges from any start: no client, a client with
+another secret or flags or missing roles, a master realm with brute force off or tuned
+differently, Keycloak's own <code>browser</code> flow bound, or the flow of another shape. Turning
+either switch off on a hardened master is destructive and needs <code>--allow-destructive</code>
+outside dev. <code>--check</code> fails while anything above would change. Recovery when the client
+is lost is Keycloak's own <code>kc.sh bootstrap-admin</code>.</p>
 
 
 

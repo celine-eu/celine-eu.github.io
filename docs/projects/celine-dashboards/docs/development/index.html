@@ -1705,10 +1705,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#extending-group-to-role-mappings" class="md-nav__link">
+  <a href="#changing-the-role-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Extending Group-to-Role Mappings
+        Changing the Role Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
       
     </span>
   </a>
@@ -4353,10 +4364,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#extending-group-to-role-mappings" class="md-nav__link">
+  <a href="#changing-the-role-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Extending Group-to-Role Mappings
+        Changing the Role Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
       
     </span>
   </a>
@@ -4458,11 +4480,26 @@ docker compose build jupyter
 <li>Add the service to <code>docker-compose.yaml</code>.</li>
 <li>Add a Caddy virtual host using <code>forward_auth</code> to oauth2-proxy. The Caddyfile belongs to the integration workspace, not to this repository.</li>
 <li>Configure the service to read identity from the injected headers (<code>X-Auth-Request-User</code>, <code>X-Auth-Request-Access-Token</code>).</li>
-<li>Implement authorization logic using the JWT claims (groups, scopes).</li>
+<li>Implement authorization logic using the JWT claims: the realm role <code>platform-admin</code> (<code>realm_access.roles</code>) for platform-wide access, and <code>organization.&lt;alias&gt;.groups</code> only for the organisation a request concerns. Never read the top-level <code>groups</code> claim.</li>
 </ol>
-<h2 id="extending-group-to-role-mappings">Extending Group-to-Role Mappings</h2>
-<p>Edit <code>packages/celine-superset/src/celine/superset/auth/groups.py</code> to modify Superset role mappings, then rebuild the Superset image.</p>
-<p>For Jupyter, edit <code>config/jupyter/jupyterhub_config.py</code> to update <code>allowed_groups</code>.</p>
+<h2 id="changing-the-role-mapping">Changing the Role Mapping</h2>
+<p>Edit <code>packages/celine-superset/src/celine/superset/auth/groups.py</code> to modify Superset role mappings. In the compose stack the plugin source is mounted, so a restart picks it up.</p>
+<p>Jupyter access is <code>platform-admin</code> only, in <code>packages/celine-jupyter/src/celine/jupyter/jwt_authorizer.py</code>.
+The server reads <code>~/.jupyter/jupyter_server_config.py</code> (the compose stack mounts
+<code>config/jupyter/jupyter_server_config.py</code> there) and needs <code>CELINE_JUPYTER_JWT_ISSUER</code>; see
+<a href="../services/#jupyter">Services</a>.</p>
+<h2 id="tests">Tests</h2>
+<pre><code class="language-bash">uv run --package celine-superset pytest packages/celine-superset/tests -q
+# celine-jupyter is not a workspace member (it needs celine-sdk&gt;=2.0.0 and jupyter-server):
+cd packages/celine-jupyter &amp;&amp; uv run pytest -q
+</code></pre>
+<p>The Jupyter startup tests (<code>tests/test_serverapp.py</code>) start real servers in subprocesses, both
+<code>jupyter celine-server</code> and a stock <code>jupyter server</code> with the shipped configuration file, and
+send them RS256 tokens of a local test issuer.</p>
+<p><code>tests/**/integration/</code> hold real-token tests against a local Keycloak (dev realm, <code>oauth2_proxy</code>
+client, dev users <code>admin</code> and <code>org-admin</code>). They skip when Keycloak does not answer. The
+legacy-realm-group case also needs <code>LEGACY_GROUP_TOKEN</code>, a token minted from a client that
+still maps realm groups.</p>
 <h2 id="ci-and-image-publishing">CI and Image Publishing</h2>
 <p>Docker images are built and published automatically via GitHub Actions when source or configuration files change. Image versions are controlled by <code>version.txt</code> (Superset) and <code>version.jupyter.txt</code> (Jupyter).</p>
 

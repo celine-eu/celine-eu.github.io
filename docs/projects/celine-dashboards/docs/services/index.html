@@ -1634,10 +1634,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#group-to-role-mapping" class="md-nav__link">
+  <a href="#role-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group-to-Role Mapping
+        Role Mapping
       
     </span>
   </a>
@@ -4344,10 +4344,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#group-to-role-mapping" class="md-nav__link">
+  <a href="#role-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group-to-Role Mapping
+        Role Mapping
       
     </span>
   </a>
@@ -4467,42 +4467,42 @@
 <ul>
 <li>Reads the <code>X-Auth-Request-Access-Token</code> header on each request</li>
 <li>Validates the JWT signature against the Keycloak JWKS endpoint</li>
-<li>Extracts user identity and group memberships from the token claims</li>
+<li>Extracts user identity, realm roles and organisation groups from the token claims</li>
 <li>Auto-creates users on first login</li>
-<li>Synchronizes Superset roles on every login based on current group membership</li>
+<li>Synchronizes Superset roles on every login</li>
 </ul>
-<h3 id="group-to-role-mapping">Group-to-Role Mapping</h3>
-<p>Keycloak groups are mapped to Superset roles in <code>packages/celine-superset/src/celine/superset/auth/groups.py</code>:</p>
+<h3 id="role-mapping">Role Mapping</h3>
+<p>There are exactly two levels, mapped in <code>packages/celine-superset/src/celine/superset/auth/groups.py</code>:</p>
 <table>
 <thead>
 <tr>
-<th>Keycloak group</th>
+<th>Token claim</th>
 <th>Superset role</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>realm <code>admin(s)</code>, <code>manager(s)</code></td>
+<td>realm role <code>platform-admin</code> (<code>realm_access.roles</code>)</td>
 <td><code>Admin</code></td>
 </tr>
 <tr>
-<td>realm <code>editor(s)</code></td>
-<td><code>celine:managers</code> (cross-org)</td>
-</tr>
-<tr>
-<td>any other realm group, including <code>/viewers</code></td>
-<td>none</td>
-</tr>
-<tr>
-<td>org <code>admins</code>, <code>managers</code>, <code>editors</code></td>
+<td>org <code>admins</code>, <code>managers</code>, <code>editors</code> (<code>organization.&lt;slug&gt;.groups</code>)</td>
 <td><code>org:&lt;slug&gt;:&lt;level&gt;</code></td>
 </tr>
 <tr>
 <td>org <code>viewers</code>, any other org group, or org membership alone</td>
 <td><code>org:&lt;slug&gt;:viewers</code></td>
 </tr>
+<tr>
+<td>a realm group (top-level <code>groups</code>, e.g. <code>/admins</code>), any other realm role</td>
+<td>none</td>
+</tr>
 </tbody>
 </table>
+<p>An organisation's group is valid only in that organisation: <code>admins</code> in one organisation is
+not <code>Admin</code>, and reaches no other organisation. There is no cross-organisation role; the
+<code>celine:*</code> roles are permission templates that <code>governance sync</code> copies onto <code>org:&lt;slug&gt;:*</code>
+roles, and nobody is granted one at login.</p>
 <p>Users with no mapped role cannot access Superset.</p>
 <h3 id="dataset-access">Dataset Access</h3>
 <p><code>celine-superset governance sync</code> tags every dataset in the synced schema with <code>extra.celine_access</code>, resolved from <code>governance.yaml</code> (file defaults and deployer overlays included):</p>
@@ -4520,7 +4520,7 @@
 </tr>
 <tr>
 <td><code>org</code></td>
-<td>cross-org roles (<code>celine:*</code>), and <code>org:&lt;slug&gt;:*</code> for a slug in <code>extra.org_slugs</code></td>
+<td><code>Admin</code>, and <code>org:&lt;slug&gt;:*</code> for a slug in <code>extra.org_slugs</code></td>
 </tr>
 <tr>
 <td><code>operators</code></td>
@@ -4537,17 +4537,56 @@ ghcr.io/celine-eu/superset:latest
 <hr />
 <h2 id="jupyter">Jupyter</h2>
 <h3 id="authentication_1">Authentication</h3>
-<p>Jupyter has no local passwords or tokens. All access control is enforced by the custom JWT authorizer in <code>packages/celine-jupyter/src/celine/jupyter/</code>.</p>
-<p>The authorizer:
-- Reads the <code>Authorization: Bearer &lt;token&gt;</code> header (injected by oauth2-proxy via Caddy)
-- Validates the JWT signature against Keycloak JWKS
-- Checks the user's group memberships from the token claims
-- Grants access only to users in the configured allowed groups (default: <code>/admins</code>)</p>
+<p>Jupyter has no server token, no password and no login page. Every request is identified from
+the access token it carries, and only a platform administrator's token identifies anyone. The
+code is in <code>packages/celine-jupyter/src/celine/jupyter/</code>:</p>
+<ul>
+<li><code>identity.py</code>: <code>JWTIdentityProvider</code> reads <code>X-Forwarded-Access-Token</code> (oauth2-proxy), then
+  <code>Authorization: Bearer &lt;token&gt;</code>; any other scheme, Jupyter's own <code>token</code> included, is no
+  token. It checks the token's <code>iss</code> against the one trusted issuer <strong>before</strong> fetching any
+  key, then verifies the RS256 signature against that issuer's JWKS, <code>exp</code>, and <code>aud</code> when an
+  audience is configured. A request whose token is missing, invalid or not a platform
+  administrator's has no user, and Jupyter answers 403.</li>
+<li><code>jwt_authorizer.py</code>: <code>JWTAuthorizer</code> allows every action, terminals included, exactly when
+  the verified token carries the realm role <code>platform-admin</code> (<code>realm_access.roles</code>, read with
+  <code>celine.sdk.auth.is_platform_admin</code>), and nothing otherwise.</li>
+<li><code>serverapp.py</code>: <code>jupyter celine-server</code>, the image's command, is Jupyter Server with both
+  built in. After loading its configuration it exits instead of serving if either was
+  replaced, if unauthenticated access or the XSRF check was switched back on, or if no
+  issuer is set. The same check runs as a server extension, which the shipped
+  <code>config/jupyter/jupyter_server_config.py</code> enables, so a stock <code>jupyter lab</code> / <code>jupyter
+  server</code> given that file is closed the same way. That file exits the process if
+  <code>celine.jupyter</code> cannot be imported: Jupyter logs an error in a configuration file and
+  starts anyway with its own random token, so a configuration file alone cannot fail closed.</li>
+</ul>
+<p>A server token set anyway (<code>JUPYTER_TOKEN</code>, <code>IdentityProvider.token</code>, <code>ServerApp.token</code>) is
+dropped. A bearer token sent by the caller skips Jupyter's XSRF check, as Jupyter's own token
+would; a token forwarded by the proxy stands for a browser session and keeps it.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_JUPYTER_JWT_ISSUER</code></td>
+<td>Required. The trusted issuer, the realm URL exactly as in the tokens' <code>iss</code> (e.g. <code>https://keycloak.example.org/realms/celine</code>).</td>
+</tr>
+<tr>
+<td><code>CELINE_JUPYTER_JWKS_URL</code></td>
+<td>Optional. The issuer's JWKS URL, when its discovery document is not reachable from the server.</td>
+</tr>
+<tr>
+<td><code>CELINE_JUPYTER_JWT_AUDIENCE</code></td>
+<td>Optional. When set, the token's <code>aud</code> must contain it.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="access-control">Access Control</h3>
-<p>Edit the allowed groups in the Jupyter configuration:</p>
-<pre><code class="language-python"># config/jupyter/jupyter_server_config.py
-c.JWTAuthenticator.allowed_groups = [&quot;/admins&quot;, &quot;/managers&quot;]
-</code></pre>
+<p>Access is not configurable: only platform administrators use Jupyter. An organisation's
+<code>admins</code> group and a realm group such as <code>/admins</code> grant nothing.</p>
 <h3 id="docker-image_1">Docker Image</h3>
 <pre><code>ghcr.io/celine-eu/jupyter:&lt;version&gt;
 ghcr.io/celine-eu/jupyter:latest

@@ -4402,13 +4402,15 @@
 <td><code>X-Auth-Request-Access-Token</code></td>
 <td>Keycloak access token (JWT)</td>
 </tr>
-<tr>
-<td><code>X-Auth-Request-Groups</code></td>
-<td>Comma-separated group memberships</td>
-</tr>
 </tbody>
 </table>
 <p>Superset and Jupyter each consume these headers to establish the user session and enforce authorization locally. No direct Keycloak calls are made by the applications at request time.</p>
+<p>Authorization is decided from the <strong>access token only</strong>, never from a groups header. The
+token carries two levels of authority: the realm role <code>platform-admin</code>
+(<code>realm_access.roles</code>), the only platform-wide grant, and each organisation's own groups
+(<code>organization.&lt;alias&gt;.groups</code>), valid only inside that organisation. There are no realm
+groups; a realm group still present in a token grants nothing. See
+<a href="../authentication/">authentication.md</a>.</p>
 <h2 id="multi-host-setup">Multi-Host Setup</h2>
 <p>Services are exposed under <code>*.celine.localhost</code> subdomains for local development:</p>
 <table>

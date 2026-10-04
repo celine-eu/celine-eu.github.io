@@ -4361,7 +4361,11 @@ directory, or a configured directory that does not exist, means no data — not 
 threads. This is what makes the engine safe inside a threaded server without a lock on the
 request path.</p>
 <h3 id="req-0056-the-input-document-has-one-fixed-shape">REQ-0056 — the input document has one fixed shape</h3>
-<p><code>subject</code>, <code>resource</code>, <code>action</code>, <code>environment</code>. Enum values are serialised as their string
+<p><code>subject</code>, <code>resource</code>, <code>action</code>, <code>environment</code>. A subject is <code>id</code>, <code>type</code>, <code>roles</code>,
+<code>groups</code>, <code>scopes</code> and <code>claims</code>, always all six: <code>roles</code> is the platform level (realm roles,
+REQ-0042) and <code>groups</code> the organization level, each passed through as given and never
+merged, so <code>"platform-admin" in input.subject.roles</code> is how a policy reads the platform
+grant. Enum values are serialised as their string
 values, so a policy matches <code>"user"</code> and not <code>"SubjectType.USER"</code>. An anonymous request is
 <code>subject: null</code> rather than a missing key, so a policy can test for it.</p>
 <p><code>Subject.anonymous()</code> builds the anonymous principal; it is a subject of type <code>anonymous</code>
@@ -4386,7 +4390,9 @@ stands on its own.</p>
 <h2 id="the-decision-cache">The decision cache</h2>
 <h3 id="req-0059-decisions-are-cached-on-the-semantic-content-of-the-request">REQ-0059 — decisions are cached on the semantic content of the request</h3>
 <p>The key is a hash of subject, resource and action, scoped by policy package. Two identical
-requests hit; a request differing in any of them misses.</p>
+requests hit; a request differing in any of them misses — including one that differs only
+in <code>subject.roles</code>, so a decision taken for a caller without <code>platform-admin</code> is never
+served to one with it, or the reverse.</p>
 <h3 id="req-0060-volatile-environment-fields-are-excluded-from-the-key">REQ-0060 — volatile environment fields are excluded from the key</h3>
 <p><code>timestamp</code>, <code>request_id</code> and <code>trace_id</code> change on every request and change no decision.
 Including them would give a cache with a hit rate of zero, which is worse than no cache

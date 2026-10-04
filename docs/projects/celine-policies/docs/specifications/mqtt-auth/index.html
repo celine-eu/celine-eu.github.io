@@ -4107,6 +4107,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0014-no-mqtt-superuser-no-group-grant-and-a-service-is-what-its-token-says-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0014 — no MQTT superuser, no group grant, and a service is what its token says it is
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4151,6 +4162,23 @@ environment, so no audience was ever checked (NIS2 review finding R24).</p>
 <p>In <code>dev</code> the service answers cross-origin requests from any origin. In a hardened environment it
 installs no CORS middleware: its callers are mosquitto-go-auth's HTTP backend and health probes,
 never a browser.</p>
+<h3 id="req-0014-no-mqtt-superuser-no-group-grant-and-a-service-is-what-its-token-says-it-is">REQ-0014 — no MQTT superuser, no group grant, and a service is what its token says it is</h3>
+<p>The MQTT auth backend under the two-level model (<a href="../keycloak-cli/">REQ-0011</a>):</p>
+<ul>
+<li><strong><code>/superuser</code> always answers <code>403</code></strong>, for every token: no scope, group or role makes a
+  client an MQTT superuser. A realm <code>platform-admin</code> is not one either.</li>
+<li><strong>User or service is decided by the token's kind</strong> (<code>celine-sdk</code>'s <code>is_service_account</code>),
+  never by whether the token holds a group. A service account is judged by its scopes; a
+  person's token is a user whatever scopes it carries.</li>
+<li><strong>No group grants anything on the broker.</strong> The policy input carries no groups at all: no
+  realm <code>groups</code>, no organization group, no merge of the two. A group named like a grant
+  (<code>admin</code>, <code>mqtt.admin</code>, <code>&lt;service&gt;.admin</code>, <code>&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code>) in either place is
+  inert.</li>
+<li><strong>A platform role grants nothing on the broker either.</strong> <code>platform-admin</code> is not an MQTT
+  grant, and no role reaches the policy through <code>groups</code>.</li>
+</ul>
+<p>A person's token therefore reaches no topic: the broker's clients are services, each holding
+its declared <code>&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code> scopes.</p>
 
 
 

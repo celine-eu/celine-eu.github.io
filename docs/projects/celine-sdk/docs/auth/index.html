@@ -754,13 +754,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#groups-and-subject-type" class="md-nav__link">
+  <a href="#platform-roles-and-organization-groups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Groups and subject type
+        Platform roles and organization groups
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Platform roles and organization groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-a-policy-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In a policy decision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4315,13 +4332,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#groups-and-subject-type" class="md-nav__link">
+  <a href="#platform-roles-and-organization-groups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Groups and subject type
+        Platform roles and organization groups
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Platform roles and organization groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-a-policy-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In a policy decision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4451,51 +4485,79 @@ server.</p>
 <p><code>CELINE_OIDC_ALLOWED_AUDIENCES</code> and <code>CELINE_OIDC_INCLUDE_CLIENT_ID_AS_AUDIENCE</code> do <strong>not</strong>
 affect <code>from_token</code>; they feed <code>get_expected_audiences()</code>, for callers doing their own
 validation.</p>
-<h2 id="groups-and-subject-type">Groups and subject type</h2>
-<p>CELINE uses two group models depending on how the user was provisioned:</p>
+<h2 id="platform-roles-and-organization-groups">Platform roles and organization groups</h2>
+<p>A token carries authority at exactly two levels, and the SDK never merges them:</p>
 <table>
 <thead>
 <tr>
-<th>Source</th>
+<th>Level</th>
 <th>JWT claim</th>
 <th>Example</th>
+<th>Valid</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Realm-level</strong> (platform admins)</td>
-<td><code>groups</code></td>
-<td><code>["/admins"]</code></td>
+<td><strong>Platform</strong></td>
+<td><code>realm_access.roles</code></td>
+<td><code>{"roles": ["platform-admin", …]}</code></td>
+<td>everywhere</td>
 </tr>
 <tr>
-<td><strong>Org-level</strong> (REC participants)</td>
+<td><strong>Organization</strong></td>
 <td><code>organization.&lt;alias&gt;.groups</code></td>
-<td><code>{"example_rec": {"groups": ["/viewers"]}}</code></td>
+<td><code>{"example_rec": {"groups": ["/admins"]}}</code></td>
+<td>inside <code>example_rec</code> only</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Use <code>extract_groups()</code></strong> to read groups; it merges both sources into a flat, deduplicated
-list with leading slashes stripped:</p>
-<pre><code class="language-python">from celine.sdk.auth.jwt import extract_groups
+<p>The only platform-wide grant is the realm <strong>role</strong> <code>platform-admin</code> (<code>PLATFORM_ADMIN_ROLE</code>).
+An organization's <code>admins</code> group is that organization's administrator and nothing more.
+<strong>Realm groups</strong> (the top-level <code>groups</code> claim, <code>/admins</code> and friends) are not a platform
+mechanism: no helper reads them, and a token that still carries one gains nothing from it.
+Neither does a top-level <code>roles</code> claim or a client role in <code>resource_access</code>.</p>
+<pre><code class="language-python">from celine.sdk.auth import Grants, is_platform_admin, organization_groups
 
-groups = extract_groups(user.claims)   # [&quot;viewers&quot;] for either source
+if is_platform_admin(user.claims):            # or user.is_platform_admin
+    ...
+groups = organization_groups(user.claims, &quot;example_rec&quot;)   # [&quot;admins&quot;]
+
+grants = user.grants                          # Grants.from_claims(user.claims)
+grants.platform                               # frozenset({&quot;platform-admin&quot;, ...})
+grants.in_org(&quot;example_rec&quot;)                  # frozenset({&quot;admins&quot;})
+grants.in_org(&quot;example_dso&quot;)                  # frozenset() — not a member
 </code></pre>
-<p>Do not use <code>claims.get("groups")</code> directly — it only returns realm-level groups and misses
-org-level memberships.</p>
-<blockquote>
-<p><strong>A service acting for several communities must not use <code>extract_groups()</code>.</strong> Flattening
-the two levels lets a badge held in one community satisfy a check about another. Read
-<code>claims["groups"]</code> and <code>claims["organization"][alias]["groups"]</code> apart instead.</p>
-</blockquote>
+<p><code>user.has_role(name)</code> reads a realm role too. There is deliberately no function returning
+both levels as one list: <code>extract_groups</code> did, and a community's own <code>admins</code> became a
+platform administrator through it. It and <code>realm_groups</code> were removed in 2.0.0.</p>
+<h3 id="in-a-policy-decision">In a policy decision</h3>
+<p><code>celine.sdk.policies.Subject</code> keeps the two levels in two fields, and the engine passes both
+to Rego unchanged: <code>roles</code> becomes <code>input.subject.roles</code>, <code>groups</code> becomes
+<code>input.subject.groups</code>. Fill <code>roles</code> from <code>realm_roles</code> and <code>groups</code> from the one
+organization the request is about; never put a role into <code>groups</code> or a group into <code>roles</code>.</p>
+<pre><code class="language-python">from celine.sdk.auth import organization_groups, realm_roles
+from celine.sdk.policies import Subject, SubjectType
+
+subject = Subject(
+    id=user.sub,
+    type=SubjectType.SERVICE if user.is_service_account else SubjectType.USER,
+    roles=realm_roles(user.claims),                         # or user.realm_roles
+    groups=organization_groups(user.claims, &quot;example_rec&quot;),
+)
+</code></pre>
+<pre><code class="language-rego">allow if &quot;platform-admin&quot; in input.subject.roles     # the platform administrator
+allow if &quot;admins&quot; in input.subject.groups            # this organization's admins
+</code></pre>
 <p><strong>Service vs. user</strong> is <code>is_service_account()</code>: <code>preferred_username</code> starting
-<code>service-account-</code> (Keycloak's convention) or <code>gty=client-credentials</code>; an email, any group
-or any other username marks a human.</p>
+<code>service-account-</code> (Keycloak's convention), <code>gty=client-credentials</code>, or Keycloak's
+client-credentials <code>jti</code> marker; an email, any group at either level, or any other username
+marks a human. A group here only classifies the token, it grants nothing.</p>
 <pre><code class="language-python">from celine.sdk.auth.jwt import is_service_account
 
 if is_service_account(user.claims):
     ...  # authorize by scope
 else:
-    ...  # authorize by group membership
+    ...  # authorize by platform role and organization groups
 </code></pre>
 <h2 id="organizations">Organizations</h2>
 <p>Keycloak organization memberships are parsed from the <code>organization</code> claim. The alias is the

@@ -2749,6 +2749,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#the-admin-second-factor-and-the-master-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The admin second factor and the master realm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#overriding-a-platform-value-from-the-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4562,6 +4573,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#the-admin-second-factor-and-the-master-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The admin second factor and the master realm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#overriding-a-platform-value-from-the-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4919,14 +4941,24 @@ infra's <code>IGNORE_EXISTING</code> skip a realm that already exists).</p>
 <td><code>bootstrap</code> refuses a theme the server does not list: Keycloak itself accepts any name and silently sends its own emails</td>
 </tr>
 <tr>
-<td>token and session lifespans, <code>organizationsEnabled</code>, <code>adminPermissionsEnabled</code>, the role groups, brute-force tuning</td>
+<td>token and session lifespans, <code>organizationsEnabled</code>, <code>adminPermissionsEnabled</code>, the <code>platform-admin</code> role and its declared holders, the retired realm groups and roles, brute-force tuning</td>
 <td><code>platform.yaml</code></td>
 <td><code>sync-orgs</code> and <code>sync-users</code> refuse a realm without Organizations; <code>sync</code> refuses to grant <code>admin_permissions</code> without fine-grained admin permissions</td>
 </tr>
 <tr>
 <td><code>bruteForceProtected</code></td>
 <td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code></td>
-<td>Unset: on, and off when <code>ENV</code> is <code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code> or <code>ci</code></td>
+<td>Unset: on, and off when <code>ENV</code> is exactly <code>dev</code></td>
+</tr>
+<tr>
+<td>the browser flow <code>browser-admin-second-factor</code>: a <code>platform-admin</code> signs in with a second factor (REQ-0015)</td>
+<td><code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code></td>
+<td>Unset: on, and off when <code>ENV</code> is exactly <code>dev</code>. Below</td>
+</tr>
+<tr>
+<td>the master realm: <code>bootstrap</code>'s own client, brute force, a second factor for master admins (REQ-0016)</td>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, and the two switches above</td>
+<td>Outside dev the secret is required. Below</td>
 </tr>
 <tr>
 <td><code>smtpServer</code></td>
@@ -4966,8 +4998,16 @@ already carries <code>VERIFY_EMAIL</code>, and turning it on would stop every ex
   <code>CELINE_KEYCLOAK_REALM_ADMIN_USERNAME</code> is set. It is created once, with
   <code>CELINE_KEYCLOAK_REALM_ADMIN_PASSWORD</code> (a secret), <code>_EMAIL</code>, and <code>_FIRST_NAME</code>/<code>_LAST_NAME</code>
   (default <code>Celine</code>/<code>Admin</code>; the realm's user profile requires both, and Keycloak refuses
-  the sign-in without them). It is then kept in <code>CELINE_KEYCLOAK_REALM_ADMIN_GROUP</code>
-  (<code>/admins</code>). Its password is never re-sent.</li>
+  the sign-in without them). It holds the realm role <code>platform-admin</code> directly (ADR-0012);
+  <code>CELINE_KEYCLOAK_REALM_ADMIN_GROUP</code> no longer exists. Its password is never re-sent.</li>
+<li><strong>Platform administrators</strong> are the realm admin plus the usernames a deployment lists in its
+  overlay, <code>platform_admin: {users: [...]}</code>. <code>bootstrap</code> grants the role to each one that exists,
+  reports one that does not exist yet, and reports (never revokes) a holder nobody declared.
+  It deletes the retired realm groups <code>/admins</code>, <code>/managers</code>, <code>/editors</code>, <code>/viewers</code> and realm
+  roles <code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code> on its first run, without <code>--allow-destructive</code>:
+  every reader must already read <code>platform-admin</code> from <code>realm_access.roles</code> (REQ-0011, REQ-0012).</li>
+<li><strong><code>sync</code></strong> deletes every mapper that writes a top-level <code>groups</code> claim and the <code>groups</code> client
+  scope (REQ-0013), on a full run; <code>--additive</code> keeps and lists them.</li>
 <li><strong><code>oauth2_proxy</code></strong> is declared in <code>clients.yaml</code> and created by <code>sync</code>. <code>sync</code> also owns
   its secret, flows, redirect URIs, web origins, default scopes and audience mappers. Set:</li>
 </ul>
@@ -5000,6 +5040,72 @@ already carries <code>VERIFY_EMAIL</code>, and turning it on would stop every ex
 <p>On a realm whose <code>oauth2_proxy</code> came from infra's import, the first <code>sync</code> replaces its
   redirect URIs with those four. The webapp entry is also what the provisioning service's
   invitation links return through.</p>
+<h4 id="the-admin-second-factor-and-the-master-realm">The admin second factor and the master realm</h4>
+<p>Outside dev (<code>ENV</code> anything but <code>dev</code>) <code>bootstrap</code> turns on, on every run and from any
+starting state (ADR-0013, ADR-0014):</p>
+<ul>
+<li><strong>in the platform realm</strong>, the browser flow <code>browser-admin-second-factor</code>, bound: a user
+  holding <code>platform-admin</code> who signs in with a password (not a passkey) gives a one-time code
+  or a recovery code, and one who has neither enrols TOTP and recovery codes first. Nobody
+  else is asked. A flow the realm import left, conditioned on the retired role <code>admin</code>, is
+  repointed to <code>platform-admin</code>.</li>
+<li><strong>in master</strong>, brute-force detection with <code>platform.yaml</code>'s tuning (<code>failureFactor</code>,
+  <code>waitIncrementSeconds</code>, <code>maxFailureWaitSeconds</code>, …, and their
+  <code>CELINE_KEYCLOAK_PLATFORM_*</code> overrides), and the same flow without the organization step,
+  conditioned on master's role <code>admin</code>. Every master admin without a one-time code gets the
+  required action <code>CONFIGURE_TOTP</code>, so their password alone obtains no token through
+  <code>admin-cli</code> any more either.</li>
+</ul>
+<p><strong>Who does it.</strong> Master is changed only by <code>bootstrap</code>'s own master client,
+<code>svc-celine-policies-bootstrap</code>, never by an administrator's token, which the change could
+cut off halfway. Each run:</p>
+<ol>
+<li>signs in to master as that client (<code>client_credentials</code>, secret
+   <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>); only when that fails (first run, or the client
+   holds another secret), as the master admin user <code>CELINE_KEYCLOAK_ADMIN_USER</code> /
+   <code>_PASSWORD</code>;</li>
+<li>creates or converges the client: confidential, service account only (no browser, no
+   password grant), the configured secret, and master's realm role <code>admin</code> — the only role
+   that may grant the admin CLI client its realm-management roles in a realm with
+   fine-grained admin permissions (measured on 26.7.3);</li>
+<li>signs in again as the client, checks the token is the client's own, and does everything
+   else with it, the platform realm included.</li>
+</ol>
+<p>Outside dev, without <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> (or with one shorter than 32
+characters) <code>bootstrap</code> exits <code>1</code> before it contacts Keycloak. Generate it once, keep it in
+the deployment's secrets, and pass it to the bootstrap job as that variable; for example
+<code>openssl rand -hex 32</code>. It is never printed and never written to the secrets file.</p>
+<p><strong>Operator procedure.</strong></p>
+<ul>
+<li><strong>The first run</strong> signs in as the master admin user, creates the client, and hardens master.
+  From then on the admin's password grant answers <code>invalid_grant</code> ("Account is not fully set
+  up"): expected. Every later run signs in as the client; the admin user's credentials can
+  stay configured, unused.</li>
+<li><strong>The first admin console sign-in</strong> after that run (through the port-forward the deployment
+  documents; master and <code>/admin</code> are not exposed publicly) asks the master admin for a
+  password, then enrols TOTP and recovery codes. Keep the recovery codes offline. A
+  <code>platform-admin</code> of the platform realm enrols the same way at their next sign-in.</li>
+<li><strong>Rotating the client's secret</strong>: put the new value in the console (master, Clients,
+  <code>svc-celine-policies-bootstrap</code>, Credentials), then in the deployment's secret. A run with
+  a secret the client does not hold falls back to the admin user, which fails once the admin
+  has a second factor.</li>
+<li><strong>Recovery</strong>, when the client's secret is lost or the client deleted: Keycloak's own
+  <code>kc.sh bootstrap-admin service</code> (a temporary service client, no second factor) or
+  <code>kc.sh bootstrap-admin user</code> (a temporary admin, who enrols a second factor at the first
+  console sign-in), run against the Keycloak deployment; with it, reset the client's secret to
+  the configured value, then delete the temporary account. A master admin who lost the
+  authenticator is recovered by another master admin, who removes both the OTP and the
+  recovery codes (removing only the OTP leaves the codes as a factor).</li>
+<li><strong>Turning it off</strong> outside dev (<code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED=false</code>,
+  <code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED=false</code>) is destructive and needs
+  <code>--allow-destructive</code>. Unbinding binds Keycloak's own <code>browser</code> flow and leaves the custom
+  one in place; required actions already set are not removed.</li>
+</ul>
+<p><strong>In dev</strong> nothing changes: no second factor, no brute force, master not touched, and the
+client is created only if <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> is set.</p>
+<p>The password grant of the platform realm (<code>directAccessGrantsEnabled</code>, on for
+<code>oauth2_proxy</code>) does not run the browser flow, so a platform admin's password alone still
+obtains a token there for whoever holds that client's secret.</p>
 <h4 id="overriding-a-platform-value-from-the-environment">Overriding a platform value from the environment</h4>
 <p>A deployment whose Keycloak differs from what the image assumes overrides a value instead of
 mounting its own <code>platform.yaml</code>. The variable is <code>CELINE_KEYCLOAK_PLATFORM_</code> followed by the
@@ -5178,11 +5284,6 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <td>Rego package for ACL</td>
 </tr>
 <tr>
-<td><code>CELINE_MQTT_SUPERUSER_SCOPE</code></td>
-<td><code>mqtt.admin</code></td>
-<td>Superuser scope name</td>
-</tr>
-<tr>
 <td><code>CELINE_LOG_LEVEL</code></td>
 <td><code>INFO</code></td>
 <td>Log level</td>
@@ -5194,9 +5295,10 @@ OIDC defaults, and installs no CORS middleware (its only callers are mosquitto-g
 health probes). <strong>No MQTT audience exists in the realm yet</strong> — see <code>.env.example</code> — so a
 hardened deployment needs an audience mapper onto one MQTT audience for every broker client
 first. The image needs the celine-sdk release that ships <code>celine.sdk.posture</code>.</p>
-<p>The <code>/superuser</code> check accepts the <code>admin</code> and <code>mqtt.admin</code> groups from the <strong>merged</strong> realm
-and organization group claims (<code>extract_groups</code>), so an organization-level <code>admin</code> group is an
-MQTT superuser wherever <code>auth_opt_disable_superuser</code> is off.</p>
+<p><code>/superuser</code> answers <code>403</code> to every token (REQ-0014): there is no MQTT superuser, whatever
+<code>auth_opt_disable_superuser</code> says. User or service is the token's kind (<code>is_service_account</code>);
+no group of either level reaches the policy, so a person's token reaches no topic.
+<code>CELINE_MQTT_SUPERUSER_SCOPE</code> is gone.</p>
 <h3 id="keycloak-cli">Keycloak CLI</h3>
 <p>Environment variables with <code>CELINE_KEYCLOAK_</code> prefix:</p>
 <table>
@@ -5242,6 +5344,26 @@ MQTT superuser wherever <code>auth_opt_disable_superuser</code> is off.</p>
 <td><code>CELINE_KEYCLOAK_SECRETS_FILE</code></td>
 <td><code>.client.secrets.yaml</code></td>
 <td>Secrets file path</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_ID</code></td>
+<td><code>svc-celine-policies-bootstrap</code></td>
+<td>The master client <code>bootstrap</code> signs in to master with (REQ-0016)</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code></td>
+<td>—</td>
+<td>Its secret, from the deployment's secrets; required unless <code>ENV=dev</code>, at least 32 characters</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code></td>
+<td>on unless <code>ENV=dev</code></td>
+<td>Brute-force detection, platform realm and master</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code></td>
+<td>on unless <code>ENV=dev</code></td>
+<td>The admin second factor, platform realm (<code>platform-admin</code>) and master (<code>admin</code>)</td>
 </tr>
 </tbody>
 </table>

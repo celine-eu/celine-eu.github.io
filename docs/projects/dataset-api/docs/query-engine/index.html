@@ -5035,8 +5035,8 @@ through <code>POST /query</code>).</p>
 <h3 id="row-filters">Row filters</h3>
 <p>A dataset's governance can declare row filters (<code>rowFilters</code> or <code>row_filters</code>; the
 legacy <code>userFilterColumn</code> becomes a <code>direct_user_match</code> filter). An unauthenticated
-caller of a filtered dataset gets <code>401</code>; a member of the <code>admins</code> group is not
-filtered. Filters are applied to
+caller of a filtered dataset gets <code>401</code>; a holder of the <code>platform-admin</code> realm
+role is not filtered. Filters are applied to
 the validated AST after physical table names are substituted, and the query is then
 rendered once, as PostgreSQL. The SQL is never re-parsed from text in between: a
 text round trip changes the dialect (<code>INTERVAL '30 minutes'</code> becomes

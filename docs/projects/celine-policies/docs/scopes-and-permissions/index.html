@@ -2889,22 +2889,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#user-groups" class="md-nav__link">
+  <a href="#who-a-person-is-two-levels-adr-0012" class="md-nav__link">
     <span class="md-ellipsis">
       
-        User Groups
+        Who a person is: two levels (ADR-0012)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="User Groups">
+    <nav class="md-nav" aria-label="Who a person is: two levels (ADR-0012)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#group-sources" class="md-nav__link">
+  <a href="#organization-group-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group Sources
+        Organization group hierarchy
       
     </span>
   </a>
@@ -2912,21 +2912,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#group-hierarchy" class="md-nav__link">
+  <a href="#how-services-read-the-two-levels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group Hierarchy
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-services-read-groups" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How Services Read Groups
+        How services read the two levels
       
     </span>
   </a>
@@ -5011,22 +5000,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#user-groups" class="md-nav__link">
+  <a href="#who-a-person-is-two-levels-adr-0012" class="md-nav__link">
     <span class="md-ellipsis">
       
-        User Groups
+        Who a person is: two levels (ADR-0012)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="User Groups">
+    <nav class="md-nav" aria-label="Who a person is: two levels (ADR-0012)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#group-sources" class="md-nav__link">
+  <a href="#organization-group-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group Sources
+        Organization group hierarchy
       
     </span>
   </a>
@@ -5034,21 +5023,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#group-hierarchy" class="md-nav__link">
+  <a href="#how-services-read-the-two-levels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Group Hierarchy
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-services-read-groups" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How Services Read Groups
+        How services read the two levels
       
     </span>
   </a>
@@ -5252,8 +5230,7 @@
 <p>Examples:
 - <code>digital-twin.values.read</code> — read digital twin values
 - <code>pipelines.runs.write</code> — update pipeline runs
-- <code>dataset.query</code> — execute dataset queries
-- <code>mqtt.admin</code> — MQTT superuser access</p>
+- <code>dataset.query</code> — execute dataset queries</p>
 <h2 id="platform-scopes">Platform Scopes</h2>
 <h3 id="digital-twin">Digital Twin</h3>
 <table>
@@ -5611,20 +5588,8 @@ the other.</p>
 </tbody>
 </table>
 <h3 id="mqtt">MQTT</h3>
-<table>
-<thead>
-<tr>
-<th>Scope</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>mqtt.admin</code></td>
-<td>MQTT superuser access</td>
-</tr>
-</tbody>
-</table>
+<p>No scope. There is no MQTT superuser (REQ-0014): <code>mqtt.admin</code> was removed. A broker client holds
+the <code>&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code> scopes of its topics.</p>
 <h3 id="provisioning">Provisioning</h3>
 <p>The service that writes participant accounts into the realm, and the only thing that does.</p>
 <table>
@@ -5816,8 +5781,9 @@ onboarding uses for everything else carries no community write and no sweep:</p>
   <code>svc-onboarding</code> token that did not request it with <code>403 insufficient_scope</code>.</li>
 </ul>
 <p>Neither adds an audience: both land on services this client already addresses. A realm has
-the optional assignments only after <code>keycloak sync</code>, and the sync is started by a realm admin
-(onboarding's <code>recs.write</code>), never on a template reload.</p>
+the optional assignments only after <code>keycloak sync</code>, and the sync is started by a platform admin
+(the realm role <code>platform-admin</code>, the only holder of onboarding's <code>recs.write</code>), never on a
+template reload.</p>
 <h3 id="svc-onboarding-cli">svc-onboarding-cli</h3>
 <p>Service account for the <code>onboarding-cli</code> review and enablement commands. No
 <code>scopes_prefix</code> — it owns nothing, it only calls:</p>
@@ -5826,9 +5792,10 @@ the optional assignments only after <code>keycloak sync</code>, and the sync is 
 default_scopes:
   - onboarding.admin
 </code></pre>
-<p>It never starts onboarding's planned registry sync: that capability is held by realm
-<code>admins</code> only and no scope grants it, <code>onboarding.admin</code> included. The CLI's sync command
-runs with a realm admin's own token or <code>--local</code>.</p>
+<p>It never starts onboarding's planned registry sync: that capability is held by the realm role
+<code>platform-admin</code> only (no organization group grants it) and no scope grants it,
+<code>onboarding.admin</code> included. The CLI's sync command runs with a <code>platform-admin</code> holder's own
+token or <code>--local</code>.</p>
 <h3 id="svc-provisioning">svc-provisioning</h3>
 <p>The participant provisioning service. It holds <strong>realm-wide</strong> administration — the only
 client that does — and is the only thing that writes a participant account:</p>
@@ -5867,40 +5834,51 @@ default_scopes:
   - digital-twin.admin
   - pipelines.admin
   - dataset.admin
-  - mqtt.admin
   - rec-registry.admin
   - nudging.admin
   - onboarding.admin
 </code></pre>
 <hr />
-<h2 id="user-groups">User Groups</h2>
-<p>User authorization is group-based. Groups determine what resources a user can access (e.g., internal datasets, community data).</p>
-<h3 id="group-sources">Group Sources</h3>
-<p>Groups can come from two places in the JWT:</p>
+<h2 id="who-a-person-is-two-levels-adr-0012">Who a person is: two levels (ADR-0012)</h2>
+<p>There are exactly two levels of authority, and nothing in between:</p>
 <table>
 <thead>
 <tr>
-<th>Source</th>
+<th>Level</th>
 <th>Claim</th>
 <th>Assigned via</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Realm-level</strong></td>
-<td><code>groups: ["/admins"]</code></td>
-<td>Keycloak admin UI, or <code>sync-users --group /admins</code> given explicitly</td>
+<td><strong>Platform</strong></td>
+<td><code>realm_access.roles: ["platform-admin"]</code></td>
+<td><code>keycloak bootstrap</code>: the operator realm admin and the users a deployment lists in <code>platform_admin.users</code>; by hand in the admin console (reported by bootstrap, not revoked)</td>
 </tr>
 <tr>
-<td><strong>Org-level</strong></td>
-<td><code>organization.&lt;alias&gt;.groups: ["/viewers"]</code></td>
-<td>the provisioning service (<code>viewers</code>, automatic for REC participants); <code>keycloak set-user-organization --group managers</code> (or <code>admins</code>), run by a platform admin; <code>sync-users</code> in local development</td>
+<td><strong>Organization</strong></td>
+<td><code>organization.&lt;alias&gt;.groups: ["/admins"]</code></td>
+<td>the provisioning service (<code>viewers</code>, automatic for REC participants); <code>keycloak set-user-organization --group managers</code> (or <code>admins</code>), run by a platform admin; <code>sync-users</code> and <code>seed-dev-users</code> in local development</td>
 </tr>
 </tbody>
 </table>
-<p>Realm-level groups are reserved for <strong>platform management</strong> (admins, managers). Regular REC participants receive org-level groups only: the provisioning service assigns no realm group, and <code>sync-users</code> assigns one only when <code>--group</code> names it. The <code>taskfile.yaml</code> dev tasks no longer pass <code>--group /viewers</code> (2026-09-14); an account already in realm <code>/viewers</code> keeps that membership until an operator removes it.</p>
-<h3 id="group-hierarchy">Group Hierarchy</h3>
-<p>Groups follow the standard role hierarchy (defined in <code>ROLE_HIERARCHY</code>):</p>
+<ul>
+<li><strong><code>platform-admin</code> is the only platform-wide grant.</strong> It is a realm <em>role</em>, carried by a name
+  no organization group can have, read from <code>realm_access.roles</code> (celine-sdk <code>realm_roles</code>,
+  <code>is_platform_admin</code>). Every client people sign in through holds the <code>roles</code> scope, or its
+  tokens carry no <code>realm_access</code> (REQ-0013).</li>
+<li><strong>An organization's groups count only inside that organization.</strong> Read them for the
+  organization the request is about (celine-sdk <code>organization_groups(claims, alias)</code>), never
+  merged with another organization's or with anything realm-wide.</li>
+<li><strong>Realm groups carry no authority.</strong> <code>/admins</code>, <code>/managers</code>, <code>/editors</code>, <code>/viewers</code> and the
+  realm roles <code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code> are deleted by <code>bootstrap</code> (REQ-0012), and
+  no mapper writes a top-level <code>groups</code> claim (REQ-0013). A realm group still present in a token
+  grants nothing. <code>sync-users --group</code> can still file participants into a realm group for local
+  development; it grants nothing either.</li>
+<li><strong>Policy input</strong> carries platform roles in <code>input.subject.roles</code>, never in <code>groups</code>.</li>
+</ul>
+<h3 id="organization-group-hierarchy">Organization group hierarchy</h3>
+<p>Organization groups follow the standard hierarchy (<code>ROLE_HIERARCHY</code>), inside one organization:</p>
 <table>
 <thead>
 <tr>
@@ -5911,7 +5889,7 @@ default_scopes:
 <tbody>
 <tr>
 <td><code>admins</code></td>
-<td>Full access to all resources</td>
+<td>Full access to that organization's resources</td>
 </tr>
 <tr>
 <td><code>managers</code></td>
@@ -5927,11 +5905,7 @@ default_scopes:
 </tr>
 </tbody>
 </table>
-<p>The same four names exist at realm level and inside every organization, and the
-distinction carries meaning: an <strong>org</strong>-level group grants the capability for that
-community only, a <strong>realm</strong>-level group grants it across every community. The onboarding
-console is the first service to use the full hierarchy, mapping it to concrete
-capabilities:</p>
+<p>The onboarding console maps it to concrete capabilities:</p>
 <table>
 <thead>
 <tr>
@@ -5958,14 +5932,15 @@ capabilities:</p>
 </tr>
 </tbody>
 </table>
-<h3 id="how-services-read-groups">How Services Read Groups</h3>
-<p>All CELINE services use <code>extract_groups()</code> from <code>celine-sdk</code> to read groups from JWT claims. This function merges realm-level and org-level groups into a flat list:</p>
-<pre><code class="language-python">from celine.sdk.auth.jwt import extract_groups
+<h3 id="how-services-read-the-two-levels">How services read the two levels</h3>
+<p><code>extract_groups()</code>, which merged realm and organization groups into one flat list, is removed
+from celine-sdk (2.0.0). A service reads the platform role and the organization groups apart:</p>
+<pre><code class="language-python">from celine.sdk.auth import Grants, is_platform_admin, organization_groups
 
-groups = extract_groups(user.claims)
-# [&quot;viewers&quot;] — regardless of whether it came from realm or org
+is_platform_admin(user.claims)                 # realm_access.roles has &quot;platform-admin&quot;
+organization_groups(user.claims, &quot;example-rec&quot;)  # [&quot;admins&quot;] — that organization only
+Grants.from_claims(user.claims).in_org(&quot;example-rec&quot;)
 </code></pre>
-<p>Services must NOT use <code>claims.get("groups")</code> directly — it misses org-level groups.</p>
 <h3 id="multi-rec-isolation">Multi-REC Isolation</h3>
 <p>Group-based access is a table-level gate ("can this user query internal datasets?"). Row-level isolation for multi-REC deployments is handled separately by <code>row_filters</code> in <code>governance.yaml</code>, which restrict visible rows based on the user's registered devices or community membership.</p>
 <hr />

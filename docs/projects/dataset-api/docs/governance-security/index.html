@@ -2387,6 +2387,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#two-levels-never-mixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two levels, never mixed
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4470,6 +4481,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#two-levels-never-mixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two levels, never mixed
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4713,8 +4735,9 @@ normalizes its claims into an authenticated user:</p>
 <ul>
 <li><code>sub</code></li>
 <li><code>username</code> (<code>preferred_username</code>, falling back to <code>email</code>) and <code>email</code></li>
-<li><code>groups</code> (realm and organization groups)</li>
-<li><code>roles</code> (realm roles and the client roles of the configured client)</li>
+<li><code>roles</code>: the realm roles (<code>realm_access.roles</code>), the platform level</li>
+<li><code>groups</code>: the groups the caller holds inside its organizations
+  (<code>organization.&lt;alias&gt;.groups</code>), the organization level</li>
 <li><code>scopes</code></li>
 <li><code>issuer</code>, <code>audiences</code>, and the raw <code>claims</code></li>
 </ul>
@@ -4722,7 +4745,24 @@ normalizes its claims into an authenticated user:</p>
 <p>Service accounts (client credentials) are treated as first-class identities. A
 token is a service account's when its <code>preferred_username</code> starts with
 <code>service-account-</code> or it carries <code>gty=client-credentials</code>. Services are authorized
-by <strong>scopes</strong>, users by <strong>groups</strong>.</p>
+by <strong>scopes</strong>, users by the <strong>platform role</strong> or their <strong>organization groups</strong>.</p>
+<h3 id="two-levels-never-mixed">Two levels, never mixed</h3>
+<p>A person's grants come from exactly two places, read apart
+(<code>src/celine/dataset/security/groups.py</code>):</p>
+<ul>
+<li><strong>Platform.</strong> The realm role <code>platform-admin</code> is the only platform-wide grant.
+  Its holder skips every row filter, reads <code>restricted</code> datasets and may write the
+  catalogue.</li>
+<li><strong>Organization.</strong> <code>managers</code> and <code>viewers</code> held inside an organization read
+  <code>internal</code> datasets, and row filters still apply. An organization's <code>admins</code> and
+  <code>editors</code> grant nothing here. The organization is not matched against the
+  dataset yet: a <code>viewers</code> membership in any organization reads every <code>internal</code>
+  dataset, narrowed only by row filters.</li>
+</ul>
+<p><strong>A realm group grants nothing.</strong> The top-level <code>groups</code> claim is not read, so a
+token that still carries <code>/admins</code> there is not an administrator. Neither are the
+retired realm roles <code>admin</code>, <code>manager</code>, <code>editor</code> and <code>viewer</code>, a client role, or
+an organization group <em>named</em> <code>platform-admin</code>.</p>
 <p>You should avoid “god tokens” unless policy explicitly supports it.</p>
 <hr />
 <h2 id="authorization">Authorization</h2>
@@ -4747,7 +4787,8 @@ restart.</p>
   &quot;subject&quot;: {
     &quot;id&quot;: &quot;service-account-dt-app&quot;,
     &quot;type&quot;: &quot;service&quot;,
-    &quot;groups&quot;: [&quot;ops&quot;],
+    &quot;roles&quot;: [],
+    &quot;groups&quot;: [],
     &quot;scopes&quot;: [&quot;dataset.query&quot;],
     &quot;claims&quot;: {&quot;…&quot;: &quot;raw JWT claims&quot;}
   },
@@ -4765,8 +4806,11 @@ restart.</p>
   &quot;environment&quot;: {&quot;timestamp&quot;: 1760000000.0, &quot;source_service&quot;: &quot;dataset-api&quot;}
 }
 </code></pre>
-<p><code>subject.type</code> is <code>user</code>, <code>service</code> or <code>anonymous</code> (<code>id: "anonymous"</code>). Roles reach
-the policy only inside <code>claims</code>; tags are not sent.</p>
+<p><code>subject.type</code> is <code>user</code>, <code>service</code> or <code>anonymous</code> (<code>id: "anonymous"</code>).
+<code>subject.roles</code> carries the realm roles and <code>subject.groups</code> the organization
+groups; neither ever carries a realm group. A policy reads the platform level as
+<code>"platform-admin" in input.subject.roles</code> and never from <code>groups</code> or <code>claims</code>.
+Tags are not sent.</p>
 <h3 id="shipped-policy">Shipped policy</h3>
 <p><code>policies/celine/dataset.rego</code> implements:</p>
 <table>
@@ -4774,7 +4818,7 @@ the policy only inside <code>claims</code>; tags are not sent.</p>
 <tr>
 <th>Access level</th>
 <th>Service (by scope)</th>
-<th>User (by group)</th>
+<th>User</th>
 </tr>
 </thead>
 <tbody>
@@ -4786,12 +4830,12 @@ the policy only inside <code>claims</code>; tags are not sent.</p>
 <tr>
 <td><code>internal</code></td>
 <td><code>dataset.query</code></td>
-<td><code>admins</code>, <code>managers</code> or <code>viewers</code></td>
+<td>the <code>platform-admin</code> role, or <code>managers</code> or <code>viewers</code> in an organization</td>
 </tr>
 <tr>
 <td><code>restricted</code></td>
 <td><code>dataset.admin</code></td>
-<td><code>admins</code></td>
+<td>the <code>platform-admin</code> role</td>
 </tr>
 </tbody>
 </table>
@@ -4842,7 +4886,8 @@ Custom rules can read <code>resource.attributes.governance</code> and <code>name
 <h2 id="catalogue-administration">Catalogue administration</h2>
 <p><code>POST /admin/catalogue</code> overwrites and deletes catalogue entries, including the
 <code>expose</code> and <code>access_level</code> every other gate reads. It requires a valid token with
-the <code>dataset.admin</code> scope, or a user in the <code>admins</code> group: <code>401</code> without a token,
+the <code>dataset.admin</code> scope, or a user holding the <code>platform-admin</code> realm role: <code>401</code>
+without a token,
 <code>403</code> without either. <code>svc-dataset-api</code> holds the scope, so an import job
 authenticates as the service with its own client credentials.</p>
 <hr />

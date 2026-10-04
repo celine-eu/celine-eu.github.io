@@ -4196,12 +4196,12 @@ naming a requirement that does not exist is a typo.</p>
 <td><a href="client-grants/">client grants</a> — which scopes a client holds as default and which as optional, where a decision fixed it</td>
 </tr>
 <tr>
-<td>REQ-0006</td>
-<td><a href="keycloak-cli/">Keycloak CLI</a> — what a <code>celine-policies keycloak</code> command may do, where a decision fixed it</td>
+<td>REQ-0006, REQ-0011 – REQ-0013, REQ-0015 – REQ-0016</td>
+<td><a href="keycloak-cli/">Keycloak CLI</a> — what a <code>celine-policies keycloak</code> command may do, where a decision fixed it; the two-level authority model (<code>platform-admin</code> role, organization groups); the platform admin's second factor outside dev; the master realm reached through <code>bootstrap</code>'s own client and hardened outside dev</td>
 </tr>
 <tr>
-<td>REQ-0009 – REQ-0010</td>
-<td><a href="mqtt-auth/">MQTT auth</a> — what the MQTT auth backend refuses outside dev</td>
+<td>REQ-0009 – REQ-0010, REQ-0014</td>
+<td><a href="mqtt-auth/">MQTT auth</a> — what the MQTT auth backend refuses outside dev; no superuser and no group grants</td>
 </tr>
 </tbody>
 </table>

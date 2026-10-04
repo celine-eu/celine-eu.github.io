@@ -4594,10 +4594,15 @@
 <ol>
 <li><strong>Converges the realm's platform level</strong> from <a href="../platform.yaml"><code>platform.yaml</code></a>:
    Organizations, fine-grained admin permissions, sign-in settings, languages, themes,
-   lifespans and the realm role groups. Only the keys the file names are written.
+   lifespans, the realm role <code>platform-admin</code> and who holds it, and the retired realm groups
+   and roles it deletes (ADR-0012). Only the keys the file names are written.
    Brute-force protection comes from <code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code> (on by default,
-   off under <code>ENV=dev</code>), and <code>smtpServer</code> from <code>CELINE_KEYCLOAK_SMTP_*</code> when
-   <code>CELINE_KEYCLOAK_SMTP_HOST</code> is set. <code>--dry-run</code> shows what would change.</li>
+   off under <code>ENV=dev</code>), the platform admin's second factor from
+   <code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code> (the same default), and <code>smtpServer</code> from
+   <code>CELINE_KEYCLOAK_SMTP_*</code> when <code>CELINE_KEYCLOAK_SMTP_HOST</code> is set. <code>--dry-run</code> shows what
+   would change. Outside dev it also hardens the master realm, and needs
+   <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> for that (<a href="../deployment/#the-admin-second-factor-and-the-master-realm">deployment</a>);
+   under <code>ENV=dev</code> (the taskfile's) master is left alone.</li>
 <li><strong>Creates a <code>celine-admin-cli</code> service account</strong> with realm-management roles, and writes
    its secret to <code>.client.secrets.yaml</code>. Subsequent commands auto-load credentials from this
    file. The secret is printed only under a development <code>ENV</code>.</li>
@@ -4640,8 +4645,11 @@ See <a href="../scopes-and-permissions/#realm-administration">Realm administrati
 from:</p>
 <pre><code class="language-bash">ENV=dev celine-policies keycloak seed-dev-users
 </code></pre>
-<p><code>admin</code>, <code>manager</code>, <code>editor</code> and <code>viewer</code>, each with its username as password, in the role group
-of the same rank (<code>config/keycloak/dev-users.yaml</code>). It refuses outside a development <code>ENV</code>.</p>
+<p><code>admin</code> (realm role <code>platform-admin</code>), <code>org-admin</code> (<code>example_rec</code> admins, not a platform
+administrator) and <code>org-viewer</code> (<code>example_rec</code> viewers), each with its username as password
+(<code>config/keycloak/dev-users.yaml</code>). No user is in a realm group: realm groups carry no authority
+(ADR-0012). The organizations come from <code>sync-users</code> with the example REC, so run that first.
+It refuses outside a development <code>ENV</code>.</p>
 <h3 id="step-5-sync-organizations-optional">Step 5: Sync Organizations (optional)</h3>
 <p>Import organizations from an <code>owners.yaml</code> file:</p>
 <pre><code class="language-bash">celine-policies keycloak sync-orgs ../dataset-api/owners.yaml

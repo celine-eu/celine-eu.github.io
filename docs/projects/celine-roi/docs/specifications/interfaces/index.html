@@ -4408,6 +4408,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#req-1105-only-the-realm-role-platform-admin-reviews-every-rec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1105 — only the realm role platform-admin reviews every REC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#req-1104-review-state-advances-monotonically" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4626,11 +4637,28 @@ screenshot. The screenshot is served separately rather than embedded in list res
 <p><em>Verified by</em>
 <code>tests/test_feedback.py::test_participant_lists_own_recs_and_submits_only_to_one_of_them</code></p>
 <h3 id="req-1103-manager-review-is-authorized-for-the-selected-rec">REQ-1103 — manager review is authorized for the selected REC</h3>
-<p>Review requires <code>community.read</code> plus <code>admins</code> or <code>managers</code> in the matching REC organization.
-Realm <code>admins</code> may review every REC. A participant or a manager of another REC is denied before a
-feedback row or screenshot is read.</p>
+<p>Review requires <code>community.read</code> plus <code>admins</code> or <code>managers</code> in the matching REC organization,
+read from that organization's own groups only (<code>organization.&lt;alias&gt;.groups</code>). A group held in
+another organization counts for nothing here. A platform administrator may review every REC
+(REQ-1105). A participant or a manager of another REC is denied before a feedback row or
+screenshot is read.</p>
+<p><em>Rewritten 2026-10-03:</em> the platform-wide grant was the realm group <code>admins</code>; it is now the
+realm role <code>platform-admin</code> (REQ-1105).</p>
 <p><em>Verified by</em>
-<code>tests/test_feedback.py::test_manager_reviews_only_feedback_from_the_authorized_rec</code></p>
+<code>tests/test_feedback.py::test_manager_reviews_only_feedback_from_the_authorized_rec</code>,
+<code>tests/test_feedback.py::TestReviewIsGrantedPerOrganizationOrByThePlatformRole</code></p>
+<h3 id="req-1105-only-the-realm-role-platform-admin-reviews-every-rec">REQ-1105 — only the realm role <code>platform-admin</code> reviews every REC</h3>
+<p>The one grant that reaches every REC's feedback is the Keycloak realm role <code>platform-admin</code>, read
+from <code>realm_access.roles</code>. Nothing else is platform-wide:</p>
+<ul>
+<li>an organization's <code>admins</code> group is valid only for that organization's REC;</li>
+<li>a realm group (<code>/admins</code>, <code>admins</code> in the top-level <code>groups</code> claim) grants nothing;</li>
+<li>the retired realm roles <code>admin</code>, <code>manager</code>, <code>editor</code> and <code>viewer</code> grant nothing.</li>
+</ul>
+<p><code>community.read</code> is still required of a platform administrator.</p>
+<p><em>Verified by</em>
+<code>tests/test_feedback.py::TestReviewIsGrantedPerOrganizationOrByThePlatformRole</code>,
+<code>tests/test_feedback_real_tokens.py::TestRealTokensFromTheLocalRealm</code></p>
 <h3 id="req-1104-review-state-advances-monotonically">REQ-1104 — review state advances monotonically</h3>
 <p>Manager workflow state is <code>new</code> → <code>seen</code> → <code>resolved</code>; it cannot move backward. List responses
 contain per-state counts, and stored subject, IP and user-agent diagnostics are not returned.</p>

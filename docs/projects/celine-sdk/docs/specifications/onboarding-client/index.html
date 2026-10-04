@@ -4141,8 +4141,8 @@ writes the registry, and a wrapper that chose a default for the caller there wou
 whether the registry is written.</p>
 <p>The service's own behaviour belongs to <code>onboarding</code>: the template as the source of truth for
 a community's areas, what the sync creates, changes, leaves alone and refuses, the "set up
-community" step that precedes it, and the <code>recs.write</code> capability, held by realm admins only,
-that authorises it. It is named here only so the two can be kept honest.</p>
+community" step that precedes it, and the <code>recs.write</code> capability, held only by a platform administrator (the realm role
+<code>platform-admin</code>; no organisation group grants it), that authorises it. It is named here only so the two can be kept honest.</p>
 <hr />
 <h2 id="registry-sync">Registry sync</h2>
 <h3 id="req-0140-the-registry-sync-sends-dry-run-and-prune-as-the-caller-chose-them">REQ-0140 — the registry sync sends dry run and prune as the caller chose them</h3>
@@ -4153,8 +4153,8 @@ default on either side of the seam. <code>prune</code> is <code>false</code> unl
 service, whose sync is additive unless asked to remove. A value that is not a <code>bool</code> for
 either is refused with <code>TypeError</code> before any request, because the generated client drops a
 <code>None</code> from the query and the service's default would then decide. The call carries the
-caller's token (a realm admin's, since onboarding grants <code>recs.write</code> to no service) and no
-acting-user header.</p>
+caller's token (a <code>platform-admin</code> holder's, since onboarding grants <code>recs.write</code> to no service
+and to no organisation group) and no acting-user header.</p>
 <p>It answers onboarding's report — what would be, or was, created, changed, left alone and
 refused, and (from onboarding 0.4.0) renamed, with the key a renamed area came from in
 <code>renamed_from</code> — as a schema, without interpreting it. Which outcomes onboarding reports as rows
