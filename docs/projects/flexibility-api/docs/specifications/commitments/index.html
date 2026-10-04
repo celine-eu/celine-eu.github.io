@@ -4281,9 +4281,9 @@ both are live.</p>
 optional <code>created_after</code> filter on that column.</p>
 <p>It is scoped to nobody. Declines are included — the acceptance rate is only computable
 because <code>rejected</code> rows are kept.</p>
-<p>The <code>flexibility.commitments.export</code> scope the bundle demands (REQ-0010) is <strong>not
-checked</strong>: <code>PolicyMiddleware</code> does not match this path, so any service token reads the
-whole table.</p>
+<p>Only a service token holding <code>flexibility.commitments.export</code> reaches it: <code>PolicyMiddleware</code>
+decides the path as the <code>export</code> action (REQ-0010). Until 2026-10-04 the middleware did
+not match it, and any service token in the realm read the whole table.</p>
 <p><code>created_after</code> takes an ISO timestamp, which ends in <code>+00:00</code>, and a <code>+</code> in a query
 string decodes to a space. A caller that concatenates the URL by hand gets a <code>422</code> rather
 than a wrong window — the better of the two failures, but a trap either way.</p>

@@ -4238,7 +4238,7 @@
 <p>Two mechanisms, and they cover different things.</p>
 <p><strong><code>policies/flexibility.rego</code></strong>, evaluated in process, is the specification of record for
 what a subject may do — and it is reached from exactly one place, <code>PolicyMiddleware</code>,
-guarding two routes. REQ-0005 to REQ-0010 state what the bundle decides; REQ-0054 states
+guarding three routes (<code>/pending</code>, <code>PATCH …/settle</code>, <code>/export</code>). REQ-0005 to REQ-0010 state what the bundle decides; REQ-0054 states
 that a request actually gets that answer; REQ-0056 states what the bundle is told about
 the caller.</p>
 <p><strong>Everything else is SQL.</strong> No participant-facing route consults the policy at all. The
@@ -4286,9 +4286,9 @@ change one. A service account with no flexibility scope at all is refused with
 <code>flexibility.read</code> reaches it.</p>
 <p>The scope is separate because the blast radius is: <code>GET /api/commitments/export</code> returns
 every commitment of every participant in every status, which no other route does.</p>
-<p><strong>The route does not check it.</strong> <code>PolicyMiddleware</code> guards only <code>/pending</code> and
-<code>PATCH …/settle</code>, so export is held by its <code>ServiceDep</code> alone and any service token
-reaches it — see REQ-0028.</p>
+<p><code>PolicyMiddleware</code> decides <code>GET /api/commitments/export</code> as the <code>export</code> action. Until
+2026-10-04 it guarded only <code>/pending</code> and <code>PATCH …/settle</code>, so export was held by its
+<code>ServiceDep</code> alone and any service token reached it.</p>
 <h3 id="req-0011-a-decision-the-bundle-makes-reaches-the-caller">REQ-0011 — a decision the bundle makes reaches the caller</h3>
 <p><code>AccessPolicy._evaluate</code> queries <code>data.celine.flexibility.access.allow</code> and returns what
 the bundle decided.</p>
@@ -4300,8 +4300,12 @@ was never consulted on any call
 <p><code>allow</code> and <code>reason</code> are queried <strong>separately</strong>, and only <code>allow</code> can fail open. A reason
 is a message; an allow is an authorisation, and REQ-0012 is what a broken message looks
 like. A reason that cannot be read now costs the message and nothing else.</p>
-<p>The bundle loads from an absolute path derived from <code>__file__</code> rather than the working
-directory, so the service finds it wherever it is started from.</p>
+<p>The bundle never loads from the working directory, so the service finds it wherever it
+is started from. <code>policies_dir()</code> takes <code>CELINE_POLICIES_POLICIES_DIR</code> when set, then the
+copy packaged into the wheel (<code>celine/flexibility/policies</code>, pyproject <code>force-include</code>),
+then the repository's <code>policies/</code> for a source checkout. Until 2026-10-04 only the last
+existed, and in the image it resolved into site-packages: the image shipped
+<code>/app/policies</code> and never loaded it.</p>
 <p><strong>Outside development the two fallback branches fail closed</strong>; only <code>CELINE_ENV=dev</code>
 (see REQ-0055) keeps them permissive:</p>
 <table>
@@ -4352,20 +4356,18 @@ which returns <strong>before</strong> the bundle is queried. It is a second, ind
 now redundant with a working policy — REQ-0009 would refuse the same caller. It stays:
 deleting a check that worked, on the strength of one that was broken until today, is not
 a trade worth making.</p>
-<p><code>GET /api/commitments/export</code> is refused to a participant too, by its <code>ServiceDep</code> rather
-than the middleware — a different mechanism reaching the same status, with a different
-detail string (<code>Service account required</code>).</p>
+<p><code>GET /api/commitments/export</code> is refused to a participant the same way
+(<code>not-a-service-account</code>); its <code>ServiceDep</code> stays behind the middleware as a second gate.</p>
 <h3 id="req-0054-a-guarded-route-enforces-the-scope-not-just-the-account-type">REQ-0054 — a guarded route enforces the scope, not just the account type</h3>
 <p>A service account holding no flexibility scope is refused on
-<code>GET /api/commitments/pending</code> and <code>PATCH /api/commitments/{id}/settle</code> with
+<code>GET /api/commitments/pending</code>, <code>PATCH /api/commitments/{id}/settle</code> and
+<code>GET /api/commitments/export</code> with
 <code>403 missing flexibility scope</code> — the bundle's own reason, carried out to the response
 body.</p>
 <p>This is the requirement that the whole mechanism actually runs, and it is stated
 separately from REQ-0009 because the bundle deciding correctly and a request being decided
 are two different claims. Until #21 was fixed only the first was true: <strong>any</strong> valid
 Keycloak service token, belonging to any client in the realm, reached both routes.</p>
-<p>It does <strong>not</strong> extend to <code>/export</code>, which the middleware does not match at all — see
-REQ-0028.</p>
 <h3 id="req-0014-a-missing-token-on-a-guarded-route-is-a-403-not-a-401">REQ-0014 — a missing token on a guarded route is a <code>403</code>, not a <code>401</code></h3>
 <p><code>PolicyMiddleware</code> runs ahead of the dependency chain, catches the exception the token
 extraction raises, and returns <code>403 unauthenticated</code>.</p>

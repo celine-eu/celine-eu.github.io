@@ -4375,11 +4375,10 @@ returns nothing (REQ-0026).</p>
 <p><strong>Query params:</strong>
 - <code>created_after</code> — ISO datetime, filters on <code>committed_at</code>. URL-encode it: the <code>+00:00</code>
   offset decodes to a space otherwise and the request is a <code>422</code>.</p>
-<p>The <code>flexibility.commitments.export</code> scope the policy defines is <strong>not enforced on this
-route</strong> — <code>PolicyMiddleware</code> does not match this path, so any service token reaches every
-commitment in the table (REQ-0028). Unlike <code>/pending</code> and <code>/settle</code>, this one was not
-closed by <a href="https://github.com/celine-eu/flexibility-api/issues/21">#21</a>; it is a routing
-gap, not an evaluation one.</p>
+<p>Requires the <code>flexibility.commitments.export</code> scope (REQ-0010, REQ-0028):
+<code>PolicyMiddleware</code> decides it as the <code>export</code> action. A service token without it is
+<code>403 missing flexibility scope</code> (or <code>403 access denied</code> when it holds other flexibility
+scopes); a participant is <code>403 not-a-service-account</code>.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>

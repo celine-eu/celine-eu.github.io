@@ -4283,7 +4283,8 @@ from the models, so a model that has drifted from its migrations passes everythi
 (<a href="../decisions/ADR-0003-the-database-is-real-and-sqlite/">ADR-0003</a>).</p>
 <h2 id="authorisation">Authorisation</h2>
 <p><code>policies/flexibility.rego</code> is evaluated <strong>in process</strong> by <code>celine.sdk.policies</code> — no OPA
-server. It is reached from exactly one place, <code>PolicyMiddleware</code>, guarding two routes.</p>
+server. It is reached from exactly one place, <code>PolicyMiddleware</code>, guarding three routes.
+The bundle is packaged into the wheel, so the image loads it from the installed package.</p>
 <p>Everything else is SQL: the participant-facing routes never consult a policy, and
 <code>WHERE user_id = :sub</code> is the whole of the separation between two participants.</p>
 <p><strong>The evaluation fails closed outside development.</strong> A bundle that will not load and an
