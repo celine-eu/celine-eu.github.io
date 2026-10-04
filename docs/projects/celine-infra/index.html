@@ -4178,6 +4178,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#keycloak-admin-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keycloak admin access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#applying-infrastructure-helmfile" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4567,6 +4578,17 @@
     <span class="md-ellipsis">
       
         Keycloak realm bootstrap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keycloak-admin-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keycloak admin access
       
     </span>
   </a>
@@ -5009,12 +5031,21 @@ is a static file server that runs non-root, listens on <code>8080</code>, serves
 <hr />
 <h2 id="keycloak-realm-bootstrap">Keycloak realm bootstrap</h2>
 <p>The realm's platform level (Organizations, sign-in settings, languages, themes, lifespans,
-brute force, <code>smtpServer</code>, the realm role groups) is written by <code>celine-policies keycloak
-bootstrap</code>, never by the realm import. It runs in the <code>policies-shell</code> pod's init containers:
+brute force, <code>smtpServer</code>, the realm role <code>platform-admin</code> and who holds it) is written by
+<code>celine-policies keycloak bootstrap</code>, never by the realm import. It runs in the <code>policies-shell</code> pod's init containers:
 plan (with a realm export first), apply, then a check that must find nothing left to change.
 Only then does the shell run <code>keycloak sync</code>. <code>sync-orgs</code> and <code>sync-users</code> refuse a realm that
-has not been through both, and <code>sync-users</code> refuses outright unless <code>ENV</code> names a non-production environment (<code>dev</code>, <code>development</code>, <code>local</code>, <code>test</code>, <code>ci</code>): a deployed realm
-gets its users from onboarding, not from a YAML.</p>
+has not been through both, and <code>sync-users</code> refuses outright unless <code>ENV</code> is exactly <code>dev</code>: a
+deployed realm gets its users from onboarding, not from a YAML.</p>
+<p>Both reach Keycloak through its Service (<code>keycloak.internal_url</code>), never the public host, which
+serves neither <code>/admin</code> nor <code>/realms/master</code> (see <a href="#keycloak-admin-access">Keycloak admin access</a>).
+Outside dev, bootstrap also hardens the <strong>master</strong> realm (brute force, a second factor for its
+admins), and does it only as its own master-realm client <code>svc-celine-policies-bootstrap</code>. Its
+first run creates that client with the master admin (<code>keycloak.username</code>/<code>password</code>); every
+later run, and <code>sync</code>, signs in as the client, because the master admin's password grant stops
+working once the admin has a second factor. The procedure (first console sign-in, secret
+rotation, recovery) is in celine-policies
+<a href="https://github.com/celine-eu/celine-policies/blob/main/docs/deployment.md"><code>docs/deployment.md</code>, "The admin second factor and the master realm"</a>.</p>
 <p>The run's export, plan, apply and check output is stored under
 <code>&lt;bucket&gt;/&lt;environment&gt;/&lt;UTC time&gt;-&lt;policies_shell.image_tag&gt;/</code>. Pin <code>policies_shell.image_tag</code>
 to a release: the tag is the version of <code>platform.yaml</code>.</p>
@@ -5035,16 +5066,32 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 <td>passes <code>--allow-destructive</code>, for a plan that turns a setting off or removes a list entry. Set for one release only</td>
 </tr>
 <tr>
+<td><code>policies_shell.env</code></td>
+<td><code>CELINE_KEYCLOAK_ENV</code> for bootstrap and sync. Unset: <code>dev</code> in the helmfile environment <code>dev</code>, <code>prod</code> in any other. Anything but <code>dev</code> is production to celine-policies</td>
+</tr>
+<tr>
+<td><code>policies_shell.bootstrap.client_secret</code></td>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, through a Secret, to the bootstrap init container and the shell. <strong>Required outside dev</strong>, at least 32 characters (<code>openssl rand -hex 32</code>): the render stops without it. The client holds master's <code>admin</code> role, so treat the secret as the master credential. Rotate it in the console first (master &gt; Clients &gt; <code>svc-celine-policies-bootstrap</code> &gt; Credentials), then here</td>
+</tr>
+<tr>
+<td><code>policies_shell.bootstrap.client_id</code></td>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_ID</code>. Unset: <code>svc-celine-policies-bootstrap</code></td>
+</tr>
+<tr>
+<td><code>keycloak.internal_url</code></td>
+<td>the Keycloak Service bootstrap, sync and provisioning use. Default <code>http://keycloak-keycloakx-http</code> (same namespace)</td>
+</tr>
+<tr>
 <td><code>keycloak.brute_force.enabled</code></td>
-<td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, only when set. Unset: brute-force protection is <strong>on</strong>. The realm import reads <code>keycloak.brute_force.failureFactor</code> (max login failures, default 5); there is no <code>maxLoginFailures</code> in Keycloak, and an import naming one stops Keycloak from starting</td>
+<td><code>CELINE_KEYCLOAK_BRUTE_FORCE_ENABLED</code>, only when set. Unset: brute-force protection is <strong>on</strong> outside dev, on the platform realm and on master; <code>false</code> turns it off on both. The realm import reads <code>keycloak.brute_force.failureFactor</code> (max login failures, default 5); there is no <code>maxLoginFailures</code> in Keycloak, and an import naming one stops Keycloak from starting</td>
 </tr>
 <tr>
 <td><code>keycloak.admin_mfa</code></td>
-<td><code>true</code>/<code>false</code>, or <code>{enabled: true\|false}</code>; anything else stops the render. The realm import only (new realms): members of <code>/admins</code> (realm role <code>admin</code>) who sign in with a password need TOTP or a recovery code, and one with neither enrols both; a passkey sign-in needs nothing more. <code>task test:auth-setup</code> checks the render</td>
+<td><code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code>, only when set: <code>true</code>/<code>false</code>, or <code>{enabled: true\|false}</code>; anything else stops the render. Unset: <strong>on</strong> outside dev. bootstrap owns the flow (the realm import has none): holders of the realm role <code>platform-admin</code>, and master's admins, who sign in with a password need TOTP or a recovery code, and one with neither enrols both; a passkey sign-in needs nothing more. Turning it off on a realm that has it needs <code>allow_destructive</code>. <code>task test:keycloak-access</code> checks the render</td>
 </tr>
 <tr>
 <td><code>keycloak.platform</code></td>
-<td>an overlay on <code>platform.yaml</code>: <code>realm_settings.supportedLocales</code> only</td>
+<td>an overlay on <code>platform.yaml</code>: <code>realm_settings.supportedLocales</code>, and <code>platform_admin.users</code>, the usernames that hold the realm role <code>platform-admin</code> besides the operator realm admin</td>
 </tr>
 <tr>
 <td>the resolved <code>smtp</code> block (see <a href="#email-smtp">Email (SMTP)</a>)</td>
@@ -5052,7 +5099,7 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 </tr>
 <tr>
 <td><code>auth_setup.realmAdminUser</code>, <code>realmAdminEmail</code>, <code>realmAdminPassword</code></td>
-<td><code>CELINE_KEYCLOAK_REALM_ADMIN_*</code>: the operator realm admin, created once (password through a Secret) and kept in <code>/admins</code></td>
+<td><code>CELINE_KEYCLOAK_REALM_ADMIN_*</code>: the operator realm admin, created once (password through a Secret) and granted the realm role <code>platform-admin</code></td>
 </tr>
 <tr>
 <td><code>auth_setup.clientSecret</code>, <code>domain</code></td>
@@ -5060,9 +5107,81 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 </tr>
 </tbody>
 </table>
+<p><strong>Who is a platform admin.</strong> Exactly two levels (celine-policies ADR-0012). The realm role
+<code>platform-admin</code>, in <code>realm_access.roles</code>, is the only platform-wide grant. An organisation's own
+groups (<code>admins</code> &gt; <code>managers</code> &gt; <code>editors</code> &gt; <code>viewers</code>) reach a token only inside
+<code>organization.&lt;alias&gt;.groups</code> and count only in that organisation. There are no realm groups and
+no realm roles <code>admin</code>/<code>manager</code>/<code>editor</code>/<code>viewer</code>, and no top-level <code>groups</code> claim. The Prefect
+and Marquez ingresses admit <code>allowed_groups=role:platform-admin</code> only (oauth2-proxy's
+<code>keycloak-oidc</code> provider names realm roles <code>role:&lt;name&gt;</code>). The MQTT broker has no superuser
+(<code>goAuth.disableSuperuser</code>).</p>
 <p><code>task keycloak:bootstrap:check:&lt;env&gt;</code> reports drift (exit 1). Do not run <code>bootstrap</code> by hand while
 the pod is starting. Rolling back is manual: put the platform-level keys back from the stored
 <code>export.json</code>, then pin the previous image tag so the next start does not re-apply.</p>
+<hr />
+<h2 id="keycloak-admin-access">Keycloak admin access</h2>
+<p>The public host <code>keycloak.&lt;domain&gt;</code> serves the platform realm and nothing else. Its Ingress
+lists two paths, <code>/realms/&lt;keycloak.realm&gt;</code> and <code>/resources</code>, so sign-in, tokens, discovery,
+JWKS, logout and the account console work, and everything else gets the ingress controller's
+404: <code>/admin</code> (the admin console <strong>and</strong> the admin REST API), <code>/realms/master</code>, any other realm,
+<code>/</code>. These are plain path rules: no snippet annotation, which ingress-nginx refuses by
+default. A gateway firewall or WAF in front does not change this.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keycloak.public_realms</code></td>
+<td>the realms the public host serves. Default: <code>[&lt;keycloak.realm&gt;]</code>. <code>master</code> stops the render</td>
+</tr>
+<tr>
+<td><code>keycloak.admin_forward_port</code></td>
+<td>the localhost port of the admin console, <code>KC_HOSTNAME_ADMIN=http://localhost:&lt;port&gt;</code>. Default <code>18080</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>There is no admin ingress.</strong> The master realm and the admin console are reached only through
+<code>kubectl port-forward</code> to the Keycloak Service, from a machine with cluster credentials:</p>
+<pre><code class="language-bash">task keycloak:forward                       # current kubectl context and namespace
+task keycloak:forward NAMESPACE=celine-dev  # or name the namespace
+# -&gt; Admin console: http://localhost:18080/admin/master/console/   (Ctrl-C to stop)
+</code></pre>
+<p>The task reads the port from the deployed <code>KC_HOSTNAME_ADMIN</code>; the console works only on that
+exact URL. localhost is a secure context, so plain http needs no certificate. <code>KC_HOSTNAME</code>
+stays the public URL: every realm's issuer, and every token minted inside the cluster, is
+unchanged.</p>
+<p><strong>One-time, per Keycloak: master's Frontend URL.</strong> The console signs in to master through
+master's own URL, and <code>KC_HOSTNAME_ADMIN</code> does not change that (measured on Keycloak 26.6.0 and
+26.7.3: without it the console calls the public host for master and never shows a login). So
+master's Frontend URL must be the same localhost URL. <code>task keycloak:forward</code> warns while it is
+not. With the forward running, as the bootstrap client (its secret is
+<code>policies_shell.bootstrap.client_secret</code>; <code>read -rs</code> keeps it out of the shell history):</p>
+<pre><code class="language-bash">U=http://localhost:18080
+read -rs S
+T=$(curl -s -d grant_type=client_credentials -d client_id=svc-celine-policies-bootstrap \
+      --data-urlencode client_secret=&quot;$S&quot; &quot;$U/realms/master/protocol/openid-connect/token&quot; \
+    | sed -n 's/.*&quot;access_token&quot;:&quot;\([^&quot;]*\)&quot;.*/\1/p')
+curl -s -X PUT -H &quot;Authorization: Bearer $T&quot; -H 'Content-Type: application/json' \
+  -d &quot;{\&quot;attributes\&quot;:{\&quot;frontendUrl\&quot;:\&quot;$U\&quot;}}&quot; &quot;$U/admin/realms/master&quot;
+unset S T
+</code></pre>
+<p>Master's tokens then carry the issuer <code>http://localhost:18080/realms/master</code>; celine-policies
+checks only that it ends in <code>/realms/master</code>. The first console sign-in of a master admin outside
+dev enrols TOTP and recovery codes.</p>
+<p><strong>Inside the cluster</strong> nothing administers Keycloak through the public host: the policies-shell
+bootstrap and sync, and provisioning, use <code>keycloak.internal_url</code>. Services keep validating
+tokens against the public realm URL, which the public host still serves.</p>
+<p><code>task test:keycloak-access</code> renders all of it. On a throwaway minikube with ingress-nginx
+v1.14.3, Keycloak 26.7.3 and the rendered Ingress (2026-10-04):
+- the public host answered 404 to <code>/admin/*</code>, <code>/realms/master/*</code>, <code>/</code> and other realms,
+  <code>..</code> and <code>%2f</code> variants included;
+- sign-in and the account console of the platform realm worked;
+- the console signed in through <code>task keycloak:forward</code>;
+- bootstrap's calls through the Service worked.</p>
 <hr />
 <h2 id="applying-infrastructure-helmfile">Applying Infrastructure (Helmfile)</h2>
 <p>From the <code>infra/</code> directory:</p>
