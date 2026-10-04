@@ -4118,6 +4118,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0017-a-broker-token-is-a-token-requested-for-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0017 — a broker token is a token requested for the broker
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4179,6 +4190,24 @@ never a browser.</p>
 </ul>
 <p>A person's token therefore reaches no topic: the broker's clients are services, each holding
 its declared <code>&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code> scopes.</p>
+<h3 id="req-0017-a-broker-token-is-a-token-requested-for-the-broker">REQ-0017 — a broker token is a token requested for the broker</h3>
+<p><code>CELINE_OIDC_AUDIENCE</code> (REQ-0009) is <code>svc-mqtt</code>, and only a token <strong>requested with the scope
+<code>mqtt</code></strong> carries it:</p>
+<ul>
+<li><code>clients.yaml</code> declares the scope <code>mqtt</code> with <code>audience: svc-mqtt</code>; <code>sync</code> keeps one audience
+  mapper (<code>included.custom.audience</code>) on that client scope. The scope grants nothing — topic
+  access is still the token's <code>&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code> and <code>&lt;service&gt;.admin</code> scopes.</li>
+<li><code>broker_scope: mqtt</code> makes <code>sync</code> grant it as an <strong>optional</strong> scope to every service-account
+  client holding a scope the ACL can grant a topic with. Nobody lists it by hand, and a browser
+  client never gets it.</li>
+<li>celine-sdk's <code>MqttBroker</code> asks its client-credentials provider for <code>scope=mqtt</code>
+  (<code>MqttConfig.token_scope</code>). Tokens a service mints for HTTP calls do not carry <code>svc-mqtt</code>,
+  so a service that receives another service's token cannot replay it to the broker.</li>
+</ul>
+<blockquote>
+<p>Before 2026-10 the deployed broker required <code>svc-celine-policies</code>, an audience no client's
+token carried, so every MQTT client was refused outside dev (NIS2 review finding R24).</p>
+</blockquote>
 
 
 

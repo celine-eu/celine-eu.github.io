@@ -4462,6 +4462,111 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-13xx-the-public-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-13xx — the public surface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="REQ-13xx — the public surface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1301-the-client-address-is-the-connections-peer-never-a-request-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1301 — the client address is the connection's peer, never a request header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1302-each-client-address-has-a-per-minute-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1302 — each client address has a per-minute budget
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1303-request-bodies-are-bounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1303 — request bodies are bounded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1304-stored-estimates-are-readable-only-by-a-platform-administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1304 — stored estimates are readable only by a platform administrator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1305-what-one-call-can-store-and-compute-is-bounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1305 — what one call can store, and compute, is bounded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1306-the-callers-address-is-stored-for-reference-and-cleared-after-a-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1306 — the caller's address is stored for reference, and cleared after a retention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1307-a-load-profile-is-named-never-addressed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1307 — a load profile is named, never addressed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1308-a-comparison-scenario-may-vary-only-what-a-request-could-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1308 — a comparison scenario may vary only what a request could set
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4512,7 +4617,8 @@ They are server policy, not caller input. A caller who could set their own tax r
 produce any answer it liked and have it come back looking authoritative. An undeclared
 key in the request body is ignored rather than merged.</p>
 <p>Widening this set is a policy decision, and the test states the set explicitly so that
-widening it shows up as a deliberate diff.</p>
+widening it shows up as a deliberate diff. A <code>compare</code> scenario is held to the same set
+(REQ-1308).</p>
 <p><em>Verified by</em> <code>tests/test_api_boundary.py::TestOverridableConfigIsAClosedSet</code></p>
 <h3 id="req-0204-overrides-never-mutate-the-servers-configuration">REQ-0204 — overrides never mutate the server's configuration</h3>
 <p>Applying per-request overrides returns a new dict. The config loaded at startup is shared
@@ -4593,7 +4699,7 @@ carrying the service's own message.</p>
 <h2 id="req-09xx-scenario-comparison">REQ-09xx — scenario comparison</h2>
 <h3 id="req-0901-a-comparison-is-a-base-case-plus-named-variants">REQ-0901 — a comparison is a base case plus named variants</h3>
 <p><code>compare</code> runs the base case and each named scenario, returning every full result
-alongside a summary. Each scenario's overrides are separated into those that change the
+alongside a summary. Through the API, what a scenario may override is closed (REQ-1308). Each scenario's overrides are separated into those that change the
 system and those that change the configuration, and both kinds may appear together.</p>
 <p><em>Verified by</em> <code>tests/test_comparator.py::TestSplitOverrides</code>,
 <code>tests/test_comparator.py::TestCompareScenarios</code></p>
@@ -4685,6 +4791,10 @@ contain per-state counts, and stored subject, IP and user-agent diagnostics are 
 <td><code>CELINE_OIDC_BASE_URL</code>, <code>CELINE_OIDC_JWKS_URI</code></td>
 <td>not stated, so the SDK's local Keycloak default is in use</td>
 </tr>
+<tr>
+<td><code>FORWARDED_ALLOW_IPS</code></td>
+<td>it contains <code>*</code> (REQ-1301)</td>
+</tr>
 </tbody>
 </table>
 <p>The signal is <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; the first non-empty one wins. <strong>Only <code>dev</code>
@@ -4695,6 +4805,72 @@ no password and is accepted everywhere. <code>task run</code> exports <code>CELI
 already set.</p>
 <p>This check is about configuration only. Which routes require a token is not changed by it.</p>
 <p><em>Verified by</em> <code>tests/test_posture.py::TestOnlyDevAcceptsDevelopmentDefaults</code></p>
+<hr />
+<h2 id="req-13xx-the-public-surface">REQ-13xx — the public surface</h2>
+<p>The calculators take no token: the service is a public calculator anyone may use before
+joining a community. These requirements bound what one anonymous caller can read, store and
+cost. The edge in front of the service carries its own rate limit; these hold without it.</p>
+<h3 id="req-1301-the-client-address-is-the-connections-peer-never-a-request-header">REQ-1301 — the client address is the connection's peer, never a request header</h3>
+<p>Every address the service records or limits on is <code>request.client.host</code> — the peer as
+uvicorn resolved it. <code>X-Forwarded-For</code> and <code>X-Real-IP</code> are written by whoever sends the
+request, so neither is read. Behind an ingress, uvicorn replaces the peer with the forwarded
+client only when the connection comes from an address in <code>FORWARDED_ALLOW_IPS</code> (default
+<code>127.0.0.1</code>), so setting it to the ingress's range is a deployment requirement: without it
+every caller shares the ingress's address and one rate limit. <code>FORWARDED_ALLOW_IPS=*</code>
+lets any caller pick its own address and is refused outside <code>CELINE_ENV=dev</code> (REQ-1201).</p>
+<p><em>Verified by</em> <code>tests/test_public_limits.py::TestTheClientAddressIsThePeer</code>,
+<code>tests/test_feedback.py::TestTheStoredAddressIsNotTheCallersChoice</code></p>
+<h3 id="req-1302-each-client-address-has-a-per-minute-budget">REQ-1302 — each client address has a per-minute budget</h3>
+<p>Every <code>POST</code> under <code>/api/v1/</code> other than feedback is a calculator and shares one budget
+per address (<code>RATE_LIMIT_CALCULATORS_PER_MINUTE</code>, default 30); <code>POST /api/v1/feedback</code>
+has its own (<code>RATE_LIMIT_FEEDBACK_PER_MINUTE</code>, default 5). Over budget the answer is
+<strong>429</strong> with <code>Retry-After</code> in seconds. A request counts whether or not it is valid. Reads
+are not limited. The budget lives in the process: one replica is the whole service.</p>
+<p><em>Verified by</em> <code>tests/test_public_limits.py::TestCallsArePerAddressRateLimited</code></p>
+<h3 id="req-1303-request-bodies-are-bounded">REQ-1303 — request bodies are bounded</h3>
+<p>A calculator body over <code>MAX_BODY_BYTES_CALCULATORS</code> (64 KiB) and a feedback body over
+<code>MAX_BODY_BYTES_FEEDBACK</code> (4 MiB) is refused with <strong>413</strong>, whether the size is declared
+or the body is chunked, before the route parses it.</p>
+<p><em>Verified by</em> <code>tests/test_public_limits.py::TestBodiesAreBounded</code></p>
+<h3 id="req-1304-stored-estimates-are-readable-only-by-a-platform-administrator">REQ-1304 — stored estimates are readable only by a platform administrator</h3>
+<p>An estimate holds what an anonymous caller typed — a location, a household's hourly
+consumption, a budget. <code>GET /estimates</code> and <code>GET /estimates/{id}</code> require a token with the
+realm role <code>platform-admin</code> (as REQ-1105): <strong>401</strong> without a token, <strong>403</strong> without the
+role. Nothing else in the platform reads them.</p>
+<p><em>Verified by</em> <code>tests/test_public_inputs.py::TestStoredEstimatesArePlatformAdminOnly</code></p>
+<h3 id="req-1305-what-one-call-can-store-and-compute-is-bounded">REQ-1305 — what one call can store, and compute, is bounded</h3>
+<ul>
+<li>An estimate stores the request and the response's <strong>summary</strong> — per scenario for
+  <code>compare</code> — never the hourly series the caller already received. A full <code>scenario</code>
+  response is ~650 KiB; what is stored is a few hundred bytes.</li>
+<li>Above <code>ESTIMATES_MAX_WRITES_PER_MINUTE</code> (default 60) stored estimates per minute for the
+  whole process, the caller still gets its result and nothing is stored; a warning is
+  logged.</li>
+<li><code>compare</code> takes 1 to 6 scenarios, with names of at most 100 characters.</li>
+<li>A feedback screenshot is at most 2 MiB decoded; <code>rooftop_wkt</code> at most 20 000 characters.</li>
+</ul>
+<p><em>Verified by</em> <code>tests/test_public_inputs.py::TestStorageIsBounded</code></p>
+<h3 id="req-1306-the-callers-address-is-stored-for-reference-and-cleared-after-a-retention">REQ-1306 — the caller's address is stored for reference, and cleared after a retention</h3>
+<p><code>scenario</code> and <code>compare</code> store the caller's address (REQ-1301) with the estimate, as
+feedback already did. It is personal data kept for reference only, so it is cleared from
+estimates and feedback once older than <code>CLIENT_IP_RETENTION_DAYS</code> (default 30), at startup
+and hourly after; the row itself stays.</p>
+<p><em>Verified by</em> <code>tests/test_public_inputs.py::TestTheCallerAddressIsStored</code>,
+<code>tests/test_estimates.py::TestClientAddressRetention</code></p>
+<h3 id="req-1307-a-load-profile-is-named-never-addressed">REQ-1307 — a load profile is named, never addressed</h3>
+<p>Every profile a request can name — <code>config_overrides.load_profile</code>, and the configured
+<code>load_profile</code>, <code>load_profile_by_type</code> and <code>heat_pump_profile</code> — resolves to an existing
+entry of <code>config/load_profiles/</code> with a plain name (one segment, no leading dot, no <code>..</code>,
+no link out of the directory). Anything else is <strong>400</strong> with a message that carries the
+name at most, never a path. The meter-data folder (<code>custom_profile_dir</code>) is not part of the
+API: the calculator processes meter exports in the browser and sends hourly values.</p>
+<p><em>Verified by</em> <code>tests/test_public_inputs.py::TestProfilesAreNamedNotAddressed</code></p>
+<h3 id="req-1308-a-comparison-scenario-may-vary-only-what-a-request-could-set">REQ-1308 — a comparison scenario may vary only what a request could set</h3>
+<p>Each <code>compare</code> scenario's overrides are limited to the fields of the system input and of
+<code>config_overrides</code> (REQ-0203), plus <code>optimize_profile</code>, and are validated with the same
+bounds as a request of their own. Tax rates, depreciation, the useful life and the profile
+maps are not overridable here either, and coordinates stay in Italy.</p>
+<p><em>Verified by</em> <code>tests/test_public_inputs.py::TestComparisonOverridesAreRequestFields</code></p>
 
 
 

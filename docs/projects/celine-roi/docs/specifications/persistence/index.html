@@ -4315,8 +4315,10 @@ can explain it.</p>
 <p><em>Verified by</em>
 <code>tests/test_persistence_optional.py::TestAConfiguredButUnreachableDatabaseIsFatal</code></p>
 <h3 id="req-0406-an-estimate-is-retrievable-exactly-as-it-was-stored">REQ-0406 — an estimate is retrievable exactly as it was stored</h3>
-<p>A saved estimate returns with its endpoint, status, request body, response body, duration
-and creation time intact, including the JSON structure of the request and response. An
+<p>A saved estimate returns with its endpoint, status, request body, stored response, duration,
+client address and creation time intact, including the JSON structure of the request and
+response. What <code>scenario</code> and <code>compare</code> store as the response is its summary (REQ-1305), and
+reading it requires the <code>platform-admin</code> role (REQ-1304). An
 unknown identifier is a 404. A failed computation is stored too, with its error message
 and a null response.</p>
 <p><em>Verified by</em> <code>tests/test_estimates.py::TestSaveEstimate</code>,

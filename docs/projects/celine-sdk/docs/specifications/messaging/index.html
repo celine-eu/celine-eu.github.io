@@ -4258,6 +4258,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#req-0091-a-broker-token-is-requested-for-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0091 — a broker token is requested for the broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#req-0083-deliberate-teardown-never-triggers-a-reconnect" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4441,6 +4452,13 @@ a watcher that sleeps until <code>expires_at - token_refresh_margin</code> and a
 must be at least the provider's own validity leeway (both default to 30 seconds) or the
 cached token is still considered valid and no renewal happens.</p>
 <p>A failure to obtain a token is retried, not fatal.</p>
+<h3 id="req-0091-a-broker-token-is-requested-for-the-broker">REQ-0091 — a broker token is requested for the broker</h3>
+<p>Given an <code>OidcClientCredentialsProvider</code>, the broker authenticates with a separate provider
+for the same client whose token also requests <code>MqttConfig.token_scope</code> (default <code>mqtt</code>). In
+the CELINE realm that optional scope adds the audience the broker's auth backend requires
+(celine-policies REQ-0017), so the tokens the same client sends over HTTP do not carry it
+and cannot be replayed to the broker. The caller's provider is not modified. Any other
+provider, or <code>token_scope</code> <code>None</code>/<code>""</code>, is used as given.</p>
 <h3 id="req-0083-deliberate-teardown-never-triggers-a-reconnect">REQ-0083 — deliberate teardown never triggers a reconnect</h3>
 <p>The listen task requests a reconnect when it ends abnormally — that is how a dropped
 connection is noticed. It must <strong>not</strong> request one when it is cancelled as part of a
