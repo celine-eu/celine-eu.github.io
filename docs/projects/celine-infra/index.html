@@ -4178,6 +4178,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#security-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#legal-host" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4600,6 +4611,17 @@
     <span class="md-ellipsis">
       
         Environment signal and token verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security headers
       
     </span>
   </a>
@@ -5108,6 +5130,123 @@ Images before the celine-sdk release that carries <code>posture</code> ignore th
   do not read that variable.</li>
 </ul>
 <hr />
+<h2 id="security-headers">Security headers</h2>
+<p>Outside dev, every public host - the frontends, the legal host and the API gateway - answers
+with security response headers set by ingress-nginx, not by the applications. Each release
+renders a ConfigMap <code>&lt;release&gt;-security-headers</code> and names it on its Ingresses with
+<code>nginx.ingress.kubernetes.io/custom-headers</code>. This is not a snippet annotation, so the
+controller's default <code>allow-snippet-annotations: false</code> and <code>annotations-risk-level: High</code>
+stay as they are.</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>X-Content-Type-Options</code></td>
+<td><code>nosniff</code></td>
+</tr>
+<tr>
+<td><code>Referrer-Policy</code></td>
+<td><code>strict-origin-when-cross-origin</code>; <code>no-referrer</code> on the API gateway</td>
+</tr>
+<tr>
+<td><code>X-Frame-Options</code></td>
+<td><code>DENY</code></td>
+</tr>
+<tr>
+<td><code>Permissions-Policy</code></td>
+<td>no camera, microphone, geolocation, payment or USB; the onboarding UI keeps the camera for document capture</td>
+</tr>
+<tr>
+<td><code>Strict-Transport-Security</code></td>
+<td><code>max-age=31536000; includeSubDomains</code>, where the Ingress terminates TLS (<code>ingress.tls.enabled</code>; the gateway's <code>tls.enabled</code>)</td>
+</tr>
+<tr>
+<td><code>Content-Security-Policy</code></td>
+<td>per host, in the chart's <code>securityHeaders.csp</code>; origins of the platform come from <code>domain</code> (<code>sso.&lt;domain&gt;</code>, <code>keycloak.&lt;domain&gt;</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>An Ingress whose backend sets its own headers carries no annotation, because the controller
+would replace them: the assistant API (on the gateway, on the assistant host and under
+<code>/api/assistant</code> of the webapp host), the community API and the onboarding API.</p>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>Policy</th>
+<th>Allows besides the host itself</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>webapp, assistant, community</td>
+<td>enforced</td>
+<td>inline scripts and styles (SvelteKit's bootstrap), <code>data:</code>/<code>blob:</code> images; community: OpenStreetMap tiles</td>
+</tr>
+<tr>
+<td>onboarding</td>
+<td>enforced</td>
+<td>inline scripts and styles, <code>data:</code>/<code>blob:</code> images</td>
+</tr>
+<tr>
+<td>grid</td>
+<td>Report-Only</td>
+<td>inline scripts and styles, a <code>blob:</code> worker, the CARTO and ArcGIS map hosts</td>
+</tr>
+<tr>
+<td>roi</td>
+<td>Report-Only</td>
+<td>inline scripts and styles, OpenStreetMap tiles, Nominatim, the static map image</td>
+</tr>
+<tr>
+<td>legal</td>
+<td>enforced</td>
+<td>inline styles only; no script</td>
+</tr>
+<tr>
+<td>api gateway</td>
+<td>enforced</td>
+<td>nothing (<code>default-src 'none'</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Before the first deployment with these headers</strong>, the controller must allow the header
+names. It refuses any other with a 503 on every path of the Ingress that names it. In the
+ingress-nginx ConfigMap (Helm chart: <code>controller.config</code>):</p>
+<pre><code class="language-yaml">global-allowed-response-headers: &quot;X-Content-Type-Options,Referrer-Policy,X-Frame-Options,Permissions-Policy,Strict-Transport-Security,Content-Security-Policy,Content-Security-Policy-Report-Only&quot;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>security_headers.enabled</code></td>
+<td><code>true</code> unless set. <code>false</code> renders neither ConfigMap nor annotation; only the environment <code>dev</code> may set it, elsewhere it stops the render</td>
+</tr>
+<tr>
+<td><code>security_headers.csp.&lt;release&gt;.report_only</code></td>
+<td><code>true</code> sends <code>Content-Security-Policy-Report-Only</code> for that release's host instead</td>
+</tr>
+<tr>
+<td><code>security_headers.csp.&lt;release&gt;.directives</code></td>
+<td>merged over the chart's directives; <code>null</code> drops one. Values may use <code>{{ .Values.ingress.domain }}</code> and <code>{{ .Values.ingress.host }}</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>&lt;release&gt;</code> is the helmfile release: <code>frontend-webapp</code>, <code>frontend-assistant</code>,
+<code>frontend-community</code>, <code>frontend-grid</code>, <code>frontend-roi</code>, <code>frontend-onboarding</code>, <code>legal</code>,
+<code>api-gateway</code>. A Report-Only host is promoted by setting <code>report_only: false</code> once the
+browser console shows no report on its pages. <code>task test:security-headers</code> renders all of it.</p>
+<hr />
 <h2 id="legal-host">Legal host</h2>
 <p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices) as a
 static site: one page per document, version and language, and per community
@@ -5380,6 +5519,7 @@ v1.14.3, Keycloak 26.7.3 and the rendered Ingress (2026-10-04):
 <li><code>celine-frontend-onboarding</code> — REC onboarding UI, and the host the onboarding API answers on</li>
 <li><code>celine-legal</code> — the legal host: the deployment's legal documents as a public static site. See <a href="#legal-host">Legal host</a></li>
 </ul>
+<p>The frontends, the legal host and the API gateway carry the <a href="#security-headers">security headers</a>.</p>
 <h3 id="platform">Platform</h3>
 <ul>
 <li><code>auth-setup</code> — secrets and configmaps for <code>oauth2-proxy</code> and <code>keycloak</code></li>
