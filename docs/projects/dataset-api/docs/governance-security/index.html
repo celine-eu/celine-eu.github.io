@@ -2550,10 +2550,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read" class="md-nav__link">
+  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-each-dataset-read" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GS-01 — A data read is recorded with the caller and the datasets read
+        GS-01 — A data read is recorded with the caller and each dataset read
       
     </span>
   </a>
@@ -4711,10 +4711,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read" class="md-nav__link">
+  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-each-dataset-read" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GS-01 — A data read is recorded with the caller and the datasets read
+        GS-01 — A data read is recorded with the caller and each dataset read
       
     </span>
   </a>
@@ -5067,8 +5067,9 @@ template, never the raw path or query string), <code>resource</code>, <code>outc
 <p>The caller is named by <code>sub</code> and client id only, never by email, username or name.
 <code>resource</code> holds catalogue dataset ids, which are platform identifiers. A <code>reason</code> is
 a short code, never an error detail: a detail can quote the caller's statement.</p>
-<h4 id="gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read">GS-01 — A data read is recorded with the caller and the datasets read</h4>
-<p>Every request that reads rows writes <strong>one</strong> record, after the outcome is known:</p>
+<h4 id="gs-01-a-data-read-is-recorded-with-the-caller-and-each-dataset-read">GS-01 — A data read is recorded with the caller and each dataset read</h4>
+<p>Every request that reads rows writes <strong>one record per dataset it read</strong>, after the
+outcome is known:</p>
 <table>
 <thead>
 <tr>
@@ -5091,8 +5092,11 @@ a short code, never an error detail: a detail can quote the caller's statement.<
 </tr>
 </tbody>
 </table>
-<p><code>resource</code> is every catalogue id the statement resolved to, sorted and joined with
-<code>,</code> (one record for a join). On the user path the caller is the verified token's
+<p>Each record's <code>resource</code> is one catalogue id: a join of three datasets writes three
+records. The records of one request share its <code>request_id</code> — the caller's
+<code>X-Request-ID</code> (or <code>X-Correlation-ID</code>) when it sent a usable one, otherwise one the
+service mints. When no dataset resolved, the request writes one record with
+<code>resource</code> null. On the user path the caller is the verified token's
 <code>sub</code> and <code>azp</code>; an anonymous read of an <code>open</code> dataset has no caller. On the
 dataspace path (EDR or DPS pull) the caller is the consumer participant — the
 verified token's <code>aud</code>, never a header — as both <code>sub</code> and <code>client_id</code>.</p>
@@ -5104,7 +5108,10 @@ HTML views) describes exposed datasets and returns no rows; it is not recorded.
 Neither is <code>/health</code>.</p>
 <h4 id="gs-02-a-refusal-is-recorded-with-the-caller-and-a-reason-code">GS-02 — A refusal is recorded with the caller and a reason code</h4>
 <p>Every refusal writes a <code>denied</code> record carrying the caller, whenever the caller is
-known from a token that verified:</p>
+known from a token that verified. As in GS-01, a refusal of a statement that
+resolved to several datasets writes one <code>denied</code> record per dataset, under one
+<code>request_id</code>; a refusal before any dataset resolved (<code>unknown_dataset</code>,
+<code>sql_refused</code>, …) writes one, with <code>resource</code> null:</p>
 <table>
 <thead>
 <tr>
