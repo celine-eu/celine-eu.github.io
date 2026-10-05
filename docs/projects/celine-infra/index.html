@@ -4156,6 +4156,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#roi-calculator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI calculator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#legal-host" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4556,6 +4567,17 @@
     <span class="md-ellipsis">
       
         Onboarding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roi-calculator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI calculator
       
     </span>
   </a>
@@ -4981,6 +5003,46 @@ runs its Alembic migrations in an init container. After a template changes, impo
 <pre><code class="language-bash">kubectl -n celine-&lt;env&gt; exec deploy/onboarding -- \
   /app/.venv/bin/onboarding-cli import-templates --filter &lt;slug&gt;
 </code></pre>
+<hr />
+<h2 id="roi-calculator">ROI calculator</h2>
+<p>The ROI calculator is public by design: <code>roi.&lt;domain&gt;</code> needs no sign-in and the API behind it
+takes no token. <code>celine-frontend-roi</code> routes only the calculator's API paths to roi
+(<code>ingress.apiPaths</code>); any other <code>/api</code> path - <code>/api/v1/estimates</code>, the stored calculator
+inputs, readable only with the realm role <code>platform-admin</code> - never reaches roi through the
+public host. What one caller can cost is bounded per client address twice: at the edge, on
+the API Ingress only, and inside roi.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>roi.forwarded_allow_ips</code></td>
+<td>the ingress controller's pod address range, uvicorn's <code>FORWARDED_ALLOW_IPS</code>. roi's rate limits and the client address it stores use the address it resolves. Unset (or <code>REQUIRED-ingress-pod-cidr</code>), every visitor shares the ingress's address and one budget. <code>*</code> stops the render</td>
+</tr>
+<tr>
+<td><code>roi.rate_limit_calculators_per_minute</code>, <code>roi.rate_limit_feedback_per_minute</code></td>
+<td>roi's per-address limits; roi answers 429 with <code>Retry-After</code>. Default 30, 5</td>
+</tr>
+<tr>
+<td><code>roi.estimates_max_writes_per_minute</code></td>
+<td>stored estimates per minute for the whole service; above it results are served and not stored. Default 60</td>
+</tr>
+<tr>
+<td><code>roi.client_ip_retention_days</code></td>
+<td>age after which a stored client address is cleared (estimates and feedback). Default 30</td>
+</tr>
+<tr>
+<td><code>frontend_roi.edge_limit_rps</code>, <code>frontend_roi.edge_limit_connections</code></td>
+<td>ingress-nginx <code>limit-rps</code> / <code>limit-connections</code> on the API paths, per client address. Default 2, 10. They assume the controller sees the real client address</td>
+</tr>
+</tbody>
+</table>
+<p>The roi settings other than <code>forwarded_allow_ips</code> are read by roi releases after v1.10.3; an
+older image ignores them.</p>
 <hr />
 <h2 id="legal-host">Legal host</h2>
 <p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices) as a
