@@ -4555,7 +4555,9 @@ roles, and nobody is granted one at login.</p>
 <p>Who read which dashboard, chart, dataset or SQL Lab query, and who was refused, is logged on
 <code>celine.audit</code> in the platform's record shape, one JSON line per request, naming the caller by
 token <code>sub</code> only. See the <a href="../packages/celine-superset/README.md#access-audit">plugin README</a>
-and <a href="../decisions/ADR-0004-superset-audits-the-request-in-the-platform-record/">ADR-0004</a>.</p>
+and <a href="../decisions/ADR-0004-superset-audits-the-request-in-the-platform-record/">ADR-0004</a>.
+The plugin's other log lines name the caller by <code>sub</code> too, never by username, email or name
+(<a href="../packages/celine-superset/README.md#log-lines">Log lines</a>).</p>
 <p>The API description (<code>/swagger/v1</code>, <code>/api/v1/_openapi</code>) is served in dev only, unless
 <code>CELINE_PUBLIC_DOCS=true</code>.</p>
 <h3 id="docker-image">Docker Image</h3>
