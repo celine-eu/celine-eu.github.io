@@ -4185,9 +4185,8 @@
 <h3 id="req-0039-the-service-is-observable-without-an-identity-and-cheap-to-ask">REQ-0039 — the service is observable without an identity, and cheap to ask</h3>
 <p><code>GET /health</code> answers <code>{"status": "ok"}</code> with no authentication, because a liveness probe
 reaches the container before any proxy has attached anything to it.</p>
-<p><code>/api/docs</code>, <code>/api/redoc</code> and <code>/api/openapi.json</code> are also public. That publishes the full
-route table to anyone who can reach the service — acceptable behind the cluster's ingress,
-and a deliberate cost of keeping the schema available to the frontend.</p>
+<p><code>/api/docs</code>, <code>/api/redoc</code> and <code>/api/openapi.json</code> are also public, but mounted only in
+<code>CELINE_ENV=dev</code> (or with <code>CELINE_PUBLIC_DOCS=true</code>); anywhere else they answer <code>404</code>.</p>
 <p><code>/api/ping</code> requires only a decodable token: no organisation, no scope. It is how a client
 asks whether its token is still good.</p>
 <p>The public set is matched by exact path, so <code>/api/docs/oauth2-redirect</code> is <strong>not</strong> public

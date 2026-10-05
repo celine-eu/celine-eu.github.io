@@ -4803,8 +4803,11 @@ relaxes</strong>: unset, empty, <code>staging</code>, <code>prod</code> or a typ
 one warning and the service starts. <code>DATABASE_URL=""</code> (no persistence, REQ-0401) carries
 no password and is accepted everywhere. <code>task run</code> exports <code>CELINE_ENV=dev</code> unless it is
 already set.</p>
-<p>This check is about configuration only. Which routes require a token is not changed by it.</p>
-<p><em>Verified by</em> <code>tests/test_posture.py::TestOnlyDevAcceptsDevelopmentDefaults</code></p>
+<p>This check is about configuration only. Which routes require a token is not changed by it.
+On the same signal, <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> are not mounted outside dev (<code>404</code>)
+unless <code>CELINE_PUBLIC_DOCS=true</code>.</p>
+<p><em>Verified by</em> <code>tests/test_posture.py::TestOnlyDevAcceptsDevelopmentDefaults</code>,
+<code>tests/test_api_docs.py</code></p>
 <hr />
 <h2 id="req-13xx-the-public-surface">REQ-13xx — the public surface</h2>
 <p>The calculators take no token: the service is a public calculator anyone may use before
