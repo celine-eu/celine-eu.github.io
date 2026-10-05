@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-sdk/docs/specifications/audit/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/decisions/ADR-0004-a-participant-twin-is-addressed-by-the-callers-sub/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Access audit - CELINE Project</title>
+        <title>ADR-0004 — A participant twin is addressed by the caller's sub, and its meters are the caller's registry assets - CELINE Project</title>
       
     
     
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#access-audit" class="md-skip">
+        <a href="#adr-0004-a-participant-twin-is-addressed-by-the-callers-sub-and-its-meters-are-the-callers-registry-assets" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Access audit
+              ADR-0004 — A participant twin is addressed by the caller's sub, and its meters are the caller's registry assets
             
           </span>
         </div>
@@ -634,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -662,7 +662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -690,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -718,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -746,7 +746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -1834,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -1862,7 +1862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../../concepts/" class="md-nav__link">
         
   
   
@@ -1890,7 +1890,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/values/" class="md-nav__link">
+      <a href="../../values/" class="md-nav__link">
         
   
   
@@ -1918,7 +1918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
+      <a href="../../simulations/" class="md-nav__link">
         
   
   
@@ -1946,7 +1946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/clients/" class="md-nav__link">
+      <a href="../../clients/" class="md-nav__link">
         
   
   
@@ -1974,7 +1974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
+      <a href="../../subscriptions/" class="md-nav__link">
         
   
   
@@ -2002,7 +2002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
+      <a href="../../brokers/" class="md-nav__link">
         
   
   
@@ -2030,7 +2030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
+      <a href="../../developer-guide/" class="md-nav__link">
         
   
   
@@ -4086,10 +4086,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#req-0190-one-record-shape-on-one-logger-as-one-json-line" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0190 — one record shape, on one logger, as one JSON line
+        Context
       
     </span>
   </a>
@@ -4097,10 +4097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0191-no-personal-data-in-a-record" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0191 — no personal data in a record
+        Decision
       
     </span>
   </a>
@@ -4108,21 +4108,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0192-a-route-opts-in-with-one-dependency" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0192 — a route opts in with one dependency
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0193-a-record-names-the-route-outside-a-matched-starlette-route" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0193 — a record names the route outside a matched Starlette route
+        Consequences
       
     </span>
   </a>
@@ -4146,127 +4135,52 @@
 
 
 
-<h1 id="access-audit">Access audit</h1>
-<p><code>celine.sdk.audit</code>. Each service records who read what, and who was refused, in the same
-shape, so one log query answers the question for the whole platform. The record names the
-caller by identifier only; the audit trail itself must not become a store of personal data.</p>
-<hr />
-<h3 id="req-0190-one-record-shape-on-one-logger-as-one-json-line">REQ-0190 — one record shape, on one logger, as one JSON line</h3>
-<p>Every record is emitted on the logger <code>celine.audit</code> as a single JSON object, and is also
-attached to the log record as <code>record.audit</code>. It always carries the same fields, in this
-order, with <code>null</code> for an unknown value:</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Holds</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>event</code></td>
-<td><code>access</code> or <code>denied</code></td>
-</tr>
-<tr>
-<td><code>service</code></td>
-<td><code>configure_audit(service)</code>, a call's <code>service=</code>, else <code>OTEL_SERVICE_NAME</code>, else <code>unknown</code></td>
-</tr>
-<tr>
-<td><code>sub</code>, <code>client_id</code>, <code>service_account</code></td>
-<td>the verified caller (REQ-0191)</td>
-</tr>
-<tr>
-<td><code>action</code></td>
-<td>what the service did, in its own words: <code>dataset.read</code>, <code>twin.values.read</code></td>
-</tr>
-<tr>
-<td><code>method</code>, <code>route</code></td>
-<td>the HTTP method and the matched route template (<code>/datasets/{dataset_id}</code>)</td>
-</tr>
-<tr>
-<td><code>resource</code></td>
-<td>the identifier acted on (REQ-0191)</td>
-</tr>
-<tr>
-<td><code>outcome</code></td>
-<td><code>allowed</code>, <code>denied</code> or <code>error</code></td>
-</tr>
-<tr>
-<td><code>reason</code></td>
-<td>a short code for a refusal or an error: <code>http 403</code>, <code>not_member</code></td>
-</tr>
-<tr>
-<td><code>request_id</code>, <code>trace_id</code></td>
-<td><code>X-Request-ID</code> / <code>X-Correlation-ID</code>, and the <code>traceparent</code> trace id, when well-formed</td>
-</tr>
-<tr>
-<td><code>ts</code></td>
-<td>UTC, ISO 8601, milliseconds</td>
-</tr>
-</tbody>
-</table>
-<p><code>audit_access</code> logs at <code>INFO</code>, <code>audit_denied</code> at <code>WARNING</code>. The <code>celine.audit</code> logger is
-held at <code>INFO</code> whatever <code>LOG_LEVEL</code> says: quieting a service does not switch its audit off.</p>
-<h3 id="req-0191-no-personal-data-in-a-record">REQ-0191 — no personal data in a record</h3>
+<h1 id="adr-0004-a-participant-twin-is-addressed-by-the-callers-sub-and-its-meters-are-the-callers-registry-assets">ADR-0004 — A participant twin is addressed by the caller's <code>sub</code>, and its meters are the caller's registry assets</h1>
+<p><strong>Date:</strong> 2026-10-05
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p><code>/participants/{participant_id}</code> names a person. Until this decision the domain resolved the
+entity from the caller's registry membership and ignored the identifier in the path, and the
+fetchers took whatever <code>device_id</code> the payload carried. What a caller actually received was
+still their own: the registry routes answer "what is mine" for the presented token, and every
+device-keyed table the fetchers read carries dataset-api's <code>rec_registry</code> row filter, which
+narrows rows to the caller's meters. The Digital Twin itself, though, enforced neither the
+participant nor the meter, so its own answer depended entirely on the layers behind it.</p>
+<p>Three ways to tie a caller to a participant were open:</p>
 <ul>
-<li>The caller is <code>sub</code>, <code>client_id</code> (<code>azp</code>, else <code>client_id</code>) and whether the token is a
-  service account. Email, name and username are never read.</li>
-<li><code>resource</code> holds an identifier the platform issued: a dataset id, an asset id, a twin or
-  entity id, a community id, a commitment id. When the only identifier is personal (an
-  email, a fiscal code, a delivery point code), the caller passes <code>pseudonymise(value)</code>:
-  <code>h:</code> and 16 hex characters of SHA-256, keyed with <code>CELINE_AUDIT_PSEUDONYM_KEY</code> when set.</li>
-<li>As a backstop every string field is checked: an email-shaped value is replaced by its
-  pseudonym, control characters are dropped, length is capped at 256.</li>
-<li><code>route</code> is the template, never the raw path, and never the query string.</li>
+<li><strong>The token's <code>sub</code>.</strong> Every consumer (<code>celine-webapp</code>, <code>celine-ai-assistant</code>,
+  <code>flexibility-api</code>) already sends <code>participant_id = user.sub</code> with the user's own token. The
+  claim is verified here, before any other service is asked.</li>
+<li><strong>The registry member key.</strong> Stable and business-meaningful, but known only after a
+  registry round trip, shared by everyone acting for one member, and absent from every
+  consumer call today.</li>
+<li><strong>Groups.</strong> A token's organization groups name a community and a role in it, never a
+  person; they cannot say which participant a caller is.</li>
 </ul>
-<h3 id="req-0192-a-route-opts-in-with-one-dependency">REQ-0192 — a route opts in with one dependency</h3>
-<p><code>audit_route(action, user=…, resource=…)</code> is a FastAPI dependency for a route or a router.
-<code>user</code> is the service's own dependency returning the verified caller (FastAPI resolves it
-once per request). Without it, or when it returns <code>None</code>, the caller is
-<code>request.state.user</code> as it stands when the request ends: a middleware, an auth dependency
-declared after this one, or the handler may set it, and the route needs no extra
-dependency. <code>resource</code> names the path parameter holding the identifier, or is a callable
-<code>(request) -&gt; id</code>.</p>
-<table>
-<thead>
-<tr>
-<th>The handler</th>
-<th>Record</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>returns</td>
-<td><code>access</code>, <code>allowed</code></td>
-</tr>
-<tr>
-<td>raises <code>HTTPException</code> 401 or 403</td>
-<td><code>denied</code>, <code>reason = "http &lt;status&gt;"</code></td>
-</tr>
-<tr>
-<td>raises another <code>HTTPException</code></td>
-<td><code>access</code>, <code>error</code>, <code>reason = "http &lt;status&gt;"</code></td>
-</tr>
-<tr>
-<td>raises anything else</td>
-<td><code>access</code>, <code>error</code>, <code>reason = &lt;exception class&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<p>The exception is re-raised unchanged. A request the <code>user</code> dependency itself refuses is
-not recorded (there is no verified caller to name), nor is a refusal <em>returned</em> as a
-response rather than raised: the service calls <code>audit_denied</code> there.</p>
-<p>A refusal raised by an auth dependency declared <em>after</em> <code>audit_route</code> is recorded as
-<code>denied</code>, with no caller when none was verified.</p>
-<h3 id="req-0193-a-record-names-the-route-outside-a-matched-starlette-route">REQ-0193 — a record names the route outside a matched Starlette route</h3>
-<p><code>audit_access</code> and <code>audit_denied</code> take the request as <code>request=</code>: a Starlette / FastAPI
-request, or a Flask request inside its request context, whose matched URL rule under the
-script root (<code>/dashboard/&lt;int:pk&gt;</code>) is the route. With no matched route or rule, <code>route</code>
-is <code>null</code>.</p>
-<p>Both also take <code>method=</code> and <code>route=</code>. Each, when given, wins over the request's value:
-a middleware refusing before routing passes the route template it guards. <code>method</code> is
-upper-cased, and <code>route</code> is cleaned like every string field (REQ-0191) — it is a
-template, never the raw path.</p>
+<p>The meters had one candidate source, the registry's <code>/user/assets</code> for the caller's token: it
+is the answer dataset-api's row filter is built from, so the two layers cannot disagree on
+what "own" means.</p>
+<h2 id="decision">Decision</h2>
+<p>The participant is the caller: <code>participant_id</code> MUST equal the <code>sub</code> of the token
+<code>require_user</code> verified, checked before the registry is asked. A <code>device_id</code> in a fetch
+payload MUST be the <code>sensor_id</code> of one of the caller's registry assets, read with the caller's
+token. Refusals answer 403 and are recorded by the access audit (<code>participant_not_caller</code>,
+<code>device_not_owned</code>). No role, group or service account is exempt: the Digital Twin grants no
+role-based access to participant routes, and adds none. The requirements are
+<code>docs/specifications/participant.md</code>.</p>
+<p>The meter check is a domain hook, <code>DTDomain.check_fetch</code> (REQ-1116), called by the values
+executor with the validated payload, so every route reaching a fetcher — both verbs of
+<code>/values</code>, <code>/ontology</code> — is covered by one check rather than one per route.</p>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li>A fetch naming a meter costs one more registry call per request (cached on the request).</li>
+<li>A manager or platform view of someone else's meters cannot be built on participant routes.
+  It belongs on a route of its own with its own rule, or on dataset-api directly, where the
+  platform-wide grant is defined and audited.</li>
+<li>If the platform ever lets one person act for several participants (a household, a proxy),
+  <code>sub</code> equality is the line to revisit; the tempting shortcut — accepting the member key in
+  the path — would let everyone acting for one member read each other's twin.</li>
+</ul>
 
 
 

@@ -4263,6 +4263,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1116-a-domain-may-refuse-a-fetch-for-the-caller-after-payload-validation-a-refused-fetch-must-answer-403-with-a-reason-code-must-not-reach-the-data-client-and-must-be-recorded-denied-with-that-code-req-1081" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1116 — A domain MAY refuse a fetch for the caller after payload validation; a refused fetch MUST answer 403 with a reason code, MUST NOT reach the data client, and MUST be recorded denied with that code (REQ-1081).
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4675,6 +4686,13 @@ fetcher's defaults into the next fetcher's input.</p>
 <p>JSON Schema's <code>number</code> admits NaN, and NaN passes every <code>minimum</code> and <code>maximum</code>, so the
 schema alone let a <code>lat</code> of NaN through to <code>boundary_at_point</code>'s statement as <code>nan</code>, which
 the database cannot read: a 500 for a client error.</p>
+</blockquote>
+<h3 id="req-1116-a-domain-may-refuse-a-fetch-for-the-caller-after-payload-validation-a-refused-fetch-must-answer-403-with-a-reason-code-must-not-reach-the-data-client-and-must-be-recorded-denied-with-that-code-req-1081">REQ-1116 — A domain MAY refuse a fetch for the caller after payload validation; a refused fetch MUST answer 403 with a reason code, MUST NOT reach the data client, and MUST be recorded <code>denied</code> with that code (REQ-1081).</h3>
+<p>Holds on both verbs of <code>/values/{fetcher_id}</code> and on <code>/ontology/{spec_id}</code>. The domain sees
+the validated payload, defaults applied. A domain that refuses nothing is the default.</p>
+<blockquote>
+<p>The hook is <code>DTDomain.check_fetch</code>. <code>it-participant</code> uses it to keep a <code>device_id</code> to the
+caller's own meters (<a href="../participant/">participant.md</a>).</p>
 </blockquote>
 <hr />
 <h2 id="execution">Execution</h2>

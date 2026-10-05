@@ -4275,6 +4275,10 @@ token provider → clients → domain value fetchers → brokers → subscriptio
 <td><code>resolve_entity(entity_id, request)</code></td>
 <td>validates and enriches the entity from the URL</td>
 </tr>
+<tr>
+<td><code>check_fetch(spec, payload, ctx)</code></td>
+<td>refuses a value fetch for this caller by raising <code>FetchRefused</code> (403, audited; REQ-1116); allows everything by default</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Lifecycle</strong> — <code>on_startup()</code>, <code>on_shutdown()</code>.</p>
@@ -4412,10 +4416,13 @@ generated from this schema and two domains would otherwise collide on the built-
   the REC Manager Dashboard and select device-keyed or aggregate rows only, with the caller's
   token. It does not override <code>resolve_entity</code>, so any <code>community_id</code> is accepted. Custom routes:
   <code>/energy-balance</code>, <code>/energy-balance/hourly</code>.</li>
-<li><strong>Participant</strong> (<code>domains/participant/</code>). <code>resolve_entity</code> asks the REC registry
-  (<code>get_me</code>, with the caller's token) and returns <code>None</code> — 404 — when the caller has no
-  membership; otherwise it puts <code>member_key</code>, <code>community_key</code> and related fields in
-  <code>entity.metadata</code>. An <code>@on_event</code> handler in <code>events.py</code> runs the meter nudging when a
+<li><strong>Participant</strong> (<code>domains/participant/</code>). A participant twin is the caller's own:
+  <code>resolve_entity</code> answers 403 when <code>participant_id</code> is not the verified token's <code>sub</code>, then
+  asks the REC registry (<code>get_me</code>, with the caller's token) and returns <code>None</code> — 404 — when
+  the caller has no membership; otherwise it puts <code>member_key</code>, <code>community_key</code> and related
+  fields in <code>entity.metadata</code>. Its <code>check_fetch</code> answers 403 to a <code>device_id</code> that is not
+  one of the caller's registry assets. No role is exempt
+  (<a href="../specifications/participant/">participant.md</a>, ADR-0004). An <code>@on_event</code> handler in <code>events.py</code> runs the meter nudging when a
   <code>meters-flow</code> pipeline run completes. Custom routes: <code>/energy-balance</code>,
   <code>/energy-balance/hourly</code>, <code>/profile</code>, <code>/community</code>, <code>/member</code>, <code>/assets</code>,
   <code>/delivery-points</code>.</li>

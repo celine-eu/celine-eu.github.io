@@ -5572,7 +5572,10 @@ validation, without modifying the caller's payload:</p>
 <hr />
 <h2 id="api-endpoints">API Endpoints</h2>
 <p>All paths are under <code>/{route_prefix}/{entity_id}</code> and require a bearer token (401
-without). An entity the domain's <code>resolve_entity</code> rejects answers 404.</p>
+without). An entity the domain's <code>resolve_entity</code> rejects answers 404. A payload the
+domain refuses for this caller answers 403 before anything reaches the data client
+(<code>check_fetch</code>, REQ-1116): on <code>/participants/{participant_id}</code>, a <code>device_id</code> that is not
+one of the caller's meters.</p>
 <h3 id="list-fetchers">List fetchers</h3>
 <pre><code class="language-http">GET .../values
 </code></pre>

@@ -4744,7 +4744,10 @@ template already says which parameters the route takes.</p>
 <p>Refusals and their codes: no token (<code>no_token</code>), a token failing verification
 (<code>invalid_token</code>, no caller: an unverified token names nobody), and an entity the domain's
 <code>resolve_entity</code> rejects (<code>entity_rejected</code>, recorded with the caller, although the
-answer is the 404 of REQ-1031). Any other 401 or 403 is recorded as <code>http &lt;status&gt;</code>.</p>
+answer is the 404 of REQ-1031). A domain's own refusal is recorded with the code the domain
+gives it: <code>it-participant</code>'s are <code>participant_not_caller</code> and <code>device_not_owned</code>
+(<a href="../participant/">participant.md</a>), and a fetch a domain refuses carries its code too
+(REQ-1116). Any other 401 or 403 is recorded as <code>http &lt;status&gt;</code>.</p>
 <h3 id="req-1082-an-audit-record-must-not-carry-the-callers-email-name-or-username-the-token-or-the-query-string">REQ-1082 — An audit record MUST NOT carry the caller's email, name or username, the token, or the query string.</h3>
 <p>An entity id shaped like an email address is replaced by its pseudonym (<code>h:</code> and 16 hex
 digits).</p>

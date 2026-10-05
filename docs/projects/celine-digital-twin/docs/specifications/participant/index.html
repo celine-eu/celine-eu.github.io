@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-sdk/docs/specifications/audit/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/specifications/participant/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Access audit - CELINE Project</title>
+        <title>Specification — participant domain - CELINE Project</title>
       
     
     
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#access-audit" class="md-skip">
+        <a href="#specification-participant-domain" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Access audit
+              Specification — participant domain
             
           </span>
         </div>
@@ -634,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../../../../celine-sdk/" class="md-nav__link">
         
   
   
@@ -662,7 +662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../auth/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/auth/" class="md-nav__link">
         
   
   
@@ -690,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../broker/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/broker/" class="md-nav__link">
         
   
   
@@ -718,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../settings/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/settings/" class="md-nav__link">
         
   
   
@@ -746,7 +746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../spec-management/" class="md-nav__link">
+      <a href="../../../../celine-sdk/docs/spec-management/" class="md-nav__link">
         
   
   
@@ -1834,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -1862,7 +1862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/concepts/" class="md-nav__link">
+      <a href="../../concepts/" class="md-nav__link">
         
   
   
@@ -1890,7 +1890,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/values/" class="md-nav__link">
+      <a href="../../values/" class="md-nav__link">
         
   
   
@@ -1918,7 +1918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/simulations/" class="md-nav__link">
+      <a href="../../simulations/" class="md-nav__link">
         
   
   
@@ -1946,7 +1946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/clients/" class="md-nav__link">
+      <a href="../../clients/" class="md-nav__link">
         
   
   
@@ -1974,7 +1974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/subscriptions/" class="md-nav__link">
+      <a href="../../subscriptions/" class="md-nav__link">
         
   
   
@@ -2002,7 +2002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/brokers/" class="md-nav__link">
+      <a href="../../brokers/" class="md-nav__link">
         
   
   
@@ -2030,7 +2030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-digital-twin/docs/developer-guide/" class="md-nav__link">
+      <a href="../../developer-guide/" class="md-nav__link">
         
   
   
@@ -4086,46 +4086,125 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#req-0190-one-record-shape-on-one-logger-as-one-json-line" class="md-nav__link">
+  <a href="#the-participant-is-the-caller" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0190 — one record shape, on one logger, as one JSON line
+        The participant is the caller
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The participant is the caller">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1400-a-request-whose-participant_id-is-not-the-verified-tokens-sub-must-answer-403-must-be-recorded-denied-with-the-reason-participant_not_caller-and-must-not-reach-the-rec-registry-or-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1400 — A request whose participant_id is not the verified token's sub MUST answer 403, MUST be recorded denied with the reason participant_not_caller, and MUST NOT reach the REC registry or the data client.
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0191-no-personal-data-in-a-record" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#req-1401-a-request-whose-participant_id-is-the-callers-sub-must-resolve-as-before-the-registry-is-asked-with-the-callers-token-and-a-caller-with-no-membership-answers-404-req-1031" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0191 — no personal data in a record
+        REQ-1401 — A request whose participant_id is the caller's sub MUST resolve as before: the registry is asked with the caller's token, and a caller with no membership answers 404 (REQ-1031).
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#req-0192-a-route-opts-in-with-one-dependency" class="md-nav__link">
+  <a href="#the-meters-are-the-callers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0192 — a route opts in with one dependency
+        The meters are the caller's
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The meters are the caller&#39;s">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1402-a-fetch-whose-payload-carries-a-device_id-that-is-not-the-sensor_id-of-one-of-the-callers-registry-assets-must-answer-403-must-be-recorded-denied-with-the-reason-device_not_owned-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1402 — A fetch whose payload carries a device_id that is not the sensor_id of one of the caller's registry assets MUST answer 403, MUST be recorded denied with the reason device_not_owned, and MUST NOT reach the data client.
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#req-0193-a-record-names-the-route-outside-a-matched-starlette-route" class="md-nav__link">
+  <a href="#no-role-widens-the-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0193 — a record names the route outside a matched Starlette route
+        No role widens the scope
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="No role widens the scope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1403-req-1400-and-req-1402-must-hold-for-every-caller-a-realm-role-platform-admin-an-organization-group-and-a-service-account-must-not-widen-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1403 — REQ-1400 and REQ-1402 MUST hold for every caller: a realm role (platform-admin), an organization group and a service account MUST NOT widen them.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failing-closed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failing closed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Failing closed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1404-when-the-callers-assets-cannot-be-read-from-the-registry-a-fetch-naming-a-device_id-must-answer-an-error-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1404 — When the caller's assets cannot be read from the registry, a fetch naming a device_id MUST answer an error and MUST NOT reach the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4146,127 +4225,38 @@
 
 
 
-<h1 id="access-audit">Access audit</h1>
-<p><code>celine.sdk.audit</code>. Each service records who read what, and who was refused, in the same
-shape, so one log query answers the question for the whole platform. The record names the
-caller by identifier only; the audit trail itself must not become a store of personal data.</p>
+<h1 id="specification-participant-domain">Specification — participant domain</h1>
+<p>Requirements specific to the <code>it-participant</code> domain (<code>src/celine/dt/domains/participant/</code>):
+whose twin a caller may read, and which meters a fetch may name. The generic refusal hook is
+REQ-1116 in <a href="../values/">values.md</a>; the audit record a refusal produces is REQ-1081 in
+<a href="../runtime/">runtime.md</a>. Why the participant is the token's <code>sub</code>, and not a member key or
+a group, is <a href="../../decisions/ADR-0004-a-participant-twin-is-addressed-by-the-callers-sub/">ADR-0004</a>.</p>
 <hr />
-<h3 id="req-0190-one-record-shape-on-one-logger-as-one-json-line">REQ-0190 — one record shape, on one logger, as one JSON line</h3>
-<p>Every record is emitted on the logger <code>celine.audit</code> as a single JSON object, and is also
-attached to the log record as <code>record.audit</code>. It always carries the same fields, in this
-order, with <code>null</code> for an unknown value:</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Holds</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>event</code></td>
-<td><code>access</code> or <code>denied</code></td>
-</tr>
-<tr>
-<td><code>service</code></td>
-<td><code>configure_audit(service)</code>, a call's <code>service=</code>, else <code>OTEL_SERVICE_NAME</code>, else <code>unknown</code></td>
-</tr>
-<tr>
-<td><code>sub</code>, <code>client_id</code>, <code>service_account</code></td>
-<td>the verified caller (REQ-0191)</td>
-</tr>
-<tr>
-<td><code>action</code></td>
-<td>what the service did, in its own words: <code>dataset.read</code>, <code>twin.values.read</code></td>
-</tr>
-<tr>
-<td><code>method</code>, <code>route</code></td>
-<td>the HTTP method and the matched route template (<code>/datasets/{dataset_id}</code>)</td>
-</tr>
-<tr>
-<td><code>resource</code></td>
-<td>the identifier acted on (REQ-0191)</td>
-</tr>
-<tr>
-<td><code>outcome</code></td>
-<td><code>allowed</code>, <code>denied</code> or <code>error</code></td>
-</tr>
-<tr>
-<td><code>reason</code></td>
-<td>a short code for a refusal or an error: <code>http 403</code>, <code>not_member</code></td>
-</tr>
-<tr>
-<td><code>request_id</code>, <code>trace_id</code></td>
-<td><code>X-Request-ID</code> / <code>X-Correlation-ID</code>, and the <code>traceparent</code> trace id, when well-formed</td>
-</tr>
-<tr>
-<td><code>ts</code></td>
-<td>UTC, ISO 8601, milliseconds</td>
-</tr>
-</tbody>
-</table>
-<p><code>audit_access</code> logs at <code>INFO</code>, <code>audit_denied</code> at <code>WARNING</code>. The <code>celine.audit</code> logger is
-held at <code>INFO</code> whatever <code>LOG_LEVEL</code> says: quieting a service does not switch its audit off.</p>
-<h3 id="req-0191-no-personal-data-in-a-record">REQ-0191 — no personal data in a record</h3>
-<ul>
-<li>The caller is <code>sub</code>, <code>client_id</code> (<code>azp</code>, else <code>client_id</code>) and whether the token is a
-  service account. Email, name and username are never read.</li>
-<li><code>resource</code> holds an identifier the platform issued: a dataset id, an asset id, a twin or
-  entity id, a community id, a commitment id. When the only identifier is personal (an
-  email, a fiscal code, a delivery point code), the caller passes <code>pseudonymise(value)</code>:
-  <code>h:</code> and 16 hex characters of SHA-256, keyed with <code>CELINE_AUDIT_PSEUDONYM_KEY</code> when set.</li>
-<li>As a backstop every string field is checked: an email-shaped value is replaced by its
-  pseudonym, control characters are dropped, length is capped at 256.</li>
-<li><code>route</code> is the template, never the raw path, and never the query string.</li>
-</ul>
-<h3 id="req-0192-a-route-opts-in-with-one-dependency">REQ-0192 — a route opts in with one dependency</h3>
-<p><code>audit_route(action, user=…, resource=…)</code> is a FastAPI dependency for a route or a router.
-<code>user</code> is the service's own dependency returning the verified caller (FastAPI resolves it
-once per request). Without it, or when it returns <code>None</code>, the caller is
-<code>request.state.user</code> as it stands when the request ends: a middleware, an auth dependency
-declared after this one, or the handler may set it, and the route needs no extra
-dependency. <code>resource</code> names the path parameter holding the identifier, or is a callable
-<code>(request) -&gt; id</code>.</p>
-<table>
-<thead>
-<tr>
-<th>The handler</th>
-<th>Record</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>returns</td>
-<td><code>access</code>, <code>allowed</code></td>
-</tr>
-<tr>
-<td>raises <code>HTTPException</code> 401 or 403</td>
-<td><code>denied</code>, <code>reason = "http &lt;status&gt;"</code></td>
-</tr>
-<tr>
-<td>raises another <code>HTTPException</code></td>
-<td><code>access</code>, <code>error</code>, <code>reason = "http &lt;status&gt;"</code></td>
-</tr>
-<tr>
-<td>raises anything else</td>
-<td><code>access</code>, <code>error</code>, <code>reason = &lt;exception class&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<p>The exception is re-raised unchanged. A request the <code>user</code> dependency itself refuses is
-not recorded (there is no verified caller to name), nor is a refusal <em>returned</em> as a
-response rather than raised: the service calls <code>audit_denied</code> there.</p>
-<p>A refusal raised by an auth dependency declared <em>after</em> <code>audit_route</code> is recorded as
-<code>denied</code>, with no caller when none was verified.</p>
-<h3 id="req-0193-a-record-names-the-route-outside-a-matched-starlette-route">REQ-0193 — a record names the route outside a matched Starlette route</h3>
-<p><code>audit_access</code> and <code>audit_denied</code> take the request as <code>request=</code>: a Starlette / FastAPI
-request, or a Flask request inside its request context, whose matched URL rule under the
-script root (<code>/dashboard/&lt;int:pk&gt;</code>) is the route. With no matched route or rule, <code>route</code>
-is <code>null</code>.</p>
-<p>Both also take <code>method=</code> and <code>route=</code>. Each, when given, wins over the request's value:
-a middleware refusing before routing passes the route template it guards. <code>method</code> is
-upper-cased, and <code>route</code> is cleaned like every string field (REQ-0191) — it is a
-template, never the raw path.</p>
+<h2 id="the-participant-is-the-caller">The participant is the caller</h2>
+<h3 id="req-1400-a-request-whose-participant_id-is-not-the-verified-tokens-sub-must-answer-403-must-be-recorded-denied-with-the-reason-participant_not_caller-and-must-not-reach-the-rec-registry-or-the-data-client">REQ-1400 — A request whose <code>participant_id</code> is not the verified token's <code>sub</code> MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>participant_not_caller</code>, and MUST NOT reach the REC registry or the data client.</h3>
+<p>Holds for every route under <code>/participants/{participant_id}</code>: the built-in ones and the
+domain's own (<code>/profile</code>, <code>/assets</code>, <code>/energy-balance</code>, ...). The answer is the same whether
+or not the named participant exists.</p>
+<h3 id="req-1401-a-request-whose-participant_id-is-the-callers-sub-must-resolve-as-before-the-registry-is-asked-with-the-callers-token-and-a-caller-with-no-membership-answers-404-req-1031">REQ-1401 — A request whose <code>participant_id</code> is the caller's <code>sub</code> MUST resolve as before: the registry is asked with the caller's token, and a caller with no membership answers 404 (REQ-1031).</h3>
+<h2 id="the-meters-are-the-callers">The meters are the caller's</h2>
+<h3 id="req-1402-a-fetch-whose-payload-carries-a-device_id-that-is-not-the-sensor_id-of-one-of-the-callers-registry-assets-must-answer-403-must-be-recorded-denied-with-the-reason-device_not_owned-and-must-not-reach-the-data-client">REQ-1402 — A fetch whose payload carries a <code>device_id</code> that is not the <code>sensor_id</code> of one of the caller's registry assets MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>device_not_owned</code>, and MUST NOT reach the data client.</h3>
+<p>The caller's assets are read from the registry's <code>/user/assets</code> with the caller's own token,
+the same answer dataset-api's <code>rec_registry</code> row filter narrows by. A member owning no
+metered asset owns no <code>device_id</code>. A fetch whose payload names no <code>device_id</code> is not checked
+and does not ask the registry. Holds on <code>/values/{fetcher_id}</code> (both verbs) and on
+<code>/ontology/{spec_id}</code> (REQ-1116).</p>
+<h2 id="no-role-widens-the-scope">No role widens the scope</h2>
+<h3 id="req-1403-req-1400-and-req-1402-must-hold-for-every-caller-a-realm-role-platform-admin-an-organization-group-and-a-service-account-must-not-widen-them">REQ-1403 — REQ-1400 and REQ-1402 MUST hold for every caller: a realm role (<code>platform-admin</code>), an organization group and a service account MUST NOT widen them.</h3>
+<blockquote>
+<p>The Digital Twin grants no role-based access to participant routes; it has none to keep.
+Platform-wide reads remain dataset-api's to grant and to audit, on dataset-api's own
+routes. A service account is no registry member, so it never had a participant twin to
+read (REQ-1401's 404).</p>
+</blockquote>
+<h2 id="failing-closed">Failing closed</h2>
+<h3 id="req-1404-when-the-callers-assets-cannot-be-read-from-the-registry-a-fetch-naming-a-device_id-must-answer-an-error-and-must-not-reach-the-data-client">REQ-1404 — When the caller's assets cannot be read from the registry, a fetch naming a <code>device_id</code> MUST answer an error and MUST NOT reach the data client.</h3>
+<p>A registry failure is never read as "owns nothing" (which would hide a member's own data
+behind a 403) nor as "owns everything".</p>
 
 
 
