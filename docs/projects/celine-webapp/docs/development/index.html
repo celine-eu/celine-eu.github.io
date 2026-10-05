@@ -4659,8 +4659,7 @@ database is opened — while:</p>
 <p><code>CELINE_OIDC_AUDIENCE</code> is not required: with it unset the member token's audience is not
 checked (issuer, signature and expiry are). Requiring it needs the realm to put this service's
 audience into the member's token first.</p>
-<p><code>celine.sdk.posture</code> ships in the next celine-sdk release; until then link the local checkout
-(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
+<p><code>celine.sdk.posture</code> ships in celine-sdk 2.0.0, the floor in <code>pyproject.toml</code>.</p>
 <h3 id="data-sharing">Data sharing</h3>
 <p>Off by default. The section is hidden in the app and the routes answer 404 until the
 dataspace is deployed, because a sharing screen that cannot record a decision is worse

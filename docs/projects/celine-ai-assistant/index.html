@@ -4420,9 +4420,7 @@ development database password are accepted in dev with one warning, and refused 
 startup anywhere else. <strong>Unset is hardened.</strong> The signal is <code>CELINE_ENV</code>, then
 <code>ENVIRONMENT</code>, then the legacy <code>APP_ENV</code> (still accepted as a fallback name);
 <code>CELINE_ENV=staging task run</code> is the prod-like mode of the same entry point.</p>
-<p>The check comes from <code>celine.sdk.posture</code>, which is not in a released celine-sdk yet:
-until it is, install the SDK checkout editable
-(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
+<p>The check comes from <code>celine.sdk.posture</code>, first released in celine-sdk 2.0.0.</p>
 <h2 id="configuration">Configuration</h2>
 <table>
 <thead>

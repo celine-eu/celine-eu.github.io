@@ -4555,7 +4555,7 @@ CELINE_ENV=dev uv run uvicorn celine.roi.api.app:create_app --factory --reload -
 SDK's local default, or <code>FORWARDED_ALLOW_IPS</code> contains <code>*</code>, and lists every such setting
 at once (REQ-1201). <code>CELINE_ENV=staging
 task run</code> is the prod-like mode of the local runner. The check uses <code>celine.sdk.posture</code>,
-which needs the celine-sdk release after 1.24.0.</p>
+first released in celine-sdk 2.0.0.</p>
 <h3 id="public-by-design">Public by design</h3>
 <p>The calculators take no token. What an anonymous caller can cost the service is bounded
 per client address — rate limits, body sizes, what is stored — and stored estimates are

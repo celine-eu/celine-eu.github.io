@@ -4433,8 +4433,7 @@ defaults start. Unset or any other value (<code>staging</code>, <code>prod</code
 client secret equal to the client id, the SDK's default issuer, or a missing
 <code>VAPID_PUBLIC_KEY</code> / <code>VAPID_PRIVATE_KEY</code> / <code>CLICK_TRACKING_SECRET</code> (REQ-0081). In dev the same
 findings are one warning. <code>CELINE_ENV=staging task run</code> runs the same entry point hardened.</p>
-<p><code>celine.sdk.posture</code> ships in the next celine-sdk release; until then link the local checkout
-(<code>uv pip install --python .venv/bin/python -e ../celine-sdk</code>).</p>
+<p><code>celine.sdk.posture</code> ships in celine-sdk 2.0.0, the floor in <code>pyproject.toml</code>.</p>
 <h2 id="taskfile-commands">Taskfile Commands</h2>
 <table>
 <thead>

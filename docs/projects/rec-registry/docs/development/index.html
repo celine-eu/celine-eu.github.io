@@ -4519,8 +4519,7 @@ local runner needs nothing. <code>CELINE_ENV=staging task run</code> is the prod
 same entry point: it starts only with real values. The CLI applies the same rule to
 client credentials: a <code>--client-secret</code> equal to <code>--client-id</code> (the local
 <code>celine-cli</code>/<code>celine-cli</code>) is refused unless <code>CELINE_ENV=dev</code> (REQ-0089).</p>
-<p>The check lives in <code>celine.sdk.posture</code>, which needs the celine-sdk release after
-1.24.0; until it is published the SDK must be installed from source.</p>
+<p>The check lives in <code>celine.sdk.posture</code>, first released in celine-sdk 2.0.0.</p>
 <h2 id="local-setup">Local Setup</h2>
 <pre><code class="language-bash">uv sync
 
