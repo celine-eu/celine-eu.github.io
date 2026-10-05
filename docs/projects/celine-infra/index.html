@@ -5167,13 +5167,25 @@ stay as they are.</p>
 </tr>
 <tr>
 <td><code>Content-Security-Policy</code></td>
-<td>per host, in the chart's <code>securityHeaders.csp</code>; origins of the platform come from <code>domain</code> (<code>sso.&lt;domain&gt;</code>, <code>keycloak.&lt;domain&gt;</code>)</td>
+<td>per host, in the chart's <code>securityHeaders.csp</code>; origins of the platform come from <code>domain</code> (<code>sso.&lt;domain&gt;</code>, <code>keycloak.&lt;domain&gt;</code>). Not on the SvelteKit frontends, which send their own (below)</td>
 </tr>
 </tbody>
 </table>
 <p>An Ingress whose backend sets its own headers carries no annotation, because the controller
 would replace them: the assistant API (on the gateway, on the assistant host and under
 <code>/api/assistant</code> of the webapp host), the community API and the onboarding API.</p>
+<p>The SvelteKit frontends send their own Content-Security-Policy (<code>kit.csp</code> in each app's
+<code>svelte.config.js</code>, celine-frontend and onboarding <code>ui/</code>): every page is rendered on request
+and its inline scripts - SvelteKit's bootstrap, the theme script - carry a fresh nonce, so no
+host allows inline scripts. A static ConfigMap cannot carry a per-request nonce, and the
+controller replaces a header of the same name, so these charts set <code>csp.sentByApp: true</code> and
+their ConfigMap holds no enforced policy; the render stops if an environment gives them one.
+Grid and roi keep their Report-Only trial of the other directives here, without <code>script-src</code>
+or <code>default-src</code>. An API Ingress of its own on such a host keeps an enforced policy from the controller
+(<code>securityHeaders.apiCsp</code>, ConfigMap <code>&lt;release&gt;-api-security-headers</code>): roi's calculator API
+allows nothing (<code>default-src 'none'</code>). Paths that share the page's Ingress - <code>/oauth2</code> on every
+frontend host, <code>/api</code> on webapp and grid - get the other headers but no policy. Deploy the frontend images that send the policy before this chart change,
+or the hosts are briefly without one.</p>
 <table>
 <thead>
 <tr>
@@ -5185,23 +5197,23 @@ would replace them: the assistant API (on the gateway, on the assistant host and
 <tbody>
 <tr>
 <td>webapp, assistant, community</td>
-<td>enforced</td>
-<td>inline scripts and styles (SvelteKit's bootstrap), <code>data:</code>/<code>blob:</code> images; community: OpenStreetMap tiles</td>
+<td>enforced, sent by the app</td>
+<td>scripts by nonce, inline styles, <code>data:</code>/<code>blob:</code> images; community: OpenStreetMap tiles</td>
 </tr>
 <tr>
 <td>onboarding</td>
-<td>enforced</td>
-<td>inline scripts and styles, <code>data:</code>/<code>blob:</code> images</td>
+<td>enforced, sent by the app</td>
+<td>scripts by nonce, inline styles, <code>data:</code>/<code>blob:</code> images</td>
 </tr>
 <tr>
 <td>grid</td>
-<td>Report-Only</td>
-<td>inline scripts and styles, a <code>blob:</code> worker, the CARTO and ArcGIS map hosts</td>
+<td>scripts enforced by the app (nonce, a <code>blob:</code> worker); the rest Report-Only here</td>
+<td>inline styles, the CARTO and ArcGIS map hosts</td>
 </tr>
 <tr>
 <td>roi</td>
-<td>Report-Only</td>
-<td>inline scripts and styles, OpenStreetMap tiles, Nominatim, the static map image</td>
+<td>scripts enforced by the app (nonce); the rest Report-Only here</td>
+<td>inline styles, OpenStreetMap tiles, Nominatim, the static map image</td>
 </tr>
 <tr>
 <td>legal</td>

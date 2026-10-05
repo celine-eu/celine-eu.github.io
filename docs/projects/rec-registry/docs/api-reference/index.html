@@ -5704,8 +5704,8 @@ the path, the import's <code>force</code> guard, a <code>404</code> for an unkno
 that answers a coded <code>422</code> documents its <code>422</code> as <code>oneOf</code> <code>ErrorResponse</code> and
 <code>HTTPValidationError</code> (whose <code>detail</code> is a list): both arrive with that status.</p>
 <h2 id="the-access-log">The access log</h2>
-<p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, three routes take a sensor id in
-the path, three a user id and three a delivery-point id, so the access line uvicorn writes
+<p>A meter's asset key is <code>meter-&lt;sensor_id&gt;</code>, every member route takes the member key in the
+path, three routes a sensor id, three a user id and three a delivery-point id, so the access line uvicorn writes
 is rewritten before it is logged (REQ-0080): method, route shape and status stay, the
 identifiers do not.</p>
 <table>
@@ -5718,7 +5718,11 @@ identifiers do not.</p>
 <tbody>
 <tr>
 <td><code>PUT /admin/communities/example-rec/members/ex-00001/assets/meter-SEN-1</code></td>
-<td><code>PUT /admin/communities/example-rec/members/ex-00001/assets/{asset_key}</code></td>
+<td><code>PUT /admin/communities/example-rec/members/{member_key}/assets/{asset_key}</code></td>
+</tr>
+<tr>
+<td><code>PUT /admin/communities/example-rec/members/ex-00001/name</code></td>
+<td><code>PUT /admin/communities/example-rec/members/{member_key}/name</code></td>
 </tr>
 <tr>
 <td><code>GET /admin/lookup/asset-by-sensor-id/SEN-1</code></td>
@@ -5738,11 +5742,12 @@ identifiers do not.</p>
 </tr>
 </tbody>
 </table>
-<p>Every asset key is replaced, on every <code>/assets/{asset_key}</code> route; so is everything after
+<p>Every member key is replaced, on every <code>/members/{member_key}</code> route, and every asset key, on
+every <code>/assets/{asset_key}</code> route; so is everything after
 <code>by-sensor-id/</code>, <code>by-user-id/</code>, <code>/delivery-points/by-id/</code> and
 <code>community-by-delivery-point/</code>, the delivery-point id on the member delivery-point <code>PUT</code>
-and <code>DELETE</code>, the <code>cursor</code> of the asset, meter and delivery-point listings, and any
-<code>sensor_id(s)</code>, <code>user_id(s)</code>, <code>dp_id(s)</code> or <code>delivery_point_id(s)</code> query value. The markers
+and <code>DELETE</code>, the <code>cursor</code> of the member, asset, meter and delivery-point listings, and any
+<code>owner</code>, <code>sensor_id(s)</code>, <code>user_id(s)</code>, <code>dp_id(s)</code> or <code>delivery_point_id(s)</code> query value. The markers
 are fixed rather than a hash of the id. Only uvicorn's own line is covered: a proxy in front
 of the service that logs the URL logs the identifiers.</p>
 <hr />

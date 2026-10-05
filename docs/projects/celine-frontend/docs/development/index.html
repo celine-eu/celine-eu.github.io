@@ -1919,6 +1919,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#content-security-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Security-Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4386,6 +4397,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#content-security-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Security-Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4494,6 +4516,24 @@ task build:assistant
 task build:roi
 task build:grid
 </code></pre>
+<h2 id="content-security-policy">Content-Security-Policy</h2>
+<p>Every app sends its own <code>Content-Security-Policy</code> header, configured in <code>kit.csp</code> of its
+<code>svelte.config.js</code> with <code>mode: 'nonce'</code>. Pages are rendered on request (adapter-node, none
+prerendered), so each response gets a fresh nonce: SvelteKit puts it on its inline bootstrap
+and in <code>script-src</code>, and <code>%sveltekit.nonce%</code> puts it on any inline script of <code>app.html</code> (the
+theme script). <code>script-src</code> never allows <code>'unsafe-inline'</code>. An inline script added to
+<code>app.html</code> needs <code>nonce="%sveltekit.nonce%"</code>, or the browser refuses it.</p>
+<ul>
+<li>webapp, assistant, community: the whole policy (default <code>'self'</code>, <code>data:</code>/<code>blob:</code> images,
+  community's OpenStreetMap tiles, <code>object-src 'none'</code>, <code>frame-ancestors 'none'</code>).</li>
+<li>grid, roi: the script directives only (grid: MapLibre's <code>blob:</code> worker); the other
+  directives are still a Report-Only trial sent by the ingress.</li>
+<li><code>style-src</code> keeps <code>'unsafe-inline'</code>: Svelte renders <code>style=</code> attributes and Leaflet and
+  MapLibre set inline styles.</li>
+</ul>
+<p>The deployment's ingress sends no <code>Content-Security-Policy</code> for these hosts, since it would
+replace the app's (infra, README "Security headers"). <code>vite dev</code> sends the same policy, so a
+refused script shows up in development. <code>e2e/content-security-policy.spec.ts</code> checks each app.</p>
 <h2 id="docker">Docker</h2>
 <pre><code class="language-bash">task docker:webapp      # Build webapp image
 task docker:assistant   # Build assistant image

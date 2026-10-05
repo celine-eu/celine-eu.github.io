@@ -4640,7 +4640,7 @@ in every shape and for real tokens from the local realm.</p>
 <td>a presented token that does not verify, on <code>/admin</code>, <code>/user</code> or <code>/me</code> (<code>401</code>)</td>
 <td>the same, or <code>rec-registry.user</code></td>
 <td><code>null</code></td>
-<td>as above</td>
+<td>as above, read from the path before the token</td>
 <td><code>token_rejected</code></td>
 </tr>
 <tr>
@@ -4663,8 +4663,10 @@ in every shape and for real tokens from the local realm.</p>
 a token that failed verification are not read. A request with no token at all is not
 recorded: there is no caller. The resource is the community key and nothing else: the rest
 of an <code>/admin</code> path can carry member, sensor and delivery-point ids (REQ-0080). The two
-middleware refusals happen before routing, so their records carry the method and no
-route.</p>
+middleware refusals happen before routing; their records carry the method and the template
+of the route the router will match (<code>/admin/communities/{community_key}/members/{member_key}</code>),
+resolved from the app's routes by path and method, never the raw path. A refused path no
+route serves records <code>route: null</code>.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>

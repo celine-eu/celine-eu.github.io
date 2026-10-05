@@ -4207,10 +4207,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0080-the-access-log-carries-no-sensor-id-user-id-or-delivery-point-id" class="md-nav__link">
+  <a href="#req-0080-the-access-log-carries-no-member-key-sensor-id-user-id-or-delivery-point-id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0080 — the access log carries no sensor id, user id or delivery-point id
+        REQ-0080 — the access log carries no member key, sensor id, user id or delivery-point id
       
     </span>
   </a>
@@ -4412,11 +4412,14 @@ registry cannot be read. It issues one <code>GET</code> and no other request.</p
 a write to a sibling, and a re-import of their community is refused (REQ-0074). This is the
 report to run before a deployment relies on the rule — then an onboarding template sync, an
 area rename (REQ-0079) for a key, or a reshaped bundle, corrects what it lists.</p>
-<h3 id="req-0080-the-access-log-carries-no-sensor-id-user-id-or-delivery-point-id">REQ-0080 — the access log carries no sensor id, user id or delivery-point id</h3>
+<h3 id="req-0080-the-access-log-carries-no-member-key-sensor-id-user-id-or-delivery-point-id">REQ-0080 — the access log carries no member key, sensor id, user id or delivery-point id</h3>
 <p>The access line uvicorn writes for every request (the image's <code>CMD</code> runs uvicorn) keeps its
-method, its route shape and its status, and carries no sensor id, user id or delivery-point
-id:</p>
+method, its route shape and its status, and carries no member key, sensor id, user id or
+delivery-point id:</p>
 <ul>
+<li>the segment after <code>/members/</code> is logged as <code>{member_key}</code> — on every admin route under a
+  member (the member read and delete, its profile, name, role, area and status writes, its
+  delivery points and its assets); <code>…/members/by-user-id/</code> is the user-id route below;</li>
 <li>the segment after <code>/assets/</code> is logged as <code>{asset_key}</code> — on the admin asset read, the
   member asset <code>PUT</code> and <code>DELETE</code>, and <code>GET /user/assets/{asset_key}</code> — for every asset key,
   not only <code>meter-</code> ones;</li>
@@ -4430,9 +4433,9 @@ id:</p>
 <li>everything after <code>/delivery-points/by-id/</code> and <code>/admin/lookup/community-by-delivery-point/</code>
   is logged as <code>{dp_id}</code>, slashes included, and so is the segment after a member's
   <code>/delivery-points/</code> on the member delivery-point <code>PUT</code> and <code>DELETE</code>;</li>
-<li>the <code>cursor</code> query value of the <code>…/assets</code>, <code>…/meters</code> and <code>…/delivery-points</code> listings,
-  which is an asset key or a delivery-point id, is logged as <code>{redacted}</code>, and so is a
-  <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>,
+<li>the <code>cursor</code> query value of the <code>…/members</code>, <code>…/assets</code>, <code>…/meters</code> and
+  <code>…/delivery-points</code> listings, which is a member key, an asset key or a delivery-point id, is
+  logged as <code>{redacted}</code>, and so is an <code>owner</code> (a member key), <code>sensor_id</code>, <code>sensor_ids</code>, <code>user_id</code>, <code>user_ids</code>, <code>dp_id</code>, <code>dp_ids</code>, <code>delivery_point_id</code>,
   <code>delivery_point_ids</code> or <code>replaces</code> query value on any route — <code>replaces</code> is the old POD of
   a delivery-point correction (REQ-0084); no route takes the others today. A community's
   <code>…/delivery-points/duplicates</code> (REQ-0087) is a route, not an id, and is logged as it is.</li>
@@ -4441,13 +4444,16 @@ id:</p>
 wrote a member's sensor id — the key that joins them to their readings — to the log, where
 it is kept longer and read by more people than the registry's rows. A user id is the
 member's login name and a delivery-point id their supply point's code; both name a person
-as surely. The markers are fixed, not a hash: these ids are few, and a hash of one is
+as surely. A member key is the community's own id for the member, joined to their name in the
+registry by anyone who can read it. The markers are fixed, not a hash: these ids are few, and a hash of one is
 reversed by trying them. The cost is that two lines about one asset, member or delivery
-point cannot be told apart in the log.</p>
+point cannot be told apart in the log; the audit record (REQ-0091) names the community, and
+the route says what was done.</p>
 <p>The rewrite is a filter on the <code>uvicorn.access</code> logger that <code>create_app</code> installs, once. It
 covers uvicorn's line and nothing else: a process that serves the app some other way, or a
-proxy in front of it that logs the URL, is not covered. A member key, community key, area
-key or topology node id in the path is logged as it is.</p>
+proxy in front of it that logs the URL, is not covered. A community key, area key or
+topology node id in the path is logged as it is: they name the community and its grid, not a
+person.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
