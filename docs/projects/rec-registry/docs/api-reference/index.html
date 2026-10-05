@@ -5568,7 +5568,8 @@ attaches meters needs <code>assets.write</code>, one that corrects a member's ar
 <code>members.area.write</code> — which reaches that one route and nothing else (ADR-0011) — and none
 has any business importing, exporting or purging. A member field is granted alone; identity
 (<code>user_id</code>, <code>did</code>, status, creating a member) is <code>members.write</code> only.</p>
-<p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code>.</p>
+<p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code> under <code>CELINE_ENV=dev</code>,
+or with <code>CELINE_PUBLIC_DOCS=true</code> (REQ-0092).</p>
 <h2 id="refusal-codes">Refusal codes</h2>
 <p>A refusal a caller is expected to act on answers</p>
 <pre><code class="language-json">{&quot;detail&quot;: &quot;This sensor is already held by another active member&quot;, &quot;code&quot;: &quot;sensor_held&quot;}

@@ -4217,6 +4217,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0057-every-refusal-is-recorded-with-the-caller-it-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0057 — every refusal is recorded with the caller it refused
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4403,6 +4414,43 @@ nothing else, so:</p>
 the realm groups merged with every organisation's groups. The bundle never read it, so
 removing it changes no decision; it removes a list that would have let one community's
 group act as another's, or as the platform's, the day a rule did read it.</p>
+<h3 id="req-0057-every-refusal-is-recorded-with-the-caller-it-refused">REQ-0057 — every refusal is recorded with the caller it refused</h3>
+<p>Each refused request leaves exactly one record on the <code>celine.audit</code> logger
+(<code>celine.sdk.audit.audit_denied</code>, <code>WARNING</code>, one JSON line, <code>event: "denied"</code>):</p>
+<table>
+<thead>
+<tr>
+<th>refusal</th>
+<th><code>action</code></th>
+<th><code>sub</code> / <code>client_id</code></th>
+<th><code>reason</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a presented token that does not verify (<code>401</code>)</td>
+<td><code>flexibility.authenticate</code></td>
+<td><code>null</code></td>
+<td><code>token_expired</code>, <code>token_invalid</code>, <code>token_unverified</code></td>
+</tr>
+<tr>
+<td><code>PolicyMiddleware</code> on <code>/pending</code>, <code>PATCH …/settle</code>, <code>/export</code> (<code>403</code>)</td>
+<td><code>flexibility.commitments.pending</code> / <code>.settle</code> / <code>.export</code></td>
+<td>the verified caller, <code>null</code> when there was none</td>
+<td>the decision's reason (<code>unauthenticated</code>, <code>not-a-service-account</code>, the bundle's)</td>
+</tr>
+<tr>
+<td><code>ServiceDep</code> behind the middleware (<code>403</code>)</td>
+<td><code>flexibility.service</code></td>
+<td>the verified caller</td>
+<td><code>not-a-service-account</code></td>
+</tr>
+</tbody>
+</table>
+<p>The caller is named by <code>sub</code> and client id only, never email or name, and the claims of
+a token that failed verification are not read. A request with no token at all on an
+unguarded route (<code>401 Missing authentication token</code>) is not recorded: there is no caller.
+The middleware runs before routing, so its records carry the method and no route.</p>
 
 
 

@@ -4284,6 +4284,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0091-every-refusal-is-recorded-with-the-caller-it-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0091 — every refusal is recorded with the caller it refused
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4604,6 +4615,49 @@ the realm's groups with every organisation's into one list (<code>celine-sdk</co
 community's group act as a platform group or as the same group in another community.
 Pinned by requests through the middleware with the policy engine on, for hand-built claims
 in every shape and for real tokens from the local realm.</p>
+<h3 id="req-0091-every-refusal-is-recorded-with-the-caller-it-refused">REQ-0091 — every refusal is recorded with the caller it refused</h3>
+<p>Each refused request leaves exactly one record on the <code>celine.audit</code> logger
+(<code>celine.sdk.audit.audit_denied</code>, <code>WARNING</code>, one JSON line, <code>event: "denied"</code>):</p>
+<table>
+<thead>
+<tr>
+<th>refusal</th>
+<th><code>action</code></th>
+<th>caller</th>
+<th><code>resource</code></th>
+<th><code>reason</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/admin</code> policy decision (<code>403</code>)</td>
+<td><code>rec-registry.&lt;derived action&gt;</code> (REQ-0001)</td>
+<td><code>sub</code>, client id</td>
+<td>the community key on <code>/admin/communities/{key}…</code>, else <code>null</code></td>
+<td>the bundle's reason</td>
+</tr>
+<tr>
+<td>a presented token that does not verify, on <code>/admin</code>, <code>/user</code> or <code>/me</code> (<code>401</code>)</td>
+<td>the same, or <code>rec-registry.user</code></td>
+<td><code>null</code></td>
+<td>as above</td>
+<td><code>token_rejected</code></td>
+</tr>
+<tr>
+<td><code>/user</code> for a caller who is no member (<code>403 not_a_member</code>, REQ-0047)</td>
+<td><code>rec-registry.user.read</code></td>
+<td><code>sub</code>, client id</td>
+<td><code>null</code></td>
+<td><code>not_a_member</code></td>
+</tr>
+</tbody>
+</table>
+<p>The caller is named by <code>sub</code> and client id only, never email or name, and the claims of
+a token that failed verification are not read. A request with no token at all is not
+recorded: there is no caller. The resource is the community key and nothing else: the rest
+of an <code>/admin</code> path can carry member, sensor and delivery-point ids (REQ-0080). The two
+middleware refusals happen before routing, so their records carry the method and no
+route.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>

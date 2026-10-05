@@ -4130,6 +4130,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0092-the-api-documentation-is-served-only-in-development-or-on-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0092 — the API documentation is served only in development, or on purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0058-version-answers-what-is-deployed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4269,6 +4280,11 @@ recover because restarting was never the fix.</p>
 <p>That independence is the requirement, and it is also the limitation — <strong>this endpoint
 becoming green says nothing about the service being able to serve a request.</strong> There is no
 readiness check that does.</p>
+<h3 id="req-0092-the-api-documentation-is-served-only-in-development-or-on-purpose">REQ-0092 — the API documentation is served only in development, or on purpose</h3>
+<p><code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> are mounted under <code>CELINE_ENV=dev</code>, or when
+<code>CELINE_PUBLIC_DOCS=true</code> (<code>celine.sdk.posture.docs_urls</code>). Anywhere else they answer
+<code>404</code>. <code>/health</code> and <code>/version</code> are unaffected, and so is <code>app.openapi()</code>, which is what
+<code>../celine-sdk</code>'s client snapshot and the schema tests read.</p>
 <h3 id="req-0058-version-answers-what-is-deployed">REQ-0058 — <code>/version</code> answers what is deployed</h3>
 <p><code>GET /version</code> answers <code>api_version</code> and <code>schema_version</code>, and both are derived:</p>
 <ul>

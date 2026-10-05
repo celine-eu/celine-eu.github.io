@@ -4170,6 +4170,9 @@ correct for the client and unhelpful for an operator.</p>
 <h3 id="req-0004-the-health-check-and-the-api-documentation-need-no-token">REQ-0004 — the health check and the API documentation need no token</h3>
 <p><code>/health</code>, <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> pass <code>PolicyMiddleware</code> unauthenticated.
 The liveness probe has no token to present.</p>
+<p>The documentation is mounted only under <code>CELINE_ENV=dev</code>, or when <code>CELINE_PUBLIC_DOCS=true</code>
+(<code>celine.sdk.posture.docs_urls</code>). Anywhere else <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> are
+<code>404</code>; <code>/health</code> is unaffected.</p>
 <p><code>/health</code> returns <code>{"status": "ok"}</code> unconditionally. <strong>It does not check the database,
 the broker, or whether the policy bundle loaded</strong> — a process that is up but has lost
 every one of its dependencies reports healthy. That is deliberate for a liveness probe
