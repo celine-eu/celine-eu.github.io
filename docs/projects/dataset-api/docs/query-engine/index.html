@@ -2424,6 +2424,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Table restrictions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qe-05-a-table-reference-is-a-cte-only-where-postgresql-would-resolve-it-to-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QE-05 — A table reference is a CTE only where PostgreSQL would resolve it to one
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4596,6 +4613,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Table restrictions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qe-05-a-table-reference-is-a-cte-only-where-postgresql-would-resolve-it-to-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QE-05 — A table reference is a CTE only where PostgreSQL would resolve it to one
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4946,6 +4980,13 @@ statement yields after row filters (<code>null</code> with <code>skip_count</cod
   <code>403</code> (<em>"Dataset not available"</em>), the same answer for all three</li>
 <li>a dataset whose backend has no SQL table (<code>s3</code>, <code>fs</code>, …) is a <code>400</code> (<em>"not queryable"</em>)</li>
 </ul>
+<h4 id="qe-05-a-table-reference-is-a-cte-only-where-postgresql-would-resolve-it-to-one">QE-05 — A table reference is a CTE only where PostgreSQL would resolve it to one</h4>
+<p>Every table reference is a dataset reference — and must resolve to the catalogue — unless
+it is an unqualified name of a CTE <strong>visible at that point</strong>, resolved per scope as
+PostgreSQL does. So a name is physical inside the body of the non-recursive CTE it names,
+outside the subquery that defines the CTE, and in an earlier CTE that names a later one.
+The same resolution decides which references are rewritten to physical tables. A query
+whose scopes cannot be resolved is a <code>400</code>.</p>
 <h3 id="function-and-expression-allowlist">Function and expression allowlist</h3>
 <ul>
 <li>only allow safe scalar functions</li>
