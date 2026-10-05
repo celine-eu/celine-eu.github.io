@@ -815,6 +815,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contracts" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4309,6 +4320,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contracts" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4485,6 +4507,13 @@ or a domain object is sent as its string form rather than failing.</p>
 in <code>raw_payload</code>. A handler that raises is logged and counted; the other handlers still run.</p>
 <p><code>publish_event(event)</code> publishes a Pydantic model, deriving the topic from <code>event.type</code> and
 <code>event.payload.community_id</code> when no topic is given.</p>
+<h2 id="topics">Topics</h2>
+<p>A topic names a service, a resource and at most a community or a run:
+<code>celine/&lt;service&gt;/&lt;resource&gt;/…</code>. <strong>It never carries a person</strong> — no user id, DID, email,
+member key, meter or sensor id. Topics are visible to the broker, its access-control service and
+their logs, which record a refused topic as it is; whoever a message concerns belongs in the
+payload. Address one person by publishing on a shared topic with the recipient in the payload,
+and let the subscriber pick its own messages.</p>
 <h2 id="contracts">Contracts</h2>
 <p><code>contracts.py</code> defines the transport-independent surface: the <code>Broker</code> protocol and
 <code>BrokerBase</code>, plus <code>BrokerMessage</code>, <code>ReceivedMessage</code>, <code>PublishResult</code>, <code>SubscribeResult</code>,
