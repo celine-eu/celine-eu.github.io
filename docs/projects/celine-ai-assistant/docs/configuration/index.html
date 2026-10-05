@@ -4628,7 +4628,7 @@ collection until they are uploaded again.</p>
 <td><code>OAUTH2_AUDIENCE</code></td>
 <td><code>str?</code></td>
 <td><code>oauth2_proxy</code></td>
-<td>Expected JWT audience</td>
+<td>Required JWT audience: a token without this value in <code>aud</code> (or with no <code>aud</code>) is refused</td>
 </tr>
 <tr>
 <td><code>OAUTH2_JWT_COOKIE_NAME</code></td>

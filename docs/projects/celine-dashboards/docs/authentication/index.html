@@ -4393,10 +4393,50 @@ forwards; the <code>oauth2_proxy</code> client needs the <code>roles</code> clie
 </table>
 <p>Cookie sharing across <code>*.celine.localhost</code> means a single login grants access to all subdomains.</p>
 <h2 id="jwt-validation">JWT Validation</h2>
-<p>Each application validates JWTs locally using the Keycloak JWKS endpoint:</p>
-<pre><code>http://keycloak:8080/realms/celine/protocol/openid-connect/certs
-</code></pre>
-<p>The JWKS is fetched once at startup and cached. JWT signatures use RS256.</p>
+<p>Each application validates the access token locally, against <strong>one configured issuer</strong>
+(the realm URL). A token's <code>iss</code> is compared with that issuer before any key is fetched, and
+the keys come from the configuration (or the configured issuer's discovery document), never
+from the token: a validly signed token of any other issuer, another realm of the same
+Keycloak included, is refused. Signatures must be RS256; <code>exp</code> and <code>iss</code> are required.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Superset (<code>celine-superset</code>)</th>
+<th>Jupyter (<code>celine-jupyter</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trusted issuer</td>
+<td><code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_ISSUER</code></td>
+<td><code>CELINE_JUPYTER_JWT_ISSUER</code></td>
+</tr>
+<tr>
+<td>JWKS URL (optional; default: from the issuer's discovery document)</td>
+<td><code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_JWKS_URL</code></td>
+<td><code>CELINE_JUPYTER_JWKS_URL</code></td>
+</tr>
+<tr>
+<td>audience (optional; comma-separated for Superset)</td>
+<td><code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_AUDIENCE</code></td>
+<td><code>CELINE_JUPYTER_JWT_AUDIENCE</code></td>
+</tr>
+<tr>
+<td>no issuer configured</td>
+<td>does not start, unless <code>CELINE_ENV=dev</code> (then the local realm <code>http://keycloak.celine.localhost/realms/celine</code>)</td>
+<td>does not start</td>
+</tr>
+<tr>
+<td>decision</td>
+<td><a href="../decisions/ADR-0003-superset-trusts-one-configured-issuer/">ADR-0003</a></td>
+<td><a href="../decisions/ADR-0002-jupyter-fails-closed-and-trusts-one-issuer/">ADR-0002</a></td>
+</tr>
+</tbody>
+</table>
+<p>The posture signal for Superset is <code>CELINE_ENV</code>, then <code>ENVIRONMENT</code>; only the value <code>dev</code>
+relaxes, and unset is hardened (the platform rule of <code>celine.sdk.posture</code>). Superset's own
+<code>SUPERSET_ENV</code> plays no part. Keys are fetched on first use and cached per key id.</p>
 <h2 id="service-cli-tokens">Service / CLI Tokens</h2>
 <p>Non-browser clients (scripts, pipelines) can use client credentials tokens from the <code>celine-cli</code> client:</p>
 <pre><code class="language-bash">curl -s http://keycloak.celine.localhost/realms/celine/protocol/openid-connect/token \

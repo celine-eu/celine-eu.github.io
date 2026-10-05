@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-ai-assistant/docs/specifications/identity/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-dashboards/docs/decisions/ADR-0003-superset-trusts-one-configured-issuer/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Identity and authorisation - CELINE Project</title>
+        <title>ADR-0003 — Superset trusts one configured issuer and does not start without it outside dev - CELINE Project</title>
       
     
     
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#identity-and-authorisation" class="md-skip">
+        <a href="#adr-0003-superset-trusts-one-configured-issuer-and-does-not-start-without-it-outside-dev" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Identity and authorisation
+              ADR-0003 — Superset trusts one configured issuer and does not start without it outside dev
             
           </span>
         </div>
@@ -191,7 +191,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../../celine-ai-assistant/" class="md-tabs__link">
           
   
   
@@ -434,7 +434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/" class="md-nav__link">
         
   
   
@@ -462,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/architecture/" class="md-nav__link">
         
   
   
@@ -490,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/configuration/" class="md-nav__link">
         
   
   
@@ -518,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api-reference/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/api-reference/" class="md-nav__link">
         
   
   
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/" class="md-nav__link">
+      <a href="../../../../celine-ai-assistant/docs/development/" class="md-nav__link">
         
   
   
@@ -1434,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-dashboards/" class="md-nav__link">
+      <a href="../../../" class="md-nav__link">
         
   
   
@@ -1462,7 +1462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-dashboards/docs/architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -1490,7 +1490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-dashboards/docs/authentication/" class="md-nav__link">
+      <a href="../../authentication/" class="md-nav__link">
         
   
   
@@ -1518,7 +1518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-dashboards/docs/services/" class="md-nav__link">
+      <a href="../../services/" class="md-nav__link">
         
   
   
@@ -1546,7 +1546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../celine-dashboards/docs/development/" class="md-nav__link">
+      <a href="../../development/" class="md-nav__link">
         
   
   
@@ -4086,10 +4086,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#req-0001-every-route-but-the-health-check-requires-an-identity" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0001 — every route but the health check requires an identity
+        Context
       
     </span>
   </a>
@@ -4097,10 +4097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0002-an-access-token-is-looked-for-in-a-fixed-order-and-must-verify" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0002 — an access token is looked for in a fixed order, and must verify
+        Decision
       
     </span>
   </a>
@@ -4108,43 +4108,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0003-trusted-headers-are-an-accepted-identity" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0003 — trusted headers are an accepted identity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0004-a-platform-administrator-holds-the-platform-admin-realm-role" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0004 — a platform administrator holds the platform-admin realm role
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0005-a-communitys-knowledge-is-managed-by-its-managers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0005 — a community's knowledge is managed by its managers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#req-0040-the-callers-community-is-the-one-rec-organization-in-their-token" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-0040 — the caller's community is the one REC organization in their token
+        Consequences
       
     </span>
   </a>
@@ -4168,97 +4135,47 @@
 
 
 
-<h1 id="identity-and-authorisation">Identity and authorisation</h1>
-<p>This service authenticates nobody. It sits behind an <code>oauth2-proxy</code> and reads the
-identity that proxy established — see ADR-0003 for why, and for the deployment
-assumption that carries.</p>
-<hr />
-<h3 id="req-0001-every-route-but-the-health-check-requires-an-identity">REQ-0001 — every route but the health check requires an identity</h3>
-<p>A request that carries neither a usable token nor trusted identity headers is answered
-<code>401</code>. <code>/health</code> is exempt, because a liveness probe reaches the container before any
-proxy has attached anything to it.</p>
-<h3 id="req-0002-an-access-token-is-looked-for-in-a-fixed-order-and-must-verify">REQ-0002 — an access token is looked for in a fixed order, and must verify</h3>
-<p><code>x-auth-request-access-token</code>, then an <code>Authorization: Bearer</code> header (matched
-case-insensitively), then the cookie named by <code>OAUTH2_JWT_COOKIE_NAME</code> if one is
-configured. The first that yields a value wins; a non-<code>Bearer</code> <code>Authorization</code> header is
-ignored rather than rejected.</p>
-<p><strong>A token that is found and does not verify is refused</strong>, never downgraded to the
-trusted headers. The headers are an identity for a request carrying no token at all —
-otherwise an expired or forged token would be indistinguishable from no token, and with
-<code>OAUTH2_TRUST_HEADERS</code> on that is whatever the caller asserted.</p>
-<p>Verification is bound to a <strong>configured</strong> trust anchor. The key set comes from
-<code>OAUTH2_JWKS_URL</code> (which falls back to the platform's <code>CELINE_OIDC_JWKS_URI</code>), or from
-the OIDC discovery of <code>OAUTH2_ISSUER</code>; with neither set the token is refused rather than
-verified against the issuer it names for itself. When <code>OAUTH2_ISSUER</code> is set, a token
-whose <code>iss</code> differs is refused. The signature algorithm is taken from
-<code>OAUTH2_ALGORITHMS</code> (default <code>RS256</code>), never from the token header. When
-<code>OAUTH2_AUDIENCE</code> is set, the token must carry an <code>aud</code> that includes it: a token with
-no <code>aud</code> at all is refused, not accepted for lack of anything to compare. A token must
-carry <code>exp</code>, and <code>iss</code> when <code>OAUTH2_ISSUER</code> is set.</p>
-<h3 id="req-0003-trusted-headers-are-an-accepted-identity">REQ-0003 — trusted headers are an accepted identity</h3>
-<p>With <code>OAUTH2_TRUST_HEADERS</code> enabled, <code>x-auth-request-user</code> (or <code>x-auth-request-email</code>)
-identifies the caller. <strong>A header identity carries no grant</strong>: <code>x-auth-request-groups</code> is
-not read, so no header makes a platform administrator (REQ-0004) or names an
-organization (REQ-0040). Platform roles come only from a verified token. <strong>The switch is
-off by default</strong>: unless a deployment opts in,
-headers alone are not an identity and a request carrying no verifiable token is answered
-<code>401</code>. Outside dev a deployment cannot opt in: startup refuses the switch (REQ-0045).</p>
-<h3 id="req-0004-a-platform-administrator-holds-the-platform-admin-realm-role">REQ-0004 — a platform administrator holds the <code>platform-admin</code> realm role</h3>
-<p>There are exactly two levels of authority, and they are never merged:</p>
+<h1 id="adr-0003-superset-trusts-one-configured-issuer-and-does-not-start-without-it-outside-dev">ADR-0003 — Superset trusts one configured issuer and does not start without it outside dev</h1>
+<p><strong>Date:</strong> 2026-10-05
+<strong>Status:</strong> accepted</p>
+<h2 id="context">Context</h2>
+<p>Superset identifies every request from the access token oauth2-proxy forwards, and the realm
+role <code>platform-admin</code> in that token makes the user Superset <code>Admin</code> (ADR-0001). So the question
+"which issuer's tokens count" decides who is an administrator, and it has to be answered by the
+deployment, not by the token: a signature check against keys located through the token's own
+claims proves only that <em>some</em> issuer signed it. The verifier had no setting for the trusted
+issuer, only an optional JWKS URL, and fell back to locating keys through the token.</p>
+<p>ADR-0002 closed the same gap for Jupyter. Superset differs in one respect: it runs in its own
+interpreter (<code>apache/superset</code>, Python 3.10) with only the <code>[plugin]</code> dependencies, so it does
+not import <code>celine-sdk</code> and its <code>celine.sdk.posture</code>.</p>
+<h2 id="decision">Decision</h2>
 <ul>
-<li><strong>The platform:</strong> a caller is a platform administrator exactly when the verified
-  token's <code>realm_access.roles</code> contains <code>platform-admin</code>. That role is the only
-  platform-wide grant.</li>
-<li><strong>An organization:</strong> the groups in <code>organization.&lt;alias&gt;.groups</code> are valid only inside
-  that organization (REQ-0005).</li>
+<li>One issuer is trusted, <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_ISSUER</code> (the realm URL). A token's
+  <code>iss</code> is compared with it before any key is fetched; another issuer's token is refused.</li>
+<li>Keys come from <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_JWKS_URL</code> when set, else from the
+  configured issuer's discovery document, whose own <code>issuer</code> must match. Never from the token.</li>
+<li>RS256 only; <code>exp</code> and <code>iss</code> required; the audience is checked when
+  <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_AUDIENCE</code> is set.</li>
+<li>Posture is the platform rule, mirrored in the plugin rather than imported: <code>CELINE_ENV</code>, then
+  <code>ENVIRONMENT</code>; only <code>dev</code> relaxes, unset is hardened. In dev an unset issuer defaults to the
+  local stack's realm, still one issuer. Anywhere else the security manager refuses to be built,
+  so the web server, the workers and the Superset CLI do not start; a request that reached the
+  verifier without an issuer would be refused.</li>
 </ul>
-<p>Nothing else makes a platform administrator. <strong>Not</strong> an <code>admins</code> group inside any
-organization, which held that way made its holder an administrator of every REC (closed
-2026-10-02). <strong>Not</strong> a realm group (top-level <code>groups</code> claim), which the platform no
-longer uses: one still present in a token, <code>/admins</code> included, grants nothing. <strong>Not</strong> a
-role with that name under <code>resource_access</code>, a top-level <code>roles</code> claim, or a trusted
-header (REQ-0003). No user id is ever special-cased, and the role name is not
-configurable.</p>
-<p><code>GET /user</code> reports <code>roles</code> (the caller's realm roles), <code>community_id</code>,
-<code>is_platform_admin</code>, and <code>is_admin</code> — true for a platform administrator and for a
-manager of the caller's own community (REQ-0005), which is what the UI gates its
-administrator features on.</p>
-<h3 id="req-0005-a-communitys-knowledge-is-managed-by-its-managers">REQ-0005 — a community's knowledge is managed by its managers</h3>
-<p><code>POST /admin/uploads</code> and <code>POST /admin/kb/sync</code> act on one community. A caller may use
-them for a community when they are a platform administrator (REQ-0004), or hold one of
-<code>REC_MANAGER_GROUPS</code> (default <code>managers</code>, <code>admins</code>) <strong>inside that REC's own
-organization</strong> — the rule onboarding applies. A group held in another organization says
-nothing about this one. A manager acts on their own community; a platform administrator,
-who has none, names one (<code>community_id</code>), and naming none is <code>400</code>.
-Anyone else is answered <code>403</code> and the operation does not run.</p>
-<h3 id="req-0040-the-callers-community-is-the-one-rec-organization-in-their-token">REQ-0040 — the caller's community is the one REC organization in their token</h3>
-<p>The community is the alias of the organization in the token's <code>organization</code> claim
-whose type is <code>REC_ORGANIZATION_TYPE</code> (default <code>rec</code>), read flattened (<code>type</code>) first and
-nested (<code>attributes.type</code>) second. The alias is also the Digital Twin community id.</p>
-<table>
-<thead>
-<tr>
-<th>The token names</th>
-<th>The caller's community</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>one REC organization</td>
-<td>its alias</td>
-</tr>
-<tr>
-<td>none (or only other organization types)</td>
-<td>none: nothing is retrieved, uploads are stored and not indexed</td>
-</tr>
-<tr>
-<td>more than one</td>
-<td><strong>refused, <code>403</code></strong>, before anything is written. Choosing one would answer from one REC's documents to a member of another</td>
-</tr>
-</tbody>
-</table>
-<p>A trusted-header identity (ADR-0003) carries no organization claim and so has no
-community.</p>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li>Every deployment must set <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_ISSUER</code> before running an image
+  with this change, or Superset (web, worker, beat, init) exits at start.</li>
+<li>A local stack that runs Superset must pass either the issuer or <code>CELINE_ENV=dev</code>.</li>
+<li><code>CUSTOM_SECURITY_MANAGER_SKIP_SSL_VERIFY</code> still applies to the discovery and JWKS fetches;
+  with the issuer fixed it no longer chooses whose keys are used, but it still lets whoever is
+  on that path supply them.</li>
+<li>The posture rule exists twice (here and in <code>celine.sdk.posture</code>). A change to the rule must
+  be made in both; depending on the SDK from the plugin would remove the copy.</li>
+<li>Loosening any of this (an issuer taken from the token, a list of issuers, a hardened default
+  issuer, logging instead of refusing to start) reopens what this record closes and needs a new
+  ADR that supersedes this one.</li>
+</ul>
 
 
 
