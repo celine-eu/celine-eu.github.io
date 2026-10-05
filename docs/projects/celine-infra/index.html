@@ -4167,6 +4167,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#environment-signal-and-token-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment signal and token verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#legal-host" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4578,6 +4589,17 @@
     <span class="md-ellipsis">
       
         ROI calculator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-signal-and-token-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment signal and token verification
       
     </span>
   </a>
@@ -5043,6 +5065,48 @@ the API Ingress only, and inside roi.</p>
 </table>
 <p>The roi settings other than <code>forwarded_allow_ips</code> are read by roi releases after v1.10.3; an
 older image ignores them.</p>
+<hr />
+<h2 id="environment-signal-and-token-verification">Environment signal and token verification</h2>
+<p>Every celine service, the operator shell of the assistant, the pipelines and Superset get
+<code>CELINE_ENV</code>, the environment's name. Only <code>dev</code> relaxes anything; any other value, unset
+included, is hardened, and a hardened service refuses to start with a development value
+(default database password, client secret equal to the client id, missing issuer or key).
+Images before the celine-sdk release that carries <code>posture</code> ignore the variable.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>celine_env</code></td>
+<td>overrides <code>CELINE_ENV</code>. Default: the helmfile environment's name. <code>dev</code> outside the environment <code>dev</code> stops the render</td>
+</tr>
+<tr>
+<td><code>qdrant.api_key</code></td>
+<td>secret: the key Qdrant enforces (<code>apiKey</code>) and the assistant sends (<code>QDRANT_API_KEY</code>, through <code>ai-assistant-secrets</code>). Required by the assistant outside dev. Unset: neither is rendered. Sync <code>ai-assistant</code> and <code>ai-assistant-shell</code> before <code>qdrant</code></td>
+</tr>
+<tr>
+<td><code>nudging.click_tracking_secret</code></td>
+<td>secret: <code>CLICK_TRACKING_SECRET</code>, the HMAC key of tracked notification links, through <code>nudging-secrets</code>. Required by nudging outside dev from the release that carries <code>posture</code>. Older images sign with <code>VAPID_PRIVATE_KEY</code> when it is unset, so setting it invalidates the links already sent</td>
+</tr>
+</tbody>
+</table>
+<p>Derived, not set:</p>
+<ul>
+<li><strong>Superset</strong> trusts the tokens of one issuer: <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_ISSUER</code> is
+  <code>https://keycloak.&lt;domain&gt;/realms/&lt;keycloak.realm&gt;</code>, the realm oauth2-proxy signs users in
+  with, and <code>CUSTOM_SECURITY_MANAGER_KEYCLOAK_AUDIENCE</code> is <code>auth_setup.clientID</code>
+  (<code>oauth2_proxy</code>). Plain env on web, worker, beat and the <code>run-setup</code> container: from
+  celine-superset ADR-0003, Superset does not start outside dev without the issuer.
+  <code>superset.acceptSelfSignedCerts</code> still turns TLS verification of the key fetch off.</li>
+<li><strong>The assistant</strong> gets <code>OAUTH2_ISSUER</code> (the same realm URL), <code>OAUTH2_AUDIENCE</code>
+  (<code>auth_setup.clientID</code>) and <code>OAUTH2_TRUST_HEADERS=false</code>; it reads the key set from
+  <code>CELINE_OIDC_JWKS_URI</code> (celine-services), or discovers it from the issuer on images that
+  do not read that variable.</li>
+</ul>
 <hr />
 <h2 id="legal-host">Legal host</h2>
 <p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices) as a
