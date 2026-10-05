@@ -4603,9 +4603,13 @@
    would change. Outside dev it also hardens the master realm, and needs
    <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> for that (<a href="../deployment/#the-admin-second-factor-and-the-master-realm">deployment</a>);
    under <code>ENV=dev</code> (the taskfile's) master is left alone.</li>
-<li><strong>Creates a <code>celine-admin-cli</code> service account</strong> with realm-management roles, and writes
-   its secret to <code>.client.secrets.yaml</code>. Subsequent commands auto-load credentials from this
-   file. The secret is printed only under a development <code>ENV</code>.</li>
+<li><strong>Creates a <code>celine-admin-cli</code> service account</strong> with realm-management roles. Under
+   <code>ENV=dev</code> (the taskfile's) it writes the secret to <code>.client.secrets.yaml</code>, and subsequent
+   commands auto-load credentials from this file. Any other <code>ENV</code> writes the file only when
+   asked (<code>--secrets-file</code>, <code>CELINE_KEYCLOAK_SECRETS_FILE</code>), and otherwise says where the
+   secret can be read: the realm's admin console, Clients &gt; <code>celine-admin-cli</code> &gt; Credentials
+   (<a href="../specifications/keycloak-cli/">REQ-0020</a>). The secret is printed only under a
+   development <code>ENV</code>.</li>
 </ol>
 <p>The emails and login pages need the <code>rec</code> theme, so <code>bootstrap</code> refuses a Keycloak that
 does not list it: use this repository's <code>keycloak</code> image, not the stock one.</p>

@@ -5350,7 +5350,7 @@ no group of either level reaches the policy, so a person's token reaches no topi
 <tr>
 <td><code>CELINE_KEYCLOAK_SECRETS_FILE</code></td>
 <td><code>.client.secrets.yaml</code></td>
-<td>Secrets file path</td>
+<td>Secrets file path. Set, <code>bootstrap</code> records the admin CLI client's secret and <code>sync</code> the secrets it applied there (mode <code>0600</code>); unset, neither writes a file unless <code>ENV=dev</code> (REQ-0020)</td>
 </tr>
 <tr>
 <td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_ID</code></td>

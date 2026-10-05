@@ -4151,6 +4151,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0020-sync-and-bootstrap-write-client-secrets-to-disk-only-when-asked-readable-by-their-owner-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0020 — sync and bootstrap write client secrets to disk only when asked, readable by their owner only
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4335,6 +4346,28 @@ differently, Keycloak's own <code>browser</code> flow bound, or the flow of anot
 either switch off on a hardened master is destructive and needs <code>--allow-destructive</code>
 outside dev. <code>--check</code> fails while anything above would change. Recovery when the client
 is lost is Keycloak's own <code>kc.sh bootstrap-admin</code>.</p>
+<hr />
+<h3 id="req-0020-sync-and-bootstrap-write-client-secrets-to-disk-only-when-asked-readable-by-their-owner-only">REQ-0020 — <code>sync</code> and <code>bootstrap</code> write client secrets to disk only when asked, readable by their owner only</h3>
+<p><code>celine-policies keycloak sync</code> records the secrets of the clients it created or updated, and
+<code>celine-policies keycloak bootstrap</code> the secret of the admin CLI client (<code>celine-admin-cli</code>) it
+created or refreshed, in a secrets file only when the run asks for it:</p>
+<ul>
+<li><strong><code>--secrets-file PATH</code></strong>, or <strong><code>CELINE_KEYCLOAK_SECRETS_FILE</code></strong> set: the run writes that path.</li>
+<li><strong>Neither, under <code>ENV=dev</code></strong>: the run writes <code>.client.secrets.yaml</code> in the working directory, as
+  before.</li>
+<li><strong>Neither, any other <code>ENV</code>, unset included</strong>: the run writes no file and says so. <code>sync</code>
+  prints how many clients' secrets it did not record and how to ask; <code>bootstrap</code> prints how to
+  ask, and where the secret can be read instead (the realm's admin console, the client's
+  Credentials tab). Outside dev the other commands need no copy of it either: they sign in as the
+  bootstrap client when <code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code> is set and the admin CLI
+  client's secret is not (REQ-0016).</li>
+<li><code>--dry-run</code> and <code>--check</code> write nothing, asked or not.</li>
+</ul>
+<p>Every write of the file — <code>sync</code>'s and <code>bootstrap</code>'s, through the one merging writer — leaves it
+mode <code>0600</code>, narrowing a file an earlier run left wider. The secrets a <code>sync</code> applies are the
+deployment's own inputs (<code>${SVC_…_SECRET}</code>), so nothing outside dev needs them back from disk; the
+one reader of <code>sync</code>'s entries is <code>sync-users --from-registry</code>'s last fallback for the registry
+client's secret, a dev-only command (REQ-0006).</p>
 
 
 

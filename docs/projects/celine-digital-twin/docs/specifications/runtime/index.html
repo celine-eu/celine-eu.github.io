@@ -4748,6 +4748,11 @@ answer is the 404 of REQ-1031). A domain's own refusal is recorded with the code
 gives it: <code>it-participant</code>'s are <code>participant_not_caller</code> and <code>device_not_owned</code>
 (<a href="../participant/">participant.md</a>), and a fetch a domain refuses carries its code too
 (REQ-1116). Any other 401 or 403 is recorded as <code>http &lt;status&gt;</code>.</p>
+<blockquote>
+<p>A gate names its code with <code>note_reason(request, code)</code> before it raises; the record
+is <code>celine.sdk.audit.audit_route</code>'s, which gives a noted code precedence over the
+status (celine-sdk REQ-0194). An unexpected exception stays <code>error</code>, named by its class.</p>
+</blockquote>
 <h3 id="req-1082-an-audit-record-must-not-carry-the-callers-email-name-or-username-the-token-or-the-query-string">REQ-1082 — An audit record MUST NOT carry the caller's email, name or username, the token, or the query string.</h3>
 <p>An entity id shaped like an email address is replaced by its pseudonym (<code>h:</code> and 16 hex
 digits).</p>

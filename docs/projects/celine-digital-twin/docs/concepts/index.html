@@ -4789,7 +4789,10 @@ simulations, subscriptions and ontology specs. <code>domains.md</code> is the cu
 </code></pre>
 <p>Available in context:
 - <code>entity</code> - Resolved <code>EntityInfo</code> from the URL path (or <code>None</code>)
-- <code>values_service</code> - Value fetchers for data access (<code>fetch_value()</code> is the shortcut)
+- <code>values_service</code> - Value fetchers for data access (<code>fetch_value()</code> is the shortcut). A
+  <code>RunContext</code> carries no caller token: a fetcher that reads with the caller's identity is
+  refused unless the call passes <code>as_service=True</code> (REQ-1133). A route uses <code>Ctx.fetch_value</code>,
+  which forwards the caller's token.
 - <code>broker_service</code> - Event broker for publishing (<code>publish_event()</code> is the shortcut)
 - <code>services</code> - Shared service bag (clients registry, etc.)
 - <code>workspace</code> - Set by the simulation runner

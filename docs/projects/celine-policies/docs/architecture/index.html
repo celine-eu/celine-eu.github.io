@@ -4533,7 +4533,7 @@ run instead of writing them:</p>
   are plural (<code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code>) and a group the organization does not
   have is refused, so it runs after the reconcile has created the organization
 - <code>status</code> — show current scopes, clients, and assignments</p>
-<p>Authentication to Keycloak uses either admin user credentials (<code>--admin-user</code>) or a service account client (<code>celine-admin-cli</code>) whose secret is stored in <code>.client.secrets.yaml</code> after bootstrap. Both <code>bootstrap</code> and <code>sync</code> write that file through one merging writer, so a sync cannot delete the credential a bootstrap put there; it holds one realm at a time.</p>
+<p>Authentication to Keycloak uses either admin user credentials (<code>--admin-user</code>) or a service account client (<code>celine-admin-cli</code>) whose secret is stored in <code>.client.secrets.yaml</code> after bootstrap. Both <code>bootstrap</code> and <code>sync</code> write that file through one merging writer, so a sync cannot delete the credential a bootstrap put there; it holds one realm at a time, and is mode <code>0600</code>. Outside dev neither command writes it unless given <code>--secrets-file</code> or <code>CELINE_KEYCLOAK_SECRETS_FILE</code> (REQ-0020); a run there that was not asked authenticates with <code>CELINE_KEYCLOAK_ADMIN_CLIENT_SECRET</code> or the bootstrap client instead.</p>
 <h3 id="4-rego-policies">4. Rego Policies</h3>
 <p>Two policy files under <code>policies/celine/</code>:</p>
 <ul>
@@ -4580,7 +4580,7 @@ clients.ds-host.yaml ─┤   the grants celine adds to ds's clients   ┐ only 
                  │
                  ├─ apply changes ──&gt; Keycloak Admin API
                  │
-                 └─ .client.secrets.yaml
+                 └─ .client.secrets.yaml   (only when asked, or in dev; 0600)
 </code></pre>
 <p>The <code>sync</code> command:</p>
 <ol>
@@ -4588,7 +4588,7 @@ clients.ds-host.yaml ─┤   the grants celine adds to ds's clients   ┐ only 
 <li>Fetches current state from Keycloak (existing scopes, clients, assignments)</li>
 <li>Computes a diff (plan): scopes to create/update, clients to create/update, scope assignments to add/remove</li>
 <li>Applies changes idempotently</li>
-<li>Merges the client secrets it generated into <code>.client.secrets.yaml</code>, keeping the entries this run did not touch — <code>celine-admin-cli</code> among them, which is what the next run with no <code>--admin-user</code> authenticates with</li>
+<li>Merges the client secrets it applied into the secrets file, keeping the entries this run did not touch — <code>celine-admin-cli</code> among them, which is what the next run with no <code>--admin-user</code> authenticates with. Only when asked (<code>--secrets-file</code>, <code>CELINE_KEYCLOAK_SECRETS_FILE</code>) or under <code>ENV=dev</code>, and always mode <code>0600</code> (<a href="../specifications/keycloak-cli/">REQ-0020</a>)</li>
 </ol>
 <p>The <code>scopes_prefix</code> field on each client declares scope ownership. The CLI uses this to automatically add audience mappers so that user JWTs issued through <code>oauth2-proxy</code> carry the correct audience for each service.</p>
 <h2 id="topic-naming-convention">Topic Naming Convention</h2>
@@ -4718,7 +4718,7 @@ clients.ds-host.yaml ─┤   the grants celine adds to ds's clients   ┐ only 
 <tr>
 <td><code>CELINE_KEYCLOAK_SECRETS_FILE</code></td>
 <td><code>.client.secrets.yaml</code></td>
-<td>Auto-load secret from file</td>
+<td>Auto-load secret from file; set, <code>bootstrap</code> and <code>sync</code> also record their secrets there (REQ-0020)</td>
 </tr>
 </tbody>
 </table>

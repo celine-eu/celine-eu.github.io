@@ -4369,6 +4369,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#req-1133-a-fetch-with-no-request-context-must-be-refused-with-the-code-caller_identity_required-before-the-statement-is-rendered-or-sent-unless-the-fetcher-declares-identityservice-req-1125-or-the-call-passes-as_servicetrue-a-call-that-passes-as_servicetrue-must-reach-its-client-with-no-request-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1133 — A fetch with no request context MUST be refused with the code caller_identity_required, before the statement is rendered or sent, unless the fetcher declares identity="service" (REQ-1125) or the call passes as_service=True; a call that passes as_service=True MUST reach its client with no request context.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#req-1122-when-a-fetcher-declares-an-output_mapper-it-must-be-applied-to-every-returned-row" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4744,6 +4755,16 @@ caller's token, provider or not.</p>
 is down, or refuses the client credentials) used to surface as a 500. For the caller it is
 the same fault as no provider: the Digital Twin has no identity to query with right now.
 The log line carries the code and the exception type only.</p>
+</blockquote>
+<h3 id="req-1133-a-fetch-with-no-request-context-must-be-refused-with-the-code-caller_identity_required-before-the-statement-is-rendered-or-sent-unless-the-fetcher-declares-identityservice-req-1125-or-the-call-passes-as_servicetrue-a-call-that-passes-as_servicetrue-must-reach-its-client-with-no-request-context">REQ-1133 — A fetch with no request context MUST be refused with the code <code>caller_identity_required</code>, before the statement is rendered or sent, unless the fetcher declares <code>identity="service"</code> (REQ-1125) or the call passes <code>as_service=True</code>; a call that passes <code>as_service=True</code> MUST reach its client with no request context.</h3>
+<blockquote>
+<p>Work outside a request — an event handler, a <code>RunContext</code> — has no caller. Without this
+rule its fetch reached the client with no context, the client authenticated with the
+Digital Twin's own token, and <code>dataset-api</code> answered every row that token may read, for a
+fetcher written to read one caller's rows. Reading as the Digital Twin is now a decision
+the code states at the call: <code>it-participant</code>'s meter-anomalies handler passes
+<code>as_service=True</code>; the boundary fetchers declare it in their spec. <code>RunContext.fetch_value</code>
+carries no caller token and forwards <code>as_service</code>.</p>
 </blockquote>
 <h3 id="req-1122-when-a-fetcher-declares-an-output_mapper-it-must-be-applied-to-every-returned-row">REQ-1122 — When a fetcher declares an <code>output_mapper</code>, it MUST be applied to every returned row.</h3>
 <p>The declaration is a <code>module:attr</code> path, resolved when the fetcher is registered; a path

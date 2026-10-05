@@ -4450,7 +4450,10 @@ group act as another's, or as the platform's, the day a rule did read it.</p>
 <p>The caller is named by <code>sub</code> and client id only, never email or name, and the claims of
 a token that failed verification are not read. A request with no token at all on an
 unguarded route (<code>401 Missing authentication token</code>) is not recorded: there is no caller.
-The middleware runs before routing, so its records carry the method and no route.</p>
+The middleware runs before routing; its records carry the method and the template of the
+route the router will match (<code>/api/commitments/{commitment_id}/settle</code>), resolved from the
+app's routes by path and method, never the raw path, which carries commitment ids. A
+refused path no route serves records <code>route: null</code>.</p>
 
 
 

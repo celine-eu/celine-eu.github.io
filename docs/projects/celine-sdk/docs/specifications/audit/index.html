@@ -4129,6 +4129,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0194-a-gate-names-its-own-reason" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0194 — a gate names its own reason
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4267,6 +4278,47 @@ is <code>null</code>.</p>
 a middleware refusing before routing passes the route template it guards. <code>method</code> is
 upper-cased, and <code>route</code> is cleaned like every string field (REQ-0191) — it is a
 template, never the raw path.</p>
+<h3 id="req-0194-a-gate-names-its-own-reason">REQ-0194 — a gate names its own reason</h3>
+<p>A gate that refuses for a reason of its own calls <code>note_reason(request, reason)</code> before it
+raises, or before it returns its refusal as a response. It sets
+<code>request.state.audit_note</code> (<code>AUDIT_NOTE_ATTR</code>) to the pair <code>(outcome, reason)</code>; <code>outcome</code>
+is <code>denied</code> (the default) or <code>error</code>, anything else is a <code>ValueError</code>. <code>reason</code> is a short
+code, never what the caller sent. The last note of a request wins.</p>
+<p>When the request ends, <code>audit_route</code> (REQ-0192) records the noted outcome and reason in
+place of the ones the status gives:</p>
+<table>
+<thead>
+<tr>
+<th>The request ends with</th>
+<th>No note</th>
+<th>A note <code>(denied, r)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a returned response</td>
+<td><code>access</code>, <code>allowed</code></td>
+<td><code>denied</code>, <code>reason = r</code></td>
+</tr>
+<tr>
+<td><code>HTTPException</code> 401 or 403</td>
+<td><code>denied</code>, <code>http &lt;status&gt;</code></td>
+<td><code>denied</code>, <code>reason = r</code></td>
+</tr>
+<tr>
+<td>another <code>HTTPException</code> (a 404 that hides an entity)</td>
+<td><code>access</code>, <code>error</code>, <code>http &lt;status&gt;</code></td>
+<td><code>denied</code>, <code>reason = r</code></td>
+</tr>
+<tr>
+<td>any other exception</td>
+<td><code>access</code>, <code>error</code>, <code>&lt;exception class&gt;</code></td>
+<td>unchanged</td>
+</tr>
+</tbody>
+</table>
+<p>A note <code>(error, r)</code> records <code>access</code>, <code>error</code>, <code>reason = r</code> in the same places. The caller,
+resource and route are read as REQ-0192 says; the record shape (REQ-0190) is unchanged.</p>
 
 
 
