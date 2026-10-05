@@ -4652,7 +4652,9 @@ database is opened — while:</p>
   client id is set; it is used for nudging reminders);</li>
 <li><code>CELINE_OIDC_BASE_URL</code> / <code>CELINE_OIDC_JWKS_URI</code> are left on the SDK's local Keycloak default.</li>
 </ul>
-<p>In dev the same list is one startup warning. <code>task run</code> exports <code>CELINE_ENV=dev</code>;
+<p>In dev the same list is one startup warning. Outside dev <code>/api/docs</code>, <code>/api/redoc</code> and
+<code>/api/openapi.json</code> are not mounted (<code>404</code>) unless <code>CELINE_PUBLIC_DOCS=true</code>.
+<code>task run</code> exports <code>CELINE_ENV=dev</code>;
 <code>CELINE_ENV=staging task run</code> runs the same entry point hardened.</p>
 <p><code>CELINE_OIDC_AUDIENCE</code> is not required: with it unset the member token's audience is not
 checked (issuer, signature and expiry are). Requiring it needs the realm to put this service's

@@ -4182,7 +4182,9 @@ frame-ancestors 'none'</code>. A route that sets its own policy keeps it (REQ-00
 interactive API docs are HTML that loads scripts, so they get no policy here.</p>
 <h3 id="req-0046-wildcard-cors-is-served-in-dev-only">REQ-0046 — wildcard CORS is served in dev only</h3>
 <p><code>Access-Control-Allow-Origin: *</code> (with credentials) is configured only when the signal of
-REQ-0045 is <code>dev</code>. Anywhere else no cross-origin caller is allowed.</p>
+REQ-0045 is <code>dev</code>. Anywhere else no cross-origin caller is allowed. On the same signal,
+<code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> are not mounted outside dev (<code>404</code>) unless
+<code>CELINE_PUBLIC_DOCS=true</code>.</p>
 
 
 

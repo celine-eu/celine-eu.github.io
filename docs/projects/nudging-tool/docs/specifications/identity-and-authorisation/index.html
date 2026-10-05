@@ -4231,7 +4231,9 @@ Rego bundle evaluated in process that decides whether it may proceed.</p>
 <h3 id="req-0001-every-route-needs-a-token-except-a-fixed-exact-list">REQ-0001 — every route needs a token except a fixed, exact list</h3>
 <p><code>AuthMiddleware</code> runs before every dependency. The open list is a literal set —
 <code>/health</code>, <code>/docs</code>, <code>/redoc</code>, <code>/openapi.json</code>, <code>/favicon.ico</code>,
-<code>/notifications/track-click</code> — plus anything under the <code>/static/</code> prefix.</p>
+<code>/notifications/track-click</code> — plus anything under the <code>/static/</code> prefix. The three
+docs paths are mounted only in <code>CELINE_ENV=dev</code> or with <code>CELINE_PUBLIC_DOCS=true</code>;
+anywhere else they answer <code>404</code>.</p>
 <p>It is matched exactly, not by route pattern: <code>/health/</code> with a trailing slash is closed,
 and <code>/static</code> without one is closed.</p>
 <p><code>/notifications/track-click</code> is the one place a caller reaches a notification without
