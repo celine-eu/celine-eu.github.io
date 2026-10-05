@@ -4406,7 +4406,8 @@ task run                     # runs on port 8016
 defaults</strong> below (<code>task run</code> exports it). Unset, or any other value, is hardened and
 <code>create_app()</code> refuses to start while the database password is a local one, the client secret
 equals the client id, the issuer is the SDK's local default, or <code>VAPID_PUBLIC_KEY</code>,
-<code>VAPID_PRIVATE_KEY</code> or <code>CLICK_TRACKING_SECRET</code> is unset — see REQ-0081.</p>
+<code>VAPID_PRIVATE_KEY</code> or <code>CLICK_TRACKING_SECRET</code> is unset, or <code>WEBPUSH_ENDPOINT_RELAXED</code> is on —
+see REQ-0081.</p>
 <table>
 <thead>
 <tr>
@@ -4469,7 +4470,22 @@ equals the client id, the issuer is the SDK's local default, or <code>VAPID_PUBL
 <tr>
 <td><code>CLICK_TRACKING_SECRET</code></td>
 <td>—</td>
-<td>Signs click-tracking tokens; required outside dev (in dev it falls back to the VAPID private key)</td>
+<td>Signs click-tracking tokens; required outside dev (in dev an unset one uses a fixed development secret, never the VAPID key)</td>
+</tr>
+<tr>
+<td><code>WEBPUSH_ALLOWED_HOSTS</code></td>
+<td>the browser push services</td>
+<td>Comma-separated push-service hosts (and subdomains) a subscription may name; <code>*</code> for any public host (REQ-0083)</td>
+</tr>
+<tr>
+<td><code>WEBPUSH_ENDPOINT_RELAXED</code></td>
+<td><code>false</code></td>
+<td>Lifts the endpoint rules for a local push stand-in; dev only, refused elsewhere</td>
+</tr>
+<tr>
+<td><code>WEBPUSH_TIMEOUT_SECONDS</code></td>
+<td><code>10</code></td>
+<td>Timeout of each push request (REQ-0084)</td>
 </tr>
 <tr>
 <td><code>SMTP_HOST</code></td>

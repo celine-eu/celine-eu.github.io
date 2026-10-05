@@ -4108,6 +4108,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0050-every-response-carries-the-security-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0050 — every response carries the security headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0046-wildcard-cors-is-served-in-dev-only" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4163,6 +4174,12 @@ offending setting in one message — while any of these is in force:</p>
 <li>a <code>DATABASE_URL</code> carrying a development database password.</li>
 </ul>
 <p>In dev the same list is logged as one warning and startup proceeds.</p>
+<h3 id="req-0050-every-response-carries-the-security-headers">REQ-0050 — every response carries the security headers</h3>
+<p><code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: DENY</code> and
+<code>Referrer-Policy: no-referrer</code> on every response, errors included; and, on every
+response that is not HTML, <code>Content-Security-Policy: default-src 'none';
+frame-ancestors 'none'</code>. A route that sets its own policy keeps it (REQ-0049). The
+interactive API docs are HTML that loads scripts, so they get no policy here.</p>
 <h3 id="req-0046-wildcard-cors-is-served-in-dev-only">REQ-0046 — wildcard CORS is served in dev only</h3>
 <p><code>Access-Control-Allow-Origin: *</code> (with credentials) is configured only when the signal of
 REQ-0045 is <code>dev</code>. Anywhere else no cross-origin caller is allowed.</p>

@@ -4141,6 +4141,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0084-a-push-is-sent-only-to-an-endpoint-that-passes-the-rules-at-send-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0084 — a push is sent only to an endpoint that passes the rules at send time
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0047-an-absent-recipient-and-an-absent-configuration-are-failures-not-errors" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4251,6 +4262,22 @@ server.</p>
 <p>Any other failure, including an exception carrying no response, leaves the subscription
 enabled: a <code>503</code> during an outage is not evidence that a browser has gone.</p>
 <p>The same handling applies to an administrator's test push (REQ-0005).</p>
+<h3 id="req-0084-a-push-is-sent-only-to-an-endpoint-that-passes-the-rules-at-send-time">REQ-0084 — a push is sent only to an endpoint that passes the rules at send time</h3>
+<p>Every send — a delivery and an administrator's test push — checks the stored endpoint
+against REQ-0083 again, because a row may predate the rules and a name can resolve
+somewhere else than when it was stored. Then:</p>
+<ul>
+<li>a URL that breaks a rule (scheme, port, credentials, host not allowed) is not sent to and
+  the subscription is <strong>disabled</strong> — it can never pass;</li>
+<li>a host that does not resolve, or resolves to a non-public address, is not sent to and the
+  subscription stays enabled — resolution can change;</li>
+<li>the request goes through a session that follows no redirect (a <code>3xx</code> is a failed push,
+  REQ-0046 applies), ignores the environment's proxy settings, and refuses the connection
+  if the peer it reached is not a public address — the name is resolved again on connect;</li>
+<li>it has a timeout, <code>WEBPUSH_TIMEOUT_SECONDS</code> (10 s). A timeout or a refused connection is
+  a failed push and leaves the subscription enabled.</li>
+</ul>
+<p>Each of these is recorded on the delivery log as <code>failed</code> with its reason.</p>
 <h3 id="req-0047-an-absent-recipient-and-an-absent-configuration-are-failures-not-errors">REQ-0047 — an absent recipient and an absent configuration are failures, not errors</h3>
 <p>Recorded and returned rather than raised:</p>
 <table>

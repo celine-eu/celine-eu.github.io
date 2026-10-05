@@ -4155,10 +4155,10 @@ hardened. Hardened, startup raises <code>InsecureConfiguration</code> listing ev
 <li><code>CELINE_OIDC_CLIENT_SECRET</code> empty or equal to the client id (the <code>svc-nudging</code> default);</li>
 <li><code>CELINE_OIDC_BASE_URL</code> / <code>CELINE_OIDC_JWKS_URI</code> left on the SDK's local Keycloak default;</li>
 <li><code>VAPID_PUBLIC_KEY</code>, <code>VAPID_PRIVATE_KEY</code> or <code>CLICK_TRACKING_SECRET</code> unset — otherwise they
-  fail only when first used, after the service has come up.</li>
+  fail only when first used, after the service has come up;</li>
+<li><code>WEBPUSH_ENDPOINT_RELAXED</code> enabled (REQ-0083).</li>
 </ul>
-<p>Requiring <code>CLICK_TRACKING_SECRET</code> makes the click-token fallback to the VAPID private key a
-development-only path. In dev the same list is one warning and the service starts. The OIDC
+<p>The click-tracking secret has no fallback to the VAPID private key (REQ-0056). In dev the same list is one warning and the service starts. The OIDC
 client id, secret and audience are read from <code>CELINE_OIDC_*</code>, so the secret can be set
 without code.</p>
 

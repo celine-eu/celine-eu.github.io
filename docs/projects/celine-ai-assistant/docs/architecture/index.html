@@ -4560,7 +4560,7 @@ changing anything on this path.</p>
 <h2 id="database-models">Database Models</h2>
 <p>PostgreSQL (async via SQLAlchemy + asyncpg). Alembic handles migrations. Models:</p>
 <ul>
-<li><code>Conversation</code> — linked to a user identity from the JWT subject claim</li>
+<li><code>Conversation</code> — linked to a user identity, the verified token's <code>sub</code> claim (REQ-0047)</li>
 <li><code>Message</code> — role (<code>user</code>/<code>assistant</code>), content, timestamp, optional attachment refs</li>
 <li><code>Attachment</code> — file metadata: name, MIME type, Qdrant collection reference, scope (user/system)</li>
 </ul>

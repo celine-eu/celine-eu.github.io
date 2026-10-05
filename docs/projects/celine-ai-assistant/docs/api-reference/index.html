@@ -4731,12 +4731,17 @@
 <h3 id="post-upload"><code>POST /upload</code></h3>
 <p>Upload a file for RAG ingestion (user scope).</p>
 <p><strong>Request:</strong> <code>multipart/form-data</code> with <code>file</code> field.</p>
-<p><strong>Response:</strong> <code>201</code> with attachment metadata including <code>id</code>, <code>filename</code>, <code>content_type</code>.</p>
+<p><strong>Response:</strong> <code>201</code> with attachment metadata including <code>id</code>, <code>filename</code>, <code>content_type</code>.
+<code>content_type</code> is decided from the file's bytes; a type outside the allowed list (PDF,
+PNG/JPEG/GIF/WebP, <code>.docx</code>/<code>.xlsx</code>/<code>.pptx</code>, <code>.txt</code>/<code>.md</code>/<code>.csv</code>) is <code>415</code>
+(REQ-0048). <code>POST /admin/uploads</code> applies the same list.</p>
 <p>Images are captioned via the vision model before chunking. All files are parsed, chunked, embedded, and upserted into Qdrant.</p>
 <h3 id="get-attachments"><code>GET /attachments</code></h3>
 <p>List all attachments belonging to the authenticated user.</p>
 <h3 id="get-attachmentsidraw"><code>GET /attachments/{id}/raw</code></h3>
-<p>Download the raw uploaded file.</p>
+<p>Download the raw uploaded file. Images and PDFs are served <code>inline</code>, everything else as
+<code>attachment</code>, always with <code>X-Content-Type-Options: nosniff</code> and a sandboxing
+<code>Content-Security-Policy</code> (REQ-0049).</p>
 <h3 id="delete-attachmentsid"><code>DELETE /attachments/{id}</code></h3>
 <p>Delete an attachment and remove its vectors from Qdrant.</p>
 <hr />

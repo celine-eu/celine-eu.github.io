@@ -4221,7 +4221,8 @@ persist is logged and does not fail the turn.</p>
 <p>The text of the <code>token</code> events is accumulated and stored as one <code>assistant</code> message. An
 empty answer is not stored.</p>
 <h3 id="req-0010-everything-about-a-conversation-is-scoped-to-its-user">REQ-0010 — everything about a conversation is scoped to its user</h3>
-<p>Listing, reading messages and deleting are all filtered by user id. Another user's
+<p>Listing, reading messages and deleting are all filtered by user id (the <code>sub</code>,
+REQ-0047). Another user's
 conversation is reported as <strong>not found</strong>, never as forbidden: a <code>403</code> would confirm the
 id exists.</p>
 <h3 id="req-0011-deleting-is-idempotent-from-the-callers-view">REQ-0011 — deleting is idempotent from the caller's view</h3>

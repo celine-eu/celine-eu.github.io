@@ -4108,6 +4108,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0048-an-upload-is-one-of-a-fixed-list-of-types-decided-from-its-bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0048 — an upload is one of a fixed list of types, decided from its bytes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0049-a-stored-file-is-served-so-that-no-browser-runs-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0049 — a stored file is served so that no browser runs it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-a-platform-administrator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4208,6 +4230,52 @@ sanitiser reduces the name to a basename and drops anything outside
 <code>OAUTH2_TRUST_HEADERS</code> on, a request header — so separators are stripped rather than
 honoured, <code>@</code> and <code>.</code> are kept because an id is usually an email, and an id that reduces
 to nothing usable is refused rather than coerced.</p>
+<h3 id="req-0048-an-upload-is-one-of-a-fixed-list-of-types-decided-from-its-bytes">REQ-0048 — an upload is one of a fixed list of types, decided from its bytes</h3>
+<p>The type is decided by the file's own content, never by what the client declared, and
+the decided type is what is stored and served:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Recognised by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td><code>%PDF</code> magic</td>
+</tr>
+<tr>
+<td>PNG, JPEG, GIF, WebP images</td>
+<td>their magic bytes</td>
+</tr>
+<tr>
+<td>Word, Excel, PowerPoint (<code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>)</td>
+<td>a zip holding <code>[Content_Types].xml</code> and that format's parts, under its extension</td>
+</tr>
+<tr>
+<td>plain text, Markdown, CSV (<code>.txt</code>, <code>.md</code>, <code>.csv</code>)</td>
+<td>UTF-8 with no NUL byte, under its extension</td>
+</tr>
+</tbody>
+</table>
+<p>Anything else — HTML, SVG, XML, scripts, archives, executables, a name whose bytes are
+something else — is answered <code>415</code> before it is stored or indexed. The list is the
+same for <code>POST /upload</code> and <code>POST /admin/uploads</code>.</p>
+<h3 id="req-0049-a-stored-file-is-served-so-that-no-browser-runs-it">REQ-0049 — a stored file is served so that no browser runs it</h3>
+<p><code>GET /attachments/{id}/raw</code> serves the stored type when it is on the REQ-0048 list and
+<code>application/octet-stream</code> otherwise (rows written before the list existed carry the
+type the client declared). Every response carries <code>X-Content-Type-Options: nosniff</code> and
+<code>Cache-Control: private, no-store</code>.</p>
+<ul>
+<li><strong>An image or a PDF is <code>inline</code></strong>; everything else is <code>Content-Disposition: attachment</code>.</li>
+<li><strong>The content policy is <code>default-src 'none'</code> with <code>sandbox</code></strong>, so a file opened
+  directly runs no script and has no access to this origin. A PDF has
+  <code>default-src 'none'; object-src 'self'</code> without <code>sandbox</code>, because browsers' built-in
+  PDF viewers do not render under it; its type is still only ever a real PDF (REQ-0048).</li>
+<li>The file name is given ASCII-only in <code>filename</code>, with the full sanitised name
+  (REQ-0015) in <code>filename*</code> (RFC 6266) when they differ.</li>
+</ul>
 <h3 id="req-0016-a-user-scoped-attachment-is-reachable-only-by-its-owner-or-a-platform-administrator">REQ-0016 — a user-scoped attachment is reachable only by its owner or a platform administrator</h3>
 <p>Reading it, downloading it, deleting it and attaching it to a chat turn all enforce this.
 The tool the model calls answers "not found" rather than "forbidden", because the model
@@ -4224,8 +4292,7 @@ client holding a stale id does not lose the turn.</p>
 <h3 id="req-0021-an-upload-is-text-extracted-where-possible-and-indexed-when-there-is-text">REQ-0021 — an upload is text-extracted where possible, and indexed when there is text</h3>
 <p>Images are captioned by the vision model; PDFs are text-extracted and fall back to
 rendering pages for the vision model; everything else goes through MarkItDown. The type
-is decided by the file's own magic bytes, and only falls back to what the client
-declared. Extraction that yields text is indexed and reported as <code>indexed</code>; extraction
+is the one decided at upload (REQ-0048). Extraction that yields text is indexed and reported as <code>indexed</code>; extraction
 that yields nothing, or fails, leaves the file stored and reported as <code>stored</code>.</p>
 <p>An upload is recorded with the caller's community (REQ-0040) and indexed into that
 community's knowledge base; with no community it is stored and reported as <code>stored</code>.

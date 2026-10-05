@@ -4253,6 +4253,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#req-0083-an-endpoint-is-accepted-only-if-it-is-a-public-push-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0083 — an endpoint is accepted only if it is a public push service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#req-0062-unsubscribing-disables-and-says-nothing-about-what-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4328,11 +4339,11 @@ notification as clicked.</p>
 <li>A malformed token, a tampered payload, or a signature from another secret is <code>400</code>. A
   valid token for a notification that no longer exists is <code>404</code>.</li>
 </ul>
-<p>The secret is <code>CLICK_TRACKING_SECRET</code>, falling back to <code>VAPID_PRIVATE_KEY</code>. So <strong>rotating
-the VAPID key invalidates every token in flight</strong> for an operator who never set the first
-one, and clicks on already-delivered notifications stop being recorded — silently,
-because a rejected token is a <code>400</code> nobody reads. With neither configured, signing raises
-<em>inside the delivery</em>, failing every web push at the moment of sending.</p>
+<p>The secret is <code>CLICK_TRACKING_SECRET</code> and nothing else: the VAPID private key is never
+used to sign, so rotating it leaves tokens in flight valid. Outside <code>CELINE_ENV=dev</code> the
+service does not start without it (REQ-0081), and signing refuses if it is unset anyway.
+In dev an unset secret signs with a fixed development secret, so a local run needs no
+configuration; that secret is public and signs nothing that matters.</p>
 <h3 id="req-0057-the-first-click-is-the-one-that-is-kept">REQ-0057 — the first click is the one that is kept</h3>
 <p><code>clicked_at</code> and <code>click_action</code> are written once; a second click changes neither. An
 empty or absent action is recorded as <code>default</code>.</p>
@@ -4384,6 +4395,24 @@ live.</p>
 participant. It is public by definition, and it is served from configuration rather than
 derived — so a mismatched key pair hands out a key that every subscription will later
 fail to verify.</p>
+<h3 id="req-0083-an-endpoint-is-accepted-only-if-it-is-a-public-push-service">REQ-0083 — an endpoint is accepted only if it is a public push service</h3>
+<p>The endpoint is a URL the browser chooses, and this service will POST to it from inside
+its own network, so <code>POST /webpush/subscribe</code> checks it before storing anything. Refused
+is <code>422</code> with <code>endpoint refused: &lt;rule&gt;</code>, and no row is written.</p>
+<ul>
+<li><code>https</code>, port 443, no user or password in the URL;</li>
+<li>the host is on <code>WEBPUSH_ALLOWED_HOSTS</code> — comma-separated, an entry matching itself and
+  its subdomains. The default is the browser push services: <code>fcm.googleapis.com</code>,
+  <code>updates.push.services.mozilla.com</code>, <code>push.apple.com</code>, <code>notify.windows.com</code>. <code>*</code> lifts
+  the list, not the rules around it;</li>
+<li>every address the host resolves to is public: not private, loopback, link-local (the
+  cloud metadata address included), shared, reserved or multicast, for IPv4, IPv6 and
+  IPv4-mapped IPv6. A name that does not resolve is refused too.</li>
+</ul>
+<p><code>WEBPUSH_ENDPOINT_RELAXED=true</code> lifts every rule, for a local push-service stand-in. It
+counts only with <code>CELINE_ENV=dev</code>; anywhere else it is ignored here and refused at startup
+(REQ-0081). Without it, dev applies the rules like any other environment — a real browser's
+endpoint passes them.</p>
 <h3 id="req-0062-unsubscribing-disables-and-says-nothing-about-what-exists">REQ-0062 — unsubscribing disables, and says nothing about what exists</h3>
 <p><code>POST /webpush/unsubscribe</code> sets <code>enabled = false</code> for the caller's own subscription with
 that endpoint and community. The row stays, so delivery-log rows pointing at it keep
