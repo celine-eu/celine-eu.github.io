@@ -4363,6 +4363,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1041-a-presented-token-that-fails-verification-must-answer-401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1041 — A presented token that fails verification MUST answer 401.
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4407,6 +4418,17 @@
     <span class="md-ellipsis">
       
         REQ-1052 — The value identifiers reported by GET /domains MUST be the domain-local ones, matching what the values API accepts (REQ-1103).
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1053-outside-dev-docs-redoc-and-openapijson-must-answer-404-unless-celine_public_docs-is-true" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1053 — Outside dev, /docs, /redoc and /openapi.json MUST answer 404 unless CELINE_PUBLIC_DOCS is true.
       
     </span>
   </a>
@@ -4508,6 +4530,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#access-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Access audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1080-every-request-to-an-entity-scoped-route-must-produce-exactly-one-audit-record-naming-the-caller-the-route-template-and-the-entity-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1080 — Every request to an entity-scoped route MUST produce exactly one audit record naming the caller, the route template and the entity read.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1081-a-refused-request-must-be-recorded-as-denied-at-warning-with-a-reason-code-and-the-caller-when-one-was-verified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1081 — A refused request MUST be recorded as denied, at WARNING, with a reason code and the caller when one was verified.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1082-an-audit-record-must-not-carry-the-callers-email-name-or-username-the-token-or-the-query-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1082 — An audit record MUST NOT carry the caller's email, name or username, the token, or the query string.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#domains-this-service-ships" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4596,6 +4668,10 @@ otherwise collide on <code>get_info</code> and generate one method for both.</p>
 <h2 id="authentication">Authentication</h2>
 <h3 id="req-1040-every-built-in-entity-scoped-route-must-require-a-jwt">REQ-1040 — Every built-in entity-scoped route MUST require a JWT.</h3>
 <p>A request without one MUST answer 401, and MUST NOT reach entity resolution.</p>
+<h3 id="req-1041-a-presented-token-that-fails-verification-must-answer-401">REQ-1041 — A presented token that fails verification MUST answer 401.</h3>
+<p>An expired, wrongly signed or otherwise unverifiable token is the caller's fault, not a
+server fault. The answer and the log MUST NOT repeat the verifier's message, which may
+quote claims of the token.</p>
 <hr />
 <h2 id="discovery">Discovery</h2>
 <h3 id="req-1050-get-health-must-answer-200-and-report-the-number-of-currently-registered-domains">REQ-1050 — <code>GET /health</code> MUST answer 200 and report the number of currently registered domains.</h3>
@@ -4605,6 +4681,14 @@ otherwise collide on <code>get_info</code> and generate one method for both.</p>
 <p>These two endpoints read the domain registry through <code>app.state.infra</code>, which is the
 only application state <code>create_app</code> sets. Reading it from anywhere else reports an
 empty service with a 200 — a health check that passes while describing nothing.</p>
+</blockquote>
+<h3 id="req-1053-outside-dev-docs-redoc-and-openapijson-must-answer-404-unless-celine_public_docs-is-true">REQ-1053 — Outside <code>dev</code>, <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> MUST answer 404 unless <code>CELINE_PUBLIC_DOCS</code> is <code>true</code>.</h3>
+<p><code>1</code>, <code>yes</code> and <code>on</code> count as <code>true</code>; unset, empty or any other value keeps them off. In
+<code>dev</code> (REQ-1061) all three are served. The environment is read as for REQ-1061.</p>
+<blockquote>
+<p>The API description lists every domain, entity route and value fetcher the service
+carries. A deployment that wants it public says so; none gets it by default. The rule
+is the platform's (<code>celine.sdk.posture.docs_urls</code>).</p>
 </blockquote>
 <hr />
 <h2 id="startup">Startup</h2>
@@ -4640,6 +4724,30 @@ they are logged as one warning and startup proceeds.</p>
 <h3 id="req-1070-an-on_event-handler-that-names-no-broker-must-subscribe-on-the-broker-its-domains-overridesbroker-names-a-broker-named-on-the-handler-must-take-precedence">REQ-1070 — An <code>@on_event</code> handler that names no broker MUST subscribe on the broker its domain's <code>overrides.broker</code> names; a broker named on the handler MUST take precedence.</h3>
 <p>Holds for handlers declared as domain methods and for plain functions found in a domain's
 package. With neither set, the broker service's default applies.</p>
+<hr />
+<h2 id="access-audit">Access audit</h2>
+<p>Records go to the <code>celine.audit</code> logger, one JSON object per line, in the platform's
+shape (<code>celine.sdk.audit</code>): <code>event</code>, <code>service</code>, <code>sub</code>, <code>client_id</code>, <code>service_account</code>,
+<code>action</code>, <code>method</code>, <code>route</code>, <code>resource</code>, <code>outcome</code>, <code>reason</code>, <code>request_id</code>, <code>trace_id</code>,
+<code>ts</code>. The action is <code>twin.read</code>: no entity-scoped route changes a twin.</p>
+<h3 id="req-1080-every-request-to-an-entity-scoped-route-must-produce-exactly-one-audit-record-naming-the-caller-the-route-template-and-the-entity-read">REQ-1080 — Every request to an entity-scoped route MUST produce exactly one audit record naming the caller, the route template and the entity read.</h3>
+<p>The caller is the verified token's <code>sub</code> and client id. The resource is
+<code>{domain}/{entity id}</code>, followed by any further path parameter (the value fetcher id, the
+ontology spec id). A route a domain adds under <code>routes/</code> is covered like a built-in one.
+A request that ends in an error is recorded with outcome <code>error</code> and the status as its
+reason. <code>GET /health</code> and <code>GET /domains</code> MUST NOT be recorded.</p>
+<blockquote>
+<p>The query string is not recorded: it carries meter ids and time ranges, and the route
+template already says which parameters the route takes.</p>
+</blockquote>
+<h3 id="req-1081-a-refused-request-must-be-recorded-as-denied-at-warning-with-a-reason-code-and-the-caller-when-one-was-verified">REQ-1081 — A refused request MUST be recorded as <code>denied</code>, at <code>WARNING</code>, with a reason code and the caller when one was verified.</h3>
+<p>Refusals and their codes: no token (<code>no_token</code>), a token failing verification
+(<code>invalid_token</code>, no caller: an unverified token names nobody), and an entity the domain's
+<code>resolve_entity</code> rejects (<code>entity_rejected</code>, recorded with the caller, although the
+answer is the 404 of REQ-1031). Any other 401 or 403 is recorded as <code>http &lt;status&gt;</code>.</p>
+<h3 id="req-1082-an-audit-record-must-not-carry-the-callers-email-name-or-username-the-token-or-the-query-string">REQ-1082 — An audit record MUST NOT carry the caller's email, name or username, the token, or the query string.</h3>
+<p>An entity id shaped like an email address is replaced by its pseudonym (<code>h:</code> and 16 hex
+digits).</p>
 <hr />
 <h2 id="domains-this-service-ships">Domains this service ships</h2>
 <p>Not requirements — the current registry, recorded so the identifiers above have referents.

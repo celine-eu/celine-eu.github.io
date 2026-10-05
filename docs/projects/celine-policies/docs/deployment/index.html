@@ -5286,13 +5286,20 @@ CMD [&quot;uvicorn&quot;, &quot;celine.mqtt_auth.main:create_app&quot;, &quot;--
 <tr>
 <td><code>CELINE_LOG_LEVEL</code></td>
 <td><code>INFO</code></td>
-<td>Log level</td>
+<td>Log level. The <code>celine.audit</code> logger stays at <code>INFO</code> whatever it says</td>
+</tr>
+<tr>
+<td><code>CELINE_PUBLIC_DOCS</code></td>
+<td>unset</td>
+<td><code>true</code> serves <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> outside dev (<a href="../specifications/services/">REQ-0018</a>); the provisioning service reads it too</td>
 </tr>
 </tbody>
 </table>
 <p>Outside <code>CELINE_ENV=dev</code> the service refuses to start without an audience or on the SDK's
-OIDC defaults, and installs no CORS middleware (its only callers are mosquitto-go-auth and
-health probes). <strong>No MQTT audience exists in the realm yet</strong> — see <code>.env.example</code> — so a
+OIDC defaults, and serves no API docs. It installs no CORS middleware in any environment (its
+only callers are mosquitto-go-auth and health probes). A refused <code>/user</code> or <code>/acl</code> is one JSON
+record on the <code>celine.audit</code> logger naming the caller by <code>sub</code> and client id; an allowed ACL
+check is not audited (<a href="../specifications/services/">REQ-0019</a>). <strong>No MQTT audience exists in the realm yet</strong> — see <code>.env.example</code> — so a
 hardened deployment needs an audience mapper onto one MQTT audience for every broker client
 first. The image needs the celine-sdk release that ships <code>celine.sdk.posture</code>.</p>
 <p><code>/superuser</code> answers <code>403</code> to every token (REQ-0014): there is no MQTT superuser, whatever

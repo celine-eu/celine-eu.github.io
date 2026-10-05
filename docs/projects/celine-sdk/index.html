@@ -4402,6 +4402,14 @@
 <td><code>celine.sdk.ai_assistant</code></td>
 <td>AI assistant client helpers</td>
 </tr>
+<tr>
+<td><code>celine.sdk.posture</code></td>
+<td>The deployment posture: only <code>CELINE_ENV=dev</code> relaxes; <code>PostureGuard</code> refuses development settings elsewhere; <code>docs_urls</code> turns the API documentation off outside dev</td>
+</tr>
+<tr>
+<td><code>celine.sdk.audit</code></td>
+<td>Access audit on the <code>celine.audit</code> logger: <code>audit_access</code>, <code>audit_denied</code>, and the per-route FastAPI dependency <code>audit_route</code></td>
+</tr>
 </tbody>
 </table>
 <p><code>celine.sdk.clients</code>, <code>celine.sdk.utils</code> and <code>celine.sdk.cli</code> are internal: they support

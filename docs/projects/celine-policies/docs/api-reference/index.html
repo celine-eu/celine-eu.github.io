@@ -4568,9 +4568,11 @@ gets a definite no, and every operation goes through <code>/acl</code>.</p>
 </code></pre>
 <hr />
 <h2 id="get-docs">GET /docs</h2>
-<p>Swagger UI for interactive API exploration.</p>
+<p>Swagger UI for interactive API exploration. Served in <code>dev</code>, and elsewhere only with
+<code>CELINE_PUBLIC_DOCS=true</code>; otherwise <code>404</code>, like <code>/redoc</code> and <code>/openapi.json</code>
+(<a href="../specifications/services/">REQ-0018</a>). The same holds for the provisioning service.</p>
 <h2 id="get-redoc">GET /redoc</h2>
-<p>ReDoc API documentation.</p>
+<p>ReDoc API documentation, under the same rule.</p>
 <hr />
 <h2 id="error-responses">Error Responses</h2>
 <table>
@@ -4602,7 +4604,9 @@ gets a definite no, and every operation goes through <code>/acl</code>.</p>
 realm. Stateless: a retry is another call, and idempotency comes from the keys.</p>
 <h2 id="authentication_1">Authentication</h2>
 <p>A bearer token, as everywhere else. A token that does not verify is <code>401</code>; a token without
-the scope is <code>403</code>. <code>provisioning.admin</code> satisfies any of the scopes below.</p>
+the scope is <code>403</code>. <code>provisioning.admin</code> satisfies any of the scopes below. Each of those two
+refusals is one <code>celine.audit</code> record with the caller's <code>sub</code> and client id, the route's action
+and the community (<a href="../specifications/services/">REQ-0019</a>).</p>
 <table>
 <thead>
 <tr>

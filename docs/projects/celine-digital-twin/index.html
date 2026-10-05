@@ -4842,6 +4842,10 @@ listed in one error (<a href="docs/brokers/#configuration-1">Brokers</a>,
 <a href="docs/specifications/runtime/#startup">REQ-1060–1063</a>). <code>CELINE_ENV=staging task run</code> is
 the prod-like mode of the same entry point. <code>.env.example</code> lists the variables the service
 reads.</p>
+<p>Outside dev, <code>/docs</code>, <code>/redoc</code> and <code>/openapi.json</code> are off unless <code>CELINE_PUBLIC_DOCS=true</code>
+(<a href="docs/specifications/runtime/#discovery">REQ-1053</a>). Every request to an entity route
+writes one record — caller, route, entity, outcome — to the <code>celine.audit</code> logger
+(<a href="docs/specifications/runtime/#access-audit">Access audit</a>).</p>
 <h2 id="testing">Testing</h2>
 <pre><code class="language-bash">uv run pytest -q   # or: task test
 </code></pre>

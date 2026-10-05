@@ -2534,6 +2534,73 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Auditability &amp; Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#access-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Access audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-01 — A data read is recorded with the caller and the datasets read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-02-a-refusal-is-recorded-with-the-caller-and-a-reason-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-02 — A refusal is recorded with the caller and a reason code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-03-a-catalogue-import-is-recorded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-03 — A catalogue import is recorded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-04-the-api-documentation-is-served-under-dev-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-04 — The API documentation is served under dev only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4628,6 +4695,73 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Auditability &amp; Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#access-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Access audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-01 — A data read is recorded with the caller and the datasets read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-02-a-refusal-is-recorded-with-the-caller-and-a-reason-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-02 — A refusal is recorded with the caller and a reason code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-03-a-catalogue-import-is-recorded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-03 — A catalogue import is recorded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-04-the-api-documentation-is-served-under-dev-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-04 — The API documentation is served under dev only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4920,6 +5054,146 @@ pull path reuses the same enforcement; see <a href="../dps-data-plane/">dps-data
 - dataset ids referenced
 - allow/deny decision and reason
 - validation errors (sanitized)</p>
+<h3 id="access-audit">Access audit</h3>
+<p>Who read which dataset, and who was refused, is written as an <strong>audit record</strong>: one
+JSON object per line on the logger <code>celine.audit</code>, in the shape every CELINE service
+shares (<code>celine.sdk.audit</code>). A log pipeline selects the trail by logger name. Every
+record carries <code>event</code> (<code>access</code> or <code>denied</code>), <code>service</code> (<code>dataset-api</code>), the caller
+(<code>sub</code>, <code>client_id</code>, <code>service_account</code>), <code>action</code>, <code>method</code>, <code>route</code> (the route
+template, never the raw path or query string), <code>resource</code>, <code>outcome</code> (<code>allowed</code>,
+<code>denied</code>, <code>error</code>), <code>reason</code>, <code>request_id</code> (<code>X-Request-ID</code> / <code>X-Correlation-ID</code>),
+<code>trace_id</code> (from <code>traceparent</code>) and <code>ts</code>. <code>access</code> records are <code>INFO</code>, <code>denied</code> ones
+<code>WARNING</code>; the audit logger stays at <code>INFO</code> whatever <code>LOG_LEVEL</code> says.</p>
+<p>The caller is named by <code>sub</code> and client id only, never by email, username or name.
+<code>resource</code> holds catalogue dataset ids, which are platform identifiers. A <code>reason</code> is
+a short code, never an error detail: a detail can quote the caller's statement.</p>
+<h4 id="gs-01-a-data-read-is-recorded-with-the-caller-and-the-datasets-read">GS-01 — A data read is recorded with the caller and the datasets read</h4>
+<p>Every request that reads rows writes <strong>one</strong> record, after the outcome is known:</p>
+<table>
+<thead>
+<tr>
+<th>route</th>
+<th><code>action</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /query</code></td>
+<td><code>dataset.query</code></td>
+</tr>
+<tr>
+<td><code>POST /dps/public/query</code> (DPS pull)</td>
+<td><code>dataset.query</code></td>
+</tr>
+<tr>
+<td><code>POST /catalogue/{id}/conformance</code> (the sample it reads)</td>
+<td><code>dataset.conformance</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>resource</code> is every catalogue id the statement resolved to, sorted and joined with
+<code>,</code> (one record for a join). On the user path the caller is the verified token's
+<code>sub</code> and <code>azp</code>; an anonymous read of an <code>open</code> dataset has no caller. On the
+dataspace path (EDR or DPS pull) the caller is the consumer participant — the
+verified token's <code>aud</code>, never a header — as both <code>sub</code> and <code>client_id</code>.</p>
+<p>A request that fails for a reason other than a refusal (GS-02) — a statement that
+does not parse, a database timeout — is <code>access</code> with <code>outcome: error</code> and
+<code>reason: "http &lt;status&gt;"</code>, or the exception's class name.</p>
+<p>Catalogue metadata (<code>/catalogue</code>, <code>/catalogue/{id}</code>, its schema and vocabulary, the
+HTML views) describes exposed datasets and returns no rows; it is not recorded.
+Neither is <code>/health</code>.</p>
+<h4 id="gs-02-a-refusal-is-recorded-with-the-caller-and-a-reason-code">GS-02 — A refusal is recorded with the caller and a reason code</h4>
+<p>Every refusal writes a <code>denied</code> record carrying the caller, whenever the caller is
+known from a token that verified:</p>
+<table>
+<thead>
+<tr>
+<th>reason</th>
+<th>refusal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td>the policy engine denied the read (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>auth_required</code></td>
+<td>the dataset, or its row filter, needs a login and none was given (<code>401</code>)</td>
+</tr>
+<tr>
+<td><code>not_available</code></td>
+<td>unexposed, <code>secret</code>, or an unreadable access level (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>unknown_dataset</code></td>
+<td>a table reference resolves to no catalogue entry — including a name outside the scope of the CTE it matches (QE-05) (<code>400</code>)</td>
+</tr>
+<tr>
+<td><code>ambiguous_dataset</code></td>
+<td>a two-part reference matches more than one entry (<code>400</code>)</td>
+</tr>
+<tr>
+<td><code>scope_unresolved</code></td>
+<td>the statement's scopes could not be resolved (QE-05) (<code>400</code>)</td>
+</tr>
+<tr>
+<td><code>sql_refused</code></td>
+<td>the SQL guard refused a statement kind, function, construct or operation, a comment, stacked statements, or a tautology inside <code>OR</code> (<code>400</code>)</td>
+</tr>
+<tr>
+<td><code>row_filter_unresolved</code></td>
+<td>a row filter could not be resolved for the caller (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>not_offered</code></td>
+<td>dataspace: a dataset is not <code>dataspace_expose</code> (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>ds_refused</code></td>
+<td>dataspace: ds refused the query (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>row_filter_unenforceable</code></td>
+<td>dataspace: ds asked for a row filter this instance cannot apply (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>pull_token</code></td>
+<td>DPS pull: no token, or one that is not valid or not live (<code>401</code>)</td>
+</tr>
+<tr>
+<td><code>flow_not_started</code></td>
+<td>DPS pull: a live token on a flow that is not <code>STARTED</code> (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>agreement_mismatch</code></td>
+<td>DPS pull: the agreement header names another agreement (<code>403</code>)</td>
+</tr>
+<tr>
+<td><code>http &lt;status&gt;</code></td>
+<td>any other <code>401</code> or <code>403</code></td>
+</tr>
+</tbody>
+</table>
+<p>A presented bearer token that does not verify is refused before any route runs; it
+is recorded with <code>action: "auth.token"</code>, <code>reason: "invalid_token"</code> and the route it
+was sent to, and <strong>no</strong> caller: nothing in a token that failed verification is
+trusted. DPS signalling refusals are recorded with <code>action: "dps.signal"</code> and
+<code>no_token</code>, <code>invalid_token</code>, or <code>client_not_admitted</code> (which names the verified
+client).</p>
+<h4 id="gs-03-a-catalogue-import-is-recorded">GS-03 — A catalogue import is recorded</h4>
+<p><code>POST /admin/catalogue</code> rewrites the fields every gate reads. A completed import is
+recorded as <code>catalogue.import</code>; a caller refused for lacking the <code>dataset.admin</code>
+scope and the <code>platform-admin</code> role is recorded as <code>denied</code> with
+<code>not_catalogue_admin</code> and its <code>sub</code>.</p>
+<p>Tests: <code>tests/routes/test_access_audit.py</code>, the audit cases in
+<code>tests/dps/test_pull.py</code>, <code>tests/dps/test_signaling_auth.py</code> and
+<code>tests/routes/test_catalogue_conformance.py</code>.</p>
+<h4 id="gs-04-the-api-documentation-is-served-under-dev-only">GS-04 — The API documentation is served under dev only</h4>
+<p>Swagger UI (<code>/docs</code>), ReDoc (<code>/redoc</code>) and <code>/openapi.json</code> are served only under
+<code>CELINE_ENV=dev</code>. Anywhere else they answer <code>404</code>, unless <code>CELINE_PUBLIC_DOCS</code> is
+<code>true</code> (also <code>1</code>, <code>yes</code>, <code>on</code>). The schema is still built in process, so tooling
+that reads <code>app.openapi()</code> is unaffected. Tests: <code>tests/security/test_api_docs.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
@@ -4993,6 +5267,16 @@ the person's token. The order the handler decides in is in
 <td><code>CELINE_OIDC_*</code></td>
 <td>—</td>
 <td>OIDC provider and client settings (celine-sdk)</td>
+</tr>
+<tr>
+<td><code>CELINE_PUBLIC_DOCS</code></td>
+<td>unset</td>
+<td>serve <code>/docs</code>, <code>/redoc</code>, <code>/openapi.json</code> outside dev (GS-04)</td>
+</tr>
+<tr>
+<td><code>CELINE_AUDIT_PSEUDONYM_KEY</code></td>
+<td>unset</td>
+<td>keys the pseudonym the audit writes for a personal identifier that reaches a record (celine-sdk)</td>
 </tr>
 </tbody>
 </table>

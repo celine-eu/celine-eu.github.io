@@ -5240,6 +5240,10 @@ namespace or cartesian-product limit.</p>
 <li><code>503</code>: policy engine unavailable, or a pooled database connection lost (retry)</li>
 </ul>
 <p><code>/query</code> never answers <code>404</code>: an unknown dataset is a <code>400</code>.</p>
+<p>Every <code>401</code> and <code>403</code>, and a <code>400</code> that refuses a reference or a construct, is also
+written to the access audit with the caller and a reason code; a read that succeeds
+is written with the datasets it read (GS-01, GS-02 in
+<a href="../governance-security/#access-audit">governance-security.md</a>).</p>
 <hr />
 <h2 id="examples">Examples</h2>
 <h3 id="query-a-dataset">Query a dataset</h3>

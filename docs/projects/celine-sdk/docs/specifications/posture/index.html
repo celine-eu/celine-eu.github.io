@@ -4129,6 +4129,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0184-the-api-documentation-is-off-outside-dev-unless-opted-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0184 — the API documentation is off outside dev unless opted in
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4180,6 +4191,13 @@ never raises. A deployment learns every missing value in one cycle.</p>
 the value is the SDK's default rather than one set by the environment or by code, and,
 with <code>require_audience=True</code>, an unset audience. TLS on the issuer is a deployment property
 and is not checked: a prod-like local run names the local realm explicitly and passes.</p>
+<h3 id="req-0184-the-api-documentation-is-off-outside-dev-unless-opted-in">REQ-0184 — the API documentation is off outside dev unless opted in</h3>
+<p><code>docs_urls(docs_url=…, redoc_url=…, openapi_url=…)</code> returns the three <code>FastAPI(...)</code> keyword
+arguments. In <code>dev</code> they are the service's own paths, unchanged — a service mounting its
+documentation under <code>/api/docs</code> passes those paths. Anywhere else all three are <code>None</code>, so
+FastAPI serves no Swagger UI, no ReDoc and no <code>openapi.json</code>, unless <code>CELINE_PUBLIC_DOCS</code>
+is <code>true</code> (<code>1</code>, <code>yes</code>, <code>on</code>). Unset, empty or any other value keeps them off: a deployment
+that wants its API description public says so.</p>
 
 
 

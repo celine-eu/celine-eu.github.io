@@ -4097,10 +4097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0010-cors-is-enabled-only-in-dev" class="md-nav__link">
+  <a href="#req-0010-the-service-answers-no-cross-origin-request" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0010 — CORS is enabled only in dev
+        REQ-0010 — the service answers no cross-origin request
       
     </span>
   </a>
@@ -4169,10 +4169,14 @@ audience is optional and the findings above are logged as one warning.</p>
 <p>Until 2026-10 the service constructed its OIDC settings with <code>audience=None</code>, overriding the
 environment, so no audience was ever checked (NIS2 review finding R24).</p>
 </blockquote>
-<h3 id="req-0010-cors-is-enabled-only-in-dev">REQ-0010 — CORS is enabled only in dev</h3>
-<p>In <code>dev</code> the service answers cross-origin requests from any origin. In a hardened environment it
-installs no CORS middleware: its callers are mosquitto-go-auth's HTTP backend and health probes,
-never a browser.</p>
+<h3 id="req-0010-the-service-answers-no-cross-origin-request">REQ-0010 — the service answers no cross-origin request</h3>
+<p>The service installs no CORS middleware, in any environment: its callers are mosquitto-go-auth's
+HTTP backend and health probes, never a browser. A preflight gets no
+<code>Access-Control-Allow-Origin</code>, and neither does any other response.</p>
+<blockquote>
+<p>Until 2026-10 <code>dev</code> answered cross-origin requests from any origin, with credentials (NIS2
+review finding R31).</p>
+</blockquote>
 <h3 id="req-0014-no-mqtt-superuser-no-group-grant-and-a-service-is-what-its-token-says-it-is">REQ-0014 — no MQTT superuser, no group grant, and a service is what its token says it is</h3>
 <p>The MQTT auth backend under the two-level model (<a href="../keycloak-cli/">REQ-0011</a>):</p>
 <ul>
