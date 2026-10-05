@@ -4217,6 +4217,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0013-no-outbound-request-url-reaches-a-log-with-its-query-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0013 — no outbound request URL reaches a log with its query string
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4290,6 +4301,12 @@ looping.</p>
 the decision-cache knobs <code>policies_cache_enabled</code>, <code>policies_cache_ttl</code>,
 <code>policies_cache_maxsize</code>. They configure the engine in <a href="../policy-evaluation/">Policy evaluation</a>;
 nothing here reaches a policy service over the network.</p>
+<h3 id="req-0013-no-outbound-request-url-reaches-a-log-with-its-query-string">REQ-0013 — no outbound request URL reaches a log with its query string</h3>
+<p>Importing <code>celine.sdk</code> configures logging from <code>LOG_LEVEL</code>, and holds the <code>httpx</code> and
+<code>httpcore</code> loggers at <code>WARNING</code> whatever that level is: <code>httpx</code> otherwise logs every request
+URL at <code>INFO</code>, and query strings carry emails and ids. A service that raises <code>httpx</code> again
+still gets the scheme, host and path of each request, never its query string or fragment.
+No SDK log line carries a token or an <code>Authorization</code> header.</p>
 
 
 

@@ -4196,6 +4196,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-0043-the-signature-algorithm-comes-from-an-asymmetric-allow-list-and-the-published-key-and-exp-is-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0043 — the signature algorithm comes from an asymmetric allow-list and the published key, and exp is required
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4393,7 +4404,7 @@ decides whether a token is genuine. A permissive change here is permissive every
 <p><code>JwtUser.from_token</code> checks the signature against the issuer's published keys and enforces
 <code>exp</code>, <code>nbf</code> and <code>iss</code>. There is no unverified decode path in the public surface: a caller
 holding a token and settings either gets a verified <code>JwtUser</code> or an exception.</p>
-<p><code>RS256</code>, <code>HS256</code> and <code>ES256</code> are accepted unless the caller names a narrower set.</p>
+<p>Which signature algorithms are accepted is REQ-0043.</p>
 <h3 id="req-0021-signing-keys-come-from-the-configured-jwks-uri-over-a-client-cached-per-uri">REQ-0021 — signing keys come from the configured JWKS URI, over a client cached per URI</h3>
 <p><code>OidcSettings.jwks_uri</code> is the source. The <code>PyJWKClient</code> is memoised per URI so a service
 verifying thousands of requests fetches the key set once, and the key set is itself cached
@@ -4428,6 +4439,15 @@ it, so <code>allowed_audiences</code> and <code>include_client_id_as_audience</c
 <h3 id="req-0028-a-missing-or-empty-token-is-refused-before-any-network-call">REQ-0028 — a missing or empty token is refused before any network call</h3>
 <p><code>None</code>, <code>""</code> or whitespace raises <code>ValueError</code> without touching the JWKS endpoint. An
 unauthenticated request must not be able to cause an outbound fetch.</p>
+<h3 id="req-0043-the-signature-algorithm-comes-from-an-asymmetric-allow-list-and-the-published-key-and-exp-is-required">REQ-0043 — the signature algorithm comes from an asymmetric allow-list and the published key, and <code>exp</code> is required</h3>
+<p><code>ALLOWED_JWT_ALGORITHMS</code> is <code>RS256</code> and <code>ES256</code> — what a Keycloak key set publishes for its
+RSA and EC P-256 signing keys. A caller's <code>algorithms</code> may narrow that set, never widen it:
+names outside it are ignored, and a set that leaves nothing raises <code>ValueError</code>. <code>HS*</code> and
+<code>none</code> are never accepted, since a key set has no shared secret to verify them against.</p>
+<p>The algorithm is the signing key's, as the key set assigns it (<code>alg</code>, or derived from
+<code>kty</code>/<code>crv</code>), never the one the token's header names. A key whose algorithm is outside the
+allowed set verifies nothing.</p>
+<p>A token without <code>exp</code> is refused: a token that never expires is not one this platform issues.</p>
 <hr />
 <h2 id="reading-a-verified-token">Reading a verified token</h2>
 <h3 id="req-0029-organization-memberships-are-parsed-from-the-organization-claim">REQ-0029 — organization memberships are parsed from the <code>organization</code> claim</h3>
