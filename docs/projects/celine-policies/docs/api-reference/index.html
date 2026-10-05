@@ -4646,7 +4646,9 @@ It holds <code>provisioning.participants.write</code> by default and <code>provi
 optional scope, which its registry sync requests only for the reconcile call.
 A community manager's "Send invitation" and "Reset password" on the dashboard reach
 <code>POST …/invitation</code> through onboarding's member-keyed routes. <code>svc-community</code> holds
-<code>onboarding.members.invite</code> for that, never a provisioning scope.</p>
+<code>onboarding.members.invite</code> for that, never a provisioning scope. A REC admin's "Release
+member" reaches <code>POST …/disable</code> the same way, through onboarding's release route
+(<code>onboarding.members.release</code>).</p>
 <h2 id="put-participantscommunitykey">PUT /participants/{community}/{key}</h2>
 <p>Ensure the account exists, is in the REC organization, and is in its org group.</p>
 <p><strong>Request:</strong></p>
@@ -4698,7 +4700,8 @@ which is where an address somebody logs in with belongs.</p>
   &quot;username&quot;: &quot;a.person@example.org&quot;,
   &quot;created&quot;: true,
   &quot;invitation&quot;: &quot;sent&quot;,
-  &quot;invited&quot;: true
+  &quot;invited&quot;: true,
+  &quot;reenabled&quot;: false
 }
 </code></pre>
 <p><code>user_id</code> is the <strong>Keycloak uuid</strong>, which <code>../onboarding</code> needs for its dataspace step.
@@ -4706,8 +4709,18 @@ which is where an address somebody logs in with belongs.</p>
 computed — an account that already existed may authenticate under a convention nobody here
 chose — and it is the value that becomes the registry's <code>Member.user_id</code>. Note the name
 collision: the registry's <code>user_id</code> column holds a <em>username</em>.</p>
-<p>Always <code>200</code>. A create and a no-op are the same request with the same meaning; <code>created</code>
-says which happened.</p>
+<p>A create and a no-op are the same request with the same meaning; <code>created</code> says which
+happened.</p>
+<p><strong>One person, one REC</strong> (since 1.5.0). An existing account that is still a member of
+<strong>another</strong> organization typed <code>rec</code> is refused with <code>409 member_of_another_community</code>
+before anything is written. The answer does not name the other community; the service log
+does. That REC releases the member first (<code>POST …/disable</code>). An organization of another
+type, such as a grid operator, does not count.</p>
+<p><strong>A released account is enabled again</strong> (since 1.5.0). If the account is disabled and this
+call adds it to the organization, the call enables it and answers <code>reenabled: true</code>. This is
+a member that another REC released and that joins this one. An account that is disabled
+while already in the organization (an older revocation, or an operator's lock) stays
+disabled, and its invitation answers <code>account_disabled</code>.</p>
 <p><strong><code>invite</code> never fails the upsert.</strong> What happened is in <code>invitation</code>, a reason code to show
 the operator who approved, and <code>invited</code> is true only for <code>sent</code>:</p>
 <table>
@@ -4740,7 +4753,7 @@ the operator who approved, and <code>invited</code> is true only for <code>sent<
 </tr>
 <tr>
 <td><code>account_disabled</code></td>
-<td>The account is disabled; nothing was sent, and it is not re-enabled</td>
+<td>The account is disabled and was already in the organization; nothing was sent, and it is not re-enabled</td>
 </tr>
 <tr>
 <td><code>cooldown</code></td>
@@ -5017,15 +5030,44 @@ was sent).</p>
 </tbody>
 </table>
 <h2 id="post-participantscommunitykeydisable">POST /participants/{community}/{key}/disable</h2>
-<p>Revoke access. The account, its memberships and everything keyed on its uuid survive —
-disabling is not deletion, and reversing it is one call.</p>
+<p>Release the member's login from the community. The account is <strong>moved, not closed</strong>: it is
+disabled, it leaves the community's organization, and the next REC's upsert enables it again.
+The steps run in an order that a retry can resume:</p>
+<ol>
+<li><strong>disable</strong> the account, so nobody signs in while the rest runs;</li>
+<li><strong>leave</strong> the community's organization and its org groups (<code>admins</code>, <code>managers</code>, …),
+   so the token carries no <code>organization</code> claim for this community any more;</li>
+<li><strong>log out</strong> every session, so a refresh token issued before the release stops working.
+   An access token that was already issued stays valid until it expires (Keycloak cannot
+   recall one).</li>
+</ol>
+<p>Nothing else changes: the account, any other organization it belongs to (an operator's,
+for example) and everything keyed on its uuid all stay. Keycloak 26.7.3 also drops the
+org-group memberships when the membership goes (measured 2026-10-05). The groups are removed
+one by one first anyway, and the response names them.</p>
 <p><strong>Response (200):</strong></p>
-<pre><code class="language-json">{&quot;user_id&quot;: &quot;3f1c…&quot;, &quot;username&quot;: &quot;ex-00001&quot;, &quot;changed&quot;: true}
+<pre><code class="language-json">{
+  &quot;user_id&quot;: &quot;3f1c…&quot;,
+  &quot;username&quot;: &quot;ex-00001&quot;,
+  &quot;changed&quot;: true,
+  &quot;disabled_now&quot;: true,
+  &quot;org_left&quot;: true,
+  &quot;org_groups_left&quot;: [&quot;viewers&quot;],
+  &quot;sessions_logged_out&quot;: true
+}
 </code></pre>
-<p><code>changed: false</code> means the revocation was already in force, which must not read as one
-that just happened.</p>
+<p><code>changed: false</code> means the release was already in force: the account was disabled and was
+not in the organization. That must not read as a release that just happened.</p>
 <p><code>404</code> with <code>community_not_found</code>, <code>member_not_found</code> or <code>account_not_found</code>, as for the
-invitation.</p>
+invitation. Unlike the other member routes, this one resolves the member <strong>whatever its
+registry status</strong>. Releasing only takes access away, and a member set inactive before its
+login was released (an older revocation, or a step that failed) must still be releasable,
+or the next REC refuses the person as still belonging here. <code>409 managed_membership</code>: the
+account is a MANAGED member of the organization, and Keycloak would delete it on leaving,
+so it is refused and nothing is removed.</p>
+<p><code>svc-provisioning</code>'s existing <code>manage-users</code>, <code>manage-realm</code> and <code>manage-organizations</code>
+cover all three steps. Measured on a throwaway realm: <code>manage-users</code> alone answers <code>403</code> to
+the organization calls.</p>
 <h2 id="post-reconcilecommunity">POST /reconcile/{community}</h2>
 <p>Provision every <strong>active</strong> member the registry holds for one community, then assert that
 each of them is in the REC's organization. Members that are not active are skipped and not

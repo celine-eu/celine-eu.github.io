@@ -4525,8 +4525,9 @@ nothing <code>PATCH</code> already does while adding one more entry to REQ-0031'
 <code>../onboarding</code> writes it from a retriable step, so the same write arriving twice must not
 be a conflict — the member itself is excluded from the clash check, by row id rather than
 by member key, because keys repeat across communities and the check does not filter by one.</p>
-<p><strong>A DID another member already holds is <code>409</code>, and what the message says depends on where
-that member is:</strong></p>
+<p><strong>A DID another active member already holds is <code>409</code></strong> — only active holders count, and only
+for a member that is active after the patch (REQ-0096) — <strong>and what the message says depends
+on where that member is:</strong></p>
 <ul>
 <li><strong>Inside the community the caller addressed</strong> — the response names the holding member's
   key, as the <code>user_id</code> clash does, so the caller can act on it.</li>
@@ -4660,7 +4661,7 @@ each comes from:</p>
 <tr>
 <td><code>did_taken</code></td>
 <td><code>409</code></td>
-<td>a DID held by another member anywhere (REQ-0060)</td>
+<td>a DID held by another active member anywhere (REQ-0060, REQ-0096)</td>
 </tr>
 <tr>
 <td><code>asset_key_taken</code></td>
@@ -4725,12 +4726,17 @@ each comes from:</p>
 <tr>
 <td><code>not_a_member</code></td>
 <td><code>403</code></td>
-<td>a self-service read by a caller whose username names no member (REQ-0047)</td>
+<td>a self-service read by a caller whose username names no active member (REQ-0047, REQ-0094)</td>
+</tr>
+<tr>
+<td><code>ambiguous_member</code></td>
+<td><code>409</code></td>
+<td>a self-service read by a caller active in more than one community, whose token does not narrow it to one (REQ-0095); a cross-community lookup more than one active member would answer (REQ-0097 – REQ-0099)</td>
 </tr>
 <tr>
 <td><code>delivery_point_held</code></td>
 <td><code>409</code></td>
-<td>a delivery point held by another active member anywhere, on the delivery-point <code>PUT</code>, a create, a move to <code>active</code> and the import (REQ-0085)</td>
+<td>a delivery point held by another active member anywhere, on the delivery-point <code>PUT</code>, a create, a move to <code>active</code> and the import (REQ-0085); a meter's <code>pod</code> held so, on the asset <code>PUT</code> and the same paths (REQ-0093)</td>
 </tr>
 <tr>
 <td><code>delivery_point_linked</code></td>

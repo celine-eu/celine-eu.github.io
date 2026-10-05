@@ -5248,15 +5248,23 @@ ingress-nginx ConfigMap (Helm chart: <code>controller.config</code>):</p>
 browser console shows no report on its pages. <code>task test:security-headers</code> renders all of it.</p>
 <hr />
 <h2 id="legal-host">Legal host</h2>
-<p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices) as a
-static site: one page per document, version and language, and per community
-<code>&lt;community&gt;/current.json</code>, <code>&lt;community&gt;/history.json</code> and one address per document,
-<code>&lt;community&gt;/&lt;slot&gt;/</code>. Release <code>legal</code> (<code>charts/celine-legal</code>), at <code>legal.&lt;domain&gt;</code>,
-<strong>public</strong>: legal documents are read before anyone signs in, so there is no oauth2-proxy.
-It is <strong>off</strong> until the environment sets <code>legal.enabled: true</code> and an image.</p>
-<p>The site is the deployment's own content, so the platform ships no image for it. The image
-is a static file server that runs non-root, listens on <code>8080</code>, serves the built site at
-<code>/</code>, and writes only to <code>/tmp</code> (the root filesystem is read-only).</p>
+<p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices),
+scoped per community: people read <code>/&lt;slot&gt;/&lt;community&gt;</code> (e.g. <code>/terms/example-rec</code>), the
+landing page shows the platform's documents only, and no page lists one community's
+documents beside another's. Applications keep linking <code>&lt;community&gt;/&lt;slot&gt;/</code> (redirected)
+and reading <code>&lt;community&gt;/current.json</code> and <code>&lt;community&gt;/history.json</code>. Release <code>legal</code>
+(<code>charts/celine-legal</code>), at <code>legal.&lt;domain&gt;</code>, <strong>public</strong>: legal documents are read before
+anyone signs in, so there is no oauth2-proxy. It is <strong>off</strong> until the environment sets
+<code>legal.enabled: true</code> and an image.</p>
+<p>One pod, two containers:</p>
+<ul>
+<li><strong>api</strong>: the deployment's own content, so the platform ships no image for it. It holds the
+  built site, listens on <code>8080</code> inside the pod only, and answers <code>/healthz</code>.</li>
+<li><strong>ui</strong>: generic (<code>ghcr.io/celine-eu/celine-legal-ui</code>). It listens on <code>3000</code>, behind the
+  Service and the Ingress, and passes the API's own paths through to it on localhost.</li>
+</ul>
+<p>Both run non-root, write only to <code>/tmp</code> (the root filesystem is read-only), and are probed
+on <code>/healthz</code>.</p>
 <table>
 <thead>
 <tr>
@@ -5271,7 +5279,11 @@ is a static file server that runs non-root, listens on <code>8080</code>, serves
 </tr>
 <tr>
 <td><code>legal.image</code>, <code>legal.image_tag</code></td>
-<td><strong>required</strong> when enabled: the image holding the built site</td>
+<td><strong>required</strong> when enabled: the API image holding the built site</td>
+</tr>
+<tr>
+<td><code>legal.ui_image</code>, <code>legal.ui_image_tag</code></td>
+<td>the UI image; defaults to <code>ghcr.io/celine-eu/celine-legal-ui:latest</code></td>
 </tr>
 <tr>
 <td><code>legal.host</code></td>
@@ -5517,7 +5529,7 @@ v1.14.3, Keycloak 26.7.3 and the rendered Ingress (2026-10-04):
 <li><code>celine-frontend-webapp</code> — Participant webapp</li>
 <li><code>celine-frontend-grid</code> — Grid webapp</li>
 <li><code>celine-frontend-onboarding</code> — REC onboarding UI, and the host the onboarding API answers on</li>
-<li><code>celine-legal</code> — the legal host: the deployment's legal documents as a public static site. See <a href="#legal-host">Legal host</a></li>
+<li><code>celine-legal</code> — the legal host: the deployment's legal documents, public and scoped per community (API + UI). See <a href="#legal-host">Legal host</a></li>
 </ul>
 <p>The frontends, the legal host and the API gateway carry the <a href="#security-headers">security headers</a>.</p>
 <h3 id="platform">Platform</h3>

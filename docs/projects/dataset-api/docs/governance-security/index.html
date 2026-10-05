@@ -2593,6 +2593,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-05-a-dataspace-read-carries-its-release-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-05 — A dataspace read carries its release link
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4754,6 +4765,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-05-a-dataspace-read-carries-its-release-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-05 — A dataspace read carries its release link
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5044,6 +5066,9 @@ dataspace request, and the ordinary path is never a fallback for it:</p>
 <li>the disclosure is recorded with <code>POST /internal/audit/query</code>, naming the
   consenting subjects by DID, never by principal or key (RF-10 in
   <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)</li>
+<li>the read's audit record and that disclosure both carry the agreement id and the
+  connector's <code>decision_ref</code> (GS-05); a disclosure that cannot be posted is logged at
+  <code>ERROR</code> and does not fail the read</li>
 </ul>
 <p>Calls to ds authenticate with this service's OIDC client-credentials token. The DPS
 pull path reuses the same enforcement; see <a href="../dps-data-plane/">dps-data-plane.md</a>.</p>
@@ -5201,6 +5226,24 @@ scope and the <code>platform-admin</code> role is recorded as <code>denied</code
 <code>CELINE_ENV=dev</code>. Anywhere else they answer <code>404</code>, unless <code>CELINE_PUBLIC_DOCS</code> is
 <code>true</code> (also <code>1</code>, <code>yes</code>, <code>on</code>). The schema is still built in process, so tooling
 that reads <code>app.openapi()</code> is unaffected. Tests: <code>tests/security/test_api_docs.py</code>.</p>
+<h4 id="gs-05-a-dataspace-read-carries-its-release-link">GS-05 — A dataspace read carries its release link</h4>
+<p>On the dataspace path (EDR or DPS pull) every record of the request also carries
+<code>agreement_id</code> and <code>decision_ref</code>, and the <code>QueryExecuted</code> disclosure posted to the
+connector (<code>POST /internal/audit/query</code>) carries the same pair, so the log line and
+the provenance event of one read can be matched:</p>
+<ul>
+<li><code>agreement_id</code> is the agreement the request was judged under: the
+  <code>Edc-Contract-Agreement-Id</code> header on the EDR path, the signalled flow's agreement
+  on a DPS pull (from the moment the flow is known, a refusal included).</li>
+<li><code>decision_ref</code> is the connector's reference for the allow that served the read,
+  read from the <code>POST /internal/dataplane/authorize</code> response and <strong>opaque</strong> here:
+  never parsed, recomputed or invented. It is <code>null</code> on a refusal, and when the
+  connector sent none — a connector older than the field is served as before, with
+  no failure. The disclosure sends it only when it was received.</li>
+</ul>
+<p>A record off the dataspace path carries neither field. A disclosure that cannot be
+posted does not fail the read; it is logged at <code>ERROR</code>.</p>
+<p>Tests: <code>tests/security/test_release_link.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is

@@ -4274,7 +4274,8 @@ members through onboarding, meters from a manager — and the database holds all
   (REQ-0028), implemented with the sensor clause;</li>
 <li>two of its active members hold the same delivery point, or one of them holds a point an
   active member of <strong>another</strong> community holds — <code>delivery_point_held</code> (REQ-0085), as the
-  sensor clause, reported by member key and never by the point's id;</li>
+  sensor clause, reported by member key and never by the point's id; an active member's
+  meter <code>pod</code> that is not one of its own points holds that id the same way (REQ-0093);</li>
 <li>a member's <code>role</code> or <code>status</code> is outside its set, or its <code>area</code> is not one of the bundle's
   areas (REQ-0066);</li>
 <li>an area's key is not an area key — <code>invalid_area_key</code> (REQ-0067), one refusal per key;</li>

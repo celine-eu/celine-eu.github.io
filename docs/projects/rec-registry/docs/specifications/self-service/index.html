@@ -4174,6 +4174,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0094-only-an-active-member-answers-any-other-row-is-no-member" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0094 — only an active member answers; any other row is no member
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0095-two-active-rows-are-narrowed-by-the-tokens-communities-never-picked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0095 — two active rows are narrowed by the token's communities, never picked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-not-verified-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4220,7 +4242,8 @@ the route an application loads first and it is shaped to make a second request u
 for the common case, so the caller's dataspace identity belongs in it.</p>
 <p>The counts are of the caller's own assets.</p>
 <h3 id="req-0047-a-caller-who-is-a-member-of-nothing-is-answered-not-refused">REQ-0047 — a caller who is a member of nothing is answered, not refused</h3>
-<p><code>GET /user</code> answers <code>200</code> with <code>membership: null</code>. The other five routes answer <code>403</code> with the
+<p><code>GET /user</code> answers <code>200</code> with <code>membership: null</code> — and so for a caller whose only rows are
+not <code>active</code> (REQ-0094). The other five routes answer <code>403</code> with the
 coded body <code>{"detail": "You are not a member of any community", "code": "not_a_member"}</code>
 (REQ-0073), so a client — <code>../dataset-api</code>'s self-service row filter, which reads that answer as
 "no rows" and every other registry failure as an error — tells it apart by <code>code</code> rather than by
@@ -4273,6 +4296,24 @@ fallback is therefore not a fallback but a guaranteed miss, and the caller — w
 perfectly good member — is told they belong to nothing.</p>
 <p>This is the failure worth stating loudest, because it is silently wrong rather than loud:
 the operator reading that <code>403</code> investigates the registry, and the fault is in the token.</p>
+<h3 id="req-0094-only-an-active-member-answers-any-other-row-is-no-member">REQ-0094 — only an active member answers; any other row is no member</h3>
+<p>Every route here resolves the caller's member among rows with <code>user_id</code> equal to their
+username <strong>and <code>status = 'active'</code></strong>. A <code>pending</code>, <code>suspended</code> or <code>inactive</code> row is treated
+exactly as no row: <code>GET /user</code> answers <code>membership: null</code> and the other five answer
+<code>403 not_a_member</code> (REQ-0047) — the same bodies a stranger gets, so nothing tells a
+released member from somebody who never joined.</p>
+<p><code>active</code> is the status that holds sensors and delivery points (REQ-0069, REQ-0085), so it is
+the status a self-service answer may be read from. <code>../dataset-api</code> builds its live
+<code>sensor_id IN (…)</code> row filter from <code>GET /user/assets</code>; answering from an inactive row kept a
+released member reading their old meters — and, once their POD was given to somebody else,
+the new occupant's readings.</p>
+<h3 id="req-0095-two-active-rows-are-narrowed-by-the-tokens-communities-never-picked">REQ-0095 — two active rows are narrowed by the token's communities, never picked</h3>
+<p><code>user_id</code> is unique per community only, so one username can be active in two communities.
+When it is, the route keeps the active rows whose community key is one of the token's
+<code>organization</code> aliases. Exactly one left is the answer; none or more than one is
+<code>409</code> with <code>{"code": "ambiguous_member"}</code> (REQ-0073), on all six routes, recorded on
+<code>celine.audit</code> like <code>not_a_member</code> (REQ-0091). The routes take no community parameter, so the
+token is the only thing that can say which.</p>
 <hr />
 <h2 id="what-is-not-verified-here">What is not verified here</h2>
 <ul>
@@ -4281,10 +4322,9 @@ the operator reading that <code>403</code> investigates the registry, and the fa
   exercised. Nothing here proves a caller with no token is refused — that is the
   middleware's job, and the middleware is not covered either
   (<a href="../identity-and-authorisation/">identity and authorisation</a>).</li>
-<li><strong>Cross-community membership.</strong> Every route resolves the member with a query on
-  <code>user_id</code> alone, taking the first match, with no community filter. The data model allows
-  one person to be a member of two communities; what these routes would answer if they
-  were is not specified and not tested.</li>
+<li><strong>Cross-community membership, past resolution.</strong> REQ-0094 and REQ-0095 fix which row
+  answers. What the other services that key on the person rather than the community show
+  after a move between communities is theirs, not this registry's.</li>
 </ul>
 
 
