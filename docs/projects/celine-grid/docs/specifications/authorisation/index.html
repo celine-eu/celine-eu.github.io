@@ -4184,6 +4184,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0052-a-caller-in-several-dso-organisations-is-never-given-the-first-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0052 — a caller in several DSO organisations is never given the first one
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4296,6 +4307,15 @@ service account's list is empty.</p>
 <p><code>grid.rego</code> reads no groups today (REQ-0006 – REQ-0012). This requirement is what keeps a
 future rule that does from reading one organisation's <code>admins</code> as another's, or as the
 platform's.</p>
+<h3 id="req-0052-a-caller-in-several-dso-organisations-is-never-given-the-first-one">REQ-0052 — a caller in several DSO organisations is never given the first one</h3>
+<p>A request that names a network (<code>/api/grid/{network_id}/…</code>) is judged for that network:
+the caller passes when it is one of their DSO organisations, whichever position it has in
+the token. An action that names no network — <code>/api/me</code>, creating an alert rule — needs
+exactly one DSO organisation: with several it is refused (<code>403</code>; the policy's reason is
+<code>ambiguous DSO organization membership: name the network</code>), never resolved to whichever
+the token lists first. With none it is refused as before (REQ-0005, REQ-0011).</p>
+<p>The policy input carries <code>claims.network_id</code> (the network as resolved above, or <code>null</code>)
+and <code>claims.dso_count</code>.</p>
 
 
 

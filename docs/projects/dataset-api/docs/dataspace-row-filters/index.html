@@ -4687,6 +4687,18 @@ Each clause below names its tests.</p>
 <td>the caller's own rows; refuses a delegated request</td>
 <td><code>column</code>, <code>pointer_table</code>, <code>pointer_key_column</code>; <code>pointer_subject_column</code> (<code>user_id</code>)</td>
 </tr>
+<tr>
+<td><code>organization_match</code></td>
+<td>—</td>
+<td>the rows of the caller's organizations (GS-06 in <a href="../governance-security/">governance-security.md</a>); refuses a delegated request; ds never sends it (<code>binds: organization</code>)</td>
+<td><code>column</code> or <code>org_type</code>, at least one</td>
+</tr>
+<tr>
+<td><code>member_wide</code></td>
+<td>—</td>
+<td>nothing — every row, declared on purpose (GS-07); refuses a delegated request; ds never sends it (<code>binds: organization</code>)</td>
+<td>—</td>
+</tr>
 </tbody>
 </table>
 <p>Args before a <code>;</code> are required. <code>http_in_list</code> formats its string args with

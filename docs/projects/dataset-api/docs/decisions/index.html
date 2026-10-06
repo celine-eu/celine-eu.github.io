@@ -4167,6 +4167,10 @@ edited to say something else.</p>
 <td><a href="ADR-0001-a-platform-administrator-is-a-realm-role/">ADR-0001</a></td>
 <td>A platform administrator is the realm role <code>platform-admin</code>; organization groups count only from <code>organization.&lt;alias&gt;.groups</code>; a realm group grants nothing</td>
 </tr>
+<tr>
+<td><a href="ADR-0002-an-organization-reads-only-its-own-rows/">ADR-0002</a></td>
+<td>An organization reads only its own rows, through a row filter (<code>organization_match</code>); its <code>admins</code> read like <code>managers</code>; an <code>internal</code> dataset with no row filter is closed to organizations unless declared <code>member_wide</code></td>
+</tr>
 </tbody>
 </table>
 

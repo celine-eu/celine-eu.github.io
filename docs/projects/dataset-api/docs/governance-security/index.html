@@ -2604,6 +2604,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-06-an-organizations-reader-reads-only-its-own-organizations-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-06 — An organization's reader reads only its own organization's rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-07-an-internal-dataset-that-declares-no-row-filter-is-closed-to-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-07 — An internal dataset that declares no row filter is closed to organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-08-a-row-filters-binds-agrees-with-its-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-08 — A row filter's binds agrees with its handler
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4776,6 +4809,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-06-an-organizations-reader-reads-only-its-own-organizations-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-06 — An organization's reader reads only its own organization's rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-07-an-internal-dataset-that-declares-no-row-filter-is-closed-to-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-07 — An internal dataset that declares no row filter is closed to organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-08-a-row-filters-binds-agrees-with-its-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-08 — A row filter's binds agrees with its handler
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4893,7 +4959,8 @@ normalizes its claims into an authenticated user:</p>
 <li><code>username</code> (<code>preferred_username</code>, falling back to <code>email</code>) and <code>email</code></li>
 <li><code>roles</code>: the realm roles (<code>realm_access.roles</code>), the platform level</li>
 <li><code>groups</code>: the groups the caller holds inside its organizations
-  (<code>organization.&lt;alias&gt;.groups</code>), the organization level</li>
+  (<code>organization.&lt;alias&gt;.groups</code>), the organization level — which organization
+  each is held in stays in the raw claims, where the row filter reads it</li>
 <li><code>scopes</code></li>
 <li><code>issuer</code>, <code>audiences</code>, and the raw <code>claims</code></li>
 </ul>
@@ -4909,11 +4976,12 @@ by <strong>scopes</strong>, users by the <strong>platform role</strong> or their
 <li><strong>Platform.</strong> The realm role <code>platform-admin</code> is the only platform-wide grant.
   Its holder skips every row filter, reads <code>restricted</code> datasets and may write the
   catalogue.</li>
-<li><strong>Organization.</strong> <code>managers</code> and <code>viewers</code> held inside an organization read
-  <code>internal</code> datasets, and row filters still apply. An organization's <code>admins</code> and
-  <code>editors</code> grant nothing here. The organization is not matched against the
-  dataset yet: a <code>viewers</code> membership in any organization reads every <code>internal</code>
-  dataset, narrowed only by row filters.</li>
+<li><strong>Organization.</strong> <code>admins</code>, <code>managers</code> and <code>viewers</code> held inside an organization
+  read <code>internal</code> datasets (an organization's <code>admins</code> reads what its <code>managers</code>
+  read; <code>editors</code> grants nothing here), and only rows that belong to that
+  organization: the dataset's row filter decides which (GS-06), and an <code>internal</code>
+  dataset that declares no row filter is not readable through an organization at
+  all (GS-07).</li>
 </ul>
 <p><strong>A realm group grants nothing.</strong> The top-level <code>groups</code> claim is not read, so a
 token that still carries <code>/admins</code> there is not an administrator. Neither are the
@@ -4955,7 +5023,8 @@ restart.</p>
       &quot;access_level&quot;: &quot;internal&quot;,
       &quot;backend_type&quot;: &quot;postgres&quot;,
       &quot;namespace&quot;: &quot;gold&quot;,
-      &quot;governance&quot;: {&quot;…&quot;: &quot;lineage governance facet, _-prefixed keys dropped&quot;}
+      &quot;governance&quot;: {&quot;…&quot;: &quot;lineage governance facet, _-prefixed keys dropped&quot;},
+      &quot;row_scoped&quot;: true
     }
   },
   &quot;action&quot;: {&quot;name&quot;: &quot;read&quot;, &quot;context&quot;: {}},
@@ -4964,7 +5033,10 @@ restart.</p>
 </code></pre>
 <p><code>subject.type</code> is <code>user</code>, <code>service</code> or <code>anonymous</code> (<code>id: "anonymous"</code>).
 <code>subject.roles</code> carries the realm roles and <code>subject.groups</code> the organization
-groups; neither ever carries a realm group. A policy reads the platform level as
+groups; neither ever carries a realm group. <code>subject.groups</code> says <em>which</em> groups,
+not <em>where</em>: it is the coarse gate, and the row filter scopes by organization.
+<code>resource.attributes.row_scoped</code> is true when the dataset declares any row
+filter (<code>member_wide</code> included). A policy reads the platform level as
 <code>"platform-admin" in input.subject.roles</code> and never from <code>groups</code> or <code>claims</code>.
 Tags are not sent.</p>
 <h3 id="shipped-policy">Shipped policy</h3>
@@ -4986,7 +5058,7 @@ Tags are not sent.</p>
 <tr>
 <td><code>internal</code></td>
 <td><code>dataset.query</code></td>
-<td>the <code>platform-admin</code> role, or <code>managers</code> or <code>viewers</code> in an organization</td>
+<td>the <code>platform-admin</code> role; or <code>admins</code>, <code>managers</code> or <code>viewers</code> in an organization, when the dataset is <code>row_scoped</code></td>
 </tr>
 <tr>
 <td><code>restricted</code></td>
@@ -5244,6 +5316,47 @@ the provenance event of one read can be matched:</p>
 <p>A record off the dataspace path carries neither field. A disclosure that cannot be
 posted does not fail the read; it is logged at <code>ERROR</code>.</p>
 <p>Tests: <code>tests/security/test_release_link.py</code>.</p>
+<h4 id="gs-06-an-organizations-reader-reads-only-its-own-organizations-rows">GS-06 — An organization's reader reads only its own organization's rows</h4>
+<p>A person reads an <code>internal</code> dataset through an organization when they hold
+<code>admins</code>, <code>managers</code> or <code>viewers</code> inside it. Which rows is the dataset's row
+filter (<code>binds: organization</code>, GS-08): <code>organization_match</code> with <code>column</code> serves the rows whose column holds the
+alias of an organization the caller reads in, and nothing else. The column holds
+organization aliases <strong>by convention</strong> (a REC's <code>rec_id</code> is its organization's
+alias); no mapping is applied, so a value in another vocabulary matches nobody.
+With <code>org_type</code> alone it serves every row to a reader in any organization of that
+type (<code>dso</code>), and with both it does both. A caller who reads in no matching
+organization gets no rows. A caller in two organizations reads both; a token still
+naming an organization the person has left reads it until the token is reissued,
+and a reissued token is never answered from the previous token's cached plan.</p>
+<p>The platform administrator and a service admitted by scope are not narrowed by
+<code>organization_match</code>. A dataspace (delegated) request is refused by it: an
+organization is not a consenting subject.</p>
+<p>Tests: <code>tests/routes/test_organization_scoping.py</code>,
+<code>tests/routes/test_platform_admin_role.py</code>.</p>
+<h4 id="gs-07-an-internal-dataset-that-declares-no-row-filter-is-closed-to-organizations">GS-07 — An <code>internal</code> dataset that declares no row filter is closed to organizations</h4>
+<p>An <code>internal</code> dataset whose governance declares no row filter is readable by the
+<code>platform-admin</code> role and by a service holding the scope, and by no organization's
+group: nobody decided whose rows it holds. The refusal is <code>403</code> with reason
+<code>internal dataset without a row filter - platform-admin or services only</code>
+(audited as <code>policy</code>). A dataset meant for every member of every organization —
+weather, public building data — says so in governance with the <code>member_wide</code> row
+filter (<code>binds: organization</code>), which narrows nothing.</p>
+<p>Tests: <code>tests/routes/test_organization_scoping.py</code>,
+<code>tests/routes/test_platform_admin_role.py</code>.</p>
+<h4 id="gs-08-a-row-filters-binds-agrees-with-its-handler">GS-08 — A row filter's <code>binds</code> agrees with its handler</h4>
+<p>Every governance row filter says what it narrows rows to (celine-utils REQ-0010):
+<code>binds: person</code> (the default when absent) or <code>binds: organization</code>. Each built-in
+handler declares the one it is (<code>HANDLER_BINDS</code>): <code>direct_user_match</code>,
+<code>rec_registry</code>, <code>subject_key_match</code>, <code>http_in_list</code> and <code>table_pointer</code> bind a
+person; <code>organization_match</code> and <code>member_wide</code> bind an organization.
+<code>POST /admin/catalogue</code> refuses with <code>422</code>, naming the dataset and the filter, a
+<code>binds</code> that contradicts its handler or that is not one of the two values. A handler
+from another package is checked for a readable value only.</p>
+<p>It matters outside this service: ds gates a dataset on consent only for a filter
+binding a person, and puts only that filter on the wire with the consenting
+subjects. A person filter marked <code>organization</code> would un-gate personal data; an
+organization filter left unmarked over-gates a contract-only dataset.</p>
+<p>Tests: <code>tests/routes/test_import_row_filter_binds.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
@@ -5257,7 +5370,9 @@ governance here — it arrives inside ds's decision, with the consenting subject
 in it, and this service applies it or serves nothing. That path has its own
 specification, with clauses and tests:
 <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
-<p><strong>A service account is not narrowed by <code>rec_registry</code></strong> on the normal API path: it
+<p>Whose rows an organization's reader gets is GS-06; an <code>internal</code> dataset with no
+row filter at all is GS-07; what a filter binds is GS-08.</p>
+<p><strong>A service account is not narrowed by <code>rec_registry</code></strong> or <code>organization_match</code> on the normal API path: it
 is not a registry member, and once the policy has admitted it the whole table is
 served. A service that relays such rows to a person narrows them itself or forwards
 the person's token. The order the handler decides in is in

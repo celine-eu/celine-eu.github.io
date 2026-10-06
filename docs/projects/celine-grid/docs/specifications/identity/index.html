@@ -4188,7 +4188,8 @@ not be reached: all four are <code>401</code>, and the detail distinguishes the 
 provider is down". That is a deliberate simplification and worth knowing before a wave of
 <code>401</code>s is diagnosed as an attack.</p>
 <h3 id="req-0004-the-dso-organisations-alias-is-the-network-identity">REQ-0004 — the DSO organisation's alias is the network identity</h3>
-<p>The caller's first Keycloak organisation of <code>type=dso</code> supplies its alias, and that alias
+<p>The caller's Keycloak organisation of <code>type=dso</code> supplies its alias (a caller in several
+is REQ-0052), and that alias
 <strong>is</strong> the <code>network_id</code> used to query the Digital Twin, to stamp new alert rules, and to
 authorise every grid request. There is no mapping table.</p>
 <p>The type is read from either place KC 26's organisation mapper puts it: the top level of
