@@ -4195,6 +4195,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0010-a-row-filter-says-whether-it-binds-a-person-or-an-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0010 — A row filter says whether it binds a person or an organization
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4280,6 +4291,11 @@ documentation of behaviour, which lives in the pages these link to.</p>
 <td>REQ-0009</td>
 <td>Outside dev a pipeline config never falls back to the client id as its secret</td>
 <td><code>tests/test_pipeline_config_posture.py</code></td>
+</tr>
+<tr>
+<td>REQ-0010</td>
+<td>A row filter says whether it binds a person or an organization; undeclared is a person, anything else is refused</td>
+<td><code>tests/test_governance_row_filter_binds.py</code></td>
 </tr>
 </tbody>
 </table>
@@ -4455,6 +4471,16 @@ selects how a flow is scheduled, not what it may authenticate with.</p>
 <p><strong>Consequence if violated:</strong> a deployed pipeline authenticates to the broker with a credential
 anyone can derive from the client list, and nothing downstream objects.</p>
 <p>Behaviour: <a href="../environment/#pipeline-execution">environment</a>.</p>
+<hr />
+<h2 id="req-0010-a-row-filter-says-whether-it-binds-a-person-or-an-organization">REQ-0010 — A row filter says whether it binds a person or an organization</h2>
+<p>Each <code>row_filters</code> entry MAY carry <code>binds: person | organization</code>. An entry without it
+MUST read as <code>person</code> (<code>row_filter_binds</code>, <code>DEFAULT_ROW_FILTER_BINDS</code>). Any other value
+MUST be refused: by <code>governance.schema.json</code> (an enum) and by <code>GovernanceRule</code> at parse
+time, naming the entry. The value MUST survive a merge and reach the facet unchanged.</p>
+<p><strong>Consequence.</strong> Consumers decide on it: <code>ds</code> gates a dataset on consent only for a
+filter binding a person, and <code>dataset-api</code> checks it against the handler. A misspelled
+value read as the default would silently change what gates a dataset, which is why it
+fails instead; an absent one errs towards gating.</p>
 
 
 

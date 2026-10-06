@@ -5180,7 +5180,39 @@ see it, not about how careful the handling must be.</p>
       column: user_id
 </code></pre>
 <p>A list of independent gates. Each names a <code>handler</code> — the filter strategy — and
-<code>args</code> for it. Used for per-subject and consent-based filtering.</p>
+<code>args</code> for it, and says what it <strong>binds</strong> rows to:</p>
+<table>
+<thead>
+<tr>
+<th><code>binds</code></th>
+<th>the rows belong to</th>
+<th>consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person</code> (default)</td>
+<td>people</td>
+<td>per-subject access control; the dataset holds personal data, and <code>ds</code> gates it on consent</td>
+</tr>
+<tr>
+<td><code>organization</code></td>
+<td>organizations (a community, a grid operator)</td>
+<td>says which organization's members may read which rows inside the platform; no person is behind a row, so it is not a consent signal</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-yaml">row_filters:
+  - handler: organization_match
+    binds: organization
+    args:
+      column: rec_id
+</code></pre>
+<p>An absent <code>binds</code> reads as <code>person</code>, the safe direction: forgetting it on an
+organization filter over-gates the dataset — visibly — and never under-gates one.
+Any other value is refused by the schema and by <code>GovernanceRule</code> (REQ-0010). Read it
+with <code>celine.governance.row_filter_binds</code>, never with <code>.get("binds")</code>, so the default
+is applied in one place.</p>
 <p><code>user_filter_column</code> is the <strong>legacy</strong> single-column form, carried only for
 backward compatibility with deployed <code>ds</code> files. <code>row_filters</code> supersedes it: a bare
 column name cannot say how a subject maps to values in it. Where both appear,
