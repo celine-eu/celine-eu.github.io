@@ -4736,7 +4736,7 @@ its own instance.</p>
 <p>The <code>export governance</code> command reads <code>governance.yaml</code> files (plus <code>governance.&lt;app&gt;.yaml</code> overlays) and writes catalogue YAML for <code>import catalogue</code>; it needs neither a database nor Marquez. <code>expose</code> lists the dataset in the catalogue and makes it queryable; <code>dataspace.expose</code> offers it into the dataspace (required for EDR/DPS requests). An unset <code>expose</code> falls back to <code>dataspace.expose</code>; offered-but-unlisted is refused.</p>
 <hr />
 <h2 id="governanceyaml-integration">governance.yaml integration</h2>
-<p>Dataset-api reads governance rules resolved by <code>celine.governance.GovernanceResolver</code> (from <code>celine-utils&gt;=2.0</code>). The following extended blocks are supported:</p>
+<p>Dataset-api reads governance rules resolved by <code>celine.governance.GovernanceResolver</code> (from <code>celine-utils&gt;=2.6</code>, which carries <code>row_filters[].binds</code>). The following extended blocks are supported:</p>
 <p><code>dcat:</code> block — DCAT-AP metadata:
 - <code>publisher_uri</code> — overrides the settings-level fallback
 - <code>themes</code> — <code>dcat:theme</code> URIs (EU Publications Office vocabulary)
