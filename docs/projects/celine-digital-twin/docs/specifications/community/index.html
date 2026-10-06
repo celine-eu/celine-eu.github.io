@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/specifications/participant/">
+        <link rel="canonical" href="https://celine-eu.github.io/projects/celine-digital-twin/docs/specifications/community/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>Specification — participant domain - CELINE Project</title>
+        <title>Specification — community domain - CELINE Project</title>
       
     
     
@@ -56,7 +56,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#specification-participant-domain" class="md-skip">
+        <a href="#specification-community-domain" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Specification — participant domain
+              Specification — community domain
             
           </span>
         </div>
@@ -4086,22 +4086,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-participant-is-the-caller" class="md-nav__link">
+  <a href="#every-rec-read-names-its-community" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The participant is the caller
+        Every REC read names its community
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The participant is the caller">
+    <nav class="md-nav" aria-label="Every REC read names its community">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#req-1400-a-request-whose-participant_id-is-not-the-verified-tokens-sub-must-answer-403-must-be-recorded-denied-with-the-reason-participant_not_caller-and-must-not-reach-the-rec-registry-or-the-data-client" class="md-nav__link">
+  <a href="#req-1500-every-fetcher-of-the-domain-that-reads-a-rec-table-ds_dev_goldrec_-ds_dev_goldmeters_-ds_dev_goldcer_energy_forecast-must-restrict-each-read-of-such-a-table-to-community_id-entity-id-in-the-same-statement-so-that-no-row-of-another-community-contributes-to-its-answer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-1400 — A request whose participant_id is not the verified token's sub MUST answer 403, MUST be recorded denied with the reason participant_not_caller, and MUST NOT reach the REC registry or the data client.
+        REQ-1500 — Every fetcher of the domain that reads a REC table (ds_dev_gold.rec_*, ds_dev_gold.meters_*, ds_dev_gold.cer_energy_forecast) MUST restrict each read of such a table to community_id = &lt;entity id&gt;, in the same statement, so that no row of another community contributes to its answer.
       
     </span>
   </a>
@@ -4109,122 +4109,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-1401-a-request-whose-participant_id-is-the-callers-sub-must-resolve-as-before-the-registry-is-asked-with-the-callers-token-and-a-caller-with-no-membership-answers-404-req-1031" class="md-nav__link">
+  <a href="#req-1501-the-entity-id-must-reach-the-statement-only-through-sql_quote-an-id-carrying-a-quote-or-sql-must-stay-one-literal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-1401 — A request whose participant_id is the caller's sub MUST resolve as before: the registry is asked with the caller's token, and a caller with no membership answers 404 (REQ-1031).
+        REQ-1501 — The entity id MUST reach the statement only through sql_quote: an id carrying a quote or SQL MUST stay one literal.
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-meters-are-the-callers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The meters are the caller's
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The meters are the caller&#39;s">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#req-1402-a-fetch-whose-payload-carries-a-device_id-that-is-not-the-sensor_id-of-one-of-the-callers-registry-assets-must-answer-403-must-be-recorded-denied-with-the-reason-device_not_owned-and-must-not-reach-the-data-client" class="md-nav__link">
+  <a href="#req-1502-a-fetcher-that-reads-no-rec-table-weather-pv-potential-the-reference-boundaries-must-not-be-restricted-by-community" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-1402 — A fetch whose payload carries a device_id that is not the sensor_id of one of the caller's registry assets MUST answer 403, MUST be recorded denied with the reason device_not_owned, and MUST NOT reach the data client.
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#no-role-widens-the-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        No role widens the scope
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="No role widens the scope">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#req-1403-req-1400-and-req-1402-must-hold-for-every-caller-a-realm-role-platform-admin-an-organization-group-and-a-service-account-must-not-widen-them" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-1403 — REQ-1400 and REQ-1402 MUST hold for every caller: a realm role (platform-admin), an organization group and a service account MUST NOT widen them.
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#failing-closed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Failing closed
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Failing closed">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#req-1404-when-the-callers-assets-cannot-be-read-from-the-registry-a-fetch-naming-a-device_id-must-answer-an-error-and-must-not-reach-the-data-client" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-1404 — When the caller's assets cannot be read from the registry, a fetch naming a device_id MUST answer an error and MUST NOT reach the data client.
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-communitys-own-figures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The community's own figures
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The community&#39;s own figures">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#req-1405-a-participant-fetcher-that-reads-a-community-wide-table-must-restrict-it-to-the-callers-own-community-community_id-the-resolved-entitys-community_key-rendered-through-sql_quote-a-caller-whose-membership-names-no-community-must-get-no-rows" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        REQ-1405 — A participant fetcher that reads a community-wide table MUST restrict it to the caller's own community, community_id = &lt;the resolved entity's community_key&gt;, rendered through sql_quote; a caller whose membership names no community MUST get no rows.
+        REQ-1502 — A fetcher that reads no REC table (weather, PV potential, the reference boundaries) MUST NOT be restricted by community.
       
     </span>
   </a>
@@ -4253,45 +4152,26 @@
 
 
 
-<h1 id="specification-participant-domain">Specification — participant domain</h1>
-<p>Requirements specific to the <code>it-participant</code> domain (<code>src/celine/dt/domains/participant/</code>):
-whose twin a caller may read, and which meters a fetch may name. The generic refusal hook is
-REQ-1116 in <a href="../values/">values.md</a>; the audit record a refusal produces is REQ-1081 in
-<a href="../runtime/">runtime.md</a>. Why the participant is the token's <code>sub</code>, and not a member key or
-a group, is <a href="../../decisions/ADR-0004-a-participant-twin-is-addressed-by-the-callers-sub/">ADR-0004</a>.</p>
+<h1 id="specification-community-domain">Specification — community domain</h1>
+<p>Requirements specific to the <code>it-energy-community</code> domain
+(<code>src/celine/dt/domains/energy_community/</code>): which community a fetch reads. The entity is the
+community in the URL (<code>/communities/it/{community_id}</code>), whose id is the community's slug, the
+Keycloak organisation alias and the gold <code>community_id</code> (celine-pipelines
+<code>every-rec-row-carries-its-community</code>).</p>
+<p>The domain's callers reach it with a service token as well as a user one (celine-community's
+console, flexibility-api). dataset-api narrows no service account, so <strong>which community</strong> the
+rows belong to is chosen here, by the statement. Whether the caller may read that community is
+not decided here.</p>
 <hr />
-<h2 id="the-participant-is-the-caller">The participant is the caller</h2>
-<h3 id="req-1400-a-request-whose-participant_id-is-not-the-verified-tokens-sub-must-answer-403-must-be-recorded-denied-with-the-reason-participant_not_caller-and-must-not-reach-the-rec-registry-or-the-data-client">REQ-1400 — A request whose <code>participant_id</code> is not the verified token's <code>sub</code> MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>participant_not_caller</code>, and MUST NOT reach the REC registry or the data client.</h3>
-<p>Holds for every route under <code>/participants/{participant_id}</code>: the built-in ones and the
-domain's own (<code>/profile</code>, <code>/assets</code>, <code>/energy-balance</code>, ...). The answer is the same whether
-or not the named participant exists.</p>
-<h3 id="req-1401-a-request-whose-participant_id-is-the-callers-sub-must-resolve-as-before-the-registry-is-asked-with-the-callers-token-and-a-caller-with-no-membership-answers-404-req-1031">REQ-1401 — A request whose <code>participant_id</code> is the caller's <code>sub</code> MUST resolve as before: the registry is asked with the caller's token, and a caller with no membership answers 404 (REQ-1031).</h3>
-<h2 id="the-meters-are-the-callers">The meters are the caller's</h2>
-<h3 id="req-1402-a-fetch-whose-payload-carries-a-device_id-that-is-not-the-sensor_id-of-one-of-the-callers-registry-assets-must-answer-403-must-be-recorded-denied-with-the-reason-device_not_owned-and-must-not-reach-the-data-client">REQ-1402 — A fetch whose payload carries a <code>device_id</code> that is not the <code>sensor_id</code> of one of the caller's registry assets MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>device_not_owned</code>, and MUST NOT reach the data client.</h3>
-<p>The caller's assets are read from the registry's <code>/user/assets</code> with the caller's own token,
-the same answer dataset-api's <code>rec_registry</code> row filter narrows by. A member owning no
-metered asset owns no <code>device_id</code>. A fetch whose payload names no <code>device_id</code> is not checked
-and does not ask the registry. Holds on <code>/values/{fetcher_id}</code> (both verbs) and on
-<code>/ontology/{spec_id}</code> (REQ-1116).</p>
-<h2 id="no-role-widens-the-scope">No role widens the scope</h2>
-<h3 id="req-1403-req-1400-and-req-1402-must-hold-for-every-caller-a-realm-role-platform-admin-an-organization-group-and-a-service-account-must-not-widen-them">REQ-1403 — REQ-1400 and REQ-1402 MUST hold for every caller: a realm role (<code>platform-admin</code>), an organization group and a service account MUST NOT widen them.</h3>
-<blockquote>
-<p>The Digital Twin grants no role-based access to participant routes; it has none to keep.
-Platform-wide reads remain dataset-api's to grant and to audit, on dataset-api's own
-routes. A service account is no registry member, so it never had a participant twin to
-read (REQ-1401's 404).</p>
-</blockquote>
-<h2 id="failing-closed">Failing closed</h2>
-<h3 id="req-1404-when-the-callers-assets-cannot-be-read-from-the-registry-a-fetch-naming-a-device_id-must-answer-an-error-and-must-not-reach-the-data-client">REQ-1404 — When the caller's assets cannot be read from the registry, a fetch naming a <code>device_id</code> MUST answer an error and MUST NOT reach the data client.</h3>
-<p>A registry failure is never read as "owns nothing" (which would hide a member's own data
-behind a 403) nor as "owns everything".</p>
-<h2 id="the-communitys-own-figures">The community's own figures</h2>
-<h3 id="req-1405-a-participant-fetcher-that-reads-a-community-wide-table-must-restrict-it-to-the-callers-own-community-community_id-the-resolved-entitys-community_key-rendered-through-sql_quote-a-caller-whose-membership-names-no-community-must-get-no-rows">REQ-1405 — A participant fetcher that reads a community-wide table MUST restrict it to the caller's own community, <code>community_id = &lt;the resolved entity's community_key&gt;</code>, rendered through <code>sql_quote</code>; a caller whose membership names no community MUST get no rows.</h3>
-<p><code>total_meters_forecast</code> is one series per community (celine-pipelines
-<code>every-rec-row-carries-its-community</code>). Without the predicate, <code>DISTINCT ON (timestamp)</code> picks one
-community's row per timestamp at random once there are two. <code>sql_quote</code> renders a missing key
-as <code>NULL</code>, and <code>community_id = NULL</code> matches nothing: fail closed, never another community's
-series.</p>
+<h2 id="every-rec-read-names-its-community">Every REC read names its community</h2>
+<h3 id="req-1500-every-fetcher-of-the-domain-that-reads-a-rec-table-ds_dev_goldrec_-ds_dev_goldmeters_-ds_dev_goldcer_energy_forecast-must-restrict-each-read-of-such-a-table-to-community_id-entity-id-in-the-same-statement-so-that-no-row-of-another-community-contributes-to-its-answer">REQ-1500 — Every fetcher of the domain that reads a REC table (<code>ds_dev_gold.rec_*</code>, <code>ds_dev_gold.meters_*</code>, <code>ds_dev_gold.cer_energy_forecast</code>) MUST restrict <strong>each</strong> read of such a table to <code>community_id = &lt;entity id&gt;</code>, in the same statement, so that no row of another community contributes to its answer.</h3>
+<p>Each read means each <code>FROM</code>: a CTE that joins a second REC table carries its own predicate, so a
+community's figures are never joined to another community's rows.</p>
+<h3 id="req-1501-the-entity-id-must-reach-the-statement-only-through-sql_quote-an-id-carrying-a-quote-or-sql-must-stay-one-literal">REQ-1501 — The entity id MUST reach the statement only through <code>sql_quote</code>: an id carrying a quote or SQL MUST stay one literal.</h3>
+<p>The entity id comes from the URL, so it is caller-supplied. <code>sql_quote</code> doubles quotes; the
+template never interpolates it raw (query-templates.md).</p>
+<h3 id="req-1502-a-fetcher-that-reads-no-rec-table-weather-pv-potential-the-reference-boundaries-must-not-be-restricted-by-community">REQ-1502 — A fetcher that reads no REC table (weather, PV potential, the reference boundaries) MUST NOT be restricted by community.</h3>
+<p>Those tables carry no <code>community_id</code>. A predicate there would fail every fetch.</p>
 
 
 

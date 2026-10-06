@@ -4428,6 +4428,9 @@ enough that requiring them to split it produced the bug this absorbs.</p>
 <p>With <code>OidcSettings.audience</code> set, <code>aud</code> must contain it. With it unset, <strong>audience
 validation is skipped entirely</strong> — a permissive default, and the reason a service that never
 declares an audience is not checking one.</p>
+<p><strong>An empty or blank audience is unset.</strong> <code>CELINE_OIDC_AUDIENCE=</code> (as a compose file's
+<code>${CELINE_OIDC_AUDIENCE:-}</code> passes it) skips validation exactly as an absent variable does;
+it never means "<code>aud</code> must contain the empty string", which no token satisfies.</p>
 <p><code>get_expected_audiences()</code> composes <code>audience</code> with <code>client_id</code> (when
 <code>include_client_id_as_audience</code> is on) and returns <code>None</code> when there is nothing to check.
 It is a helper <strong>for callers that build their own validation</strong>; <code>from_token</code> does not use
