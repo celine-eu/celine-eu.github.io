@@ -4767,17 +4767,8 @@ cd ../rec_flexibility
 source &lt;(uv run celine-utils pipeline run envs)
 uv run pytest tests -q
 
-# The private fleet seed is generated at flow start and is not in the repository.
-# Without it dbt cannot even parse this app. Set REC_ACTIVE_DEVICES first — an
-# empty fleet parses but fails at run time with `operator does not exist:
-# text = integer`, because dbt types an empty seed column as integer.
-uv run python -c &quot;
-import sys; sys.path.insert(0, '.')
-from pathlib import Path
-from lib.config import get_active_devices, load_config, write_active_devices_seed
-print(write_active_devices_seed(get_active_devices(load_config()), Path('dbt/seeds/rec_active_devices.csv')))
-&quot;
-
+# The fleet is rec_registry's rec_device_membership: build rec_registry first
+# (its flow, or `dbt build` in apps/rec_registry on a loaded mirror).
 dbt build                                  # unit + generic + singular, all layers
 </code></pre>
 <p><code>rec_flexibility</code> also depends on <code>meters_energy_forecast</code> and <code>total_meters_forecast</code>,
@@ -4909,8 +4900,8 @@ tests; regenerate with <code>dbt ls --resource-type test</code> inside an app.</
 </tr>
 <tr>
 <td><code>rec_registry</code></td>
-<td>no dbt project</td>
-<td>—</td>
+<td>yes</td>
+<td>2</td>
 <td>—</td>
 <td>yes</td>
 </tr>
@@ -4923,9 +4914,8 @@ tests; regenerate with <code>dbt ls --resource-type test</code> inside an app.</
 </tr>
 </tbody>
 </table>
-<p>* <code>rec_flexibility</code> has by far the largest suite in the repository, and <strong>none of the dbt
-half runs on a fresh checkout</strong> until the private fleet seed is generated — see the
-cascade above. Concluding it is untested is the usual mistake.</p>
+<p>* <code>rec_flexibility</code> has by far the largest suite in the repository; its dbt half needs
+<code>rec_device_membership</code> (rec_registry) to exist — see the cascade above.</p>
 <p>The unstarted apps are the backlog, roughly in value order: <code>owm</code> (19 models, and the
 second weather-contract producer), then the geospatial three, then <code>copernicus</code>.</p>
 <h2 id="reporting">Reporting</h2>

@@ -4859,33 +4859,33 @@ substation reference layer.</p>
 <tbody>
 <tr>
 <td>sources</td>
-<td><code>meters_data_15m</code> (rec_metering, gold); <code>raw.rec_registry_mirror</code> (rec_registry); <code>raw.gse_cabine_primarie</code> (self-contained Meltano extractor)</td>
+<td><code>meters_data_15m</code> (rec_metering, gold); <code>rec_device_membership</code> and <code>raw.rec_registry_mirror</code> (rec_registry); <code>raw.gse_cabine_primarie</code> (self-contained Meltano extractor)</td>
 </tr>
 <tr>
 <td>silver</td>
-<td><code>silver_rec_registry</code>, <code>silver_gse_cabine_primarie</code></td>
+<td><code>silver_gse_cabine_primarie</code></td>
 </tr>
 <tr>
 <td>gold</td>
-<td><code>gse_cabine_primarie</code>, <code>rec_virtual_consumption_15m</code>, <code>rec_virtual_consumption_hourly</code>, <code>rec_virtual_consumption_per_device_15m</code>, <code>rec_virtual_consumption_per_device_hourly</code>, <code>rec_measurements_15m</code>, <code>rec_measurements_per_device_15m</code></td>
+<td><code>gse_cabine_primarie</code>, <code>rec_virtual_consumption_15m</code>, <code>rec_virtual_consumption_hourly</code>, <code>rec_virtual_consumption_per_device_15m</code>, <code>rec_virtual_consumption_per_device_hourly</code>, <code>rec_measurements_15m</code>, <code>rec_measurements_per_device_15m</code>, <code>rec_member_supply_points</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
 <p><strong>Per-substation netting is correct and must not be "simplified".</strong> The community figure
-is <code>least()</code> per <code>(ts, rec_id, substation_id)</code> <strong>and then</strong> summed. Sharing cannot cross
+is <code>least()</code> per <code>(ts, community_id, substation_id)</code> <strong>and then</strong> summed. Sharing cannot cross
 an unconnected <em>cabina primaria</em>; netting community-wide would invent energy that
 physically cannot flow. See
 the companion's knowledge,
 which also records the known defect in the hourly model.</p>
-<p><strong>The netting is only as correct as the substation attribution.</strong> <code>silver_rec_registry</code>
-takes <code>topology_ids[1]</code> of the member's area as its <code>substation_id</code>. That is right when an
+<p><strong>The netting is only as correct as the substation attribution.</strong> <code>rec_device_membership</code>
+(rec_registry) takes <code>topology_ids[1]</code> of the member's area as its <code>substation_id</code>. That is right when an
 area lists exactly one <code>primary_substation</code> node, whose id is the <code>cod_ac</code> of the area's
 boundary; an area listing several nodes puts all its members under the first. The registry
 enforces it from schema v0.7 on area writes, topology node writes and bundle import. The
 mirror carries the area's <code>boundary_id</code>, and the singular test
-<code>rec_registry_mirror_substation_is_area_boundary</code> fails on any area breaking it. See
-<code>apps/rec_it/README.md</code>.</p>
+<code>rec_registry_mirror_substation_is_area_boundary</code> (rec_registry) fails on any area breaking
+it. See <code>apps/rec_registry/README.md</code>.</p>
 </blockquote>
 <p>A membership change (meter attached or detached, role or area changed) reaches only the rows
 computed after it: the settlement models are incremental over a short lookback, and
@@ -4923,10 +4923,9 @@ Python tasks (baselines, streaks, auto-commit). <code>0 6 * * *</code>.</p>
 and the pipeline succeeds with an empty result. That is the expected local behaviour, not
 a failure.</p>
 <blockquote>
-<p><strong>The points fleet is a deploy setting, not the registry.</strong> Points, settlement, streaks
-and the leaderboard are scoped to the devices in <code>REC_ACTIVE_DEVICES</code>; a meter attached
-to a member later earns no points until its device id is added there. Issue:
-<a href="https://github.com/celine-eu/celine-pipelines/issues/8">#8</a>.</p>
+<p><strong>The points fleet is the registry's membership.</strong> Points, settlement, streaks and the
+leaderboard cover every device of <code>rec_device_membership</code> (every role), and every figure
+computed across devices is computed within one community.</p>
 <p><strong>The flexibility signal is netted across substations.</strong> There is no join path from this
 app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cancels a surplus on another.</p>
 </blockquote>

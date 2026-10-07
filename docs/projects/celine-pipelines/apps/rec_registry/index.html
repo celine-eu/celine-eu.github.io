@@ -3545,6 +3545,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rec_device_membership-gold-dbt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rec_device_membership (gold, dbt)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#known-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4342,6 +4353,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rec_device_membership-gold-dbt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rec_device_membership (gold, dbt)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#known-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4415,7 +4437,7 @@
 
 <h1 id="rec-registry-pipeline">REC Registry Pipeline</h1>
 <h2 id="overview">Overview</h2>
-<p>The <strong>REC Registry pipeline</strong> mirrors community membership data from the <strong>CELINE REC Registry API</strong> into a PostgreSQL raw table.</p>
+<p>The <strong>REC Registry pipeline</strong> mirrors community membership data from the <strong>CELINE REC Registry API</strong> into a PostgreSQL raw table, then builds <code>rec_device_membership</code>, the one model every other REC app reads membership from.</p>
 <p>It performs a <strong>full-replace refresh every 5 minutes</strong>, providing a stable source of active members, their grid areas, topology nodes, delivery points, and meter sensors. An export with no active member empties the table, so a community whose last active member is suspended leaves no row behind.</p>
 <hr />
 <h2 id="data-sources">Data sources</h2>
@@ -4427,14 +4449,16 @@
 <h2 id="output-datasets">Output datasets</h2>
 <ul>
 <li><strong>RAW</strong></li>
-<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair). An export with no active member empties it: the last active member of a community suspended leaves no row behind. Columns: <code>user_id</code>, <code>rec_id</code>, <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>delivery_point_ids</code> (text[], the member's delivery points in service: a point flagged <code>active: false</code> in the registry is left out, an unflagged one counts as active), <code>sensor_ids</code> (text[], the <code>sensor_id</code> of each meter asset), <code>boundary_id</code> (the id of the member's area's boundary, <code>area.boundary.id</code> in registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(user_id, rec_id)</code>. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area.</li>
+<li><code>rec_registry_mirror</code> — full-replace mirror of active community members (one row per user/community pair). An export with no active member empties it: the last active member of a community suspended leaves no row behind. Columns: <code>user_id</code>, <code>community_id</code> (the bundle's <code>community.id</code>, the community's slug, carried unchanged), <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>delivery_point_ids</code> (text[], the member's delivery points in service: a point flagged <code>active: false</code> in the registry is left out, an unflagged one counts as active), <code>sensor_ids</code> (text[], the <code>sensor_id</code> of each meter asset), <code>boundary_id</code> (the id of the member's area's boundary, <code>area.boundary.id</code> in registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(user_id, community_id)</code>. The column was named <code>rec_id</code> before; the table is created only when missing and never altered, so a deployment upgrading from it drops the table once and the next run recreates it. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area.</li>
 </ul>
-<p>Every community the registry exports lands in the same table, keyed by <code>rec_id</code>. A sensor listed on two active members appears in two rows, and downstream models count it twice. The registry refuses that case at the source (<code>409 sensor_held</code>: one active holder per sensor id across every community, from rec-registry 1.6.0); a pair stored before then stays until it is fixed, and the registry's <code>duplicate-sensors</code> command lists them.</p>
+<p>Every community the registry exports lands in the same table, keyed by <code>community_id</code>. A sensor listed on two active members appears in two rows, and downstream models would count it twice: the <code>rec_device_membership_unique_per_community</code> test fails the run on it (below). The registry refuses that case at the source (<code>409 sensor_held</code>: one active holder per sensor id across every community, from rec-registry 1.6.0); a pair stored before then stays until it is fixed, and the registry's <code>duplicate-sensors</code> command lists them.</p>
 <h2 id="substation-attribution-check">Substation attribution check</h2>
-<p><code>rec_it</code> takes <code>topology_ids[1]</code> as a member's <code>substation_id</code>. That is right only when the member's area lists exactly one topology node and its id is the area's <code>boundary_id</code>. On every run, before the mirror is replaced, the <strong>Check substation attribution</strong> task flags each <code>(rec_id, area)</code> whose rows break this: it logs one warning per area (community id and area key only, never a member) and reports <code>areas_mismatched</code> in its result. It does <strong>not</strong> refuse the export: withholding it would leave the previous mirror feeding <code>rec_it</code>, which is no better. Rows with a null <code>boundary_id</code> are not checked.</p>
-<p>The registry refuses such areas on area writes, topology node writes and bundle import from schema v0.7, so a hit means an area stored before that (the registry's <code>invalid-area-boundaries</code> command lists them). The same invariant is a dbt singular test in <code>rec_it</code> (<code>rec_registry_mirror_substation_is_area_boundary</code>), which fails the <code>rec_it</code> test stage.</p>
+<p><code>rec_it</code> takes <code>topology_ids[1]</code> as a member's <code>substation_id</code>. That is right only when the member's area lists exactly one topology node and its id is the area's <code>boundary_id</code>. On every run, before the mirror is replaced, the <strong>Check substation attribution</strong> task flags each <code>(community_id, area)</code> whose rows break this: it logs one warning per area (community id and area key only, never a member) and reports <code>areas_mismatched</code> in its result. It does <strong>not</strong> refuse the export: withholding it would leave the previous mirror feeding <code>rec_it</code>, which is no better. Rows with a null <code>boundary_id</code> are not checked.</p>
+<p>The registry refuses such areas on area writes, topology node writes and bundle import from schema v0.7, so a hit means an area stored before that (the registry's <code>invalid-area-boundaries</code> command lists them). The same invariant is a dbt singular test of this app (<code>rec_registry_mirror_substation_is_area_boundary</code>), which fails the flow's dbt build.</p>
 <hr />
-<p>No dbt transformation layers are included in this pipeline. The raw table serves as a source for downstream dbt pipelines computing virtual self-consumption, billing, and community analytics.</p>
+<h2 id="rec_device_membership-gold-dbt"><code>rec_device_membership</code> (gold, dbt)</h2>
+<p>A view over the mirror: one row per <code>(community_id, device_id)</code> for every meter sensor of every active member, with <code>role</code>, <code>member_type</code> and <code>substation_id</code> (<code>topology_ids[1]</code>). No <code>user_id</code>. It is the population of <code>rec_it</code> and the fleet of <code>rec_flexibility</code> (every role), both joined on <code>(device_id, community_id)</code>. A device the registry lists under two communities appears under each; which community a <em>reading</em> belongs to is the reading's own (its upstream topic), so no reading is copied into the second.</p>
+<p>The flow runs <code>dbt build</code> right after the mirror is replaced. <code>rec_device_membership_unique_per_community</code> fails it when a sensor is listed twice in one community: the listing is fixed in the registry, never deduplicated downstream. Governance declares the view with the <code>rec_registry</code> row filter on <code>device_id</code>: a person reading it with their own token sees only their own devices.</p>
 <hr />
 <h2 id="known-limitations">Known limitations</h2>
 <ul>

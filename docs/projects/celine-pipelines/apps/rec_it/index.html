@@ -3480,10 +3480,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#silver_rec_registry" class="md-nav__link">
+  <a href="#membership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        silver_rec_registry
+        Membership
       
     </span>
   </a>
@@ -4406,10 +4406,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#silver_rec_registry" class="md-nav__link">
+  <a href="#membership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        silver_rec_registry
+        Membership
       
     </span>
   </a>
@@ -4579,10 +4579,16 @@
 <td>15-min metered readings</td>
 </tr>
 <tr>
+<td><code>rec_device_membership</code></td>
+<td><code>ds_dev_gold</code></td>
+<td><strong><code>rec_registry</code> pipeline, in this repository</strong></td>
+<td>Membership by device: <code>community_id</code>, <code>device_id</code>, <code>role</code>, <code>member_type</code>, <code>substation_id</code>, one row per <code>(community_id, device_id)</code></td>
+</tr>
+<tr>
 <td><code>rec_registry_mirror</code></td>
 <td><code>raw</code></td>
 <td><strong><code>rec_registry</code> pipeline, in this repository</strong></td>
-<td>REC participant registry, active members only: <code>user_id</code>, <code>rec_id</code>, <code>area</code>, <code>role</code>, <code>member_type</code>, <code>topology_ids[]</code>, <code>delivery_point_ids[]</code> (points in service only), <code>sensor_ids[]</code>, <code>boundary_id</code>, <code>last_updated</code></td>
+<td>REC participant registry, active members only, read here only by <code>rec_member_supply_points</code>: <code>user_id</code>, <code>community_id</code>, <code>area</code>, <code>role</code>, <code>member_type</code>, <code>topology_ids[]</code>, <code>delivery_point_ids[]</code> (points in service only), <code>sensor_ids[]</code>, <code>boundary_id</code>, <code>last_updated</code></td>
 </tr>
 <tr>
 <td><code>gse_cabine_primarie</code></td>
@@ -4596,37 +4602,36 @@
 <p><strong>Providing private upstream tables:</strong></p>
 <ul>
 <li><strong><code>meters_data_15m</code></strong> — produced by the <code>rec_metering</code> pipeline in this repository. Run rec_metering first.</li>
-<li><strong><code>rec_registry_mirror</code></strong> — a raw mirror of the REC registry (<code>rec-registry</code> service), produced by the <strong><code>rec_registry</code> app in this repository</strong>, which syncs the registry API into <code>raw.rec_registry_mirror</code> every 5 minutes. Run that app first; it creates its own table. Only if you cannot reach the registry API, create the table manually with the columns listed above (<code>user_id</code>, <code>rec_id</code>, <code>area</code>, <code>role</code>, <code>member_type</code>, <code>topology_ids</code> (text[]), <code>delivery_point_ids</code> (text[]), <code>sensor_ids</code> (text[]), <code>boundary_id</code>, <code>last_updated</code>) and load sample data; the DDL is in <code>apps/rec_registry/flows/pipeline.py</code>.</li>
+<li><strong><code>rec_device_membership</code></strong> and <strong><code>rec_registry_mirror</code></strong> — produced by the <strong><code>rec_registry</code> app in this repository</strong>, which syncs the registry API into <code>raw.rec_registry_mirror</code> every 5 minutes and builds the membership view on it. Run that app first. Only if you cannot reach the registry API, create the mirror manually (DDL in <code>apps/rec_registry/flows/pipeline.py</code>), load sample data and run <code>dbt build</code> in <code>apps/rec_registry</code>.</li>
 <li><strong><code>gse_cabine_primarie</code></strong> — self-contained: loaded via the included meltano extractor (<code>tap-copertura-cabine-primarie-gse</code>). Run <code>meltano run import</code> inside the <code>meltano/</code> directory.</li>
 </ul>
 <p>The full source contracts are declared in <code>dbt/models/silver/sources.yml</code> and <code>dbt/models/gold/sources.yml</code>.</p>
 <h2 id="dbt-models">dbt models</h2>
 <h3 id="silver">Silver</h3>
-<h4 id="silver_rec_registry"><code>silver_rec_registry</code></h4>
-<p>Unnests <code>sensor_ids</code> from the raw registry mirror so downstream models join on individual <code>sensor_id</code> without array handling. Takes <code>topology_ids[1]</code> as the primary <code>substation_id</code>. One row per <code>(user_id, rec_id, sensor_id)</code>.</p>
-<p><strong>Substation attribution rests on one invariant: an area lists exactly one topology node, a <code>primary_substation</code> whose id is the <code>cod_ac</code> of that area's GSE primary-substation boundary.</strong> Then <code>topology_ids[1]</code> is the member's <em>cabina primaria</em> because it is the only node, not because it is first. An area that lists several nodes attributes <strong>all</strong> its members to the first one, whatever substation their supply point sits in, and their shared energy is netted under that substation. An area with no node gives a <code>null</code> <code>substation_id</code>. The registry enforces the invariant from schema v0.7 (one <code>primary_substation</code> node per area, equal to the area's boundary id, and no two areas of a community on the same <code>cod_ac</code>) on area writes, topology node writes and bundle import; areas stored before that are not re-checked, and the registry's <code>invalid-area-boundaries</code> command lists them. This model needs no change for it.</p>
-<p>The mirror carries each area's boundary id as <code>boundary_id</code>, and the singular test <strong><code>rec_registry_mirror_substation_is_area_boundary</code></strong> (<code>dbt/tests/</code>, tag <code>rec_it</code>, so it runs in the flow's test stage) fails on every <code>(rec_id, area)</code> whose mirror rows have a <code>boundary_id</code> but not exactly one topology node equal to it. It reads the raw mirror, so members without a meter are checked too. Rows with a null <code>boundary_id</code> are not checked, and a mirror table that predates the column makes the test return no rows instead of erroring. The <code>rec_registry</code> flow logs the same areas on every run.</p>
+<h4 id="membership">Membership</h4>
+<p><code>rec_it</code> keeps no copy of the registry: it reads <code>rec_device_membership</code> (rec_registry), whose <code>substation_id</code> is <code>topology_ids[1]</code> of the member's area. <strong>Substation attribution rests on one invariant: an area lists exactly one topology node, a <code>primary_substation</code> whose id is the <code>cod_ac</code> of that area's GSE primary-substation boundary.</strong> The registry enforces it from schema v0.7, and <code>rec_registry</code>'s singular test <code>rec_registry_mirror_substation_is_area_boundary</code> fails its run on an area breaking it (see <code>apps/rec_registry/README.md</code>).</p>
+<p>A reading counts only when its <code>(device_id, community_id)</code> pair is a membership row. A device listed under two communities contributes each reading to the community the reading carries (its upstream topic), once.</p>
 <h4 id="silver_gse_cabine_primarie"><code>silver_gse_cabine_primarie</code></h4>
 <p>Casts the raw JSON feature bag from the GSE open dataset into typed columns. Filters deleted records (<code>_sdc_deleted_at is null</code>). Outputs: <code>fid</code>, <code>geometry</code>, <code>cod_ac</code>, <code>rag_soc</code>, <code>cod_conseg</code>, <code>shape__area</code>, <code>shape__length</code>, <code>last_updated_at</code>.</p>
 <h3 id="gold">Gold</h3>
 <h4 id="rec_virtual_consumption_15m"><code>rec_virtual_consumption_15m</code></h4>
-<p>Community-level virtual self-consumption per <code>(ts, rec_id, substation_id)</code>. Only devices registered in <code>silver_rec_registry</code> contribute. Production is attributed only to <code>role='prosumer'</code> devices; a device of a <code>consumer</code> or <code>producer</code> member contributes consumption only.</p>
+<p>Community-level virtual self-consumption per <code>(ts, community_id, substation_id)</code>. Only readings of member devices of their community (<code>rec_device_membership</code>) contribute. Production is attributed only to <code>role='prosumer'</code> devices; a device of a <code>consumer</code> or <code>producer</code> member contributes consumption only.</p>
 <pre><code>self_consumption_kw = least(total_consumption_kw, total_production_kw)
 self_consumption_ratio = self_consumption_kw / total_production_kw
 </code></pre>
-<p>Incremental merge on <code>(ts, rec_id, substation_id)</code>.</p>
+<p>Incremental merge on <code>(ts, community_id, substation_id)</code>.</p>
 <h4 id="rec_virtual_consumption_hourly"><code>rec_virtual_consumption_hourly</code></h4>
-<p>Hourly rollup of <code>rec_virtual_consumption_15m</code> via <code>date_trunc('hour', ts)</code>. Recomputes <code>self_consumption_ratio</code> from aggregated totals. Incremental merge on <code>(ts, rec_id, substation_id)</code>.</p>
+<p>Hourly rollup of <code>rec_virtual_consumption_15m</code> via <code>date_trunc('hour', ts)</code>. Recomputes <code>self_consumption_ratio</code> from aggregated totals. Incremental merge on <code>(ts, community_id, substation_id)</code>.</p>
 <h4 id="rec_virtual_consumption_per_device_15m"><code>rec_virtual_consumption_per_device_15m</code></h4>
 <p>Allocates the community's available self-consumption energy (<code>available_kwh = self_consumption_kw × 0.25</code>) to each device proportionally by consumption share:</p>
 <pre><code>ratio = device_consumption_kwh / total_consumption_kwh
 virtual_consumption_kwh = ratio × available_kwh
 </code></pre>
-<p>Joins <code>meters_data_15m</code> with <code>silver_rec_registry</code> and <code>rec_virtual_consumption_15m</code>. Incremental merge on <code>md5(device_id || ts || rec_id || substation_id)</code>.</p>
+<p>Joins <code>meters_data_15m</code> with <code>rec_device_membership</code> and <code>rec_virtual_consumption_15m</code>. Incremental merge on <code>_id = md5(device_id || ts || substation_id)</code>: the community is left out of the key, because a reading reaches one community and a slug change then needs no re-keying.</p>
 <h4 id="rec_virtual_consumption_per_device_hourly"><code>rec_virtual_consumption_per_device_hourly</code></h4>
-<p>Hourly rollup of <code>rec_virtual_consumption_per_device_15m</code>. Incremental merge on <code>md5(device_id || ts_hour || rec_id || substation_id)</code>.</p>
+<p>Hourly rollup of <code>rec_virtual_consumption_per_device_15m</code>. Incremental merge on <code>md5(device_id || ts_hour || substation_id)</code>.</p>
 <h4 id="membership-changes-and-history">Membership changes and history</h4>
-<p>The four <code>rec_virtual_consumption_*</code> models are incremental from their own <code>max(ts)</code> minus a short lookback (1 hour for the 15-minute models, 2 hours for the hourly roll-ups). The 15-minute models inner-join the current mirror (through <code>silver_rec_registry</code>) on <code>sensor_id</code>; the hourly roll-ups read them. So a change in the registry reaches only the rows computed after it:</p>
+<p>The four <code>rec_virtual_consumption_*</code> models are incremental from their own <code>max(ts)</code> minus a short lookback (1 hour for the 15-minute models, 2 hours for the hourly roll-ups). The 15-minute models inner-join the current membership (<code>rec_device_membership</code>) on <code>(device_id, community_id)</code>; the hourly roll-ups read them. So a change in the registry reaches only the rows computed after it:</p>
 <ul>
 <li><strong>A meter attached late</strong> has no rows for the intervals before it was attached, and the community totals for those intervals do not include it. A <strong>meter detached</strong> keeps its old rows.</li>
 <li><strong>A changed role or area</strong> applies from the next run onwards; older rows keep the old role (whether production counted) and the old substation.</li>
@@ -4634,7 +4639,7 @@ virtual_consumption_kwh = ratio × available_kwh
 </ul>
 <p>Bringing history in line with a changed membership needs a bounded recompute of these four models over the affected period, run by an operator. A <code>--full-refresh</code> recomputes all history against the registry as it is at that moment: a sensor that no active member holds by then drops out of the whole history, past included.</p>
 <h4 id="rec_member_supply_points"><code>rec_member_supply_points</code></h4>
-<p>One row per <code>(user_id, rec_id, pod_code)</code> — every active member's supply points in service, unnested from <code>rec_registry_mirror.delivery_point_ids</code> (the mirror leaves out a point flagged <code>active: false</code>, so a retired POD never reaches the distributor's list). A view, like <code>silver_rec_registry</code>, so it always reflects the current mirror.</p>
+<p>One row per <code>(user_id, community_id, pod_code)</code> — every active member's supply points in service, unnested from <code>rec_registry_mirror.delivery_point_ids</code> (the mirror leaves out a point flagged <code>active: false</code>, so a retired POD never reaches the distributor's list). A view, like <code>rec_device_membership</code>, so it always reflects the current mirror.</p>
 <p><strong>Consent-gated per member, and not filtered here.</strong> Governance declares <code>consent_required: true</code> with a <code>direct_user_match</code> row filter on <code>user_id</code>: read through a dataspace, the data plane narrows it to the members who consented to the sharing offer the query runs under — the list a community hands the party that offer names. No purpose is declared in this repository; the deployment binds the offer and its purpose.</p>
 <h4 id="gse_cabine_primarie"><code>gse_cabine_primarie</code></h4>
 <p>Promotes <code>silver_gse_cabine_primarie</code> to the gold schema. Incremental merge on <code>cod_ac</code> (updates geometry and attributes when the source dataset changes).</p>
@@ -4645,7 +4650,7 @@ virtual_consumption_kwh = ratio × available_kwh
 </ul>
 <p>Renaming or retyping either column, changing the SRID or dropping the index breaks area resolution for onboarding and the community dashboard. <strong>The merge never deletes:</strong> a substation that disappears from a later GSE snapshot keeps its last row here (the silver filter on <code>_sdc_deleted_at</code> only stops further updates), so a withdrawn <code>cod_ac</code> still resolves. Removing it is a manual operation.</p>
 <h2 id="flow-flowspipelinepy">Flow (<code>flows/pipeline.py</code>)</h2>
-<p><code>rec-it-flow</code> runs two tasks in sequence: <strong>Transform Gold Layer</strong> (<code>dbt run --select tag:rec_it</code>) followed by <strong>Run dbt Tests</strong> (<code>dbt test --select tag:rec_it</code>). Serves with cron <code>*/15 * * * *</code> (every 15 minutes) in dev mode.</p>
+<p><code>rec-it-flow</code> runs two tasks in sequence: <strong>Transform Gold Layer</strong> (<code>dbt run --select tag:rec_it</code>) followed by <strong>Run dbt Tests</strong> (<code>dbt test --select tag:rec_it</code>). Every <code>rec_it</code> model and view carries the <code>rec_it</code> tag, so a view whose columns change (<code>rec_measurements_*</code>, <code>rec_member_supply_points</code>) is recreated by the next scheduled run, not left on its old column list. Serves with cron <code>*/15 * * * *</code> (every 15 minutes) in dev mode.</p>
 
 
 
