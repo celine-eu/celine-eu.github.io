@@ -2637,6 +2637,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-09-a-row-filter-names-a-column-its-table-has" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-09 — A row filter names a column its table has
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4842,6 +4853,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-09-a-row-filter-names-a-column-its-table-has" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-09 — A row filter names a column its table has
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5321,7 +5343,7 @@ posted does not fail the read; it is logged at <code>ERROR</code>.</p>
 <code>admins</code>, <code>managers</code> or <code>viewers</code> inside it. Which rows is the dataset's row
 filter (<code>binds: organization</code>, GS-08): <code>organization_match</code> with <code>column</code> serves the rows whose column holds the
 alias of an organization the caller reads in, and nothing else. The column holds
-organization aliases <strong>by convention</strong> (a REC's <code>rec_id</code> is its organization's
+organization aliases <strong>by convention</strong> (a REC's <code>community_id</code> is its organization's
 alias); no mapping is applied, so a value in another vocabulary matches nobody.
 With <code>org_type</code> alone it serves every row to a reader in any organization of that
 type (<code>dso</code>), and with both it does both. A caller who reads in no matching
@@ -5357,6 +5379,20 @@ binding a person, and puts only that filter on the wire with the consenting
 subjects. A person filter marked <code>organization</code> would un-gate personal data; an
 organization filter left unmarked over-gates a contract-only dataset.</p>
 <p>Tests: <code>tests/routes/test_import_row_filter_binds.py</code>.</p>
+<h4 id="gs-09-a-row-filter-names-a-column-its-table-has">GS-09 — A row filter names a column its table has</h4>
+<p><code>POST /admin/catalogue</code> refuses with <code>422</code> a row filter whose <code>args.column</code> is not a
+column of the dataset's physical table, naming the dataset, the filter, the column and
+the table; every such filter of the import is named at once. A filter that names no
+column (<code>member_wide</code>, <code>organization_match</code> with <code>org_type</code> alone) is not checked, and
+neither is an entry whose table does not exist (it is skipped, as before).</p>
+<p>A refused import changes nothing: no entry is created or updated, and no stale entry is
+removed. Every entry is checked before the first write.</p>
+<p>Without it, a filter on a missing column answers <code>400</code> at query time, and only to the
+callers it narrows: a service and the platform administrator emit no predicate, so the
+service paths stay green while every organization reader or person is refused. A
+governance release that renames a filter column must therefore reach the catalogue in
+the same step as the table's migration, and the import is what holds that order.</p>
+<p>Tests: <code>tests/routes/test_import_row_filter_column.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
@@ -5371,7 +5407,7 @@ in it, and this service applies it or serves nothing. That path has its own
 specification, with clauses and tests:
 <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <p>Whose rows an organization's reader gets is GS-06; an <code>internal</code> dataset with no
-row filter at all is GS-07; what a filter binds is GS-08.</p>
+row filter at all is GS-07; what a filter binds is GS-08; the column it names is GS-09.</p>
 <p><strong>A service account is not narrowed by <code>rec_registry</code></strong> or <code>organization_match</code> on the normal API path: it
 is not a registry member, and once the policy has admitted it the whole table is
 served. A service that relays such rows to a person narrows them itself or forwards

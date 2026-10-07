@@ -4702,6 +4702,10 @@ names (<code>datasets.&lt;schema&gt;.&lt;table&gt;</code> → <code>&lt;schema&g
 path would use. A dataset whose table does not exist is skipped (logged server-side, not
 reported in the response). Column schema is not stored: <code>GET
 /catalogue/{id}/schema</code> reflects it on request.</p>
+<p>Every row filter's <code>args.column</code> must be a column of that table: an import naming a
+column the table lacks is refused with <code>422</code>, listing each such filter, and changes
+nothing — no create, update or cleanup (<a href="../governance-security/">GS-09</a>). A filter's
+<code>binds</code> must agree with its handler (GS-08).</p>
 <hr />
 <h2 id="selection-filters">Selection &amp; Filters</h2>
 <p><code>dataset-cli import catalogue</code> resolves the selection before sending anything:</p>
@@ -4766,7 +4770,8 @@ and refusing".</p>
 <h3 id="what-it-is">What it is</h3>
 <p>An audit, on request. It is deliberately <strong>not</strong>:</p>
 <ul>
-<li>a <strong>gate</strong> — <code>POST /admin/catalogue</code> does not validate and does not refuse an import;</li>
+<li>a <strong>gate</strong> — <code>POST /admin/catalogue</code> does not check conformance and does not refuse an
+  import over it;</li>
 <li>a <strong>filter</strong> — no row is ever dropped from <code>/query</code> because of a violation. A result
   that depended on shape conformance would be indistinguishable, to the consumer, from
   a small one;</li>
