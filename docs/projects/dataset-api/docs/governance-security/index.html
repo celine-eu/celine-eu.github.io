@@ -5354,7 +5354,8 @@ and a reissued token is never answered from the previous token's cached plan.</p
 <code>organization_match</code>. A dataspace (delegated) request is refused by it: an
 organization is not a consenting subject.</p>
 <p>Tests: <code>tests/routes/test_organization_scoping.py</code>,
-<code>tests/routes/test_platform_admin_role.py</code>.</p>
+<code>tests/routes/test_platform_admin_role.py</code>; against a running stack with two
+communities and real tokens, <code>tests/e2e/test_organization_matrix_live.py</code>.</p>
 <h4 id="gs-07-an-internal-dataset-that-declares-no-row-filter-is-closed-to-organizations">GS-07 — An <code>internal</code> dataset that declares no row filter is closed to organizations</h4>
 <p>An <code>internal</code> dataset whose governance declares no row filter is readable by the
 <code>platform-admin</code> role and by a service holding the scope, and by no organization's

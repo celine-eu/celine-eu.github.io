@@ -4867,7 +4867,9 @@ Issue: <a href="https://github.com/celine-eu/dataset-api/issues/74">celine-eu/da
 Tests: <code>tests/api/dataset_query/test_rec_registry_self_service.py</code> — a caller
 with no assets, and a caller whose only assets have no sensor id, each answered
 with a deny that renders no <code>IN</code> and executes to no rows; metered assets still
-narrow to their sensor ids; no answer and a registry failure stay errors.</p>
+narrow to their sensor ids; no answer and a registry failure stay errors.
+Against a running stack, <code>tests/e2e/test_organization_matrix_live.py</code>: an organization
+viewer or manager who owns no meter reads no row of any device-grain dataset.</p>
 <h3 id="rf-12-a-caller-who-is-no-registry-member-gets-no-rows">RF-12 — A caller who is no registry member gets no rows</h3>
 <p>On the self-service path, the registry answers <code>GET /user/assets</code> for a person
 with no membership in any community with

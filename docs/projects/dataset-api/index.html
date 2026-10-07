@@ -4791,7 +4791,9 @@ catalogue schema on every test:</p>
 in <code>_test</code>, or which is the one <code>DATABASE_URL</code> or <code>DATASETS_DATABASE_URL</code> points at
 (<code>tests/testdb.py</code>). The SQL parser tests need no database. The process e2e in
 <code>tests/e2e</code> runs with <code>DATASET_API_E2E=1</code> and creates, then drops, two more <code>*_test</code>
-databases on the same server.</p>
+databases on the same server. <code>tests/e2e/test_organization_matrix_live.py</code> instead reads a
+running instance with real tokens, and skips until its <code>ORG_E2E_*</code> variables name them (see
+its docstring); it writes nothing.</p>
 <p><strong>One test database per server, so run one suite at a time.</strong> Every run on a server uses
 the same <code>*_test</code> database and its fixtures drop and recreate the catalogue schema on every
 test, so two runs at once (two checkouts, or a run beside an agent's) fail each other's

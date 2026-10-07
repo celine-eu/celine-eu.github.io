@@ -4263,7 +4263,8 @@ judged as a person, whatever its scopes, as in the grid domain (REQ-1322).</p>
 <p><em>Verified by: unit — each admitted caller reads a manager fetcher; a member (<code>viewers</code>), a manager
 of another community, a person with no organisation and a service holding only
 <code>digital-twin.values.read</code> are refused with the reason recorded and no call on a fake data
-client</em></p>
+client; e2e — a service token without the scope (svc-flexibility) is refused
+<code>manager_scope_missing</code> through the running services</em></p>
 <h3 id="req-1511-a-group-must-count-only-inside-the-organisation-the-url-names-admins-or-managers-held-in-another-organisation-must-not-admit-a-caller-to-this-one">REQ-1511 — A group MUST count only inside the organisation the URL names: <code>admins</code> or <code>managers</code> held in another organisation MUST NOT admit a caller to this one.</h3>
 <h3 id="req-1512-the-fetchers-of-the-domain-that-are-not-manager-fetchers-must-not-be-gated-by-req-1510-any-caller-the-route-admits-reads-them">REQ-1512 — The fetchers of the domain that are not manager fetchers MUST NOT be gated by REQ-1510: any caller the route admits reads them.</h3>
 <p>flexibility-api reads the community windows and the gamification summary, and onboarding the
