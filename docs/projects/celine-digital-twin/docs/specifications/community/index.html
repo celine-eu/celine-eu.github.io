@@ -4130,6 +4130,78 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1503-a-manager-fetcher-must-answer-the-device-rows-of-the-community-in-the-url-only-whatever-the-callers-token-a-service-token-through-the-entity-route-reads-one-community-per-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1503 — A manager fetcher MUST answer the device rows of the community in the URL only, whatever the caller's token: a service token through the entity route reads one community per entity.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-reads-the-manager-fetchers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who reads the manager fetchers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Who reads the manager fetchers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1510-a-manager-fetcher-must-be-served-only-to-a-service-account-whose-tokens-scopes-include-digital-twincommunitymanage-to-a-caller-holding-the-realm-role-platform-admin-or-to-a-person-holding-the-group-admins-or-managers-inside-the-organisation-whose-alias-is-the-community-in-the-url-any-other-caller-must-answer-403-must-be-recorded-denied-with-the-reason-community_not_managed-a-person-or-manager_scope_missing-a-service-account-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1510 — A manager fetcher MUST be served only to a service account whose token's scopes include digital-twin.community.manage, to a caller holding the realm role platform-admin, or to a person holding the group admins or managers inside the organisation whose alias is the community in the URL. Any other caller MUST answer 403, MUST be recorded denied with the reason community_not_managed (a person) or manager_scope_missing (a service account), and MUST NOT reach the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1511-a-group-must-count-only-inside-the-organisation-the-url-names-admins-or-managers-held-in-another-organisation-must-not-admit-a-caller-to-this-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1511 — A group MUST count only inside the organisation the URL names: admins or managers held in another organisation MUST NOT admit a caller to this one.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1512-the-fetchers-of-the-domain-that-are-not-manager-fetchers-must-not-be-gated-by-req-1510-any-caller-the-route-admits-reads-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1512 — The fetchers of the domain that are not manager fetchers MUST NOT be gated by REQ-1510: any caller the route admits reads them.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1513-through-the-running-services-a-manager-fetcher-must-refuse-a-member-of-the-community-and-a-manager-of-another-one-and-must-serve-the-communitys-manager-and-the-consoles-service-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1513 — Through the running services, a manager fetcher MUST refuse a member of the community and a manager of another one, and MUST serve the community's manager and the console's service token.
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4160,8 +4232,10 @@ Keycloak organisation alias and the gold <code>community_id</code> (celine-pipel
 <code>every-rec-row-carries-its-community</code>).</p>
 <p>The domain's callers reach it with a service token as well as a user one (celine-community's
 console, flexibility-api). dataset-api narrows no service account, so <strong>which community</strong> the
-rows belong to is chosen here, by the statement. Whether the caller may read that community is
-not decided here.</p>
+rows belong to is chosen here, by the statement. Who may read a community's <strong>manager
+fetchers</strong> (the operator console's device-level and aggregate figures,
+<code>manager_fetchers.py</code>) is decided here too; the other fetchers are open to any authenticated
+caller.</p>
 <hr />
 <h2 id="every-rec-read-names-its-community">Every REC read names its community</h2>
 <h3 id="req-1500-every-fetcher-of-the-domain-that-reads-a-rec-table-ds_dev_goldrec_-ds_dev_goldmeters_-ds_dev_goldcer_energy_forecast-must-restrict-each-read-of-such-a-table-to-community_id-entity-id-in-the-same-statement-so-that-no-row-of-another-community-contributes-to-its-answer">REQ-1500 — Every fetcher of the domain that reads a REC table (<code>ds_dev_gold.rec_*</code>, <code>ds_dev_gold.meters_*</code>, <code>ds_dev_gold.cer_energy_forecast</code>) MUST restrict <strong>each</strong> read of such a table to <code>community_id = &lt;entity id&gt;</code>, in the same statement, so that no row of another community contributes to its answer.</h3>
@@ -4172,6 +4246,31 @@ community's figures are never joined to another community's rows.</p>
 template never interpolates it raw (query-templates.md).</p>
 <h3 id="req-1502-a-fetcher-that-reads-no-rec-table-weather-pv-potential-the-reference-boundaries-must-not-be-restricted-by-community">REQ-1502 — A fetcher that reads no REC table (weather, PV potential, the reference boundaries) MUST NOT be restricted by community.</h3>
 <p>Those tables carry no <code>community_id</code>. A predicate there would fail every fetch.</p>
+<h3 id="req-1503-a-manager-fetcher-must-answer-the-device-rows-of-the-community-in-the-url-only-whatever-the-callers-token-a-service-token-through-the-entity-route-reads-one-community-per-entity">REQ-1503 — A manager fetcher MUST answer the device rows of the community in the URL only, whatever the caller's token: a service token through the entity route reads one community per entity.</h3>
+<p><em>Verified by: e2e — on a local stack whose warehouse holds two communities, <code>example-rec</code> and
+<code>other-rec</code>: the console's service token asks each manager fetcher for one community and gets
+no device of the other</em></p>
+<hr />
+<h2 id="who-reads-the-manager-fetchers">Who reads the manager fetchers</h2>
+<p>The manager fetchers return per-device figures of the whole community. The console reaches them
+with its own service token (<code>svc-community</code>), which dataset-api's <code>rec_registry</code> filter does
+not narrow, so the twin decides who may ask. The console keeps its own persona check, and names
+as the entity the community it checked the persona for.</p>
+<h3 id="req-1510-a-manager-fetcher-must-be-served-only-to-a-service-account-whose-tokens-scopes-include-digital-twincommunitymanage-to-a-caller-holding-the-realm-role-platform-admin-or-to-a-person-holding-the-group-admins-or-managers-inside-the-organisation-whose-alias-is-the-community-in-the-url-any-other-caller-must-answer-403-must-be-recorded-denied-with-the-reason-community_not_managed-a-person-or-manager_scope_missing-a-service-account-and-must-not-reach-the-data-client">REQ-1510 — A manager fetcher MUST be served only to a service account whose token's scopes include <code>digital-twin.community.manage</code>, to a caller holding the realm role <code>platform-admin</code>, or to a person holding the group <code>admins</code> or <code>managers</code> inside the organisation whose alias is the community in the URL. Any other caller MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>community_not_managed</code> (a person) or <code>manager_scope_missing</code> (a service account), and MUST NOT reach the data client.</h3>
+<p><code>digital-twin.values.read</code> does not admit: every service that reads the twin holds it
+(flexibility-api, onboarding, celine-grid). A token that carries at least one organisation is
+judged as a person, whatever its scopes, as in the grid domain (REQ-1322).</p>
+<p><em>Verified by: unit — each admitted caller reads a manager fetcher; a member (<code>viewers</code>), a manager
+of another community, a person with no organisation and a service holding only
+<code>digital-twin.values.read</code> are refused with the reason recorded and no call on a fake data
+client</em></p>
+<h3 id="req-1511-a-group-must-count-only-inside-the-organisation-the-url-names-admins-or-managers-held-in-another-organisation-must-not-admit-a-caller-to-this-one">REQ-1511 — A group MUST count only inside the organisation the URL names: <code>admins</code> or <code>managers</code> held in another organisation MUST NOT admit a caller to this one.</h3>
+<h3 id="req-1512-the-fetchers-of-the-domain-that-are-not-manager-fetchers-must-not-be-gated-by-req-1510-any-caller-the-route-admits-reads-them">REQ-1512 — The fetchers of the domain that are not manager fetchers MUST NOT be gated by REQ-1510: any caller the route admits reads them.</h3>
+<p>flexibility-api reads the community windows and the gamification summary, and onboarding the
+reference boundaries, with their own service tokens.</p>
+<h3 id="req-1513-through-the-running-services-a-manager-fetcher-must-refuse-a-member-of-the-community-and-a-manager-of-another-one-and-must-serve-the-communitys-manager-and-the-consoles-service-token">REQ-1513 — Through the running services, a manager fetcher MUST refuse a member of the community and a manager of another one, and MUST serve the community's manager and the console's service token.</h3>
+<p><em>Verified by: e2e — temporary realm users of <code>example-rec</code> (<code>viewers</code>, <code>managers</code>) and of
+<code>other-rec</code> (<code>managers</code>), and the <code>svc-community</code> client-credentials token</em></p>
 
 
 

@@ -4414,7 +4414,11 @@ generated from this schema and two domains would otherwise collide on the built-
   fetchers from <code>boundary_fetchers.py</code>; <code>ITEnergyCommunityDomain</code> (<code>domain.py</code>) extends that
   list with its own fetchers and the <code>rec_*</code> aggregates of <code>manager_fetchers.py</code>, which feed
   the REC Manager Dashboard and select device-keyed or aggregate rows only, with the caller's
-  token. It does not override <code>resolve_entity</code>, so any <code>community_id</code> is accepted. Custom routes:
+  token. Every REC read is restricted to <code>community_id = entity.id</code> (REQ-1500). The base's
+  <code>check_fetch</code> gates the manager fetchers (REQ-1510): a service holding
+  <code>digital-twin.community.manage</code>, <code>platform-admin</code>, or <code>admins</code>/<code>managers</code> of the community's
+  organisation; every other fetcher is open to any authenticated caller. It does not override
+  <code>resolve_entity</code>, so any <code>community_id</code> is accepted. Custom routes:
   <code>/energy-balance</code>, <code>/energy-balance/hourly</code>.</li>
 <li><strong>Participant</strong> (<code>domains/participant/</code>). A participant twin is the caller's own:
   <code>resolve_entity</code> answers 403 when <code>participant_id</code> is not the verified token's <code>sub</code>, then
@@ -4426,8 +4430,12 @@ generated from this schema and two domains would otherwise collide on the built-
   <code>meters-flow</code> pipeline run completes. Custom routes: <code>/energy-balance</code>,
   <code>/energy-balance/hourly</code>, <code>/profile</code>, <code>/community</code>, <code>/member</code>, <code>/assets</code>,
   <code>/delivery-points</code>.</li>
-<li><strong>Grid</strong> (<code>domains/grid/</code>). Read-through only, default entity resolution. Custom routes
-  under <code>/wind/</code>, <code>/heat/</code> and <code>/substations/</code>.</li>
+<li><strong>Grid</strong> (<code>domains/grid/</code>). Read-through only. The entity is the network: the distribution
+  operator's organisation alias, which every grid table carries as <code>dso_id</code>. Every read is
+  restricted to <code>dso_id = entity.id</code>, because celine-grid calls with a service token that no
+  dataset-api row filter narrows. <code>resolve_entity</code> admits a member of that <code>dso</code> organisation,
+  or a service holding <code>grid.read</code>/<code>grid.admin</code>, and answers 403 otherwise; no realm role
+  widens it (<a href="../specifications/grid/">grid.md</a>). Custom route: <code>/substations/map</code>.</li>
 </ul>
 <p>Registration is <code>config/domains.yaml</code>, mapping the name to an import path resolving to a
 module-level <code>domain</code> instance. The YAML <code>name</code> must equal the class's <code>name</code> or startup

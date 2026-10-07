@@ -5250,6 +5250,10 @@
 <td>Read digital twin values</td>
 </tr>
 <tr>
+<td><code>digital-twin.community.manage</code></td>
+<td>Read a community's manager values (the operator console's per-device figures); held by <code>svc-community</code> only</td>
+</tr>
+<tr>
 <td><code>digital-twin.values.write</code></td>
 <td>Write digital twin values</td>
 </tr>
@@ -5700,6 +5704,7 @@ default_scopes:
   - community.objectives.write
   - digital-twin.values.read
   - dataset.query
+  - digital-twin.community.manage  # the DT's manager fetchers admit a service by this scope alone
   - rec-registry.read          # aggregate population, and member names for the members page
   - nudging.analytics.read
 optional_scopes:

@@ -4336,6 +4336,178 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#every-grid-read-names-its-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every grid read names its operator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Every grid read names its operator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1312-every-fetcher-of-the-domain-filters-tile_index-shapes-risks-risks_now-risk_km-tree_strike_spans-risks_8h-trendline-must-restrict-each-read-of-a-grid-table-to-dso_id-entity-id-in-the-same-statement-so-that-no-row-of-another-operator-contributes-to-its-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1312 — Every fetcher of the domain (filters, tile_index, shapes, risks, risks_now, risk_km, tree_strike_spans, risks_8h, trendline) MUST restrict each read of a grid table to dso_id = &lt;entity id&gt;, in the same statement, so that no row of another operator contributes to its answer.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1313-the-entity-id-must-reach-a-grid-statement-only-through-sql_quote-an-id-carrying-a-quote-or-sql-must-stay-one-literal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1313 — The entity id MUST reach a grid statement only through sql_quote: an id carrying a quote or SQL MUST stay one literal.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1314-get-substationsmap-must-restrict-grid_substations-to-dso_id-entity-id-with-the-entity-id-rendered-as-one-literal-as-in-req-1313" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1314 — GET /substations/map MUST restrict grid_substations to dso_id = &lt;entity id&gt;, with the entity id rendered as one literal as in REQ-1313.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-may-name-the-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who may name the network
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Who may name the network">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1320-a-user-must-be-admitted-to-a-network-only-when-one-of-the-organisations-in-their-token-is-of-type-dso-and-has-the-alias-equal-to-the-network_id-in-the-path-otherwise-the-request-must-answer-403-must-be-recorded-denied-with-the-reason-network_not_owned-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1320 — A user MUST be admitted to a network only when one of the organisations in their token is of type dso and has the alias equal to the network_id in the path; otherwise the request MUST answer 403, MUST be recorded denied with the reason network_not_owned, and MUST NOT reach the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1321-a-service-account-must-be-admitted-to-any-network-when-its-tokens-scopes-include-gridread-or-gridadmin-a-service-account-with-neither-must-answer-403-must-be-recorded-denied-with-the-reason-grid_scope_missing-and-must-not-reach-the-data-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1321 — A service account MUST be admitted to any network when its token's scopes include grid.read or grid.admin; a service account with neither MUST answer 403, MUST be recorded denied with the reason grid_scope_missing, and MUST NOT reach the data client.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1322-a-token-that-carries-at-least-one-organisation-must-be-judged-as-a-user-under-req-1320-whatever-its-username-or-its-scopes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1322 — A token that carries at least one organisation MUST be judged as a user under REQ-1320, whatever its username or its scopes.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1323-an-organisation-of-a-type-other-than-dso-must-not-admit-its-members-to-a-network-even-when-its-alias-equals-the-network_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1323 — An organisation of a type other than dso MUST NOT admit its members to a network, even when its alias equals the network_id.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1324-the-realm-role-platform-admin-a-realm-group-and-an-organisation-group-must-not-widen-req-1320-a-caller-is-admitted-to-a-network-only-as-a-member-of-that-operators-organisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1324 — The realm role platform-admin, a realm group and an organisation group MUST NOT widen REQ-1320: a caller is admitted to a network only as a member of that operator's organisation.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1325-the-gate-must-hold-on-every-entity-scoped-route-of-the-domain-the-domains-own-routes-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1325 — The gate MUST hold on every entity-scoped route of the domain, the domain's own routes included.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-1326-through-the-running-services-every-grid-fetcher-must-answer-the-named-operators-rows-only-for-the-grid-services-token-as-for-a-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1326 — Through the running services, every grid fetcher MUST answer the named operator's rows only, for the grid service's token as for a user's.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#no-legacy-wind-and-heat-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No legacy wind and heat routes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="No legacy wind and heat routes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-1330-the-domain-must-mount-no-route-under-wind-or-heat-every-request-to-one-answers-404-and-the-openapi-document-lists-no-it_grid_wind_-or-it_grid_heat_-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1330 — The domain MUST mount no route under /wind/ or /heat/: every request to one answers 404, and the OpenAPI document lists no it_grid_wind_* or it_grid_heat_* operation.
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4356,7 +4528,8 @@
 <h1 id="specification-grid-domain">Specification — grid domain</h1>
 <p>Requirements specific to the <code>it-grid</code> domain (<code>src/celine/dt/domains/grid/</code>). The generic
 values machinery is specified in <a href="../values/">values.md</a>; this document constrains what the
-grid fetchers themselves must do.</p>
+grid fetchers themselves must do, and which operator's network a fetch reads, and who may
+name it.</p>
 <hr />
 <h2 id="risk-exposure-in-km-risk_km">Risk exposure in km (<code>risk_km</code>)</h2>
 <h3 id="req-1300-the-it-grid-domain-must-register-a-risk_km-value-fetcher-over-grid_risk_km-whose-row-limit-covers-seven-dates-at-tratta-grain">REQ-1300 — The <code>it-grid</code> domain MUST register a <code>risk_km</code> value fetcher over <code>grid_risk_km</code> whose row limit covers seven dates at tratta grain.</h3>
@@ -4407,6 +4580,68 @@ length-weighted density over the whole tratta. The three km columns say how much
 tratta sits in each tier, so a client can show "high" next to "2.3 km of 6.0" instead of
 letting one short fragment read as the whole line. They are <code>NULL</code> on substations and
 joints, <code>0</code> on a line with no fragment in that tier.</p>
+<hr />
+<h2 id="every-grid-read-names-its-operator">Every grid read names its operator</h2>
+<p>The entity is the network in the URL (<code>/grid/{network_id}</code> and every route under it).
+Its id is the alias of the distribution operator's organisation, which is also the gold
+<code>dso_id</code> of every grid row (celine-pipelines <code>grid.md</code>). The domain's callers reach it with a
+service token as well as a user one, and dataset-api narrows no service account, so <strong>which
+operator's</strong> rows a fetch reads is chosen here, by the statement.</p>
+<h3 id="req-1312-every-fetcher-of-the-domain-filters-tile_index-shapes-risks-risks_now-risk_km-tree_strike_spans-risks_8h-trendline-must-restrict-each-read-of-a-grid-table-to-dso_id-entity-id-in-the-same-statement-so-that-no-row-of-another-operator-contributes-to-its-answer">REQ-1312 — Every fetcher of the domain (<code>filters</code>, <code>tile_index</code>, <code>shapes</code>, <code>risks</code>, <code>risks_now</code>, <code>risk_km</code>, <code>tree_strike_spans</code>, <code>risks_8h</code>, <code>trendline</code>) MUST restrict <strong>each</strong> read of a grid table to <code>dso_id = &lt;entity id&gt;</code>, in the same statement, so that no row of another operator contributes to its answer.</h3>
+<p>Each read means each <code>FROM</code>, at every <code>level</code> of <code>risk_km</code>. The subselect of <code>shapes</code> over
+<code>grid_tiles</code> and the one of <code>tree_strike_spans</code> over <code>grid_tree_strike_tiles</code> carry their own
+predicate, so a tile id resolves within the entity's operator only. The network extent that
+<code>filters</code> returns is the extent of the entity's shapes only, and <code>trendline</code> returns that
+operator's ratio, not another's of the same day.</p>
+<p><em>Verified by: unit — for every fetcher id, the rendered statement for entity <code>example-dso</code> has a <code>dso_id = 'example-dso'</code> predicate on every grid table it reads (both subselects and all three <code>risk_km</code> grains included); a fake data client holding rows of <code>example-dso</code> and <code>other-dso</code> returns only <code>example-dso</code>'s</em></p>
+<h3 id="req-1313-the-entity-id-must-reach-a-grid-statement-only-through-sql_quote-an-id-carrying-a-quote-or-sql-must-stay-one-literal">REQ-1313 — The entity id MUST reach a grid statement only through <code>sql_quote</code>: an id carrying a quote or SQL MUST stay one literal.</h3>
+<p>The entity id comes from the URL, so it is caller-supplied. A service with a grid scope may
+name any network (REQ-1321), so the gate does not stop a malformed id from reaching the
+statement; the quoting does.</p>
+<p><em>Verified by: unit — for every fetcher, the entity id <code>x' OR '1'='1</code> renders as the single literal <code>'x'' OR ''1''=''1'</code>, and the statement carries no second predicate</em></p>
+<h3 id="req-1314-get-substationsmap-must-restrict-grid_substations-to-dso_id-entity-id-with-the-entity-id-rendered-as-one-literal-as-in-req-1313">REQ-1314 — <code>GET /substations/map</code> MUST restrict <code>grid_substations</code> to <code>dso_id = &lt;entity id&gt;</code>, with the entity id rendered as one literal as in REQ-1313.</h3>
+<p>The route builds its statement in code, not from a query template, so it is covered here
+separately from the fetchers.</p>
+<p><em>Verified by: unit — the statement sent to a fake data client for entity <code>example-dso</code> carries the predicate; an injection attempt in the entity id stays one literal</em></p>
+<hr />
+<h2 id="who-may-name-the-network">Who may name the network</h2>
+<p>The gate is the domain's <code>resolve_entity</code>, so it holds on every entity-scoped route: the
+built-in ones (<code>/info</code>, <code>/summary</code>, <code>/values</code> on both verbs, <code>/simulations</code>, <code>/ontology</code>) and
+the domain's own (<code>/substations/map</code>). It mirrors celine-grid's <code>grid.rego</code> (celine-grid
+REQ-0006 – REQ-0009, REQ-0051), so a caller is judged the same at both services.</p>
+<h3 id="req-1320-a-user-must-be-admitted-to-a-network-only-when-one-of-the-organisations-in-their-token-is-of-type-dso-and-has-the-alias-equal-to-the-network_id-in-the-path-otherwise-the-request-must-answer-403-must-be-recorded-denied-with-the-reason-network_not_owned-and-must-not-reach-the-data-client">REQ-1320 — A user MUST be admitted to a network only when one of the organisations in their token is of type <code>dso</code> and has the alias equal to the <code>network_id</code> in the path; otherwise the request MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>network_not_owned</code>, and MUST NOT reach the data client.</h3>
+<p>The answer is the same whether or not the named network has any rows. No group within the
+organisation is required, as in celine-grid.</p>
+<p><em>Verified by: unit — a user of <code>example-dso</code> reads <code>example-dso</code>; the same user naming <code>other-dso</code> gets 403 with the reason recorded and no call on a fake data client; a user of <code>example-dso</code> and <code>other-dso</code> reads both</em></p>
+<h3 id="req-1321-a-service-account-must-be-admitted-to-any-network-when-its-tokens-scopes-include-gridread-or-gridadmin-a-service-account-with-neither-must-answer-403-must-be-recorded-denied-with-the-reason-grid_scope_missing-and-must-not-reach-the-data-client">REQ-1321 — A service account MUST be admitted to any network when its token's scopes include <code>grid.read</code> or <code>grid.admin</code>; a service account with neither MUST answer 403, MUST be recorded <code>denied</code> with the reason <code>grid_scope_missing</code>, and MUST NOT reach the data client.</h3>
+<p>A service account holds no organisation, so there is nothing for it to own a network with.
+Which rows it reads is still the entity's only (REQ-1312).</p>
+<p><em>Verified by: unit — a client-credentials token with <code>grid.read</code>, one with <code>grid.admin</code>, one with another scope and one with no <code>scope</code> claim</em></p>
+<h3 id="req-1322-a-token-that-carries-at-least-one-organisation-must-be-judged-as-a-user-under-req-1320-whatever-its-username-or-its-scopes">REQ-1322 — A token that carries at least one organisation MUST be judged as a user under REQ-1320, whatever its username or its scopes.</h3>
+<p>Holding <code>grid.read</code> or <code>grid.admin</code> does not widen a user's reach to networks they do not
+own. Judging by organisation first keeps a user token with a <code>scope</code> claim from being
+evaluated under the service rule, where ownership is never checked.</p>
+<p><em>Verified by: unit — a user token of <code>example-dso</code> carrying <code>grid.admin</code> naming <code>other-dso</code> gets 403 <code>network_not_owned</code></em></p>
+<h3 id="req-1323-an-organisation-of-a-type-other-than-dso-must-not-admit-its-members-to-a-network-even-when-its-alias-equals-the-network_id">REQ-1323 — An organisation of a type other than <code>dso</code> MUST NOT admit its members to a network, even when its alias equals the <code>network_id</code>.</h3>
+<p><em>Verified by: unit — a member of a <code>rec</code> organisation whose alias equals the requested <code>network_id</code> gets 403 <code>network_not_owned</code></em></p>
+<h3 id="req-1324-the-realm-role-platform-admin-a-realm-group-and-an-organisation-group-must-not-widen-req-1320-a-caller-is-admitted-to-a-network-only-as-a-member-of-that-operators-organisation">REQ-1324 — The realm role <code>platform-admin</code>, a realm group and an organisation group MUST NOT widen REQ-1320: a caller is admitted to a network only as a member of that operator's organisation.</h3>
+<blockquote>
+<p>The Digital Twin grants no platform-wide grid access, consistent with celine-grid
+REQ-0051. Platform-wide reads remain dataset-api's to grant and to audit, on its own
+routes.</p>
+</blockquote>
+<p><em>Verified by: unit — a <code>platform-admin</code> with no <code>dso</code> organisation, and one in the <code>admins</code> group of <code>example-dso</code> naming <code>other-dso</code>, both get 403 <code>network_not_owned</code></em></p>
+<h3 id="req-1325-the-gate-must-hold-on-every-entity-scoped-route-of-the-domain-the-domains-own-routes-included">REQ-1325 — The gate MUST hold on every entity-scoped route of the domain, the domain's own routes included.</h3>
+<p><em>Verified by: integration — through the application's test client, a user of <code>example-dso</code> naming <code>other-dso</code> gets 403 on <code>/info</code>, <code>/summary</code>, <code>/values</code> (GET and POST), <code>/simulations</code>, <code>/ontology/{spec_id}</code> and <code>/substations/map</code>, and one audit record each</em></p>
+<h3 id="req-1326-through-the-running-services-every-grid-fetcher-must-answer-the-named-operators-rows-only-for-the-grid-services-token-as-for-a-users">REQ-1326 — Through the running services, every grid fetcher MUST answer the named operator's rows only, for the grid service's token as for a user's.</h3>
+<p><em>Verified by: e2e — on a local stack whose warehouse holds grid rows of <code>example-dso</code> and <code>other-dso</code>: the grid service's client-credentials token asks each fetcher and <code>/substations/map</code> for <code>example-dso</code> and gets no row with another <code>dso_id</code>; a user of <code>example-dso</code> naming <code>other-dso</code> directly at the Digital Twin gets 403</em></p>
+<hr />
+<h2 id="no-legacy-wind-and-heat-routes">No legacy wind and heat routes</h2>
+<h3 id="req-1330-the-domain-must-mount-no-route-under-wind-or-heat-every-request-to-one-answers-404-and-the-openapi-document-lists-no-it_grid_wind_-or-it_grid_heat_-operation">REQ-1330 — The domain MUST mount no route under <code>/wind/</code> or <code>/heat/</code>: every request to one answers 404, and the OpenAPI document lists no <code>it_grid_wind_*</code> or <code>it_grid_heat_*</code> operation.</h3>
+<p>The wind and heat risk data is served by the <code>risks</code>, <code>risks_now</code>, <code>risks_8h</code>, <code>risk_km</code> and
+<code>trendline</code> fetchers, over tables that carry the operator. The removed routes read
+intermediaries that governance does not expose and that dataset-api refuses to every caller.</p>
+<p><em>Verified by: unit — the mounted application answers 404 on <code>/grid/example-dso/wind/map</code>, <code>/wind/bosco</code>, <code>/wind/alert-distribution</code>, <code>/wind/trend</code>, <code>/heat/map</code>, <code>/heat/alert-distribution</code> and <code>/heat/trend</code>, and <code>/openapi.json</code> (dev) names none of their operation ids</em></p>
 
 
 

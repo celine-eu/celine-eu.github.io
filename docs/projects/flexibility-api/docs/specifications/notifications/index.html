@@ -4141,10 +4141,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0049-the-earliest-window-is-broadcast-to-every-member" class="md-nav__link">
+  <a href="#req-0049-each-communitys-earliest-window-is-broadcast-to-its-members" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0049 — the earliest window is broadcast to every member
+        REQ-0049 — each community's earliest window is broadcast to its members
       
     </span>
   </a>
@@ -4243,7 +4243,11 @@ non-exporting hour would invite a participant to shift load into an hour with no
 to absorb it. A window must span at least an hour, which a single row already does.</p>
 <p>A forecast row missing its timestamp or its prediction, or carrying a string where a
 number belongs, is skipped — it costs that hour, not the notification.</p>
-<h3 id="req-0049-the-earliest-window-is-broadcast-to-every-member">REQ-0049 — the earliest window is broadcast to every member</h3>
+<h3 id="req-0049-each-communitys-earliest-window-is-broadcast-to-its-members">REQ-0049 — each community's earliest window is broadcast to its members</h3>
+<p>Every community the registry lists is handled on its own: its own <code>rec_forecast</code> (the
+digital twin restricts it to that community), its own windows, its own members, and that
+community's key in each nudge. One community's surplus is never announced to another's
+members. Every page of the registry's community and member lists is read.</p>
 <p><code>windows[0]</code> — the earliest, not the largest. One opportunity per forecast run, whatever
 else the day holds; a bigger surplus later is never mentioned.</p>
 <p>One nudge per community member, with <code>reward_points = round(estimated_kwh × 10)</code> — the
@@ -4252,13 +4256,13 @@ linked user account is skipped.</p>
 <p>There is no per-participant filtering at this stage. The personal figures arrive later,
 when the participant opens the suggestion list.</p>
 <h3 id="req-0050-every-failure-on-this-path-is-silent">REQ-0050 — every failure on this path is silent</h3>
-<p>A forecast fetch that raises, an empty forecast, a registry lookup that fails: nobody is
-notified and nothing is reported. One rejected nudge costs that member and the broadcast
-continues.</p>
-<p><strong>The community is hard-coded.</strong> Both the forecast fetch and the member list name
-<code>it-energy-community</code> literally, so a second community would be silently ignored — no
-error, no nudge, nothing to notice. Unlike the read path, which resolves the community
-from the caller's profile, this one cannot.</p>
+<p>A community list the registry does not answer: nobody is notified and nothing is
+reported. Within one community, a forecast fetch that raises, an empty forecast or a member
+list that fails costs that community only; the others are still handled. One rejected
+nudge costs that member and the broadcast continues.</p>
+<p>Until 2026-10 both calls named the digital twin's domain, <code>it-energy-community</code>, as the
+community: once the twin restricted each read to the community in the URL, that read no
+rows, and the member list never parsed, so no nudge was sent.</p>
 
 
 
