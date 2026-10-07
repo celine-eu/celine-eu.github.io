@@ -4151,6 +4151,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0051-what-the-model-generates-is-bounded-and-a-cut-answer-says-so" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0051 — what the model generates is bounded, and a cut answer says so
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4209,6 +4220,15 @@ and by cutting the string otherwise.</p>
 <p>The tool loop runs at most <code>MAX_TOOL_ROUNDS</code> times, and <strong>the last round is offered no
 tools</strong>, so a model that would otherwise keep calling them has to answer in prose. A turn
 producing neither an answer nor an error event is not an outcome a client can render.</p>
+<h3 id="req-0051-what-the-model-generates-is-bounded-and-a-cut-answer-says-so">REQ-0051 — what the model generates is bounded, and a cut answer says so</h3>
+<p>Every model call (each tool-loop round, the history summary, an image caption) carries
+<code>max_tokens</code> = <code>LLM_MAX_TOKENS</code>, a positive integer that cannot be switched off. A
+thinking model counts its reasoning against it.</p>
+<p>A round that stops because it reached the cap (<code>finish_reason=length</code>) ends the turn with
+an <code>error</code> event after whatever text it streamed, and runs none of the tool calls it was
+writing: a truncated answer is never presented as a complete one.</p>
+<p><code>LLM_TEMPERATURE</code> is sent only when it is set. Unset, the server applies the model's own
+recommended sampling.</p>
 
 
 

@@ -4501,8 +4501,27 @@ without <code>LLM_BASE_URL</code>. To use OpenAI itself, set <code>https://api.o
 <td>asked of the model</td>
 <td>Vector size the collection is created with</td>
 </tr>
+<tr>
+<td><code>LLM_MAX_TOKENS</code></td>
+<td><code>int</code></td>
+<td><code>4096</code></td>
+<td>Most a single model call may generate, reasoning included; cannot be switched off</td>
+</tr>
+<tr>
+<td><code>LLM_TEMPERATURE</code></td>
+<td><code>float?</code></td>
+<td>not sent</td>
+<td>Sampling temperature; unset leaves it to the model's own defaults</td>
+</tr>
 </tbody>
 </table>
+<p>A thinking model (Qwen3 and similar, served by vLLM) needs both. With <code>LLM_TEMPERATURE</code>
+unset, vLLM applies the sampling the model ships with in <code>generation_config.json</code>; for
+<code>qwen3.8-27b</code> that is temperature 1.0, top_k 20, top_p 0.95. Low values make these
+models loop: on 2026-10-06 one question kept
+<code>qwen3.8-27b</code> reasoning for about 20,000 tokens with no answer. <code>LLM_MAX_TOKENS</code> bounds
+the cost of a loop when one still happens. Until 2026-10-06 every call sent <code>0.2</code>; set
+<code>LLM_TEMPERATURE=0.2</code> to keep that.</p>
 <p>The <code>OPENAI_*</code> variables used before 2026-10-01 are no longer read. If one is set,
 startup refuses and names its replacement.</p>
 <p><strong>Changing the embedding model needs a new collection.</strong> A collection holds vectors of
