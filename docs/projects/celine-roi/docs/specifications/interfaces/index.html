@@ -4457,6 +4457,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1202-get-health-answers-the-probes-in-every-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1202 — GET /health answers the probes in every environment
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4808,6 +4819,13 @@ On the same signal, <code>/docs</code>, <code>/redoc</code> and <code>/openapi.j
 unless <code>CELINE_PUBLIC_DOCS=true</code>.</p>
 <p><em>Verified by</em> <code>tests/test_posture.py::TestOnlyDevAcceptsDevelopmentDefaults</code>,
 <code>tests/test_api_docs.py</code></p>
+<h3 id="req-1202-get-health-answers-the-probes-in-every-environment">REQ-1202 — <code>GET /health</code> answers the probes in every environment</h3>
+<p><code>GET /health</code>, at the root and outside <code>/api/v1</code>, returns <strong>200</strong> <code>{"status": "ok"}</code>
+with no token, in every environment, whether or not the docs are mounted (REQ-1201). It
+reads no configuration and no database, so a database outage does not fail the liveness
+probe, and it is not counted against any per-address budget (REQ-1302). The deployment's
+liveness and readiness probes call it.</p>
+<p><em>Verified by</em> <code>tests/test_health.py::TestHealthAnswersTheProbe</code></p>
 <hr />
 <h2 id="req-13xx-the-public-surface">REQ-13xx — the public surface</h2>
 <p>The calculators take no token: the service is a public calculator anyone may use before

@@ -5054,7 +5054,12 @@ takes no token. <code>celine-frontend-roi</code> routes only the calculator's AP
 (<code>ingress.apiPaths</code>); any other <code>/api</code> path - <code>/api/v1/estimates</code>, the stored calculator
 inputs, readable only with the realm role <code>platform-admin</code> - never reaches roi through the
 public host. What one caller can cost is bounded per client address twice: at the edge, on
-the API Ingress only, and inside roi.</p>
+the API Ingresses only, and inside roi.</p>
+<p>The feedback form (<code>ingress.authPaths</code>, <code>/api/v1/feedback</code> and below) is the one exception:
+it is for visitors who already hold an SSO session, e.g. from the webapp. Those paths pass
+oauth2-proxy's auth check (<code>auth-url</code>, no <code>auth-signin</code>), which hands roi the user's token;
+without a session the request gets a plain 401 and no redirect, so nobody is asked to sign in
+on <code>roi.&lt;domain&gt;</code>. roi verifies the token against the audience <code>oauth2_proxy</code>.</p>
 <table>
 <thead>
 <tr>
@@ -5454,19 +5459,40 @@ task keycloak:forward NAMESPACE=celine-dev  # or name the namespace
 exact URL. localhost is a secure context, so plain http needs no certificate. <code>KC_HOSTNAME</code>
 stays the public URL: every realm's issuer, and every token minted inside the cluster, is
 unchanged.</p>
-<p><strong>One-time, per Keycloak: master's Frontend URL.</strong> The console signs in to master through
+<p><strong>Master's Frontend URL is set on every deploy.</strong> The console signs in to master through
 master's own URL, and <code>KC_HOSTNAME_ADMIN</code> does not change that (measured on Keycloak 26.6.0 and
 26.7.3: without it the console calls the public host for master and never shows a login). So
-master's Frontend URL must be the same localhost URL. <code>task keycloak:forward</code> warns while it is
-not. With the forward running, as the bootstrap client (its secret is
-<code>policies_shell.bootstrap.client_secret</code>; <code>read -rs</code> keeps it out of the shell history):</p>
+master's Frontend URL (its realm attribute <code>frontendUrl</code>) must be the same localhost URL. The
+<code>policies-shell</code> pod's <code>bootstrap</code> init container sets it on every start, after <code>keycloak
+bootstrap</code>:</p>
+<ul>
+<li>the URL is <code>http://localhost:&lt;keycloak.admin_forward_port&gt;</code>, derived like <code>KC_HOSTNAME_ADMIN</code>,
+  so the two cannot disagree (chart value <code>bootstrap.masterFrontendUrl</code>; empty leaves master
+  alone);</li>
+<li>it signs in as the bootstrap client through <code>keycloak.internal_url</code>, reads master, merges
+  <code>frontendUrl</code> into the attributes it read (a <code>PUT</code> replaces the whole map) and writes only
+  when the value differs, then checks master's issuer. It never prints the secret or the token;</li>
+<li>without <code>policies_shell.bootstrap.client_secret</code> (allowed in <code>dev</code> only) it logs that it left
+  master alone;</li>
+<li>a failure fails the pod, like any other bootstrap step. Its output is in the init container's
+  log (<code>master frontendUrl: ...</code>) and in the stored record as <code>frontend-url.txt</code>.</li>
+</ul>
+<p><code>task keycloak:forward</code> warns while master's issuer is not the forwarded URL. The first fix is
+to run the step again: <code>kubectl rollout restart deployment/policies-shell</code>, then
+<code>kubectl logs deployment/policies-shell -c bootstrap | grep 'master frontendUrl'</code>. If the shell
+cannot run, set it by hand with the forward running, as the bootstrap client (its secret is
+<code>policies_shell.bootstrap.client_secret</code>; <code>read -rs</code> keeps it out of the shell history; needs
+<code>jq</code>):</p>
 <pre><code class="language-bash">U=http://localhost:18080
 read -rs S
 T=$(curl -s -d grant_type=client_credentials -d client_id=svc-celine-policies-bootstrap \
       --data-urlencode client_secret=&quot;$S&quot; &quot;$U/realms/master/protocol/openid-connect/token&quot; \
-    | sed -n 's/.*&quot;access_token&quot;:&quot;\([^&quot;]*\)&quot;.*/\1/p')
-curl -s -X PUT -H &quot;Authorization: Bearer $T&quot; -H 'Content-Type: application/json' \
-  -d &quot;{\&quot;attributes\&quot;:{\&quot;frontendUrl\&quot;:\&quot;$U\&quot;}}&quot; &quot;$U/admin/realms/master&quot;
+    | jq -r .access_token)
+# merge into master's attributes: a PUT with frontendUrl alone would drop the others
+curl -s -H &quot;Authorization: Bearer $T&quot; &quot;$U/admin/realms/master&quot; \
+  | jq --arg u &quot;$U&quot; '{attributes: ((.attributes // {}) + {frontendUrl: $u})}' \
+  | curl -s -X PUT -H &quot;Authorization: Bearer $T&quot; -H 'Content-Type: application/json' \
+      -d @- &quot;$U/admin/realms/master&quot;
 unset S T
 </code></pre>
 <p>Master's tokens then carry the issuer <code>http://localhost:18080/realms/master</code>; celine-policies
