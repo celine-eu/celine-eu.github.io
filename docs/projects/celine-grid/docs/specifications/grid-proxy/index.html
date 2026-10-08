@@ -4206,6 +4206,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0053-there-are-no-wind-or-heat-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0053 — there are no /wind/* or /heat/* routes
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4224,8 +4235,10 @@
 
 
 <h1 id="the-grid-data-proxy">The grid data proxy</h1>
-<p>Eighteen routes under <code>/api/grid/{network_id}/</code>, all of which forward a request to the
-Digital Twin and return what comes back. Two of them, <code>/shapes</code> and <code>/tree-strike-spans</code>,
+<p>Eleven routes under <code>/api/grid/{network_id}/</code> (<code>/substations/map</code>, <code>/filters</code>,
+<code>/tile-index</code>, <code>/shapes</code>, <code>/tree-strike-spans</code>, <code>/risks</code>, <code>/risks-now</code>, <code>/risk-km</code>,
+<code>/risks-8h</code>, <code>/trendline</code>, <code>/summary</code>), all of which forward a request to the Digital
+Twin and return what comes back. Two of them, <code>/shapes</code> and <code>/tree-strike-spans</code>,
 assemble the rows into GeoJSON — the only transformation this service applies to grid data.</p>
 <hr />
 <h3 id="req-0022-the-grid-routes-fail-loudly-when-the-digital-twin-is-unconfigured">REQ-0022 — the grid routes fail loudly when the Digital Twin is unconfigured</h3>
@@ -4311,6 +4324,15 @@ than a <code>LineString</code>), and every other column, thermal ones included
 (<code>thermal_tier</code>, <code>thermal_margin_c</code>, <code>thermal_theta_max_c</code>, <code>thermal_insulation</code>,
 <code>is_asphalt</code>, <code>anno_posa</code>, <code>technology</code>, <code>m_r_critico</code>), becomes a feature property
 without the endpoint needing to know what any of them mean.</p>
+<h3 id="req-0053-there-are-no-wind-or-heat-routes">REQ-0053 — there are no <code>/wind/*</code> or <code>/heat/*</code> routes</h3>
+<p><code>GET /api/grid/{network_id}/wind/map</code>, <code>/wind/bosco</code>, <code>/wind/alert-distribution</code>,
+<code>/wind/trend</code>, <code>/heat/map</code>, <code>/heat/alert-distribution</code> and <code>/heat/trend</code> answer <code>404</code> for
+every caller, and the Digital Twin is not called. The service's OpenAPI document lists none
+of them.</p>
+<p>The wind and heat risk data reaches the map through <code>/risks</code>, <code>/risks-now</code>, <code>/risks-8h</code>,
+<code>/risk-km</code> and <code>/trendline</code>. The removed routes forwarded to Digital Twin routes that read
+intermediaries the platform does not expose, so they answered an error for every caller,
+and no client called them. Their Digital Twin routes and SDK methods are removed with them.</p>
 
 
 

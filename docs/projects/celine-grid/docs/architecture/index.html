@@ -4522,11 +4522,9 @@ Rego is what runs; see the companion's knowledge, and
 <p>All grid endpoints live under <code>/api/grid/{network_id}/</code>. The <code>network_id</code> path parameter is validated against the user's DSO org alias (or scope for service accounts) before the request is forwarded to the Digital Twin via <code>celine.sdk.dt.DTClient</code>. DTApiError responses are mapped to appropriate HTTP status codes.</p>
 <p>Available data surfaces:</p>
 <ul>
-<li><strong>Wind</strong> — <code>wind/map</code>, <code>wind/bosco</code>, <code>wind/alert-distribution</code>, <code>wind/trend</code></li>
-<li><strong>Heat</strong> — <code>heat/map</code>, <code>heat/alert-distribution</code>, <code>heat/trend</code></li>
 <li><strong>Substations</strong> — <code>substations/map</code></li>
 <li><strong>Metadata</strong> — <code>filters</code>, <code>summary</code></li>
-<li><strong>CIM topology</strong> — <code>tile-index</code>, <code>shapes</code>, <code>risks</code>, <code>risks-now</code>, <code>trendline</code></li>
+<li><strong>CIM topology</strong> — <code>tile-index</code>, <code>shapes</code>, <code>tree-strike-spans</code>, <code>risks</code>, <code>risks-now</code>, <code>risks-8h</code>, <code>risk-km</code>, <code>trendline</code></li>
 </ul>
 <p>The CIM topology endpoints use ValueFetcherSpec-backed queries. <code>tile-index</code> returns the tile catalog for progressive loading. <code>shapes</code> assembles CIM asset topology as a GeoJSON FeatureCollection, parsing per-row <code>feature_geojson</code> and building Feature objects (a lightweight presentation transformation). <code>risks</code> returns date-filtered risk rows per vector. <code>risks-now</code> returns current nowcasting observations without date filtering. <code>trendline</code> returns daily risk percentage over a <code>date_from</code>/<code>date_to</code> range.</p>
 <p><code>tile-index</code> and <code>shapes</code> set <code>Cache-Control: public, max-age=3600</code> for frontend caching.</p>
@@ -4544,7 +4542,7 @@ Rego is what runs; see the companion's knowledge, and
 <p><code>src/celine/grid/services/pipeline_listener.py</code> subscribes to <code>celine/pipelines/runs/+</code> on startup. When a <code>PipelineRunEvent</code> with <code>status=completed</code> and <code>flow=grid-resilience-flow</code> arrives, it calls <code>dispatch_grid_alerts()</code>.</p>
 <p>The dispatcher (<code>src/celine/grid/services/alert_dispatcher.py</code>):</p>
 <ol>
-<li>Fetches current <code>wind_alert_distribution</code> and <code>heat_alert_distribution</code> from the DT for the event's <code>namespace</code> (= <code>network_id</code>).</li>
+<li>Fetches the <code>risk_km</code> tratta rows for the event's dates from the DT for the event's <code>namespace</code> (= <code>network_id</code>).</li>
 <li>Loads all active <code>AlertRule</code> rows for that <code>network_id</code>.</li>
 <li>For each rule, checks whether the distribution contains events at or above the rule's threshold (<code>WARNING</code> floor = <code>{WARNING, ALERT}</code>; <code>ALERT</code> floor = <code>{ALERT}</code>).</li>
 <li>For each triggered rule, emits an <strong><code>extr_event</code></strong> <code>DigitalTwinEvent</code> to the nudging-tool via <code>NudgingAdminClient</code>, carrying the pipeline's <code>period</code>, <code>window_start</code> and <code>window_end</code> in its facts. The hazard reported is <code>wind</code>, <code>heat</code>, or <code>thunderstorm</code> when a rule watching both triggers on both.</li>

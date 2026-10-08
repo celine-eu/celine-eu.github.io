@@ -4486,7 +4486,7 @@
 <p>It acts as the secure API gateway between the grid dashboard and the CELINE platform, proxying risk data from the Digital Twin and managing per-operator alert rules and notification preferences.</p>
 <h2 id="features">Features</h2>
 <ul>
-<li><strong>Grid risk data proxy</strong> — forwards wind and heat resilience data (maps, alert distributions, trends, substation layouts, filter metadata, summary) from the Digital Twin to the frontend, scoped to the operator's DSO network</li>
+<li><strong>Grid risk data proxy</strong> — forwards wind and heat resilience data (risk rows, nowcast, 8-hour windows, km exposure, trendline, substation layouts, filter metadata, summary) from the Digital Twin to the frontend, scoped to the operator's DSO network</li>
 <li><strong>Alert rules</strong> — per-user CRUD for wind/heat risk alert rules, each carrying a threshold (<code>WARNING</code> or <code>ALERT</code>) and optional recipient override</li>
 <li><strong>Notification settings</strong> — per-user email recipients and webhook URL for alert delivery</li>
 <li><strong>Automated alert dispatch</strong> — listens on MQTT for <code>grid-resilience-flow</code> pipeline completions, evaluates active alert rules against live DT distributions, and sends nudging events via the nudging-tool</li>
@@ -4505,14 +4505,6 @@
 <tr>
 <td><strong>user</strong></td>
 <td><code>GET /api/me</code></td>
-</tr>
-<tr>
-<td><strong>grid — wind</strong></td>
-<td><code>GET /api/grid/{network_id}/wind/map</code>, <code>/wind/bosco</code>, <code>/wind/alert-distribution</code>, <code>/wind/trend</code></td>
-</tr>
-<tr>
-<td><strong>grid — heat</strong></td>
-<td><code>GET /api/grid/{network_id}/heat/map</code>, <code>/heat/alert-distribution</code>, <code>/heat/trend</code></td>
 </tr>
 <tr>
 <td><strong>grid — infra</strong></td>
