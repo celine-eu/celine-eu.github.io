@@ -5275,22 +5275,21 @@ browser console shows no report on its pages. <code>task test:security-headers</
 <hr />
 <h2 id="legal-host">Legal host</h2>
 <p>The deployment's legal documents (privacy notices, terms of use, data-sharing notices),
-scoped per community: people read <code>/&lt;slot&gt;/&lt;community&gt;</code> (e.g. <code>/terms/example-rec</code>), the
-landing page shows the platform's documents only, and no page lists one community's
-documents beside another's. Applications keep linking <code>&lt;community&gt;/&lt;slot&gt;/</code> (redirected)
-and reading <code>&lt;community&gt;/current.json</code> and <code>&lt;community&gt;/history.json</code>. Release <code>legal</code>
-(<code>charts/celine-legal</code>), at <code>legal.&lt;domain&gt;</code>, <strong>public</strong>: legal documents are read before
-anyone signs in, so there is no oauth2-proxy. It is <strong>off</strong> until the environment sets
-<code>legal.enabled: true</code> and an image.</p>
-<p>One pod, two containers:</p>
+from the generic image <code>ghcr.io/celine-eu/celine-legal</code> (github.com/celine-eu/celine-legal)
+and the deployment's own data. Release <code>legal</code> (<code>charts/celine-legal</code>), at <code>legal.&lt;domain&gt;</code>,
+<strong>public</strong>: legal documents are read before anyone signs in, so there is no oauth2-proxy.
+It is <strong>off</strong> until the environment sets <code>legal.enabled: true</code> and <code>legal.image_tag</code>.</p>
+<p>One host, two sites that never meet:</p>
 <ul>
-<li><strong>api</strong>: the deployment's own content, so the platform ships no image for it. It holds the
-  built site, listens on <code>8080</code> inside the pod only, and answers <code>/healthz</code>.</li>
-<li><strong>ui</strong>: generic (<code>ghcr.io/celine-eu/celine-legal-ui</code>). It listens on <code>3000</code>, behind the
-  Service and the Ingress, and passes the API's own paths through to it on localhost.</li>
+<li><strong>the root</strong> serves the published releases only. Applications link it and record
+  acceptances against it; a document with nothing published answers "not yet available"
+  and is not offered to them;</li>
+<li><strong><code>/draft/&lt;revision&gt;/</code></strong> (with <code>legal.draft</code>) serves the data as it is now, for the
+  parties to review, every page marked not valid. The revision is the commit of the
+  deployment's data; the link is the access.</li>
 </ul>
-<p>Both run non-root, write only to <code>/tmp</code> (the root filesystem is read-only), and are probed
-on <code>/healthz</code>.</p>
+<p>One container, non-root, read-only root filesystem, probed on <code>/healthz</code>. The data is a
+ConfigMap mounted at <code>/data</code>; a change to it restarts the pod.</p>
 <table>
 <thead>
 <tr>
@@ -5304,12 +5303,20 @@ on <code>/healthz</code>.</p>
 <td>installs the release</td>
 </tr>
 <tr>
-<td><code>legal.image</code>, <code>legal.image_tag</code></td>
-<td><strong>required</strong> when enabled: the API image holding the built site</td>
+<td><code>legal.image_tag</code></td>
+<td><strong>required</strong> when enabled: a released celine-legal version, <code>vX.Y.Z</code></td>
 </tr>
 <tr>
-<td><code>legal.ui_image</code>, <code>legal.ui_image_tag</code></td>
-<td>the UI image; defaults to <code>ghcr.io/celine-eu/celine-legal-ui:latest</code></td>
+<td><code>legal.draft</code></td>
+<td>serves the draft at <code>/draft/&lt;revision&gt;/</code></td>
+</tr>
+<tr>
+<td><code>legal.release</code></td>
+<td>pins the stable site to <code>vX.Y.Z</code>; the pod refuses a release that is not the newest published</td>
+</tr>
+<tr>
+<td><code>legal.features.&lt;name&gt;</code></td>
+<td><code>true</code>/<code>false</code>: overrides a derived feature (below)</td>
 </tr>
 <tr>
 <td><code>legal.host</code></td>
@@ -5317,17 +5324,51 @@ on <code>/healthz</code>.</p>
 </tr>
 <tr>
 <td><code>legal.base_url</code></td>
-<td>where applications find the legal host: defaults to <code>https://&lt;legal.host&gt;</code> when the release is installed. Set it alone to use a legal host served elsewhere</td>
+<td>where applications find the legal host: defaults to <code>https://&lt;legal.host&gt;</code> when the release is installed. Set it alone to use a legal host served elsewhere. Set it to <code>""</code> while nothing is published: the applications keep their own documents, and the host serves the draft only</td>
 </tr>
 </tbody>
 </table>
+<p><strong>The data</strong> comes from the release's environment file,
+<code>envs/&lt;env&gt;/0050-celine-services/celine-legal/values.yaml.gotmpl</code>, which belongs to the
+deployment: chart values <code>data.files</code> (path under <code>/data</code> → text: <code>register.yaml</code>,
+<code>parties.yaml</code>, the identities, <code>sharing-offers.yaml</code>, <code>editions/…</code>) and <code>draft.revision</code>. The
+chart refuses to render without <code>register.yaml</code>, or with a draft and no 40-hex revision.</p>
+<p><strong>The features</strong> the texts describe are derived from the applications' own switches, so a
+text never describes what the environment does not run:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>On when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sms_verification</code></td>
+<td><code>onboarding.sms_provider</code> is a dev provider (<code>log</code>, <code>console</code>, <code>dev</code>), or <code>brevo</code> with <code>onboarding.dpa_sms_signed</code></td>
+</tr>
+<tr>
+<td><code>document_extraction</code></td>
+<td><code>onboarding.env</code> sets <code>EXTRACTION_ENABLED</code> true, <code>LLM_BASE_URL</code> and <code>LLM_VISION_MODEL</code></td>
+</tr>
+<tr>
+<td><code>dso_data_exchange</code></td>
+<td><code>onboarding.dataspace_enabled</code></td>
+</tr>
+<tr>
+<td><code>ai_assistant</code></td>
+<td>always (the assistant is released with the services)</td>
+</tr>
+</tbody>
+</table>
+<p>All but <code>ai_assistant</code> are off where onboarding is not installed.</p>
 <p>With a base URL, the applications use the community's own documents:</p>
 <ul>
 <li><code>webapp</code> and <code>onboarding</code> get <code>LEGAL_BASE_URL</code>. Community links the registry leaves
   empty, the terms gate and the onboarding consent documents resolve there;</li>
 <li><code>frontend-assistant</code> gets <code>PUBLIC_LEGAL_BASE_URL</code>, for the AI notice's privacy link;</li>
-<li>Keycloak gets <code>TERMS_URL</code> and <code>PRIVACY_URL</code>, the pages listing every community's
-  documents, for the login and email footer.</li>
+<li>Keycloak gets <code>TERMS_URL</code> and <code>PRIVACY_URL</code> (the host's slot pages, which name no community
+  unless the request does), for the login and email footer.</li>
 </ul>
 <p>Without one, every application behaves as before.</p>
 <p>The import checks each boundary id with the Digital Twin, so the Digital Twin must be up.</p>
