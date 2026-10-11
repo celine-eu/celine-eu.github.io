@@ -4222,6 +4222,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-on-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add-on layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#applying-infrastructure-helmfile" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4662,6 +4673,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-on-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add-on layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#applying-infrastructure-helmfile" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5018,7 +5040,7 @@ peer.</p>
 </tr>
 <tr>
 <td><code>onboarding.dataspace_enabled</code></td>
-<td><code>false</code> by default. A template declaring <code>consent.data_sharing</code> also needs a connector, or the API does not start</td>
+<td><code>false</code> by default. A template declaring <code>consent.data_sharing</code> also needs a connector, or the API does not start. The add-on layer's <code>dataspace.enabled</code> turns it on as well (<a href="#add-on-layer">Add-on layer</a>)</td>
 </tr>
 <tr>
 <td><code>onboarding.sms_provider</code></td>
@@ -5553,6 +5575,87 @@ v1.14.3, Keycloak 26.7.3 and the rendered Ingress (2026-10-04):
 - sign-in and the account console of the platform realm worked;
 - the console signed in through <code>task keycloak:forward</code>;
 - bootstrap's calls through the Service worked.</p>
+<hr />
+<h2 id="add-on-layer">Add-on layer</h2>
+<p>A project that adds services next to CELINE (a dataspace, for instance) can switch on the
+pieces infra needs for it without editing infra or the environment's <code>values.yaml</code>: every
+group in <code>helmfile.d/</code> also loads <strong><code>envs/&lt;env&gt;/addons.yaml.gotmpl</code></strong>, after <code>values.yaml</code>
+and before the secrets file, when that file exists.</p>
+<ul>
+<li><strong>Absent, nothing changes</strong>: the hook is an <code>isFile</code> test in each group's <code>environments</code>
+  block, so an environment without the file renders exactly as before.</li>
+<li><strong>Present, it must render</strong>: it is a helmfile values template, so it can be the layer
+  itself or a <code>readFile</code> of a file another checkout owns. A <code>readFile</code> whose target is
+  missing stops every group. A relative <code>readFile</code> path is joined to <code>infra/envs/&lt;env&gt;/</code>
+  and cleaned as text, never through a symlinked environment directory: three <code>../</code> are
+  the directory holding <code>infra/</code>, so from an <code>envs/staging/</code> linked in from a deployment
+  repository that has <code>infra</code> as a submodule, a checkout beside that repository is
+  <code>../../../../&lt;checkout&gt;/…</code>. An absolute path avoids the question.</li>
+<li><code>envs/*/addons.yaml.gotmpl</code> is gitignored: the file is written per machine, by the
+  project that owns the layer.</li>
+</ul>
+<p>Today the layer carries one feature, <code>dataspace:</code>. Everything is off unless
+<code>dataspace.enabled</code> is <code>true</code>; <code>dataspace.enabled</code> must be a boolean, and once it is on every
+input below that is marked required stops the render when missing.</p>
+<pre><code class="language-yaml">dataspace:
+  enabled: false                       # true or false; anything else stops the render
+  databases: []                        # postgres-db: role and database names (required list)
+  onboarding:
+    enabled: true                      # the onboarding part; set false to keep it off
+    identity_registry_url: &quot;&quot;          # required: IDENTITY_REGISTRY_URL
+    connector_url: &quot;&quot;                  # DS_CONNECTOR_URL when set
+    collector_aliases: []              # SVC_DS_COLLECTOR_&lt;ALIAS&gt;_SECRET each
+    template_patches: {}               # &lt;slug&gt;/&lt;path&gt; -&gt; map, deep-merged into the template
+  dataset_api:
+    extra_env: []                      # env entries appended to dataset-api's env
+    client_id: &quot;&quot;                      # the realm client dataset-api calls out as, when set
+  policies_shell:
+    overlays: []                       # required: [{name, content}], realm declarations
+    clients: []                        # required list: realm client ids needing a secret
+  client_secrets: {}                   # secret: realm client id -&gt; secret
+onboarding:
+  rec_assertion_hmac_key: &quot;&quot;           # secret: required once the dataspace reaches onboarding
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect, with <code>dataspace.enabled: true</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dataspace.databases</code></td>
+<td>each name becomes a role and a database of that name in <code>postgres-db</code>, shaped like every other role (Secret <code>&lt;name&gt;-db-secret</code> with <code>cnpg.io/reload</code>, a managed role, a <code>Database</code> CR). The password is <code>postgres_db.&lt;name&gt;</code> in the secrets file, <strong>required</strong>. The Cluster's <code>parameters</code> are untouched</td>
+</tr>
+<tr>
+<td><code>dataspace.onboarding.*</code></td>
+<td>onboarding runs with <code>DATASPACE_ENABLED=true</code>, whatever <code>onboarding.dataspace_enabled</code> says, unless <code>dataspace.onboarding.enabled</code> is <code>false</code>. While onboarding is enabled: <code>identity_registry_url</code> is <strong>required</strong>; <code>client_secrets.svc-ds-onboarding</code> is <strong>required</strong> (<code>DS_ONBOARDING_CLIENT_SECRET</code>); each alias in <code>collector_aliases</code> needs <code>client_secrets.svc-ds-collector-&lt;alias&gt;</code> (<strong>required</strong>), exported as <code>SVC_DS_COLLECTOR_&lt;ALIAS&gt;_SECRET</code> (upper-cased, <code>-</code> as <code>_</code>); <code>onboarding.rec_assertion_hmac_key</code> is <strong>required</strong> (<code>REC_ASSERTION_HMAC_KEY</code>)</td>
+</tr>
+<tr>
+<td><code>dataspace.onboarding.template_patches</code></td>
+<td>each <code>&lt;slug&gt;/&lt;path&gt;</code> is deep-merged into <code>onboarding.templates.files[&lt;path&gt;]</code>: maps merge key by key, the patch wins, lists are replaced. A path that is not in <code>templates.files</code> stops the render. A patched template is written back as YAML, so its comments and key order are not kept</td>
+</tr>
+<tr>
+<td><code>dataspace.dataset_api.extra_env</code></td>
+<td>appended after the dataset-api chart's own env (chart value <code>extraEnvAppend</code>). Each entry needs a <code>name</code> and a <code>value</code> or <code>valueFrom</code></td>
+</tr>
+<tr>
+<td><code>dataspace.dataset_api.client_id</code></td>
+<td>optional: the realm client dataset-api calls other services as (<code>oidc.service.clientId</code>), its secret <code>client_secrets.&lt;client_id&gt;</code> <strong>required</strong>. The audience it accepts does not change. Unset: <code>svc-dataset-api</code> as before</td>
+</tr>
+<tr>
+<td><code>dataspace.policies_shell.overlays</code></td>
+<td><strong>required</strong>, a list of <code>{name, content}</code>: mounted into policies-shell and passed to its start-up <code>celine-policies keycloak sync</code> as <code>--overlay</code>, in list order, after <code>clients.yaml</code> (chart value <code>syncOverlays</code>; celine-policies 1.7.0 or later). A name given twice stops the render. A changed overlay restarts the shell. Never <code>--prune</code></td>
+</tr>
+<tr>
+<td><code>dataspace.policies_shell.clients</code></td>
+<td><strong>required</strong> list: each realm client id gets its secret as <code>SVC_&lt;ID&gt;_SECRET</code> in policies-shell (the id upper-cased, <code>-</code> as <code>_</code>: <code>svc-ds-portal</code> gives <code>SVC_DS_PORTAL_SECRET</code>) from <code>client_secrets.&lt;id&gt;</code>, <strong>required</strong>. A name the shell already sets stops the render</td>
+</tr>
+</tbody>
+</table>
+<p>Removing the file, or setting <code>dataspace.enabled: false</code>, renders every environment exactly as
+without the layer.</p>
 <hr />
 <h2 id="applying-infrastructure-helmfile">Applying Infrastructure (Helmfile)</h2>
 <p>From the <code>infra/</code> directory:</p>
