@@ -4113,6 +4113,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#the-grid-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The grid client
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The grid client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-0161-gridclient-has-no-wind-or-heat-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0161 — GridClient has no wind or heat methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4133,8 +4161,9 @@
 <h1 id="digital-twin-client">Digital Twin client</h1>
 <p><code>celine.sdk.dt</code>. <code>DTClient</code> wraps the generated Digital Twin client in one curated class per
 domain (<code>communities</code>, <code>participants</code>, <code>grid</code>). None of it is specified yet, except the part
-below: what every method writes to a log when the Digital Twin refuses a request, and that no
-method keeps state between calls through its arguments. A request carries the caller's
+below: what every method writes to a log when the Digital Twin refuses a request, that no
+method keeps state between calls through its arguments, and that <code>GridClient</code> no longer offers
+the legacy wind and heat calls. A request carries the caller's
 values — a participant id, a date, for the boundary fetchers a point's coordinates — and a
 refusal repeats them.</p>
 <p>The fetchers themselves, and what they answer, belong to <code>digital-twin</code>.</p>
@@ -4156,6 +4185,17 @@ that passes no payload starts from a new empty one, so nothing one call adds rea
 caller or the next call. <strong>No public method has a mutable default argument</strong> (a <code>dict</code>,
 <code>list</code> or <code>set</code>); an absent payload is <code>None</code>. <code>ParticipantClient.fetch_values</code> still sends
 <code>offset</code> <code>0</code> when the caller gives none, as it always has.</p>
+<hr />
+<h2 id="the-grid-client">The grid client</h2>
+<h3 id="req-0161-gridclient-has-no-wind-or-heat-methods">REQ-0161 — <code>GridClient</code> has no wind or heat methods</h3>
+<p><code>GridClient</code> has no public attribute <code>wind_map</code>, <code>wind_bosco</code>, <code>wind_alert_distribution</code>,
+<code>wind_trend</code>, <code>heat_map</code>, <code>heat_alert_distribution</code> or <code>heat_trend</code>, and <code>celine.sdk.dt.grid</code>
+imports none of the generated <code>it_grid_wind_*</code> / <code>it_grid_heat_*</code> operations or response
+models. The Digital Twin no longer serves the routes they called.</p>
+<p>Wind and heat risk data is read through <code>GridClient.fetch_values</code> with the <code>risks</code>,
+<code>risks_now</code>, <code>risks_8h</code>, <code>risk_km</code> and <code>trendline</code> fetchers, or the named methods that wrap
+them (<code>risks</code>, <code>risks_now</code>, <code>trendline</code>).</p>
+<p><em>Verified by: unit — <code>hasattr(GridClient, name)</code> is false for each of the seven names, and the module source of <code>celine.sdk.dt.grid</code> names none of the generated wind/heat modules</em></p>
 
 
 
