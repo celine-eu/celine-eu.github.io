@@ -4204,9 +4204,13 @@ answer mid-sentence. Every skill catches, logs, and returns <code>{"error": "...
 upstream returns nothing, the skill says so in words rather than reporting zero — a zero
 is a number, and the model will repeat it as one.</p>
 <p>A figure reported as a member's own covers everything they own: participant metrics query
-<strong>every</strong> registered meter and combine the readings, and self-consumption is the
-per-interval overlap of production and consumption rather than the minimum of the
-window's totals.</p>
+<strong>every</strong> registered meter and combine the readings. The meter rows hold the grid exchange
+under production and consumption names (<code>production_kwh</code> is the export, <code>consumption_kwh</code>
+the import); production is the export plus what was self-consumed, and consumption the
+import plus what was self-consumed. A meter without a production meter (M2) reports only
+the grid exchange and says that production and self-consumption are not measured — never
+the export as production.</p>
+<p>Points, level and ranking are the current season's: lifetime totals are not disclosed.</p>
 <h3 id="req-0029-starter-prompts-are-filtered-to-the-skills-that-are-available">REQ-0029 — starter prompts are filtered to the skills that are available</h3>
 <p>Suggestions and tool labels are served in the requested language, falling back to
 English. A suggestion whose skill is not registered is not offered.</p>
