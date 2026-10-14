@@ -4490,6 +4490,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#req-1141-a-fetcher-whose-payload-sets-no-time-window-over-a-table-that-grows-by-one-row-per-day-or-interval-must-order-its-rows-newest-first-so-that-its-limit-drops-the-oldest-rows-rather-than-the-newest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-1141 — A fetcher whose payload sets no time window, over a table that grows by one row per day or interval, MUST order its rows newest first, so that its limit drops the oldest rows rather than the newest.
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4788,6 +4799,13 @@ today — with a 200 and no error.</p>
 <code>it-energy-community.rec_self_consumption</code>. The sizing arithmetic behind it, and why
 watching the displayed numbers cannot verify a fix, is
 the companion's knowledge. Tracked as an issue; see that entry.</p>
+</blockquote>
+<h3 id="req-1141-a-fetcher-whose-payload-sets-no-time-window-over-a-table-that-grows-by-one-row-per-day-or-interval-must-order-its-rows-newest-first-so-that-its-limit-drops-the-oldest-rows-rather-than-the-newest">REQ-1141 — A fetcher whose payload sets no time window, over a table that grows by one row per day or interval, MUST order its rows newest first, so that its <code>limit</code> drops the oldest rows rather than the newest.</h3>
+<blockquote>
+<p><code>it-participant.rec_participant_points</code> served the daily points ledger oldest first with
+<code>limit=365</code>. Past its first year, every caller read the first year only: the assistant
+reported 758 points to a member holding 2222, and history lookups for recent settled
+commitments found no entry and scored them 0.</p>
 </blockquote>
 <hr />
 <h2 id="reference-boundaries">Reference boundaries</h2>
