@@ -5312,7 +5312,9 @@ It is <strong>off</strong> until the environment sets <code>legal.enabled: true<
   and is not offered to them;</li>
 <li><strong><code>/draft/&lt;revision&gt;/</code></strong> (with <code>legal.draft</code>) serves the data as it is now, for the
   parties to review, every page marked not valid. The revision is the commit of the
-  deployment's data; the link is the access.</li>
+  deployment's data; the link is the access. <code>/draft/&lt;alias&gt;/</code> redirects to the current
+  draft, so reviewers keep one link across commits: <code>legal.draft_alias</code>, default the
+  image's <code>latest</code>, which anyone can guess. Set your own where the draft is private.</li>
 </ul>
 <p>One container, non-root, read-only root filesystem, probed on <code>/healthz</code>. The data is a
 ConfigMap mounted at <code>/data</code>; a change to it restarts the pod.</p>
@@ -5335,6 +5337,10 @@ ConfigMap mounted at <code>/data</code>; a change to it restarts the pod.</p>
 <tr>
 <td><code>legal.draft</code></td>
 <td>serves the draft at <code>/draft/&lt;revision&gt;/</code></td>
+</tr>
+<tr>
+<td><code>legal.draft_alias</code></td>
+<td>the name <code>/draft/&lt;alias&gt;/</code> redirects from to the current draft (a celine-legal image newer than v0.2.0; an older one ignores it). Empty: the image's default, <code>latest</code></td>
 </tr>
 <tr>
 <td><code>legal.release</code></td>
