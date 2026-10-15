@@ -4189,6 +4189,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sizing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sync-environment-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync environment marker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-sync-sync_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table sync (sync_tables)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#security-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4644,6 +4677,39 @@
     <span class="md-ellipsis">
       
         Ingress controller
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sizing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sync-environment-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync environment marker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-sync-sync_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table sync (sync_tables)
       
     </span>
   </a>
@@ -5254,6 +5320,82 @@ chart changes (ingress-nginx itself is retired upstream).</p>
 differently (test the oauth2-proxy login end to end), <code>custom-headers</code> works but
 <code>global-allowed-response-headers</code> has no equivalent, and <code>configuration-snippet</code> is only partly
 supported. Overrides go in <code>envs/&lt;env&gt;/0010-core/traefik/values.yaml.gotmpl</code>.</p>
+<h2 id="sizing">Sizing</h2>
+<p>Clusters that bill by resource request, or fill in a large default for pods that declare
+none, need every pod sized. These keys are optional; unset, the pods render as before.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgres_db.resources</code></td>
+<td>the Postgres cluster's requests and limits. Default requests 2 CPU / 8Gi, limits 4 / 12Gi</td>
+</tr>
+<tr>
+<td><code>postgres_db.parameters</code></td>
+<td>single Postgres parameters over the defaults. Move <code>shared_buffers</code> (default 2GB) and <code>effective_cache_size</code> (6GB) with the memory</td>
+</tr>
+<tr>
+<td><code>postgres_db.pooler_resources</code></td>
+<td>each pgbouncer pod. Default none</td>
+</tr>
+<tr>
+<td><code>postgres_db.job_resources</code></td>
+<td>the post-deploy Jobs (grants, table tuning). Default none</td>
+</tr>
+<tr>
+<td><code>tls_setup.cert_manager.resources.&lt;part&gt;</code></td>
+<td><code>controller</code>, <code>webhook</code>, <code>cainjector</code>, <code>startupapicheck</code>. Default none</td>
+</tr>
+<tr>
+<td><code>auth_setup.dashboard_resources</code></td>
+<td>the dashboard Deployment. Default none</td>
+</tr>
+<tr>
+<td><code>legal.resources</code></td>
+<td>the legal host. Default none</td>
+</tr>
+<tr>
+<td><code>ingress_controller.resources</code></td>
+<td>see "Ingress controller"</td>
+</tr>
+</tbody>
+</table>
+<p>The CELINE services default to requests 100m / 256Mi and limits 500m / 512Mi
+(<code>defaults/0050-celine-services/values.yaml.gotmpl</code>), overridden per service with
+<code>&lt;service&gt;.resources</code>.</p>
+<h2 id="sync-environment-marker">Sync environment marker</h2>
+<p><code>sync_tables</code> (celine-eu/demo3) copies <code>datasets</code> from dev to local and from dev to prod,
+and only when both databases carry a marker naming their environment. Here the
+<code>postgres-db</code> release writes it: with <code>postgres_db.sync_environment</code> set to <code>dev</code> or <code>prod</code>,
+a Job runs <code>COMMENT ON DATABASE datasets IS 'celine:env=&lt;value&gt;'</code> as the database owner on
+every deploy. There is no default. Unset, the database carries no marker and every sync
+against it is refused. Any other value stops the render.</p>
+<h2 id="table-sync-sync_tables">Table sync (sync_tables)</h2>
+<p><code>charts/sync-tables</code> runs sync_tables' exchange layer, with two roles enabled per
+environment (<code>sync_tables.sink.enabled</code>, <code>sync_tables.push_source.enabled</code>; the release is
+installed when either is on). The keys are listed in
+<code>defaults/0050-celine-services/sync-tables/values.yaml.gotmpl</code>.</p>
+<ul>
+<li><strong>Sink:</strong> a Deployment holding a database's write DSN (from an existing Secret), writing
+  only the schemas in <code>allow_schemas</code>. It is reached on one route, <code>sync.&lt;domain&gt;/sync/v1</code>,
+  through the ingress with mutual TLS: the ingress serves a certificate signed by a CA used
+  only for this sync and accepts only client certificates from that CA. Its NetworkPolicy
+  admits the ingress controller's namespace and lets it reach DNS and the database.</li>
+<li><strong>Push source:</strong> a CronJob that reads its database and dials a sink (<code>wss://</code> only),
+  trusting the sync CA alone. A run is not retried: the next one resumes. Its profile (the
+  table list) comes from the environment as YAML text.</li>
+</ul>
+<p>The sink refuses to start on a database without its environment marker (see "Sync
+environment marker"): it exits and restarts until the <code>postgres-db</code> release has written it.
+Its <code>/healthz</code> shows the process is up, not the database. The push source reads its
+<code>config.yaml</code> (parallelism, batch size) from the image's <code>/app</code>, so nothing is mounted there.</p>
+<p>The CA, certificates and token come from <code>sync-tables certs</code>. The image runs as uid 10001,
+under the <code>restricted</code> Pod Security profile.</p>
 <h2 id="security-headers">Security headers</h2>
 <p>Outside dev, every public host - the frontends, the legal host and the API gateway - answers
 with security response headers set by ingress-nginx, not by the applications. Each release
