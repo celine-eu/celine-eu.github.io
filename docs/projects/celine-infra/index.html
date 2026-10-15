@@ -4189,6 +4189,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#network-perimeter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network perimeter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sizing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4677,6 +4688,17 @@
     <span class="md-ellipsis">
       
         Ingress controller
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#network-perimeter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network perimeter
       
     </span>
   </a>
@@ -5326,6 +5348,44 @@ and every chart follows it.</p>
 differently (test the oauth2-proxy login end to end), <code>custom-headers</code> works but
 <code>global-allowed-response-headers</code> has no equivalent, and <code>configuration-snippet</code> is only partly
 supported. Overrides go in <code>envs/&lt;env&gt;/0010-core/traefik/values.yaml.gotmpl</code>.</p>
+<h2 id="network-perimeter">Network perimeter</h2>
+<p>An environment can close its namespace <code>celine-&lt;env&gt;</code> to the rest of the cluster
+(release <code>celine-network-policy</code>, group <code>core</code>). Off unless asked, so an environment that
+does not set it renders unchanged.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>network_policy.enabled</code></td>
+<td><code>false</code> unless set. <code>true</code> installs two NetworkPolicies: every pod refuses incoming connections, except from the namespace itself, the ingress controller's namespace and <code>cnpg</code></td>
+</tr>
+<tr>
+<td><code>network_policy.ingress_namespace</code></td>
+<td>the ingress controller's namespace. Default: <code>ingress_controller.namespace</code> where infra installs Traefik, else <code>ingress-nginx</code></td>
+</tr>
+<tr>
+<td><code>network_policy.allow_namespaces</code></td>
+<td>further namespaces allowed in (a dataspace calling celine, a metrics scraper), default none</td>
+</tr>
+<tr>
+<td><code>network_policy.pod_security.{enforce,warn,audit}</code></td>
+<td>Pod Security Admission level per mode (<code>privileged</code>, <code>baseline</code>, <code>restricted</code>), set as namespace labels by a presync hook; any other value stops the render</td>
+</tr>
+<tr>
+<td><code>network_policy.pod_security.version</code></td>
+<td>the policy version the labels pin, default <code>latest</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ingress only: egress stays open. The cluster's CNI must enforce NetworkPolicy (a default
+minikube does not, so <code>dev</code> renders it without effect).</p>
+<pre><code>task test:network-policy
+</code></pre>
 <h2 id="sizing">Sizing</h2>
 <p>Clusters that bill by resource request, or fill in a large default for pods that declare
 none, need every pod sized. These keys are optional; unset, the pods render as before.</p>
