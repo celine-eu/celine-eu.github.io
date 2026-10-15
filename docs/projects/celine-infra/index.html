@@ -4950,11 +4950,21 @@ Infrastructure is applied using Helmfile-driven workflows.</p>
 <p>Plain <code>localhost</code> will not work due to OIDC issuer mismatch.</p>
 <hr />
 <h2 id="secrets-management-sops">Secrets Management (SOPS)</h2>
-<p>All secrets are stored <strong>encrypted at rest</strong>.</p>
-<p>Typical workflows:</p>
-<pre><code class="language-bash">sops -e secrets.yaml &gt; secrets.enc.yaml
-sops -d secrets.enc.yaml
+<p>All secrets are stored <strong>encrypted at rest</strong>, in <code>envs/&lt;env&gt;/secrets.sops.yaml</code>, with the
+AGE key at <code>.sops/&lt;env&gt;/key.txt</code>.</p>
+<p>They are edited in place, never through a plaintext copy:</p>
+<pre><code class="language-bash">task secrets:edit:dev                    # sops edit in VS Code, re-encrypted on save
+task secrets:edit:dev SOPS_EDITOR=vim    # any other editor (an exported SOPS_EDITOR works too)
+task secrets:dump:dev | grep smtp        # read-only, to stdout
 </code></pre>
+<p><code>sops edit</code> keeps the file's data key, so only the values you change get new ciphertext
+and two edits of different keys merge. The <code>sops.lastmodified</code> / <code>sops.mac</code> lines always
+conflict: keep either side, then recompute the MAC without touching a value:</p>
+<pre><code class="language-bash">SOPS_EDITOR=&quot;sed -i '\$a zz_remac: x'&quot; sops edit --ignore-mac envs/&lt;env&gt;/secrets.sops.yaml
+SOPS_EDITOR=&quot;sed -i '/^zz_remac/d'&quot; sops edit envs/&lt;env&gt;/secrets.sops.yaml
+</code></pre>
+<p><code>task sops:create-env -- &lt;env&gt;</code> and <code>task sops:copy-dev-keys</code> create an encrypted stub
+when the file is missing.</p>
 <p>Helmfile integrates with <code>helm-secrets</code> to decrypt secrets at deploy time.</p>
 <p>Plaintext secrets must never be committed.</p>
 <hr />
@@ -5340,7 +5350,7 @@ ConfigMap mounted at <code>/data</code>; a change to it restarts the pod.</p>
 </tr>
 <tr>
 <td><code>legal.draft_alias</code></td>
-<td>the name <code>/draft/&lt;alias&gt;/</code> redirects from to the current draft (a celine-legal image newer than v0.2.0; an older one ignores it). Empty: the image's default, <code>latest</code></td>
+<td>the name <code>/draft/&lt;alias&gt;/</code> redirects from to the current draft (celine-legal v0.3.0+; an older image ignores it). Empty: the image's default, <code>latest</code></td>
 </tr>
 <tr>
 <td><code>legal.release</code></td>
