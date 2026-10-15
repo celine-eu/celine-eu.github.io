@@ -4178,6 +4178,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ingress-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ingress controller
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#security-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4622,6 +4633,17 @@
     <span class="md-ellipsis">
       
         Environment signal and token verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ingress-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ingress controller
       
     </span>
   </a>
@@ -5180,6 +5202,58 @@ Images before the celine-sdk release that carries <code>posture</code> ignore th
   do not read that variable.</li>
 </ul>
 <hr />
+<h2 id="ingress-controller">Ingress controller</h2>
+<p>Every chart here writes plain <code>Ingress</code> objects for the <code>nginx</code> class, with
+<code>nginx.ingress.kubernetes.io/*</code> annotations. Where the cluster already runs a controller for
+that class, infra installs none. Where it does not, the environment asks for one, and infra
+installs Traefik with its NGINX provider. That provider reads the same annotations, so no
+chart changes (ingress-nginx itself is retired upstream).</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ingress_controller.enabled</code></td>
+<td><code>false</code> unless set. <code>true</code> installs the <code>traefik</code> release (group <code>core</code>)</td>
+</tr>
+<tr>
+<td><code>ingress_controller.namespace</code></td>
+<td>default <code>ingress</code></td>
+</tr>
+<tr>
+<td><code>ingress_controller.class</code></td>
+<td>the IngressClass it creates and serves, default <code>nginx</code></td>
+</tr>
+<tr>
+<td><code>ingress_controller.replicas</code></td>
+<td>default 2, with a PodDisruptionBudget of one</td>
+</tr>
+<tr>
+<td><code>ingress_controller.service.annotations</code></td>
+<td>load-balancer annotations for the provider the cluster runs on</td>
+</tr>
+<tr>
+<td><code>ingress_controller.service.externalTrafficPolicy</code></td>
+<td>default <code>Local</code>, which keeps the client address that <code>whitelist-source-range</code>, the rate limits and <code>forwarded_allow_ips</code> rely on</td>
+</tr>
+<tr>
+<td><code>ingress_controller.resources</code></td>
+<td>default requests 250m / 256Mi, memory limit 512Mi</td>
+</tr>
+<tr>
+<td><code>tls_setup.cert_manager.leader_election_namespace</code></td>
+<td>where cert-manager takes its leader-election lock. Default <code>kube-system</code>, the chart's own; set it to <code>cert-manager</code> on clusters that refuse writes to <code>kube-system</code></td>
+</tr>
+</tbody>
+</table>
+<p>Traefik differs from ingress-nginx on a few annotations: <code>auth-url</code> forward auth behaves
+differently (test the oauth2-proxy login end to end), <code>custom-headers</code> works but
+<code>global-allowed-response-headers</code> has no equivalent, and <code>configuration-snippet</code> is only partly
+supported. Overrides go in <code>envs/&lt;env&gt;/0010-core/traefik/values.yaml.gotmpl</code>.</p>
 <h2 id="security-headers">Security headers</h2>
 <p>Outside dev, every public host - the frontends, the legal host and the API gateway - answers
 with security response headers set by ingress-nginx, not by the applications. Each release
