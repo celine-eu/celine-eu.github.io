@@ -5273,7 +5273,9 @@ Images before the celine-sdk release that carries <code>posture</code> ignore th
 <code>nginx.ingress.kubernetes.io/*</code> annotations. Where the cluster already runs a controller for
 that class, infra installs none. Where it does not, the environment asks for one, and infra
 installs Traefik with its NGINX provider. That provider reads the same annotations, so no
-chart changes (ingress-nginx itself is retired upstream).</p>
+chart changes (ingress-nginx itself is retired upstream). Where both run side by side,
+Traefik takes a class of its own (<code>ingress_controller.class</code> and <code>controller_class</code> below)
+and every chart follows it.</p>
 <table>
 <thead>
 <tr>
@@ -5292,7 +5294,11 @@ chart changes (ingress-nginx itself is retired upstream).</p>
 </tr>
 <tr>
 <td><code>ingress_controller.class</code></td>
-<td>the IngressClass it creates and serves, default <code>nginx</code></td>
+<td>the IngressClass it creates and serves, default <code>nginx</code>. Every chart's Ingresses, and the ACME HTTP-01 solver, use it</td>
+</tr>
+<tr>
+<td><code>ingress_controller.controller_class</code></td>
+<td>the controller that IngressClass names, default <code>k8s.io/ingress-nginx</code>. Where the cluster also runs an ingress-nginx, set a class and a controller of Traefik's own: ingress-nginx answers every IngressClass that names <code>k8s.io/ingress-nginx</code>, so the two would otherwise share every Ingress</td>
 </tr>
 <tr>
 <td><code>ingress_controller.replicas</code></td>
