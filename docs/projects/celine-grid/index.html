@@ -4632,7 +4632,7 @@ raises denies instead of allowing. See REQ-0013 and REQ-0050.</p>
 <td>Allowed CORS origins</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_DIR</code></td>
+<td><code>CELINE_POLICIES_DIR</code></td>
 <td><code>./policies</code></td>
 <td>Directory containing <code>.rego</code> policy files</td>
 </tr>
@@ -4663,11 +4663,12 @@ raises denies instead of allowing. See REQ-0013 and REQ-0050.</p>
 </tr>
 </tbody>
 </table>
-<p>Prefixed names come from <code>celine-sdk</code>'s own settings models and are doubly prefixed by
-construction: <code>CELINE_POLICIES_</code> + <code>policies_dir</code>. Three rows of this table named
-variables that do not exist until 2026-08-15 — <code>CELINE_POLICIES_DIR</code> and <code>MQTT__HOST</code> are
-both silently ignored, so following the old table left the service on its permissive
-policy fallback with no indication. <code>.env.example</code> was correct throughout and is the
+<p>Prefixed names come from <code>celine-sdk</code>'s own settings models. Until 2026-10-15 the policies
+directory was doubly prefixed by construction (<code>CELINE_POLICIES_</code> + <code>policies_dir</code>, so
+<code>CELINE_POLICIES_POLICIES_DIR</code>); the SDK now reads <code>CELINE_POLICIES_DIR</code> and still accepts
+the doubled spelling as a fallback. Three rows of this table named variables that did not
+exist until 2026-08-15 — <code>MQTT__HOST</code> among them was silently ignored, so following the old
+table left the service on its permissive policy fallback with no indication. <code>.env.example</code> was correct throughout and is the
 reference if the two ever disagree again.</p>
 <p>The default policies path is <strong>relative</strong>, so the bundle loads only when the process's
 working directory is the repository root. See
