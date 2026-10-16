@@ -4222,6 +4222,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#read-only-role-on-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read-only role on datasets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#table-sync-sync_tables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4721,6 +4732,17 @@
     <span class="md-ellipsis">
       
         Sync environment marker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-only-role-on-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read-only role on datasets
       
     </span>
   </a>
@@ -5441,6 +5463,14 @@ and only when both databases carry a marker naming their environment. Here the
 a Job runs <code>COMMENT ON DATABASE datasets IS 'celine:env=&lt;value&gt;'</code> as the database owner on
 every deploy. There is no default. Unset, the database carries no marker and every sync
 against it is refused. Any other value stops the render.</p>
+<h2 id="read-only-role-on-datasets">Read-only role on <code>datasets</code></h2>
+<p>The <code>postgres-db</code> release grants <code>datasets_ro</code> read access to the schemas in <code>grants.schemas</code>
+(<code>defaults/0010-core/postgres-db/values.yaml.gotmpl</code>): USAGE, SELECT on every table, and
+SELECT on tables created later. A Job runs it as the database owner on every deploy, in one
+transaction with a 5 s lock timeout; if a table is busy, the Job rolls back and retries.
+Schemas that are missing or not the owner's are skipped with a warning. So are tables
+another role owns, which also never get the future-tables default. The Job's log ends with
+a per-schema count of tables and of readable tables.</p>
 <h2 id="table-sync-sync_tables">Table sync (sync_tables)</h2>
 <p><code>charts/sync-tables</code> runs sync_tables' exchange layer, with two roles enabled per
 environment (<code>sync_tables.sink.enabled</code>, <code>sync_tables.push_source.enabled</code>; the release is
