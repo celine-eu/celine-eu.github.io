@@ -4312,7 +4312,8 @@ was never consulted on any call
 is a message; an allow is an authorisation, and REQ-0012 is what a broken message looks
 like. A reason that cannot be read now costs the message and nothing else.</p>
 <p>The bundle never loads from the working directory, so the service finds it wherever it
-is started from. <code>policies_dir()</code> takes <code>CELINE_POLICIES_POLICIES_DIR</code> when set, then the
+is started from. <code>policies_dir()</code> takes <code>CELINE_POLICIES_DIR</code> when set (or, failing that,
+the doubled <code>CELINE_POLICIES_POLICIES_DIR</code> celine-sdk read until 2026-10-15), then the
 copy packaged into the wheel (<code>celine/flexibility/policies</code>, pyproject <code>force-include</code>),
 then the repository's <code>policies/</code> for a source checkout. Until 2026-10-04 only the last
 existed, and in the image it resolved into site-packages: the image shipped

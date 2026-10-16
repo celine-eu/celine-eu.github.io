@@ -4247,7 +4247,7 @@ wrong audience and nonsense are one answer.</p>
 <p>Verification is <code>celine.sdk.auth.JwtUser.from_token</code> against the configured JWKS, with
 audience <code>svc-nudging</code>.</p>
 <h3 id="req-0003-the-service-does-not-start-without-its-policy-bundle">REQ-0003 — the service does not start without its policy bundle</h3>
-<p><code>init_policy_engine()</code> raises when <code>POLICIES_DIR</code> is unset or names a directory that does
+<p><code>init_policy_engine()</code> raises when <code>CELINE_POLICIES_DIR</code> is unset or names a directory that does
 not exist, and the lifespan does not catch it. <strong>This is the opposite of <code>../celine-grid</code>
 and <code>../flexibility-api</code></strong>, which log and continue with a permissive fallback.</p>
 <p>The consequence is worth stating positively: here, an <em>allow</em> is evidence that the policy
