@@ -4787,9 +4787,14 @@ normal API path) from <strong>present and empty</strong> (<code>[]</code>, a del
 nobody). Reading <code>[]</code> as self-service is how a decision that named no member
 came to be answered with every row in the table, through <code>rec_registry</code>'s
 service-account bypass. ds can send that shape now, because a decision may name
-its subjects by key alone.
+its subjects by key alone.</p>
+<p>A plan that narrows to nothing is a <code>deny</code>, and a <code>deny</code> empties the <strong>whole
+statement</strong>: <code>FALSE</code> goes into every <code>SELECT</code> in it, not only the outermost. The
+parser forbids set operations today, so the outermost one encloses everything;
+under a <code>UNION</code> it would be one branch of several.
 Tests: <code>tests/api/dataset_query/test_delegated_allow_lists.py</code>,
-<code>tests/api/dataset_query/test_subject_key_match.py</code>.</p>
+<code>tests/api/dataset_query/test_subject_key_match.py</code>,
+<code>tests/api/dataset_query/test_row_filter_rendering.py</code>.</p>
 <h3 id="rf-06-a-handler-this-data-plane-cannot-apply-refuses-the-request">RF-06 — A handler this data plane cannot apply refuses the request</h3>
 <p>An <em>allow</em> carrying a filter says <em>these rows</em>. A data plane that cannot apply
 the filter has not been permitted to serve unfiltered ones — it has been given an

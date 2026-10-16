@@ -5014,8 +5014,8 @@ an organization group <em>named</em> <code>platform-admin</code>.</p>
 <h2 id="authorization">Authorization</h2>
 <p>The Dataset API is the Policy Enforcement Point. Policies are evaluated
 <strong>in-process</strong> by the celine-sdk policy engine (regorus); there is no OPA server.
-The engine loads every <code>.rego</code> file under <code>POLICIES_DIR</code> (default <code>./policies</code>,
-optional data in <code>POLICIES_DATA_DIR</code>) once per process, so a policy change needs a
+The engine loads every <code>.rego</code> file under <code>CELINE_POLICIES_DIR</code> (default <code>./policies</code>,
+optional data in <code>CELINE_POLICIES_DATA_DIR</code>) once per process, so a policy change needs a
 restart.</p>
 <h3 id="decision-flow">Decision flow</h3>
 <ol>
@@ -5027,7 +5027,7 @@ restart.</p>
 <li>API enforces the result: a deny is <code>403</code> with the policy's <code>reason</code>; an engine
    that cannot load or evaluate is <code>503</code></li>
 </ol>
-<p>Decisions are cached in memory when <code>POLICIES_CACHE_ENABLED</code> is true (the default).</p>
+<p>Decisions are cached in memory when <code>CELINE_POLICIES_CACHE_ENABLED</code> is true (the default).</p>
 <h3 id="policy-input-shape">Policy input shape</h3>
 <pre><code class="language-json">{
   &quot;subject&quot;: {
@@ -5431,12 +5431,12 @@ the person's token. The order the handler decides in is in
 <td>evaluate policies; <code>false</code> admits any authenticated caller</td>
 </tr>
 <tr>
-<td><code>POLICIES_DIR</code></td>
+<td><code>CELINE_POLICIES_DIR</code></td>
 <td><code>./policies</code></td>
 <td><code>.rego</code> files loaded at start</td>
 </tr>
 <tr>
-<td><code>POLICIES_DATA_DIR</code></td>
+<td><code>CELINE_POLICIES_DATA_DIR</code></td>
 <td>unset</td>
 <td>policy data</td>
 </tr>
@@ -5446,7 +5446,7 @@ the person's token. The order the handler decides in is in
 <td>package whose <code>allow</code>/<code>reason</code> are evaluated</td>
 </tr>
 <tr>
-<td><code>POLICIES_CACHE_ENABLED</code></td>
+<td><code>CELINE_POLICIES_CACHE_ENABLED</code></td>
 <td><code>true</code></td>
 <td>cache decisions in memory</td>
 </tr>
