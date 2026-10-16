@@ -4299,7 +4299,10 @@ looping.</p>
 <h3 id="req-0012-the-policy-settings-locate-the-bundle-and-size-its-cache">REQ-0012 — the policy settings locate the bundle and size its cache</h3>
 <p><code>policies_dir</code> (a <code>Path</code>, defaulting to <code>./policies</code>), an optional <code>policies_data_dir</code>, and
 the decision-cache knobs <code>policies_cache_enabled</code>, <code>policies_cache_ttl</code>,
-<code>policies_cache_maxsize</code>. They configure the engine in <a href="../policy-evaluation/">Policy evaluation</a>;
+<code>policies_cache_maxsize</code>. Each is read from <code>CELINE_POLICIES_&lt;NAME&gt;</code> — <code>CELINE_POLICIES_DIR</code>,
+<code>_DATA_DIR</code>, <code>_CACHE_ENABLED</code>, <code>_CACHE_TTL</code>, <code>_CACHE_MAXSIZE</code> — and, when that is absent,
+from the doubled spelling pydantic's prefix rule produced before 2026-10-15
+(<code>CELINE_POLICIES_POLICIES_DIR</code>, …). Code may still pass the field names. They configure the engine in <a href="../policy-evaluation/">Policy evaluation</a>;
 nothing here reaches a policy service over the network.</p>
 <h3 id="req-0013-no-outbound-request-url-reaches-a-log-with-its-query-string">REQ-0013 — no outbound request URL reaches a log with its query string</h3>
 <p>Importing <code>celine.sdk</code> configures logging from <code>LOG_LEVEL</code>, and holds the <code>httpx</code> and

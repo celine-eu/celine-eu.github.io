@@ -4525,37 +4525,40 @@ service to point at.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_DIR</code></td>
+<td><code>CELINE_POLICIES_DIR</code></td>
 <td><code>Path</code></td>
 <td><code>./policies</code></td>
 <td>Directory of <code>.rego</code> files</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_DATA_DIR</code></td>
+<td><code>CELINE_POLICIES_DATA_DIR</code></td>
 <td><code>Path \| None</code></td>
 <td><code>None</code></td>
 <td>Optional directory of policy data JSON</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_CACHE_ENABLED</code></td>
+<td><code>CELINE_POLICIES_CACHE_ENABLED</code></td>
 <td><code>bool</code></td>
 <td><code>true</code></td>
 <td>Decision caching</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_CACHE_TTL</code></td>
+<td><code>CELINE_POLICIES_CACHE_TTL</code></td>
 <td><code>int</code></td>
 <td><code>300</code></td>
 <td>Cache TTL, seconds</td>
 </tr>
 <tr>
-<td><code>CELINE_POLICIES_POLICIES_CACHE_MAXSIZE</code></td>
+<td><code>CELINE_POLICIES_CACHE_MAXSIZE</code></td>
 <td><code>int</code></td>
 <td><code>10000</code></td>
 <td>Maximum entries</td>
 </tr>
 </tbody>
 </table>
+<p>The doubled spelling (<code>CELINE_POLICIES_POLICIES_DIR</code>, …) is still read when the short one
+is absent. Until 2026-10-15 it was the only one read, so the <code>CELINE_POLICIES_DIR</code> the infra
+chart sets had no effect.</p>
 <h2 id="sdksettings">SdkSettings</h2>
 <p>Composes all three; each section is still read from its own prefix.</p>
 <pre><code class="language-python">from celine.sdk.settings import SdkSettings
