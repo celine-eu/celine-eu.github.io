@@ -2648,6 +2648,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-10-both-row-policy-layers-are-stated-and-an-undeclared-one-is-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-10 — Both row-policy layers are stated, and an undeclared one is refused
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-11-a-row-policy-that-cannot-be-read-is-refused-never-read-as-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-11 — A row policy that cannot be read is refused, never read as none
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-12-open-is-open-to-the-registered-user-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-12 — open is open to the registered user base
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4864,6 +4897,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-10-both-row-policy-layers-are-stated-and-an-undeclared-one-is-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-10 — Both row-policy layers are stated, and an undeclared one is refused
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-11-a-row-policy-that-cannot-be-read-is-refused-never-read-as-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-11 — A row policy that cannot be read is refused, never read as none
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gs-12-open-is-open-to-the-registered-user-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-12 — open is open to the registered user base
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4938,8 +5004,8 @@
 <tbody>
 <tr>
 <td><code>open</code></td>
-<td>public catalogue + read access</td>
-<td>not required</td>
+<td>catalogue + read access for the registered user base</td>
+<td>required — any signed-in caller (GS-12)</td>
 <td>not required</td>
 </tr>
 <tr>
@@ -4963,7 +5029,8 @@
 </tbody>
 </table>
 <p>Notes:
-- <code>open</code> does not mean “unsafe”; SQL hardening and limits still apply.
+- <code>open</code> does not mean “public”: an anonymous caller is refused (<code>401</code>) on every
+  level (GS-12). Nor does it mean “unsafe”; SQL hardening and limits still apply.
 - <code>restricted</code> should be used when access depends on groups/roles/attributes.
 - A dataset that states no <code>access_level</code> is <code>internal</code>; the import stores it as such.
 - A level the import cannot read is refused there (<code>422</code>). A stored level nobody can
@@ -5003,7 +5070,8 @@ by <strong>scopes</strong>, users by the <strong>platform role</strong> or their
   read; <code>editors</code> grants nothing here), and only rows that belong to that
   organization: the dataset's row filter decides which (GS-06), and an <code>internal</code>
   dataset that declares no row filter is not readable through an organization at
-  all (GS-07).</li>
+  all (GS-07). A non-<code>open</code> dataset that leaves either row-policy layer undeclared
+  is refused to everyone but the platform administrator (GS-10).</li>
 </ul>
 <p><strong>A realm group grants nothing.</strong> The top-level <code>groups</code> claim is not read, so a
 token that still carries <code>/admins</code> there is not an administrator. Neither are the
@@ -5127,6 +5195,8 @@ Custom rules can read <code>resource.attributes.governance</code> and <code>name
    table the id names; a backend with no SQL table is a <code>400</code>. No dataset skips
    the steps below</li>
 <li>Ordinary path: authentication check required by the access level, then policy</li>
+<li>Ordinary path: a row policy that cannot be read is refused (GS-11); past the
+   platform-admin bypass, <code>deny_all</code> and an undeclared layer are refused (GS-10)</li>
 <li>Apply row filters, execute with limits and timeout</li>
 <li>Dataspace path only: record the disclosure with ds</li>
 <li>Return paginated results only</li>
@@ -5358,12 +5428,14 @@ organization is not a consenting subject.</p>
 communities and real tokens, <code>tests/e2e/test_organization_matrix_live.py</code>.</p>
 <h4 id="gs-07-an-internal-dataset-that-declares-no-row-filter-is-closed-to-organizations">GS-07 — An <code>internal</code> dataset that declares no row filter is closed to organizations</h4>
 <p>An <code>internal</code> dataset whose governance declares no row filter is readable by the
-<code>platform-admin</code> role and by a service holding the scope, and by no organization's
-group: nobody decided whose rows it holds. The refusal is <code>403</code> with reason
+<code>platform-admin</code> role and by no organization's group: nobody decided whose rows it
+holds. A service holding the scope reads it only under <code>ROW_FILTERS_DEFAULT=allow</code>
+(GS-10). The refusal is <code>403</code> with reason
 <code>internal dataset without a row filter - platform-admin or services only</code>
 (audited as <code>policy</code>). A dataset meant for every member of every organization —
 weather, public building data — says so in governance with the <code>member_wide</code> row
-filter (<code>binds: organization</code>), which narrows nothing.</p>
+filter (<code>binds: organization</code>), which narrows nothing — and states the person layer
+too (GS-10).</p>
 <p>Tests: <code>tests/routes/test_organization_scoping.py</code>,
 <code>tests/routes/test_platform_admin_role.py</code>.</p>
 <h4 id="gs-08-a-row-filters-binds-agrees-with-its-handler">GS-08 — A row filter's <code>binds</code> agrees with its handler</h4>
@@ -5371,7 +5443,10 @@ filter (<code>binds: organization</code>), which narrows nothing.</p>
 <code>binds: person</code> (the default when absent) or <code>binds: organization</code>. Each built-in
 handler declares the one it is (<code>HANDLER_BINDS</code>): <code>direct_user_match</code>,
 <code>rec_registry</code>, <code>subject_key_match</code>, <code>http_in_list</code> and <code>table_pointer</code> bind a
-person; <code>organization_match</code> and <code>member_wide</code> bind an organization.
+person; <code>organization_match</code> and <code>member_wide</code> bind an organization; <code>allow_all</code> and
+<code>deny_all</code> bind whichever layer their own <code>binds</code> names, which they must state
+(GS-10). The built-ins are the ones celine-utils' governance validator knows
+(<code>BUILTIN_ROW_FILTER_HANDLERS</code>).
 <code>POST /admin/catalogue</code> refuses with <code>422</code>, naming the dataset and the filter, a
 <code>binds</code> that contradicts its handler or that is not one of the two values. A handler
 from another package is checked for a readable value only.</p>
@@ -5394,6 +5469,58 @@ service paths stay green while every organization reader or person is refused. A
 governance release that renames a filter column must therefore reach the catalogue in
 the same step as the table's migration, and the import is what holds that order.</p>
 <p>Tests: <code>tests/routes/test_import_row_filter_column.py</code>.</p>
+<h4 id="gs-10-both-row-policy-layers-are-stated-and-an-undeclared-one-is-refused">GS-10 — Both row-policy layers are stated, and an undeclared one is refused</h4>
+<p>A dataset's row filters fall in two layers, by their <code>binds</code>: <strong>person</strong> (whose rows)
+and <strong>organization</strong> (which organization's rows). The layers are checked separately
+and AND together; filters within a layer AND.</p>
+<ul>
+<li>A layer carrying <code>deny_all</code> refuses the dataset: <code>403</code>, reason <code>row_policy_denied</code>.</li>
+<li>A layer carrying <code>allow_all</code> admits every row: it states the layer and narrows
+  nothing. <code>allow_all</code> and <code>deny_all</code> must state <code>binds</code>; the import refuses them
+  otherwise (<code>422</code>).</li>
+<li>A layer with nothing declared admits every row on an <code>open</code> dataset. On any other
+  level it follows <code>ROW_FILTERS_DEFAULT</code>:</li>
+<li><code>deny</code> (the default): <code>403</code>, reason <code>row_policy_undeclared</code>, naming the layer;</li>
+<li><code>allow</code> — report-only: served whole, with a <code>WARNING</code> and an <em>allowed</em> audit
+    record carrying reason <code>row_policy_undeclared</code>, so a deployment can measure what
+    <code>deny</code> would refuse before it denies.</li>
+<li>Evaluated after the <code>platform-admin</code> bypass: the administrator reads every row,
+  <code>deny_all</code> included.</li>
+<li>A service holding the scope is subject to the same layers. Its declared filters
+  keep their service behaviour (<code>rec_registry</code>, <code>organization_match</code> and
+  <code>member_wide</code> serve it unfiltered); an undeclared layer still follows the default.</li>
+<li>The catalogue's ODRL offer advertises <code>ds:consentStatus</code> for a person-layer filter
+  other than <code>allow_all</code>/<code>deny_all</code> (or <code>consentRequired</code>), never for an organization
+  filter.</li>
+<li>The conformance sample (<code>POST /catalogue/{id}/conformance</code>) is read through the same
+  path and follows the same layers.</li>
+</ul>
+<p><code>dataset-cli export governance</code> reports a missing layer and exports the entry; the
+serving instance's default refuses it. The gate that fails on it is <code>celine-governance
+validate</code> (celine-utils).</p>
+<p>Tests: <code>tests/routes/test_row_policy.py</code>, <code>tests/routes/test_organization_scoping.py</code>,
+<code>tests/routes/test_import_row_policy.py</code>, <code>tests/routes/test_catalogue_conformance.py</code>,
+<code>tests/api/test_dcat_formatter.py</code>, <code>tests/cli/test_export_governance_checks.py</code>.</p>
+<h4 id="gs-11-a-row-policy-that-cannot-be-read-is-refused-never-read-as-none">GS-11 — A row policy that cannot be read is refused, never read as none</h4>
+<p>A <code>rowFilters</code> that is not a list, an item that is not a mapping, an item naming no
+handler and <code>args</code> that is not a mapping are refused: by <code>POST /admin/catalogue</code> with
+<code>422</code> naming the dataset, and — for an entry stored around the import — at query time
+with <code>403</code>, reason <code>row_filter_unenforceable</code>. So is a handler this service does not
+implement (it was a <code>500</code>). <code>dataset-cli export governance</code> runs the governance checks
+before it writes: an unknown handler, a layer verdict without <code>binds</code>, a schema error
+or a file that does not load fails it, and nothing is written; an owners registry
+passed to it is validated strictly. <code>dataset-cli import catalogue</code> refuses an invalid
+entry by default (<code>--no-strict</code> skips it, as it used to). The runtime owners registry
+is loaded validated; an invalid one is logged at <code>ERROR</code> and publisher enrichment is
+off.</p>
+<p>Tests: <code>tests/routes/test_row_policy.py</code>, <code>tests/routes/test_import_row_policy.py</code>,
+<code>tests/cli/test_export_governance_checks.py</code>, <code>tests/cli/test_import_catalogue_strict.py</code>.</p>
+<h4 id="gs-12-open-is-open-to-the-registered-user-base">GS-12 — <code>open</code> is open to the registered user base</h4>
+<p>An <code>open</code> dataset is served to any authenticated caller, with no policy evaluated, and
+to no anonymous one: <code>401</code>, reason <code>auth_required</code>, on every access level. A request
+arriving through the dataspace carries its identity in the EDR and is not affected.</p>
+<p>Tests: <code>tests/routes/test_row_policy.py</code>, <code>tests/security/test_governance.py</code>,
+<code>tests/routes/test_access_audit.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
@@ -5408,7 +5535,9 @@ in it, and this service applies it or serves nothing. That path has its own
 specification, with clauses and tests:
 <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <p>Whose rows an organization's reader gets is GS-06; an <code>internal</code> dataset with no
-row filter at all is GS-07; what a filter binds is GS-08; the column it names is GS-09.</p>
+row filter at all is GS-07; what a filter binds is GS-08; the column it names is GS-09;
+the two layers and what an undeclared one does is GS-10; an unreadable declaration is
+GS-11.</p>
 <p><strong>A service account is not narrowed by <code>rec_registry</code></strong> or <code>organization_match</code> on the normal API path: it
 is not a registry member, and once the policy has admitted it the whole table is
 served. A service that relays such rows to a person narrows them itself or forwards
@@ -5429,6 +5558,11 @@ the person's token. The order the handler decides in is in
 <td><code>POLICIES_CHECK_ENABLED</code></td>
 <td><code>true</code></td>
 <td>evaluate policies; <code>false</code> admits any authenticated caller</td>
+</tr>
+<tr>
+<td><code>ROW_FILTERS_DEFAULT</code></td>
+<td><code>deny</code></td>
+<td>an undeclared row-policy layer on a non-<code>open</code> dataset: <code>deny</code> refuses it, <code>allow</code> serves it and reports it (GS-10)</td>
 </tr>
 <tr>
 <td><code>CELINE_POLICIES_DIR</code></td>

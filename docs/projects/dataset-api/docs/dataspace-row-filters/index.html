@@ -4690,14 +4690,26 @@ Each clause below names its tests.</p>
 <tr>
 <td><code>organization_match</code></td>
 <td>—</td>
-<td>the rows of the caller's organizations (GS-06 in <a href="../governance-security/">governance-security.md</a>); refuses a delegated request; ds never sends it (<code>binds: organization</code>)</td>
+<td>the rows of the caller's organizations (GS-06 in <a href="../governance-security/">governance-security.md</a>); refuses a delegated request (<code>binds: organization</code>). ds sends it, naming nobody, for a dataset that is not consent-gated (ds rule X-17), so such a dataset serves no rows through an agreement</td>
 <td><code>column</code> or <code>org_type</code>, at least one</td>
 </tr>
 <tr>
 <td><code>member_wide</code></td>
 <td>—</td>
-<td>nothing — every row, declared on purpose (GS-07); refuses a delegated request; ds never sends it (<code>binds: organization</code>)</td>
+<td>nothing — every row, declared on purpose (GS-07); refuses a delegated request (<code>binds: organization</code>); sent by ds like <code>organization_match</code></td>
 <td>—</td>
+</tr>
+<tr>
+<td><code>allow_all</code></td>
+<td>—</td>
+<td>nothing — the layer its <code>binds</code> names admits every row (GS-10)</td>
+<td>— (<code>binds</code> required)</td>
+</tr>
+<tr>
+<td><code>deny_all</code></td>
+<td>—</td>
+<td>no row; on the normal path the dataset is refused <code>403 row_policy_denied</code> before any handler runs (GS-10)</td>
+<td>— (<code>binds</code> required)</td>
 </tr>
 </tbody>
 </table>
@@ -4710,7 +4722,9 @@ file, which the connector reads and this service must recognise.</p>
 <p>The same handler serves requests that do not come through the dataspace, where
 <code>principals</code> is absent. Before any handler runs, the normal path answers an
 unauthenticated caller with <code>401</code> and skips row filters for holders of the
-<code>platform-admin</code> realm role. The handler then decides by who the caller is, in this order:</p>
+<code>platform-admin</code> realm role; it then applies the two-layer row policy, where a
+<code>deny_all</code> or an undeclared layer refuses the dataset (GS-10). On the dataspace path
+that policy is not yet read: the filter is ds's, as this page describes. The handler then decides by who the caller is, in this order:</p>
 <ol>
 <li><strong><code>principals</code> present</strong> (dataspace path only), even empty: a delegated
    request, resolved for the named members on this service's identity (RF-05).</li>

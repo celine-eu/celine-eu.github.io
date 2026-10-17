@@ -4675,7 +4675,7 @@ its own instance.</p>
 <p>Flows are stored in the catalogue database, so any worker can serve a pull and flows survive a restart. The legacy path above and <code>POST /query</code> are unchanged; the two query endpoints are separate on purpose. Specification and configuration: <a href="docs/dps-data-plane/">docs/dps-data-plane.md</a>.</p>
 <h3 id="governance-and-disclosure-model">Governance and disclosure model</h3>
 <p>Access levels:
-- <code>open</code> — no authentication required; <code>downloadURL</code> exposed in DCAT
+- <code>open</code> — any signed-in caller, no policy; anonymous is refused (GS-12); <code>downloadURL</code> exposed in DCAT
 - <code>internal</code> — JWT required; services need the <code>dataset.query</code> scope, users the <code>platform-admin</code> realm role, or <code>admins</code>/<code>managers</code>/<code>viewers</code> inside an organization — and then only a dataset that declares a row filter, and only that organization's rows (GS-06, GS-07); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code>
 - <code>restricted</code> — JWT required; only the <code>dataset.admin</code> scope or the <code>platform-admin</code> realm role (<code>policies/celine/dataset.rego</code>); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code> and <code>ds:consentStatus eq "active"</code>
 - <code>secret</code> — omitted from every catalogue surface; not queryable (<code>403 Dataset not available</code>, as for an unexposed dataset)</p>
@@ -4690,6 +4690,7 @@ its own instance.</p>
 - <code>member_wide</code> — every row, declared on purpose for data meant for every member of every organization. Declared <code>binds: organization</code></p>
 <p>Each filter's <code>binds</code> (<code>person</code> by default, or <code>organization</code>) must agree with its handler; the catalogue import refuses one that does not (GS-08), and a filter whose <code>column</code> its table lacks (GS-09)</p>
 <p>Further handlers can be registered through <code>ROW_FILTERS_MODULES</code> or the <code>celine.dataset.row_filters</code> entry-point group (see <code>celine.dataset.ext</code>).</p>
+<p><strong>Every non-<code>open</code> dataset states two row-policy layers</strong> — a filter's <code>binds</code> is its layer, <code>person</code> or <code>organization</code> — and <code>allow_all</code> / <code>deny_all</code> state one without narrowing by a column. A layer left undeclared follows <code>ROW_FILTERS_DEFAULT</code>: <code>deny</code> (the default) refuses the dataset with <code>403 row_policy_undeclared</code>, <code>allow</code> serves it and reports it. A declaration that cannot be read, or names a handler this service lacks, is refused, never read as none (<a href="docs/governance-security/#row-level-filtering">GS-10, GS-11</a>).</p>
 <p>Holders of the <code>platform-admin</code> realm role bypass row filters entirely; no group does, at either level (see <a href="docs/governance-security/#identity-model">Identity Model</a>). Service accounts bypass the <code>rec_registry</code> and <code>organization_match</code> filters when they query on their own behalf — never when a dataspace decision delegates the query to them.</p>
 <p>On a dataspace request the filter arrives from ds whole, naming the consenting subjects as <code>principals</code> and as <code>keys</code>; a filter this service cannot apply serves no rows. Specification: <a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>.</p>
 <p>Governance overrides are supported via <code>governance.&lt;app_name&gt;.yaml</code> files merged with the base <code>governance.yaml</code>.</p>
@@ -4736,7 +4737,7 @@ its own instance.</p>
 <p>The <code>export governance</code> command reads <code>governance.yaml</code> files (plus <code>governance.&lt;app&gt;.yaml</code> overlays) and writes catalogue YAML for <code>import catalogue</code>; it needs neither a database nor Marquez. <code>expose</code> lists the dataset in the catalogue and makes it queryable; <code>dataspace.expose</code> offers it into the dataspace (required for EDR/DPS requests). An unset <code>expose</code> falls back to <code>dataspace.expose</code>; offered-but-unlisted is refused.</p>
 <hr />
 <h2 id="governanceyaml-integration">governance.yaml integration</h2>
-<p>Dataset-api reads governance rules resolved by <code>celine.governance.GovernanceResolver</code> (from <code>celine-utils&gt;=2.6</code>, which carries <code>row_filters[].binds</code>). The following extended blocks are supported:</p>
+<p>Dataset-api reads governance rules resolved by <code>celine.governance.GovernanceResolver</code> (from <code>celine-utils&gt;=2.7</code>, which carries <code>row_filters[].binds</code>, <code>allow_all</code>/<code>deny_all</code> and the governance checks). The following extended blocks are supported:</p>
 <p><code>dcat:</code> block — DCAT-AP metadata:
 - <code>publisher_uri</code> — overrides the settings-level fallback
 - <code>themes</code> — <code>dcat:theme</code> URIs (EU Publications Office vocabulary)
@@ -4747,7 +4748,7 @@ its own instance.</p>
 - <code>temporal</code> — <code>dct:temporal</code> with <code>start</code> and <code>end</code> dates</p>
 <p><code>dataspace:</code> block — access control and ODRL hints:
 - <code>expose</code> — offer the dataset to dataspace consumers
-- <code>consent_required</code> (or any <code>row_filters</code>) — adds <code>ds:consentStatus eq active</code> constraint
+- <code>consent_required</code> (or a row filter binding a person, other than <code>allow_all</code>/<code>deny_all</code>) — adds <code>ds:consentStatus eq active</code> constraint
 - <code>contract_required</code>, <code>odrl_action</code>, <code>purpose</code> — carried in the governance facet for dataspace consumers; not rendered into the ODRL offer, which always uses <code>odrl:use</code>
 - <code>medallion</code> — data quality level (inferred from the name when unset)</p>
 <p><code>expose: true</code> on the source entry (top-level, not under <code>dataspace:</code>) makes the dataset visible in the catalogue.</p>
