@@ -3019,6 +3019,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Row filtering">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-layers-and-what-an-undeclared-one-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two layers, and what an undeclared one means
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4678,6 +4695,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Row filtering">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-layers-and-what-an-undeclared-one-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two layers, and what an undeclared one means
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -5016,6 +5050,10 @@ from the caller's argument, else <code>GOVERNANCE_OVERLAY_NAME</code>, else — 
 caller passes <code>infer_from_dir=True</code> — the name of the directory holding the file.
 Overlay blocks combine by the same rules as above, so an overlay can withdraw as
 well as add.</p>
+<p>A deployment that keeps its overlays in a tree of its own passes that directory as
+<code>overlay_dirs=[...]</code>: the same <code>governance.&lt;name&gt;.yaml</code> is looked for there too. Exactly
+one overlay applies to a base — found in two places, the load raises rather than pick
+one. <code>celine-governance validate --overlay-dir</code> uses the same lookup.</p>
 <hr />
 <h2 id="exposure-two-gates-not-one">Exposure — two gates, not one</h2>
 <p><code>expose</code> and <code>dataspace.expose</code> answer different questions, and they are <strong>AND</strong>:</p>
@@ -5213,6 +5251,44 @@ organization filter over-gates the dataset — visibly — and never under-gates
 Any other value is refused by the schema and by <code>GovernanceRule</code> (REQ-0010). Read it
 with <code>celine.governance.row_filter_binds</code>, never with <code>.get("binds")</code>, so the default
 is applied in one place.</p>
+<h4 id="two-layers-and-what-an-undeclared-one-means">Two layers, and what an undeclared one means</h4>
+<p><code>binds</code> is also the filter's <strong>layer</strong>. A dataset's row policy has two, checked
+separately and ANDed: the <code>person</code> layer (whose rows — per subject) and the
+<code>organization</code> layer (which organization's rows). Filters within a layer AND.</p>
+<p>A layer with nothing declared is not "no filter". On an <code>open</code> dataset it admits
+every row (to an authenticated caller); on any other, it falls to the serving
+deployment's default, which is <strong>deny</strong>. So an exposed, non-<code>open</code> dataset states
+both layers, and two built-in handlers exist to state a layer without narrowing by a
+column:</p>
+<pre><code class="language-yaml">row_filters:
+  - handler: allow_all          # the person layer admits every row
+    binds: person
+  - handler: organization_match
+    binds: organization
+    args:
+      column: community_id
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>handler</th>
+<th>the layer admits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allow_all</code></td>
+<td>every row</td>
+</tr>
+<tr>
+<td><code>deny_all</code></td>
+<td>no row</td>
+</tr>
+</tbody>
+</table>
+<p>Both <strong>must</strong> state <code>binds</code> — it is what names the layer they decide — and both in one
+layer are a contradiction. <code>celine-governance validate</code> checks all of this
+(<a href="../cli/#celine-governance-validate--the-gate-before-an-import">CLI</a>).</p>
 <p><code>user_filter_column</code> is the <strong>legacy</strong> single-column form, carried only for
 backward compatibility with deployed <code>ds</code> files. <code>row_filters</code> supersedes it: a bare
 column name cannot say how a subject maps to values in it. Where both appear,

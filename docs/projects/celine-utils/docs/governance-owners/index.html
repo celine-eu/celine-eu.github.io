@@ -4120,10 +4120,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#two-fields-named-role-and-they-are-not-the-same-thing" class="md-nav__link">
+  <a href="#fields-that-read-alike-and-are-not-the-same-thing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Two fields named role, and they are not the same thing
+        Fields that read alike, and are not the same thing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataspace-identity-registry-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataspace identity registry keys
       
     </span>
   </a>
@@ -4295,6 +4306,11 @@ decides who that is.</p>
 <td>no</td>
 <td>Keycloak provisioning block</td>
 </tr>
+<tr>
+<td><code>status</code>, <code>verified_by</code>, <code>evidence_ref</code>, <code>collects_consent</code>, <code>dataspace</code></td>
+<td>no</td>
+<td>The dataspace identity registry's keys — see <a href="#dataspace-identity-registry-keys">below</a></td>
+</tr>
 </tbody>
 </table>
 <p><code>type</code> is a closed enum: <code>schema:Organization</code> (generic fallback),
@@ -4317,12 +4333,32 @@ provisioned as Keycloak organizations, <code>role</code> becomes the KC <code>at
 <p>The key is also accepted as <code>organization_config</code>, which is the column name in the
 identity-registry database and therefore the key in its API responses, while YAML
 seed files say <code>organization</code>. One model reads both.</p>
-<h3 id="two-fields-named-role-and-they-are-not-the-same-thing">Two fields named <code>role</code>, and they are not the same thing</h3>
+<h3 id="fields-that-read-alike-and-are-not-the-same-thing">Fields that read alike, and are not the same thing</h3>
 <ul>
+<li><code>type</code> — the schema.org <strong>class</strong> of the legal entity (<code>schema:NGO</code>), for DCAT
+  metadata.</li>
 <li><code>role</code> at entry level — the party's role with respect to the <strong>data</strong>.</li>
-<li><code>organization.role</code> — the <strong>Keycloak</strong> organization role.</li>
+<li><code>organization.role</code> — the organization's <strong>platform</strong> role (<code>rec</code>, <code>dso</code>): the
+  Keycloak organization's <code>attributes.type</code>, which <code>organization_match</code>'s <code>org_type</code>
+  compares against, and the <code>organizationType</code> the dataspace issues in an
+  <code>OrganizationCredential</code>.</li>
+<li><code>dataspace.roles</code> — the <strong>dataspace participant</strong> roles (<code>Provider</code>, <code>Consumer</code>),
+  issued as the credential's <code>roles</code>.</li>
 </ul>
-<p>Setting one does not set the other.</p>
+<p>Setting one does not set another.</p>
+<h3 id="dataspace-identity-registry-keys">Dataspace identity registry keys</h3>
+<p>The dataspace identity registry (<code>ds</code>) keeps its own state for an owner in the same
+file: <code>status</code> (<code>pending</code> · <code>verified</code> · <code>suspended</code> · <code>revoked</code>), <code>verified_by</code>,
+<code>evidence_ref</code>, <code>collects_consent</code>, and a <code>dataspace:</code> block — legal identity
+(<code>legal_name</code>, <code>registration_number</code>, <code>registration_type</code>, <code>hq_country_code</code>,
+<code>legal_country_code</code>, <code>parent_organizations</code>, <code>sub_organizations</code>), connector (<code>did</code>,
+<code>dsp_address</code>, <code>roles</code>, <code>scopes</code>, <code>credential_ttl_days</code>), verification (<code>verified_by</code>,
+<code>evidence_ref</code>) and the legal-terms acceptance (<code>accepted: {agreement, version, locale,
+accepted_by}</code>).</p>
+<p>They are <strong>optional and defined</strong>: the schema declares each one, so a deployment's
+merged registry validates strictly as one document and a typo inside them is refused
+like any other. The identity registry stays their owner — what they mean, and the
+rules between them (<code>verified</code> needs <code>verified_by</code>), are checked by its own models.</p>
 <hr />
 <h2 id="reading-it">Reading it</h2>
 <pre><code class="language-python">from pathlib import Path

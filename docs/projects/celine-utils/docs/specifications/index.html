@@ -4206,6 +4206,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0011-a-governance-tree-is-checked-as-it-will-be-served-and-any-failure-fails-the-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0011 — A governance tree is checked as it will be served, and any failure fails the run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0012-every-exposed-non-open-dataset-states-both-row-policy-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0012 — Every exposed, non-open dataset states both row-policy layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0013-a-dataspace-offers-consent-declarations-agree-with-its-person-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0013 — A dataspace offer's consent declarations agree with its person layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0014-the-owners-registry-is-validated-strictly-and-every-ownership-name-resolves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0014 — The owners registry is validated strictly, and every ownership name resolves
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4296,6 +4340,26 @@ documentation of behaviour, which lives in the pages these link to.</p>
 <td>REQ-0010</td>
 <td>A row filter says whether it binds a person or an organization; undeclared is a person, anything else is refused</td>
 <td><code>tests/test_governance_row_filter_binds.py</code></td>
+</tr>
+<tr>
+<td>REQ-0011</td>
+<td>A governance tree is checked as it will be served, and any failure fails the run</td>
+<td><code>tests/test_governance_check.py</code></td>
+</tr>
+<tr>
+<td>REQ-0012</td>
+<td>Every exposed, non-open dataset states both row-policy layers, with known handlers</td>
+<td><code>tests/test_governance_check.py</code></td>
+</tr>
+<tr>
+<td>REQ-0013</td>
+<td>A dataspace offer's consent declarations agree with its person layer</td>
+<td><code>tests/test_governance_check.py</code></td>
+</tr>
+<tr>
+<td>REQ-0014</td>
+<td>The owners registry is validated strictly, and every ownership name resolves</td>
+<td><code>tests/test_governance_check.py</code></td>
 </tr>
 </tbody>
 </table>
@@ -4481,6 +4545,49 @@ time, naming the entry. The value MUST survive a merge and reach the facet uncha
 filter binding a person, and <code>dataset-api</code> checks it against the handler. A misspelled
 value read as the default would silently change what gates a dataset, which is why it
 fails instead; an absent one errs towards gating.</p>
+<h2 id="req-0011-a-governance-tree-is-checked-as-it-will-be-served-and-any-failure-fails-the-run">REQ-0011 — A governance tree is checked as it will be served, and any failure fails the run</h2>
+<p><code>celine-governance validate</code> MUST check every <code>governance.yaml</code> its arguments name,
+each <strong>materialized</strong> with its deployer overlay by the resolver the exporter uses. An
+overlay MUST NOT be validated alone against the root's <code>required</code> keys; it MUST be
+type- and key-checked and then checked as part of its base. Exactly one overlay MAY
+apply to a base: the same name found in two places MUST be refused. Every finding MUST
+be collected, and the command MUST exit non-zero if any error remains — including a
+file that does not load and an argument that matches no file. The command MUST run on
+the core dependencies alone (REQ-0001).</p>
+<p><strong>Consequence if violated:</strong> a file that fails to load is skipped, a missing checkout
+checks fewer files, and the run passes — the catalogue then serves fewer datasets, or
+more permissively, with nothing to say why.</p>
+<h2 id="req-0012-every-exposed-non-open-dataset-states-both-row-policy-layers">REQ-0012 — Every exposed, non-open dataset states both row-policy layers</h2>
+<p>A dataset listed in the catalogue (<code>expose</code>) whose access level is neither <code>open</code> nor
+<code>secret</code> MUST declare at least one row filter in each layer, <code>person</code> and
+<code>organization</code> (its <code>binds</code>). <code>allow_all</code> and <code>deny_all</code> MUST state <code>binds</code> — refused
+by the schema and by <code>GovernanceRule</code> otherwise — and MUST NOT both appear in one
+layer. Every handler MUST be a built-in or named by the caller, and a built-in MUST be
+declared in the layer it binds. An <code>open</code> dataset with an undeclared layer MUST be
+reported as a note, not a failure.</p>
+<p><strong>Consequence if violated:</strong> the serving deployment's default — deny — refuses the
+dataset at query time, or, under the report-only default, serves the layer whole.
+Caught here, it is a line in a governance file; caught there, it is an outage or a
+leak.</p>
+<h2 id="req-0013-a-dataspace-offers-consent-declarations-agree-with-its-person-layer">REQ-0013 — A dataspace offer's consent declarations agree with its person layer</h2>
+<p>For a dataset offered into the dataspace (<code>dataspace.expose</code>, not <code>secret</code>): a person
+filter other than <code>allow_all</code>/<code>deny_all</code> MUST come with <code>dataspace.consent_required</code> or
+<code>classification: pii</code>; personal data narrowed only by organization filters MUST be
+refused; a person filter MUST name its column. A person layer of <code>deny_all</code> admits no
+row and is coherent with any declaration. Ported from <code>ds</code>' <code>check_consent_coherence</code>
+(D-3b).</p>
+<p><strong>Consequence if violated:</strong> the dataspace serves a dataset on an agreement alone
+that the producer meant to gate on consent, or gates on a filter that binds nobody.</p>
+<h2 id="req-0014-the-owners-registry-is-validated-strictly-and-every-ownership-name-resolves">REQ-0014 — The owners registry is validated strictly, and every ownership name resolves</h2>
+<p>Each owners file passed to the check MUST validate against <code>owners.schema.json</code> before
+it is merged, later files shadowing earlier by <code>id</code>. The schema MUST define the
+dataspace identity registry's keys as optional properties and keep
+<code>additionalProperties: false</code>. Every <code>ownership</code> name MUST resolve to an owner; with
+<code>--dataspace</code>, every owner of a dataspace offer narrowed by an organization filter MUST
+have a DID.</p>
+<p><strong>Consequence if violated:</strong> a mistyped key or a missing owner produces a smaller
+registry that loads cleanly, and the missing organization surfaces later as an
+authorization failure with nothing to connect it to.</p>
 
 
 

@@ -2878,6 +2878,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#celine-governance-validate-the-gate-before-an-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        celine-governance validate — the gate before an import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#governance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4333,6 +4344,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#celine-governance-validate-the-gate-before-an-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        celine-governance validate — the gate before an import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#governance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4492,7 +4514,9 @@
     ├── init app
     └── run  (envs | meltano | seed | dbt | build | prefect)
 </code></pre>
-<p>Installed as the <code>celine-utils</code> entry point. From a checkout of this repository,
+<p>Installed as the <code>celine-utils</code> entry point (it needs the <code>pipelines</code> extra). The
+governance checks have their own, thinner entry point — see
+<a href="#celine-governance-validate--the-gate-before-an-import"><code>celine-governance validate</code></a>. From a checkout of this repository,
 <code>task cli -- &lt;args&gt;</code> runs the same CLI from the working tree.</p>
 <p><strong>This page describes what each command is for and the traps in using it. For the
 exact current options, ask the CLI:</strong></p>
@@ -4500,6 +4524,68 @@ exact current options, ask the CLI:</strong></p>
 </code></pre>
 <p>An option table copied into a document is stale the next time an option is added,
 with nothing to detect it. The tables below are orientation, not the source of truth.</p>
+<hr />
+<h2 id="celine-governance-validate-the-gate-before-an-import"><code>celine-governance validate</code> — the gate before an import</h2>
+<p>A second entry point, <code>celine-governance</code>, ships beside <code>celine-utils</code> and runs on the
+<strong>thin core</strong>: <code>pydantic</code>, <code>pyyaml</code> and <code>jsonschema</code>, no <code>pipelines</code> extra. It is the
+command a repository, a CI job or a deployment task runs before anything imports a
+catalogue.</p>
+<pre><code class="language-bash">celine-governance validate apps/                       # every governance.yaml under apps/
+celine-governance validate apps/ ../deployment/apps/ \
+    --overlay-dir ../deployment/governance \
+    --owners ../deployment/owners.yaml --strict         # as a deployment will serve it
+celine-governance validate apps/ --handlers my_plugin --format json
+</code></pre>
+<p>Each <code>governance.yaml</code> is <strong>materialized</strong> before it is checked: merged with its
+deployer overlay <code>governance.&lt;app&gt;.yaml</code>, found beside it or in an <code>--overlay-dir</code>, by
+the same resolver the exporter uses. An overlay alone is never the unit — it has no
+<code>sources</code> of its own — so it is checked for types and unknown keys and then as part of
+its base. One overlay per base: the same name in two places is an error.</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema</code></td>
+<td>each file against <code>governance.schema.json</code>; unknown keys warn</td>
+</tr>
+<tr>
+<td><code>row-policy</code></td>
+<td>an exposed, non-<code>secret</code>, non-<code>open</code> dataset that does not declare both layers, <code>person</code> and <code>organization</code>. <code>open</code> datasets relying on being open are listed as notes</td>
+</tr>
+<tr>
+<td><code>handler</code></td>
+<td>a handler that is neither built in nor named with <code>--handlers</code>; a built-in in the wrong layer</td>
+</tr>
+<tr>
+<td><code>layer-verdict</code></td>
+<td><code>allow_all</code> and <code>deny_all</code> in one layer</td>
+</tr>
+<tr>
+<td><code>consent-coherence</code></td>
+<td>on dataspace offers: a person filter without <code>consent_required</code> or <code>pii</code>, and personal data without a person filter</td>
+</tr>
+<tr>
+<td><code>owners</code></td>
+<td>an owners file that is not strictly valid; an ownership name that resolves to no owner; with <code>--dataspace</code>, an owner of an organization-bound offer without a DID</td>
+</tr>
+<tr>
+<td><code>input</code></td>
+<td>a path matching no <code>governance.yaml</code>, a missing overlay directory, an overlay that applies to no checked base (a warning)</td>
+</tr>
+</tbody>
+</table>
+<p>Every finding is collected — never only the first. Exit <strong>1</strong> if any error remains
+(<code>--strict</code>: or any warning), <strong>0</strong> otherwise, <strong>2</strong> on a usage error. Several
+<code>--owners</code> files merge with later ones shadowing earlier by <code>id</code>, each validated
+before it is merged, exactly as <code>celine-policies keycloak sync-orgs</code> loads them: a
+partial per-environment owners file is refused — pass the materialized registry.</p>
+<p>The same checks are a library call, <code>celine.governance.check.check_governance</code>, for a
+loader that wants to refuse before it writes anything.</p>
 <hr />
 <h2 id="governance">governance</h2>
 <h3 id="governance-generate-marquez"><code>governance generate marquez</code></h3>
