@@ -4493,6 +4493,24 @@ recorded is the server's; a stale page gets 409. Before the host has ever answer
 document is accepted without a version, and the date decides against the version's
 <code>published_at</code> once it is known. <code>current.json</code> is refreshed every five minutes, and the
 last good copy is kept while the host is down.</p>
+<p><strong>The terms' clauses.</strong> When the terms' text carries a specific approval of its onerous
+clauses (<code>declarations.&lt;lang&gt;.specific_approval</code> in <code>current.json</code>), the gate asks it as a
+document of its own, <code>terms_clauses</code>: the terms' url, version and sha256, its own row. It is
+a separate act (Art. 1341(2) c.c.): the frontend shows it as its own unticked box, worded
+by the text (<code>declaration</code>), and <code>POST /api/terms/accept</code> refuses with 422 a request that
+does not name it while it is required. A document whose text carries a general declaration
+(the terms' <code>declarations.&lt;lang&gt;.general</code>) has it in <code>declaration</code> too, shown as its box's
+words. No words, no box: without them <code>terms_clauses</code> is not asked. A member who accepted
+the terms before the box existed is asked the clauses alone.</p>
+<p><strong>Accepted once, at application.</strong> On a miss — a document the member has no current
+acceptance of — and with <code>ONBOARDING_API_URL</code> set, the gate asks onboarding
+(<code>GET /api/me/acceptances</code>, the member's own token) what the member accepted when they
+applied. An acceptance whose version <strong>and</strong> sha256 match the text served now, in any of
+its languages, is copied as a row with <code>source</code> <code>onboarding</code> and the submission id in
+<code>source_ref</code>, and is not asked. Anything else is asked: another version or text, no
+sha256, onboarding refusing, down or unset, or no application. Onboarding's answer is kept
+for five minutes per member, so a deployment without onboarding does not wait on it at
+every request.</p>
 <p><strong>Otherwise</strong> (no legal host, or the member's community is unknown) the gate is the
 deployment-wide <code>POLICY_VERSION</code>, as before: raising it asks every member again.</p>
 <h2 id="overview-and-energy-data">Overview and Energy Data</h2>

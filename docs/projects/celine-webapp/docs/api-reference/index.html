@@ -5373,7 +5373,9 @@ valid one.</p>
 <h3 id="get-apime"><code>GET /api/me</code></h3>
 <p>Returns the authenticated user's profile, terms acceptance status, and settings.</p>
 <h3 id="post-apitermsaccept"><code>POST /api/terms/accept</code></h3>
-<p>Record the user's acceptance of the current terms version.</p>
+<p>Record the user's acceptance of the current terms version. With a legal host, <code>documents</code>
+lists the documents and versions shown; <code>terms_clauses</code>, when required, must be named in it
+(422 otherwise) — see <code>docs/features.md</code>, Terms Acceptance.</p>
 <hr />
 <h2 id="overview">Overview</h2>
 <h3 id="get-apioverview"><code>GET /api/overview</code></h3>
