@@ -4240,10 +4240,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0014-the-owners-registry-is-validated-strictly-and-every-ownership-name-resolves" class="md-nav__link">
+  <a href="#req-0014-the-owners-registry-is-validated-strictly-and-every-dataspace-offers-ownership-names-resolve" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0014 — The owners registry is validated strictly, and every ownership name resolves
+        REQ-0014 — The owners registry is validated strictly, and every dataspace offer's ownership names resolve
       
     </span>
   </a>
@@ -4358,7 +4358,7 @@ documentation of behaviour, which lives in the pages these link to.</p>
 </tr>
 <tr>
 <td>REQ-0014</td>
-<td>The owners registry is validated strictly, and every ownership name resolves</td>
+<td>The owners registry is validated strictly, and every dataspace offer's ownership names resolve</td>
 <td><code>tests/test_governance_check.py</code></td>
 </tr>
 </tbody>
@@ -4578,11 +4578,13 @@ row and is coherent with any declaration. Ported from <code>ds</code>' <code>che
 (D-3b).</p>
 <p><strong>Consequence if violated:</strong> the dataspace serves a dataset on an agreement alone
 that the producer meant to gate on consent, or gates on a filter that binds nobody.</p>
-<h2 id="req-0014-the-owners-registry-is-validated-strictly-and-every-ownership-name-resolves">REQ-0014 — The owners registry is validated strictly, and every ownership name resolves</h2>
+<h2 id="req-0014-the-owners-registry-is-validated-strictly-and-every-dataspace-offers-ownership-names-resolve">REQ-0014 — The owners registry is validated strictly, and every dataspace offer's ownership names resolve</h2>
 <p>Each owners file passed to the check MUST validate against <code>owners.schema.json</code> before
 it is merged, later files shadowing earlier by <code>id</code>. The schema MUST define the
 dataspace identity registry's keys as optional properties and keep
-<code>additionalProperties: false</code>. Every <code>ownership</code> name MUST resolve to an owner; with
+<code>additionalProperties: false</code>. Every <code>ownership</code> name of a dataspace offer
+(<code>dataspace.expose</code>) MUST resolve to an owner; a dataset only listed in the catalogue is
+not checked, its owners being attribution rather than dataspace parties. With
 <code>--dataspace</code>, every owner of a dataspace offer narrowed by an organization filter MUST
 have a DID.</p>
 <p><strong>Consequence if violated:</strong> a mistyped key or a missing owner produces a smaller
