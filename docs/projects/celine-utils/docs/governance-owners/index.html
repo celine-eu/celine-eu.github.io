@@ -4205,6 +4205,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Validation is strict here">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-the-governance-tree-celine-governance-validate-owners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With the governance tree: celine-governance validate --owners
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4227,23 +4244,23 @@
 <h1 id="ownersyaml-the-owner-registry"><code>owners.yaml</code> — the owner registry</h1>
 <p>A <code>governance.yaml</code> <code>ownership</code> block names owners by <strong>short alias</strong>:</p>
 <pre><code class="language-yaml">ownership:
-  - name: spxl
+  - name: example-org
     type: DATA_OWNER
 </code></pre>
-<p><code>owners.yaml</code> is what turns <code>spxl</code> into a canonical, machine-readable identity — a
+<p><code>owners.yaml</code> is what turns <code>example-org</code> into a canonical, machine-readable identity — a
 DID or a URL — plus the metadata the catalogue and Keycloak need. The indirection is
 the point: an open-source pipeline can say <code>dso</code>, and each deployment's registry
 decides who that is.</p>
 <hr />
 <h2 id="format">Format</h2>
 <pre><code class="language-yaml">owners:
-  - id: spxl
+  - id: example-org
     type: schema:Corporation
-    name: Spindox Labs S.r.l.
+    name: Example Org S.r.l.
     role: publisher
-    did: did:web:spindoxlabs.example
-    url: https://spindoxlabs.example
-    aliases: [spindox, labs]
+    did: did:web:org.example.net
+    url: https://example.net
+    aliases: [org, example]
     organization:
       create: true
       role: technology-provider
@@ -4366,8 +4383,8 @@ from celine.governance import load_owners_yaml
 
 registry = load_owners_yaml(Path(&quot;owners.yaml&quot;), validate=True)
 
-registry.by_id(&quot;spindox&quot;)          # -&gt; OwnerEntry(id='spxl', ...) via alias
-registry.canonical_uri(&quot;spxl&quot;)     # -&gt; 'did:web:spindoxlabs.example'
+registry.by_id(&quot;org&quot;)              # -&gt; OwnerEntry(id='example-org', ...) via alias
+registry.canonical_uri(&quot;example-org&quot;)  # -&gt; 'did:web:org.example.net'
 registry.by_uri(&quot;https://rec.example&quot;)
 len(registry)                      # owners, not lookup keys
 </code></pre>
@@ -4519,6 +4536,22 @@ authorization failure with no obvious cause.</p>
 <p>Note the schema requires <code>id</code>, <code>type</code> <strong>and</strong> <code>name</code>, while the Python model defaults
 <code>type</code> and leaves <code>name</code> optional. A file that parses is not necessarily a file that
 validates — run validation.</p>
+<h3 id="with-the-governance-tree-celine-governance-validate-owners">With the governance tree: <code>celine-governance validate --owners</code></h3>
+<p><a href="../cli/#celine-governance-validate--the-gate-before-an-import"><code>celine-governance validate</code></a>
+checks the registry together with the governance files that name it:</p>
+<ul>
+<li><strong>Several <code>--owners</code> files merge, each validated strictly first.</strong> Later files
+  shadow earlier ones by <code>id</code>, and the later entry replaces the earlier one whole —
+  there is no field-by-field merge. A partial per-environment owners file therefore
+  fails the schema; pass the materialized registry.</li>
+<li><strong>Ownership names are checked on dataspace offers only.</strong> Every <code>ownership</code> name of
+  a dataset with <code>dataspace.expose</code> must resolve, by id or alias. A dataset only
+  listed in the catalogue is not checked: its owners are attribution, not dataspace
+  parties.</li>
+<li><strong><code>--dataspace</code> requires a DID</strong> — top-level <code>did</code> or <code>dataspace.did</code> — for every
+  owner of a dataspace offer narrowed by an organization filter, since that offer
+  binds its rows to a participant. <code>--dataspace</code> needs <code>--owners</code>.</li>
+</ul>
 
 
 

@@ -4627,7 +4627,7 @@
 <li>Enforces <code>LIMIT</code>/<code>OFFSET</code> server-side, after the statement's top-level <code>ORDER BY</code> (carried onto the page query where its keys name selected columns; see QE-04 in the query engine docs)</li>
 <li>Configurable query timeout via <code>QUERY_STATEMENT_TIMEOUT_MS</code> (default 5000ms)</li>
 <li><code>skip_count: true</code> skips the <code>COUNT(*)</code> query to avoid full table scans</li>
-<li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>subject_key_match</code>, <code>http_in_list</code>, <code>table_pointer</code>, <code>organization_match</code>, <code>member_wide</code>)</li>
+<li>Applies row-level filter plans from governance handlers (<code>direct_user_match</code>, <code>rec_registry</code>, <code>subject_key_match</code>, <code>http_in_list</code>, <code>table_pointer</code>, <code>organization_match</code>, <code>member_wide</code>) and the layer verdicts <code>allow_all</code> / <code>deny_all</code>, in two row-policy layers (person and organization)</li>
 </ul>
 <h3 id="edr-gated-query-path-dataspace-integration">EDR-gated query path (dataspace integration)</h3>
 <p>When queries arrive through the EDC data plane (via an Endpoint Data Reference), the API detects the EDR context via the <code>Edc-Contract-Agreement-Id</code> header and switches to a dataspace-specific enforcement path.</p>
@@ -4642,8 +4642,8 @@ CONNECTOR_INTERNAL_URL=http://ds-connector:30001
 <li>Verifies the EDR token's signature against the key set ds publishes at <code>GET /internal/edr-jwks</code>. <strong>This service is the EDR endpoint</strong> — upstream EDC removed the data-plane proxy, so nothing validated the token before it arrived</li>
 <li>Takes the consumer from the verified <code>aud</code> and the provider from the verified <code>iss</code>; neither comes from a header</li>
 <li>Refuses the whole query (403) if any referenced dataset is not offered to the dataspace (<code>dataspace.expose</code> in governance → <code>dataspace_expose</code>); the dataset must also be <code>expose: true</code></li>
-<li>Calls <code>ds-connector POST /internal/dataplane/authorize</code> once for the whole query — agreement validity, the agreement↔consumer binding, purpose and the consented subjects are all ds's to answer, and it returns the verdict <em>and</em> the row-filter spec</li>
-<li>Applies that spec through the row-filter handlers, then records the disclosure with <code>POST /internal/audit/query</code></li>
+<li>Calls <code>ds-connector POST /internal/dataplane/authorize</code> once for the whole query — agreement validity, the agreement↔consumer binding, purpose and the consented subjects are all ds's to answer, and it returns the verdict, the person-layer row-filter spec and the consumer's <code>organizations</code></li>
+<li>Evaluates the dataset's own local declaration, both layers (GS-13): ds's spec is the person layer, the local organization layer is applied to the verdict's <code>organizations</code> (none established → no rows), an undeclared layer follows <code>ROW_FILTERS_DEFAULT</code>; then records the disclosure with <code>POST /internal/audit/query</code></li>
 <li>Skips the Keycloak/policy path entirely for datasets covered by the decision</li>
 </ol>
 <h4 id="one-instance-several-connectors">One instance, several connectors</h4>
@@ -4680,19 +4680,20 @@ its own instance.</p>
 - <code>restricted</code> — JWT required; only the <code>dataset.admin</code> scope or the <code>platform-admin</code> realm role (<code>policies/celine/dataset.rego</code>); ODRL carries <code>ds:accessScope eq "dataspaces.query"</code> and <code>ds:consentStatus eq "active"</code>
 - <code>secret</code> — omitted from every catalogue surface; not queryable (<code>403 Dataset not available</code>, as for an unexposed dataset)</p>
 <p>An entry that states no level is <code>internal</code>, and the import stores it as such; an unknown level is refused at import.</p>
-<p>Row-level filtering via the pluggable governance handler registry. Seven built-in handlers are supported:
+<p>Row-level filtering via the pluggable governance handler registry. Nine built-in handlers are supported:
 - <code>direct_user_match</code> — filter by user column
 - <code>rec_registry</code> — lookup via REC registry
 - <code>subject_key_match</code> — filter by the typed data keys (<code>pod:…</code>) the consent carried, for a holder whose rows are keyed by something only the organisation that collected the consent can name
 - <code>http_in_list</code> — HTTP-based allow list
 - <code>table_pointer</code> — table-based lookup
 - <code>organization_match</code> — the rows of the caller's organizations: <code>column</code> holds organization aliases; <code>org_type</code> limits to one type (<code>dso</code>). Declared <code>binds: organization</code>
-- <code>member_wide</code> — every row, declared on purpose for data meant for every member of every organization. Declared <code>binds: organization</code></p>
+- <code>member_wide</code> — every row, declared on purpose for data meant for every member of every organization. Declared <code>binds: organization</code>
+- <code>allow_all</code> / <code>deny_all</code> — layer verdicts: admit every row, or none, in the layer their required <code>binds</code> names (GS-10)</p>
 <p>Each filter's <code>binds</code> (<code>person</code> by default, or <code>organization</code>) must agree with its handler; the catalogue import refuses one that does not (GS-08), and a filter whose <code>column</code> its table lacks (GS-09)</p>
 <p>Further handlers can be registered through <code>ROW_FILTERS_MODULES</code> or the <code>celine.dataset.row_filters</code> entry-point group (see <code>celine.dataset.ext</code>).</p>
 <p><strong>Every non-<code>open</code> dataset states two row-policy layers</strong> — a filter's <code>binds</code> is its layer, <code>person</code> or <code>organization</code> — and <code>allow_all</code> / <code>deny_all</code> state one without narrowing by a column. A layer left undeclared follows <code>ROW_FILTERS_DEFAULT</code>: <code>deny</code> (the default) refuses the dataset with <code>403 row_policy_undeclared</code>, <code>allow</code> serves it and reports it. A declaration that cannot be read, or names a handler this service lacks, is refused, never read as none (<a href="docs/governance-security/#row-level-filtering">GS-10, GS-11</a>).</p>
 <p>Holders of the <code>platform-admin</code> realm role bypass row filters entirely; no group does, at either level (see <a href="docs/governance-security/#identity-model">Identity Model</a>). Service accounts bypass the <code>rec_registry</code> and <code>organization_match</code> filters when they query on their own behalf — never when a dataspace decision delegates the query to them.</p>
-<p>On a dataspace request the filter arrives from ds whole, naming the consenting subjects as <code>principals</code> and as <code>keys</code>; a filter this service cannot apply serves no rows. Specification: <a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>.</p>
+<p>On a dataspace request the dataset's local declaration is evaluated, both layers: the person-layer filter arrives from ds whole, naming the consenting subjects as <code>principals</code> and as <code>keys</code>, and the organization layer is applied to the consumer's <code>organizations</code> from ds's verdict (GS-13); a filter this service cannot apply serves no rows. Specification: <a href="docs/dataspace-row-filters/">docs/dataspace-row-filters.md</a>.</p>
 <p>Governance overrides are supported via <code>governance.&lt;app_name&gt;.yaml</code> files merged with the base <code>governance.yaml</code>.</p>
 <h3 id="lineage-and-provenance">Lineage and provenance</h3>
 <ul>

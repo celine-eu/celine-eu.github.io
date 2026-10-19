@@ -4506,7 +4506,10 @@
 
 
 <h1 id="cli-reference">CLI reference</h1>
-<pre><code class="language-text">celine-utils
+<pre><code class="language-text">celine-governance
+└── validate
+
+celine-utils
 ├── governance
 │   ├── generate marquez
 │   └── graph
@@ -4550,6 +4553,10 @@ its base. One overlay per base: the same name in two places is an error.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>parse</code></td>
+<td>a file that cannot be read, or is not a YAML mapping</td>
+</tr>
+<tr>
 <td><code>schema</code></td>
 <td>each file against <code>governance.schema.json</code>; unknown keys warn</td>
 </tr>
@@ -4567,7 +4574,7 @@ its base. One overlay per base: the same name in two places is an error.</p>
 </tr>
 <tr>
 <td><code>consent-coherence</code></td>
-<td>on dataspace offers: a person filter without <code>consent_required</code> or <code>pii</code>, and personal data without a person filter</td>
+<td>on dataspace offers: a person filter without <code>consent_required</code> or <code>pii</code>; personal data (<code>consent_required</code> or <code>pii</code>) narrowed only by organization filters (an error); personal data with neither a person nor an organization filter (a warning); a person filter with an empty <code>column</code>. <code>allow_all</code> / <code>deny_all</code> are not person filters, and a person layer of <code>deny_all</code> is coherent with any declaration</td>
 </tr>
 <tr>
 <td><code>owners</code></td>

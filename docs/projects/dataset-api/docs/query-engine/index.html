@@ -5083,9 +5083,12 @@ rendered once, as PostgreSQL. The SQL is never re-parsed from text in between: a
 text round trip changes the dialect (<code>INTERVAL '30 minutes'</code> becomes
 <code>INTERVAL '30' MINUTES</code>) and splits <code>schema.table</code>, so a filter keyed on the
 physical table would stop matching and be dropped.</p>
-<p>On a request arriving through the dataspace the filter comes from ds's decision
-rather than from governance here, and carries the consenting subjects with it —
-see <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
+<p>On a request arriving through the dataspace both row-policy layers are still read
+from the local declaration: the person layer's filter comes from ds's decision and
+carries the consenting subjects with it, and the organization layer is applied to
+the decision's <code>organizations</code> (GS-13 in
+<a href="../governance-security/">governance-security.md</a>) — see
+<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <h3 id="logging">Logging</h3>
 <h4 id="qe-03-the-query-log-carries-a-statements-shape-never-its-literals">QE-03 — The query log carries a statement's shape, never its literals</h4>
 <p>A statement's literals are the caller's data, not its structure: a boundary

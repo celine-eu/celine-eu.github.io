@@ -881,6 +881,10 @@
          <lastmod>2026-10-19</lastmod>
     </url>
     <url>
+         <loc>https://celine-eu.github.io/projects/celine-utils/docs/decisions/ADR-0005-governance-is-validated-strictly-and-materialized/</loc>
+         <lastmod>2026-10-19</lastmod>
+    </url>
+    <url>
          <loc>https://celine-eu.github.io/projects/celine-utils/docs/specifications/</loc>
          <lastmod>2026-10-19</lastmod>
     </url>
@@ -954,6 +958,10 @@
     </url>
     <url>
          <loc>https://celine-eu.github.io/projects/dataset-api/docs/decisions/ADR-0002-an-organization-reads-only-its-own-rows/</loc>
+         <lastmod>2026-10-19</lastmod>
+    </url>
+    <url>
+         <loc>https://celine-eu.github.io/projects/dataset-api/docs/decisions/ADR-0003-a-row-policy-has-two-declared-layers/</loc>
          <lastmod>2026-10-19</lastmod>
     </url>
     <url>

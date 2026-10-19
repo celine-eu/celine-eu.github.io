@@ -4131,7 +4131,7 @@ is not derivable from the code and would otherwise be re-litigated.</p>
 <pre><code class="language-markdown"># ADR-0001 — &lt;the decision, as a statement&gt;
 
 **Date:** &lt;ISO-8601&gt;
-**Status:** accepted | superseded by ADR-####
+**Status:** accepted | superseded by ADR-#### | accepted; superseded in part by ADR-####
 
 ## Context
 &lt;what forced a choice. The constraint, and what had already been tried.&gt;
@@ -4170,6 +4170,10 @@ edited to say something else.</p>
 <tr>
 <td><a href="ADR-0002-an-organization-reads-only-its-own-rows/">ADR-0002</a></td>
 <td>An organization reads only its own rows, through a row filter (<code>organization_match</code>); its <code>admins</code> read like <code>managers</code>; an <code>internal</code> dataset with no row filter is closed to organizations unless declared <code>member_wide</code></td>
+</tr>
+<tr>
+<td><a href="ADR-0003-a-row-policy-has-two-declared-layers/">ADR-0003</a></td>
+<td>A row policy has two layers, person and organization, each declared (<code>allow_all</code> / <code>deny_all</code> with <code>binds</code>); an undeclared layer on a non-<code>open</code> dataset follows <code>ROW_FILTERS_DEFAULT</code>, <code>deny</code> by default; after the <code>platform-admin</code> bypass; <code>open</code> needs a login; on the dataspace path the organization layer applies to the verdict's <code>organizations</code>. Supersedes ADR-0002 in part</td>
 </tr>
 </tbody>
 </table>

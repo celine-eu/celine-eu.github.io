@@ -4689,8 +4689,8 @@ Each clause below names its tests.</p>
 </tr>
 <tr>
 <td><code>organization_match</code></td>
-<td>—</td>
-<td>the rows of the caller's organizations (GS-06 in <a href="../governance-security/">governance-security.md</a>); refuses a delegated request (<code>binds: organization</code>). ds sends it, naming nobody, for a dataset that is not consent-gated (ds rule X-17), so such a dataset serves no rows through an agreement</td>
+<td><code>organizations</code></td>
+<td>the rows of the caller's organizations (GS-06 in <a href="../governance-security/">governance-security.md</a>); on a dataspace request, of the consumer's organizations from the decision, none → no rows (GS-13); refuses a delegation naming subjects (<code>binds: organization</code>). ds also sends it, naming nobody, for a dataset that is not consent-gated (ds rule X-17); that copy is not read as the person layer</td>
 <td><code>column</code> or <code>org_type</code>, at least one</td>
 </tr>
 <tr>
@@ -4724,7 +4724,9 @@ file, which the connector reads and this service must recognise.</p>
 unauthenticated caller with <code>401</code> and skips row filters for holders of the
 <code>platform-admin</code> realm role; it then applies the two-layer row policy, where a
 <code>deny_all</code> or an undeclared layer refuses the dataset (GS-10). On the dataspace path
-that policy is not yet read: the filter is ds's, as this page describes. The handler then decides by who the caller is, in this order:</p>
+the same policy is read: the filter on this page is its person layer, and the
+organization layer is applied to the consumer's organizations the decision carries
+beside it (<code>organizations</code>, GS-13 in <a href="../governance-security/">governance-security.md</a>). The handler then decides by who the caller is, in this order:</p>
 <ol>
 <li><strong><code>principals</code> present</strong> (dataspace path only), even empty: a delegated
    request, resolved for the named members on this service's identity (RF-05).</li>
@@ -4751,9 +4753,13 @@ the change that lands it adds its tests and removes the status line.</p>
 <code>subject_dids</code>, never a column and a list of ids. A decision reduced to a column
 would force this service to assume a handler, and assuming the wrong one injects
 a predicate that matches by coincidence or not at all.</p>
-<p>A verdict with no <code>row_filter</code> is an allow with no filter: the dataset carries no
-data subject and every row may leave. That is never how a filter that could not
-be built is reported — the two would be indistinguishable here.
+<p>A verdict with no <code>row_filter</code> names no consenting subject: the dataset's person
+layer must then admit every row by this service's own declaration, and its
+organization layer still applies (GS-13 in <a href="../governance-security/">governance-security.md</a>).
+It is never how a filter that could not be built is reported — the two would be
+indistinguishable here. Beside <code>row_filter</code>, a verdict entry may carry
+<code>organizations</code>, the consumer's organizations; it is optional, like <code>subject_dids</code>, so
+this service is deployed before ds sends it.
 Tests: <code>tests/security/test_dataplane_row_filter_contract.py</code>.</p>
 <h3 id="rf-02-an-unknown-field-in-the-filter-refuses-the-request">RF-02 — An unknown field in the filter refuses the request</h3>
 <p>The filter is parsed with unknown fields forbidden. A field this service does not
@@ -4817,7 +4823,8 @@ delegation, is a <code>403</code> naming the handler; no rows are served and no 
 is recorded, because nothing was disclosed.
 Tests: <code>tests/api/test_edr_subject_key_filter.py</code>.</p>
 <h3 id="rf-07-a-resolved-plan-is-cached-by-whose-rows-it-is-for">RF-07 — A resolved plan is cached by whose rows it is for</h3>
-<p>The plan cache is keyed by handler, table, caller, <strong>both allow-lists</strong> and args.
+<p>The plan cache is keyed by handler, table, caller, <strong>both allow-lists</strong>, the consumer's
+<code>organizations</code> (GS-13) and args.
 The caller alone is not enough: in delegation it is one service account for every
 agreement. Nor are the principals alone: a <code>subject_key_match</code> decision often
 carries none, so two consents would differ only in their keys and the second

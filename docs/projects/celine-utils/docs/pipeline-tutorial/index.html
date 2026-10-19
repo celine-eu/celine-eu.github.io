@@ -4754,7 +4754,7 @@ has two different default sets depending on which component reads it — are in 
 celine-utils pipeline run envs
 </code></pre>
 <h2 id="meltano-ingestion-bronze">Meltano (Ingestion / Bronze)</h2>
-<p>Configure ingestion in <code>meltano/meltano.yml</code>.</p>
+<p>Configure ingestion in <code>apps/&lt;app&gt;/meltano/meltano.yml</code>.</p>
 <p>Example job:</p>
 <pre><code class="language-yaml">jobs:
   - name: import
@@ -4842,7 +4842,7 @@ overlay mechanism for per-environment differences.</p>
 <p><strong>Note</strong> Since governance travels as an OpenLineage facet, disabling OpenLineage with
 <code>OPENLINEAGE_ENABLED=false</code> also disables governance tracking.</p>
 <h2 id="python-prefect-flows">Python / Prefect Flows</h2>
-<p>Example <code>flows/pipeline.py</code>:</p>
+<p>Example <code>apps/&lt;app&gt;/flows/pipeline.py</code>:</p>
 <pre><code class="language-python">from prefect import flow
 from celine.utils.pipelines.pipeline import (
     meltano_run_import,

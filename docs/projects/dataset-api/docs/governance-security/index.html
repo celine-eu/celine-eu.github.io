@@ -2681,6 +2681,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-13-through-an-agreement-the-consumers-organization-reads-its-own-rows-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-13 — Through an agreement, the consumer's organization reads its own rows only
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4930,6 +4941,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#gs-13-through-an-agreement-the-consumers-organization-reads-its-own-rows-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GS-13 — Through an agreement, the consumer's organization reads its own rows only
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5226,7 +5248,10 @@ dataspace request, and the ordinary path is never a fallback for it:</p>
 <li>one <code>POST /internal/dataplane/authorize</code> covers the whole query; a deny is <code>403</code>
   (<em>"Refused by ds: …"</em>), ds unreachable or erroring is <code>502</code></li>
 <li>the row filter arrives in ds's decision and is applied here or nothing is served
-  (<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)</li>
+  (<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>); this service's own row
+  policy is read too: ds's filter is the person layer, and the organization layer is
+  the local declaration applied to the consumer's organizations the decision carries
+  (GS-13)</li>
 <li>the disclosure is recorded with <code>POST /internal/audit/query</code>, naming the
   consenting subjects by DID, never by principal or key (RF-10 in
   <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>)</li>
@@ -5342,6 +5367,14 @@ resolved to several datasets writes one <code>denied</code> record per dataset, 
 <td>a row filter could not be resolved for the caller (<code>403</code>)</td>
 </tr>
 <tr>
+<td><code>row_policy_undeclared</code></td>
+<td>a row-policy layer is undeclared on a non-<code>open</code> dataset under <code>ROW_FILTERS_DEFAULT=deny</code> (<code>403</code>); under <code>allow</code> the same reason is carried by the <em>allowed</em> record (GS-10)</td>
+</tr>
+<tr>
+<td><code>row_policy_denied</code></td>
+<td>a row-policy layer declares <code>deny_all</code> (<code>403</code>, GS-10)</td>
+</tr>
+<tr>
 <td><code>not_offered</code></td>
 <td>dataspace: a dataset is not <code>dataspace_expose</code> (<code>403</code>)</td>
 </tr>
@@ -5351,7 +5384,7 @@ resolved to several datasets writes one <code>denied</code> record per dataset, 
 </tr>
 <tr>
 <td><code>row_filter_unenforceable</code></td>
-<td>dataspace: ds asked for a row filter this instance cannot apply (<code>403</code>)</td>
+<td>a declared row filter cannot be read or names a handler this instance lacks (GS-11); dataspace: ds asked for a row filter this instance cannot apply, or the two ends disagree on the person layer (GS-13) (<code>403</code>)</td>
 </tr>
 <tr>
 <td><code>pull_token</code></td>
@@ -5421,8 +5454,10 @@ organization gets no rows. A caller in two organizations reads both; a token sti
 naming an organization the person has left reads it until the token is reissued,
 and a reissued token is never answered from the previous token's cached plan.</p>
 <p>The platform administrator and a service admitted by scope are not narrowed by
-<code>organization_match</code>. A dataspace (delegated) request is refused by it: an
-organization is not a consenting subject.</p>
+<code>organization_match</code>. On a dataspace request it filters by the consumer's
+organizations carried in ds's verdict, before the service bypass (GS-13); a
+delegation naming consenting subjects instead (<code>principals</code>/<code>keys</code>) is refused by
+it: an organization is not a consenting subject.</p>
 <p>Tests: <code>tests/routes/test_organization_scoping.py</code>,
 <code>tests/routes/test_platform_admin_role.py</code>; against a running stack with two
 communities and real tokens, <code>tests/e2e/test_organization_matrix_live.py</code>.</p>
@@ -5431,7 +5466,7 @@ communities and real tokens, <code>tests/e2e/test_organization_matrix_live.py</c
 <code>platform-admin</code> role and by no organization's group: nobody decided whose rows it
 holds. A service holding the scope reads it only under <code>ROW_FILTERS_DEFAULT=allow</code>
 (GS-10). The refusal is <code>403</code> with reason
-<code>internal dataset without a row filter - platform-admin or services only</code>
+<code>internal dataset without a row filter - closed to organizations</code>
 (audited as <code>policy</code>). A dataset meant for every member of every organization —
 weather, public building data — says so in governance with the <code>member_wide</code> row
 filter (<code>binds: organization</code>), which narrows nothing — and states the person layer
@@ -5495,9 +5530,9 @@ and AND together; filters within a layer AND.</p>
 <li>The conformance sample (<code>POST /catalogue/{id}/conformance</code>) is read through the same
   path and follows the same layers.</li>
 </ul>
-<p><code>dataset-cli export governance</code> reports a missing layer and exports the entry; the
-serving instance's default refuses it. The gate that fails on it is <code>celine-governance
-validate</code> (celine-utils).</p>
+<p><code>dataset-cli export governance</code> fails on a missing layer of an exposed, non-<code>open</code>,
+non-<code>secret</code> dataset, and nothing is written; on an <code>open</code> dataset it is reported
+only. <code>celine-governance validate</code> (celine-utils) applies the same check.</p>
 <p>Tests: <code>tests/routes/test_row_policy.py</code>, <code>tests/routes/test_organization_scoping.py</code>,
 <code>tests/routes/test_import_row_policy.py</code>, <code>tests/routes/test_catalogue_conformance.py</code>,
 <code>tests/api/test_dcat_formatter.py</code>, <code>tests/cli/test_export_governance_checks.py</code>.</p>
@@ -5521,6 +5556,33 @@ to no anonymous one: <code>401</code>, reason <code>auth_required</code>, on eve
 arriving through the dataspace carries its identity in the EDR and is not affected.</p>
 <p>Tests: <code>tests/routes/test_row_policy.py</code>, <code>tests/security/test_governance.py</code>,
 <code>tests/routes/test_access_audit.py</code>.</p>
+<h4 id="gs-13-through-an-agreement-the-consumers-organization-reads-its-own-rows-only">GS-13 — Through an agreement, the consumer's organization reads its own rows only</h4>
+<p>On a dataspace request the dataset's own row policy is evaluated, both layers (GS-10):</p>
+<ul>
+<li><strong>Person layer:</strong> ds's filter, naming the consenting subjects, when the decision
+  carries one. When it carries none, the local person layer must admit every row
+  (<code>allow_all</code>, or undeclared on an <code>open</code> dataset — otherwise the default applies); a
+  local person filter with no subjects from ds is refused, <code>403
+  row_filter_unenforceable</code>: the two ends disagree. A filter ds sends whose handler
+  binds an organization (ds rule X-17) is not read as the person layer.</li>
+<li><strong>Organization layer:</strong> the local declaration, applied to the decision's
+  <code>organizations</code> for the dataset — the consumer's organizations, which ds establishes
+  from the credential the consumer presented. <code>organization_match</code> serves the rows
+  whose column holds one of them, before any service bypass; with <code>org_type</code> alone, a
+  non-empty list reads every row (ds checked the type). No list, or an empty one, is
+  no rows. <code>member_wide</code> and any handler that cannot read the list refuse, <code>403
+  row_filter_unenforceable</code>. A list that is not a list of non-empty strings is <code>502</code>.</li>
+<li><code>deny_all</code> in either layer is <code>403 row_policy_denied</code>; an undeclared layer follows
+  <code>ROW_FILTERS_DEFAULT</code>.</li>
+<li>A dataset the decision does not list is evaluated the same way, with no subjects and
+  no organizations.</li>
+<li>The list is part of the plan-cache key: two agreements for two organizations never
+  share a plan.</li>
+</ul>
+<p>The field is optional on the wire, so this service is deployed before ds sends it;
+until ds does, an organization-bound dataset serves no rows through an agreement.</p>
+<p>Tests: <code>tests/api/test_edr_organization_layer.py</code>,
+<code>tests/api/dataset_query/test_row_policy_units.py</code>.</p>
 <p>The query engine never logs a statement's literals: wherever it logs SQL it logs the
 statement's shape, every literal replaced by <code>?</code> (QE-03 in
 <a href="../query-engine/#logging">query-engine.md</a>). On a dataspace request the completed SQL is
@@ -5529,11 +5591,12 @@ withheld from the log entirely: its predicate is a literal list of the consentin
 <hr />
 <h2 id="row-level-filtering">Row-level filtering</h2>
 <p>A dataset may declare <code>row_filters</code> in governance, and a handler turns each one into
-a predicate. On a request arriving through the dataspace the filter is not read from
-governance here — it arrives inside ds's decision, with the consenting subjects named
-in it, and this service applies it or serves nothing. That path has its own
-specification, with clauses and tests:
-<a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
+a predicate. On a request arriving through the dataspace the local declaration is
+still read, both layers (GS-13): the person layer's filter arrives inside ds's
+decision, with the consenting subjects named in it, and the organization layer is
+this service's declaration applied to the decision's <code>organizations</code>; a filter this
+service cannot apply serves nothing. ds's half has its own specification, with clauses
+and tests: <a href="../dataspace-row-filters/">dataspace-row-filters.md</a>.</p>
 <p>Whose rows an organization's reader gets is GS-06; an <code>internal</code> dataset with no
 row filter at all is GS-07; what a filter binds is GS-08; the column it names is GS-09;
 the two layers and what an undeclared one does is GS-10; an unreadable declaration is

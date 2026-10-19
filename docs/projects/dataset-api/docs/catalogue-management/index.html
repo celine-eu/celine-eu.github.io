@@ -4721,7 +4721,7 @@ nothing — no create, update or cleanup (<a href="../governance-security/">GS-0
 - exclude one: <code>--datasets '-datasets.*.gold.experimental_*'</code></p>
 <p>A <code>dataset_id</code> declared differently in two inputs is refused unless
 <code>--allow-conflicts</code>, which keeps the declaration from the last file in sorted order.
-Invalid entries are skipped with a warning; <code>--strict</code> fails on the first one.</p>
+An invalid entry fails the import (strict by default); <code>--no-strict</code> skips it with a warning.</p>
 <hr />
 <h2 id="dry-run">Dry Run</h2>
 <p><code>--dry-run</code> prints the dataset_ids selected after <code>--ns</code> and <code>--datasets</code> and exits.

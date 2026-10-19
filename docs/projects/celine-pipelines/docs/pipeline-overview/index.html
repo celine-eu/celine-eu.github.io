@@ -4758,16 +4758,29 @@ sources:
       - handler: rec_registry
         args:
           column: device_id
+      - handler: allow_all
+        binds: organization
     expose: true
+    dataspace:
+      expose: false
 </code></pre>
-<p>Two rules are load-bearing:</p>
+<p>Four rules are load-bearing:</p>
 <ul>
 <li><strong>Each pipeline lists only the datasets it produces.</strong> A dataset declared in two
   <code>governance.yaml</code> files has two answers to "who owns this", and nothing reconciles them.</li>
 <li><strong>A dataset with <code>row_filters</code> must keep the filtered column.</strong> <code>dataset-api</code> applies
   whatever filters a dataset's own entry declares and never compares two datasets; a view
   that dropped the column would be served <strong>unfiltered</strong> rather than failing.</li>
+<li><strong>Every exposed, non-<code>open</code> dataset states both row-policy layers.</strong> A filter's <code>binds</code>
+  is its layer — <code>person</code> (whose rows) or <code>organization</code> (which organization's rows) — and
+  a layer left undeclared is refused at query time. <code>allow_all</code> / <code>deny_all</code> state a layer
+  without narrowing by a column; they must say which with <code>binds</code>.</li>
+<li><strong>Nothing here offers a dataset into the dataspace.</strong> <code>dataspace.expose</code> is <code>false</code> in
+  every file of this repository; a deployment opts a dataset in, one at a time, through its
+  own overlay.</li>
 </ul>
+<p><code>celine-governance validate apps/</code> (celine-utils) checks these files the way a deployment
+will serve them.</p>
 <p>The full schema is published at
 <a href="https://celine-eu.github.io/schema/">the <code>governance.schema.json</code> published by <code>celine-utils</code></a> and
 the field reference in the

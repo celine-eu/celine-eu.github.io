@@ -4634,8 +4634,8 @@ client-credentials token for <code>CELINE_OIDC_CLIENT_ID</code> / <code>CELINE_O
 anything. <code>--dry-run</code> needs no token.</p>
 <p>Validation happens here: each entry is checked against the catalogue schema
 (<code>title</code> and <code>backend_type</code> required, <code>backend_type</code> one of <code>postgres</code>, <code>s3</code>, <code>fs</code>,
-<code>quantumleap</code>, <code>context_broker</code>). Invalid entries are skipped with a warning;
-<code>--strict</code> fails on the first one. A <code>dataset_id</code> declared differently in two inputs
+<code>quantumleap</code>, <code>context_broker</code>). An invalid entry fails the import on the first
+one (strict by default); <code>--no-strict</code> skips it with a warning. A <code>dataset_id</code> declared differently in two inputs
 is refused unless <code>--allow-conflicts</code>.</p>
 <p>The CLI prints file, namespace and filter counts, then <code>Catalogue import complete.</code>.
 The server upserts on <code>dataset_id</code>, skips entries whose PostgreSQL table does not
@@ -4732,7 +4732,12 @@ else <code>./config.yaml</code>).</p>
 </ul>
 <h3 id="forbidden-403">“Forbidden (403)”</h3>
 <ul>
+<li>no token on any level, <code>open</code> included: <code>401</code> (GS-12)</li>
 <li>JWT missing groups/scopes required by the policy</li>
+<li>a row-policy layer left undeclared on a non-<code>open</code> dataset under
+  <code>ROW_FILTERS_DEFAULT=deny</code>: <em>"declares no … row policy"</em>, reason
+  <code>row_policy_undeclared</code>; a layer declaring <code>deny_all</code>: reason <code>row_policy_denied</code>
+  (GS-10)</li>
 <li>service account without the <code>dataset.query</code> (internal) or <code>dataset.admin</code>
   (restricted) scope</li>
 <li>access_level is <code>restricted</code> and policy denies</li>

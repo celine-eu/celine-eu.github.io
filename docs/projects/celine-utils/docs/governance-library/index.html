@@ -4477,6 +4477,36 @@ unknown = validate_file(Path(&quot;governance.yaml&quot;), strict=True) # raises
 </tr>
 </tbody>
 </table>
+<p>A whole tree, as it will be served, is one call — the library side of
+<a href="../cli/#celine-governance-validate--the-gate-before-an-import"><code>celine-governance validate</code></a>:</p>
+<pre><code class="language-python">from celine.governance.check import check_governance
+
+report = check_governance(
+    [&quot;apps/&quot;], overlay_dirs=[&quot;deploy/governance&quot;], owners_files=[&quot;owners.yaml&quot;]
+)
+if not report.ok(strict=True):
+    for f in report.failures(strict=True):
+        print(f.severity, f.rule, f.source, f.dataset, f.detail)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>check_governance(paths, *, overlay_dirs=(), owners_files=(), handlers=(), dataspace=False)</code></td>
+<td>every <code>governance.yaml</code> under <code>paths</code>, each merged with its overlay, checked by every rule. <strong>Never raises</strong>: findings are collected into a <code>CheckReport</code></td>
+</tr>
+<tr>
+<td><code>CheckReport</code></td>
+<td><code>findings</code> (each a <code>CheckFinding</code>: <code>severity</code>, <code>rule</code>, <code>source</code>, <code>detail</code>, <code>dataset</code>), <code>files</code> (base, overlay) pairs, <code>datasets</code> count; <code>ok(strict=)</code>, <code>failures(strict=)</code>, <code>as_dict(strict=)</code> — <code>strict</code> makes warnings fail</td>
+</tr>
+</tbody>
+</table>
+<p>It is imported from <code>celine.governance.check</code>, not the package root.</p>
 <p><code>schema_errors</code> reports <strong>every</strong> error rather than the first: a governance file is
 edited by hand, and one problem per run turns a five-minute fix into five round
 trips.</p>
