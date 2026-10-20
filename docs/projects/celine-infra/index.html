@@ -5371,9 +5371,11 @@ and every chart follows it.</p>
 </tbody>
 </table>
 <p>Traefik differs from ingress-nginx on a few annotations: <code>auth-url</code> forward auth behaves
-differently (test the oauth2-proxy login end to end), <code>custom-headers</code> works but
-<code>global-allowed-response-headers</code> has no equivalent, and <code>configuration-snippet</code> is only partly
-supported. Overrides go in <code>envs/&lt;env&gt;/0010-core/traefik/values.yaml.gotmpl</code>.</p>
+differently (test the oauth2-proxy login end to end), <code>custom-headers</code> works once its header
+names are allowed (<code>globalAllowedResponseHeaders</code>, ingress-nginx's
+<code>global-allowed-response-headers</code>: infra allows the "Security headers" list below, and
+<code>ingress_controller.allowed_response_headers</code> adds more; any other header turns every path of
+the Ingress into a 503), and <code>configuration-snippet</code> is only partly supported. Overrides go in <code>envs/&lt;env&gt;/0010-core/traefik/values.yaml.gotmpl</code>.</p>
 <h2 id="network-perimeter">Network perimeter</h2>
 <p>An environment can close its namespace <code>celine-&lt;env&gt;</code> to the rest of the cluster
 (release <code>celine-network-policy</code>, group <code>core</code>). Off unless asked, so an environment that
