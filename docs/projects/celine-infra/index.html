@@ -5281,6 +5281,10 @@ Images before the celine-sdk release that carries <code>posture</code> ignore th
 <td>secret: the key Qdrant enforces (<code>apiKey</code>) and the assistant sends (<code>QDRANT_API_KEY</code>, through <code>ai-assistant-secrets</code>). Required by the assistant outside dev. Unset: neither is rendered. Sync <code>ai-assistant</code> and <code>ai-assistant-shell</code> before <code>qdrant</code></td>
 </tr>
 <tr>
+<td><code>nudging.vapid_private_key</code></td>
+<td>secret: <code>VAPID_PRIVATE_KEY</code>, the Web Push signing key, through <code>nudging-secrets</code> (never a plain <code>env</code> value). <code>nudging.vapid_public_key</code> and <code>nudging.vapid_subject</code> stay plain values. A new key pair invalidates the push subscriptions already made</td>
+</tr>
+<tr>
 <td><code>nudging.click_tracking_secret</code></td>
 <td>secret: <code>CLICK_TRACKING_SECRET</code>, the HMAC key of tracked notification links, through <code>nudging-secrets</code>. Required by nudging outside dev from the release that carries <code>posture</code>. Older images sign with <code>VAPID_PRIVATE_KEY</code> when it is unset, so setting it invalidates the links already sent</td>
 </tr>
