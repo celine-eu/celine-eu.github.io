@@ -4244,6 +4244,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mirror-schemas-for-the-sync-sink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mirror schemas for the sync sink
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#table-sync-sync_tables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4765,6 +4776,17 @@
     <span class="md-ellipsis">
       
         Read-only role on datasets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mirror-schemas-for-the-sync-sink" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mirror schemas for the sync sink
       
     </span>
   </a>
@@ -5534,6 +5556,40 @@ transaction with a 5 s lock timeout; if a table is busy, the Job rolls back and 
 Schemas that are missing or not the owner's are skipped with a warning. So are tables
 another role owns, which also never get the future-tables default. The Job's log ends with
 a per-schema count of tables and of readable tables.</p>
+<h2 id="mirror-schemas-for-the-sync-sink">Mirror schemas for the sync sink</h2>
+<p>Where a database receives copied tables, the sink writes them as <code>mirror_writer</code>, a role
+that owns the mirror schemas and nothing else: no CREATE on the database, no other schema.
+With <code>postgres_db.mirror.enabled: true</code> the <code>postgres-db</code> release adds:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgres_db.mirror.enabled</code></td>
+<td><code>true</code> or <code>false</code> (default). Anything else stops the render</td>
+</tr>
+<tr>
+<td><code>postgres_db.mirror.schemas</code></td>
+<td><strong>required when on</strong>: the schemas the sink writes, the same as <code>sync_tables.sink.allow_schemas</code>. Not <code>public</code>, <code>information_schema</code> or <code>pg_*</code></td>
+</tr>
+<tr>
+<td><code>postgres_db.mirror_writer</code></td>
+<td><strong>required when on</strong>, secret: the role's password. It goes into a connection URI unescaped, so use a URL-safe value</td>
+</tr>
+</tbody>
+</table>
+<p>It renders the role, its connection string Secret <code>postgis1-mirror-writer-connection-string</code>
+(the sink's <code>dsn_secret</code>), the database owner's membership in <code>mirror_writer</code>, and a Job
+that runs as the owner on every deploy. The Job creates each missing schema owned by
+<code>mirror_writer</code> (<code>CREATE SCHEMA ... AUTHORIZATION</code> is why the owner needs the membership),
+refuses a schema that already exists under another owner, and gives <code>datasets_ro</code> USAGE,
+SELECT on what is there and the default for what the sink creates later. Until CNPG has
+reconciled the new role and membership, the Job fails and retries. The read-only grants
+above skip these schemas with a warning, since the owner does not own them.</p>
 <h2 id="table-sync-sync_tables">Table sync (sync_tables)</h2>
 <p><code>charts/sync-tables</code> runs sync_tables' exchange layer, with two roles enabled per
 environment (<code>sync_tables.sink.enabled</code>, <code>sync_tables.push_source.enabled</code>; the release is
