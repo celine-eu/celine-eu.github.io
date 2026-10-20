@@ -5799,6 +5799,14 @@ ConfigMap mounted at <code>/data</code>; a change to it restarts the pod.</p>
 <td><code>legal.base_url</code></td>
 <td>where applications find the legal host: defaults to <code>https://&lt;legal.host&gt;</code> when the release is installed. Set it alone to use a legal host served elsewhere. Set it to <code>""</code> while nothing is published: the applications keep their own documents, and the host serves the draft only</td>
 </tr>
+<tr>
+<td><code>legal.applications_read_draft</code></td>
+<td>every application below reads the draft, <code>https://&lt;legal.host&gt;/draft/&lt;legal.draft_revision&gt;</code>, instead of the base URL: for an environment that reviews the texts in the applications, before any release. Needs <code>legal.enabled</code> and <code>legal.draft</code>. Acceptances are then given on draft versions</td>
+</tr>
+<tr>
+<td><code>legal.draft_revision</code></td>
+<td>the draft's 40-hex commit, the same one the release's environment file gives the host; required by <code>applications_read_draft</code>. The address changes with it: after a change to the data, apply <code>legal</code> first, then the applications</td>
+</tr>
 </tbody>
 </table>
 <p><strong>The data</strong> comes from the release's environment file,
