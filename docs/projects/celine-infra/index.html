@@ -4200,6 +4200,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sizing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4710,6 +4721,17 @@
     <span class="md-ellipsis">
       
         Network perimeter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis
       
     </span>
   </a>
@@ -5413,6 +5435,41 @@ does not set it renders unchanged.</p>
 <p>Ingress only: egress stays open. The cluster's CNI must enforce NetworkPolicy (a default
 minikube does not, so <code>dev</code> renders it without effect).</p>
 <pre><code>task test:network-policy
+</code></pre>
+<h2 id="redis">Redis</h2>
+<p>One Redis (release <code>redis</code>, group <code>core</code>) holds the oauth2-proxy sessions, and on
+environments that run them, Prefect's messaging and Superset's broker and cache.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>redis.password</code></td>
+<td>secret (<code>secrets.sops.yaml</code>). Set: Redis requires it (<code>requirepass</code>); it lives only in the Secret <code>redis-auth</code> (key <code>password</code>), which oauth2-proxy reads as <code>OAUTH2_PROXY_REDIS_PASSWORD</code>. A changed password restarts both through a <code>checksum/redis-auth</code> annotation. Unset: Redis is open, as before. <code>prod</code> refuses to render without it</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Client</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>oauth2-proxy (sessions); today also Prefect and Superset's Celery broker</td>
+</tr>
+</tbody>
+</table>
+<p>Prefect and Superset do not read the password yet: an environment that runs them keeps
+<code>redis.password</code> unset until they do.</p>
+<pre><code>task test:redis
 </code></pre>
 <h2 id="sizing">Sizing</h2>
 <p>Clusters that bill by resource request, or fill in a large default for pods that declare
