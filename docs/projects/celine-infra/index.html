@@ -4200,6 +4200,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pod-security-restricted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pod Security restricted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#images-by-digest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images by digest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#redis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4732,6 +4754,28 @@
     <span class="md-ellipsis">
       
         Network perimeter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pod-security-restricted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pod Security restricted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#images-by-digest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images by digest
       
     </span>
   </a>
@@ -5457,6 +5501,54 @@ does not set it renders unchanged.</p>
 <p>Ingress only: egress stays open. The cluster's CNI must enforce NetworkPolicy (a default
 minikube does not, so <code>dev</code> renders it without effect).</p>
 <pre><code>task test:network-policy
+</code></pre>
+<h2 id="pod-security-restricted">Pod Security <code>restricted</code></h2>
+<p>Every workload the <code>celine-&lt;env&gt;</code> namespace receives in prod passes Pod Security
+<code>restricted</code>, by infra defaults: no privilege escalation and no capabilities on every
+container (the shells, policies-shell's init containers, postgres-db's Jobs, Keycloak and
+its dbchecker, Redis, the app broker, qdrant), the postgres-db Jobs as the postgis image's
+postgres user (uid 26), and qdrant without its root <code>chown</code> init container
+(<code>updateVolumeFsOwnership: false</code>: the pod's fsGroup gives the volume to its group). The
+seccomp profile is left to the cluster (GKE Autopilot sets <code>RuntimeDefault</code>). An
+environment enforces it with <code>network_policy.pod_security.enforce: restricted</code>.
+auth-setup's dashboard (<code>nginx:alpine</code>, root) does not pass: keep it off where
+<code>restricted</code> is enforced.</p>
+<pre><code>task test:pod-security
+</code></pre>
+<h2 id="images-by-digest">Images by digest</h2>
+<p>An environment pins images by digest in one map, by repository and tag:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image_digests.&lt;repository&gt;.&lt;tag&gt;</code></td>
+<td><code>sha256:&lt;64 hex&gt;</code>. A container whose <code>repository:tag</code> is listed runs <code>repository:tag@sha256:…</code>; the <code>app.kubernetes.io/version</code> label keeps the tag. Keyed by tag: a tag bumped without its digest runs unpinned, never the old image under the new name. A value that is not a sha256 digest stops the render. Unset: images by tag</td>
+</tr>
+<tr>
+<td><code>ingress_controller.image_tag</code>, <code>oauth2_proxy.image_tag</code></td>
+<td>name the Traefik / oauth2-proxy tag (otherwise the chart's), so the map can pin it</td>
+</tr>
+<tr>
+<td><code>postgres_db.pgbouncer_image_tag</code></td>
+<td>names the pooler's pgbouncer tag (otherwise the CNPG operator's), so the map can pin it</td>
+</tr>
+<tr>
+<td><code>postgres_db.pin_cluster_image</code></td>
+<td><code>true</code>: the postgis Cluster's image is pinned too. Off by default because a changed <code>imageName</code> restarts Postgres; the postgres-db Jobs take the digest as soon as it is listed</td>
+</tr>
+</tbody>
+</table>
+<p>Keycloak (<code>ghcr.io/celine-eu/keycloak</code>) and its dbchecker render as <code>repository@digest</code>
+(keycloakx's own value). Not pinnable this way: qdrant 1.17.0 (no digest value; a
+<code>tag@digest</code> tag breaks the chart's <code>semverCompare</code>), the CNPG operator and the pooler's
+init container (the operator image; changing it upgrades the instance manager). Redis is
+pinned by its chart. <code>sync_tables.image</code> is one reference: write <code>tag@sha256:…</code> there.</p>
+<pre><code>task test:image-digest
 </code></pre>
 <h2 id="redis">Redis</h2>
 <p>One Redis (release <code>redis</code>, group <code>core</code>) holds the oauth2-proxy sessions, and on
