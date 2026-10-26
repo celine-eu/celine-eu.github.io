@@ -4141,10 +4141,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#req-0034-a-commitment-is-recorded-even-when-nothing-can-be-resolved" class="md-nav__link">
+  <a href="#req-0034-an-accept-that-could-never-be-settled-is-refused" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ-0034 — a commitment is recorded even when nothing can be resolved
+        REQ-0034 — an accept that could never be settled is refused
       
     </span>
   </a>
@@ -4245,13 +4245,43 @@ suggestion id.</p>
   choose, and settlement will later fetch readings for that hour. A client bug here
   produces a plausible wrong settlement rather than a visible failure.</li>
 </ul>
-<h3 id="req-0034-a-commitment-is-recorded-even-when-nothing-can-be-resolved">REQ-0034 — a commitment is recorded even when nothing can be resolved</h3>
-<p>If the profile and asset lookups both fail, the row is still written, with
-<code>community_id</code> and <code>device_id</code> null and status <code>committed</code>.</p>
-<p>The participant's decision is the thing of value and it is kept whatever the Digital Twin
-says. What it costs is settlement: a row with no community or no device is skipped
-forever by <code>settle_completed_windows</code> (REQ-0041), so <strong>this commitment can never be paid
-out</strong>, and nothing anywhere reports that.</p>
+<h3 id="req-0034-an-accept-that-could-never-be-settled-is-refused">REQ-0034 — an accept that could never be settled is refused</h3>
+<p>An accept resolves the caller's community and metered device before anything else. If
+either cannot be resolved, <strong>nothing is written, published or scheduled</strong>, a warning is
+logged, and the response is an error whose <code>detail</code> is <code>{"code": …, "message": …}</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Status</th>
+<th><code>code</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the profile or the assets call raises</td>
+<td><code>503</code></td>
+<td><code>dt_unavailable</code></td>
+</tr>
+<tr>
+<td>the calls succeed, the profile has no community membership</td>
+<td><code>409</code></td>
+<td><code>not_a_member</code></td>
+</tr>
+<tr>
+<td>the calls succeed, no asset carries a <code>sensor_id</code></td>
+<td><code>409</code></td>
+<td><code>no_meter</code></td>
+</tr>
+</tbody>
+</table>
+<p>Membership is checked first, so a participant with neither is told <code>not_a_member</code>, and an
+assets outage for a non-member also reads as <code>not_a_member</code>.</p>
+<p>Until 2026-10-26 the opposite held: the row was written with <code>community_id</code> or
+<code>device_id</code> null, and settlement skipped it forever (REQ-0041). On staging, 2026-10-21, a
+member with no registry assets accepted — the Digital Twin answered <code>200</code> with an empty
+asset list — and the row could never be paid out. A refusal is the only point at which
+the participant can still be told.</p>
 <h3 id="req-0035-a-decline-is-recorded-and-awards-nothing">REQ-0035 — a decline is recorded and awards nothing</h3>
 <p><code>response: "declined"</code> writes a <code>rejected</code> row and returns
 <code>{"commitment_id": null, "status": "declined", "reward_points_estimated": 0}</code>.</p>

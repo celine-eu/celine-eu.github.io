@@ -4275,9 +4275,10 @@ code.</p>
 <p>Status is <code>committed</code>, <code>settled</code>, <code>rejected</code> or <code>cancelled</code>. Only <code>committed</code> is live; the
 other three are terminal. <code>rejected</code> is a <strong>decline</strong> — declines are kept so the
 acceptance rate is computable.</p>
-<p><code>community_id</code> and <code>device_id</code> are nullable, and both are resolved best-effort when the
-commitment is created. A row missing either can never be settled, and nothing reports that
-(REQ-0034, REQ-0041).</p>
+<p><code>community_id</code> and <code>device_id</code> are nullable. An accept through the suggestion route is
+refused rather than written without both (REQ-0034); <code>POST /api/commitments</code> and a
+decline still write rows without them. A <code>committed</code> row missing either can never be
+settled, and nothing reports that (REQ-0041).</p>
 <p>Alembic manages migrations. <strong>No test runs against them</strong> — the suite builds its schema
 from the models, so a model that has drifted from its migrations passes everything
 (<a href="../decisions/ADR-0003-the-database-is-real-and-sqlite/">ADR-0003</a>).</p>

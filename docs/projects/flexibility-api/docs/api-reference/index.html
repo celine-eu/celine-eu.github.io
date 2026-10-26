@@ -4310,7 +4310,7 @@ are <strong>null when not known</strong> — never 0 (REQ-0015).</p>
 <h3 id="post-apisuggestionssuggestion_idrespond"><code>POST /api/suggestions/{suggestion_id}/respond</code></h3>
 <p>Record the participant's answer. Accepting creates a commitment, publishes to MQTT and
 schedules a pre-window reminder; the last two are fire-and-forget and never fail the
-response.</p>
+response. An accept that cannot be settled is refused with a <code>409</code> or <code>503</code> (below).</p>
 <p><strong>Request:</strong></p>
 <pre><code class="language-json">{
   &quot;response&quot;: &quot;accepted&quot;,
@@ -4328,6 +4328,37 @@ become <strong>now to now + 1 hour</strong> rather than a <code>400</code> (REQ-
 <p>A decline returns <code>commitment_id: null</code>, <code>status: "declined"</code> and
 <code>reward_points_estimated: 0</code> — while storing a <code>rejected</code> row that keeps the estimate that
 was sent (REQ-0035).</p>
+<p><strong>Errors (accept only).</strong> An accept that could never be settled is refused before anything
+is stored, published or scheduled (REQ-0034). <code>detail</code> is an object:</p>
+<pre><code class="language-json">{ &quot;detail&quot;: { &quot;code&quot;: &quot;no_meter&quot;, &quot;message&quot;: &quot;No meter is registered for your account, …&quot; } }
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th><code>code</code></th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>503</code></td>
+<td><code>dt_unavailable</code></td>
+<td>the Digital Twin profile or assets call failed — retryable</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td><code>not_a_member</code></td>
+<td>the caller has no community membership</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td><code>no_meter</code></td>
+<td>no asset of the caller carries a <code>sensor_id</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>message</code> is English and meant for display; clients branch on <code>code</code>.</p>
 <hr />
 <h2 id="commitments">Commitments</h2>
 <h3 id="post-apicommitments"><code>POST /api/commitments</code></h3>
