@@ -4477,7 +4477,12 @@ changing anything on this path.</p>
 <tr>
 <td>Knowledge-base operations</td>
 <td><code>kb_admin.py</code>, <code>cli.py</code></td>
-<td><code>celine-assistant kb</code>: status, sync, reindex, prune, migrate-legacy</td>
+<td><code>celine-assistant kb</code>: status, sync, reindex, prune, migrate-legacy, orphans</td>
+</tr>
+<tr>
+<td>Erasure and retention</td>
+<td><code>erasure.py</code>, <code>cli.py</code></td>
+<td>One attachment delete that reaches every vector; <code>erase-subject</code> and <code>POST /admin/subjects/erase</code>; <code>retention run</code> (REQ-0056..0059)</td>
 </tr>
 <tr>
 <td>Settings</td>

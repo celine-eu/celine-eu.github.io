@@ -567,6 +567,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#erasure-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erasure and retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#skills" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4342,6 +4353,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#erasure-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erasure and retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#skills" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4661,6 +4683,16 @@ as its source, and rebuild it. The community is always named; there is no defaul
 celine-assistant kb migrate-legacy --community &lt;community&gt; --git &lt;training-materials repo&gt;
 celine-assistant kb prune --legacy   # once satisfied: deletes the old collection
 </code></pre>
+<h2 id="erasure-and-retention">Erasure and retention</h2>
+<p>A member's data is deleted on request or once idle for <code>RETENTION_MONTHS</code> (12, as the
+privacy notice promises). See <a href="docs/specifications/erasure/">the requirements</a>.</p>
+<pre><code class="language-bash">celine-assistant erase-subject &lt;sub&gt; [--yes]        # one person; also POST /admin/subjects/erase
+celine-assistant retention run [--dry-run] [--months N]   # daily, from the chart's CronJob
+celine-assistant kb orphans [--delete]               # vectors whose attachment is gone
+</code></pre>
+<p><code>erase-subject</code> and <code>retention run</code> delete stored files, so they run where the uploads
+are: with local storage, in the service pod or a pod mounting its volume. Elsewhere they
+delete nothing and report each attachment as failed.</p>
 <h2 id="skills">Skills</h2>
 <p>The assistant uses a modular skill system. Each skill exposes OpenAI-style function-calling tools that the LLM invokes autonomously during conversation. Skills are registered per-request based on available API endpoints and user authentication.</p>
 <table>

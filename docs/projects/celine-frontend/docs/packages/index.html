@@ -4713,6 +4713,12 @@
 <td><code>/privacy</code></td>
 <td>Privacy policy linked from the AI notice</td>
 </tr>
+<tr>
+<td><code>allowedLinkOrigins</code></td>
+<td><code>string[]</code></td>
+<td><code>[]</code></td>
+<td>Platform hosts that links in answers may point to (origins or absolute URLs; the origin counts)</td>
+</tr>
 </tbody>
 </table>
 <p>The composer always shows a one-line AI notice (EU AI Act Art. 50): answers are
@@ -4721,6 +4727,14 @@ and a link to <code>privacyPolicyUrl</code>, opened in a new tab. The text comes
 <code>assistant_ui.ai_notice</code> and <code>assistant_ui.privacy_policy</code> translation keys, which every
 consuming app must ship. <code>AssistantWidget</code> and <code>AssistantProvider</code> accept the same
 <code>privacyPolicyUrl</code> prop and pass it through.</p>
+<p>Links in rendered answers and in cited source text stay clickable only when they point to
+the page's own origin (relative links included), the host of <code>privacyPolicyUrl</code>, a host in
+<code>allowedLinkOrigins</code>, or exactly a URL the same answer cites as a source. Every other URL,
+and <code>mailto:</code>/<code>tel:</code>, is rendered as plain text with the URL visible: an injected
+instruction must not be able to put the member's data in a link one click sends away.
+Allowed links to another host open in a new tab with <code>rel="noopener noreferrer"</code>. Forms
+in answers are removed. The rule lives in <code>src/internal/answerLinks.ts</code>; its tests run with
+<code>pnpm --filter @celine-eu/assistant-ui test</code> (Vitest, jsdom).</p>
 <h3 id="assistantcontext-shape">AssistantContext Shape</h3>
 <pre><code class="language-typescript">interface AssistantContext {
   page?: string;    // Current page identifier

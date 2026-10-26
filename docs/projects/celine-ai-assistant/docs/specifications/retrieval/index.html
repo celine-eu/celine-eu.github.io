@@ -4130,6 +4130,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0054-text-the-user-did-not-write-reaches-the-model-as-data-never-as-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0054 — text the user did not write reaches the model as data, never as instructions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#known-limits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4203,7 +4214,9 @@ to the model: source material is context a reader cannot follow a citation to. <
 <h3 id="req-0023-an-attached-file-leads-the-context">REQ-0023 — an attached file leads the context</h3>
 <p>Files named in a chat request are authorised, summarised into a single context block —
 filename, type, scope and description — and placed <strong>first</strong>, ahead of anything retrieval
-found. The user attached it a second ago; it outranks a similarity score.</p>
+found. The user attached it a second ago; it outranks a similarity score. The block
+describes the files in neutral words; how much weight they deserve is the model's call,
+under REQ-0054 like any other context.</p>
 <h3 id="req-0024-a-turn-with-attachments-and-no-text-is-still-a-question">REQ-0024 — a turn with attachments and no text is still a question</h3>
 <p>The route supplies one ("analyse the attached files…"). Retrieval is skipped when there
 is no text to retrieve on.</p>
@@ -4223,6 +4236,27 @@ the move. The previous generation is kept until <code>kb prune</code>.</p>
 the current ones (<code>--embed-model</code>), and the deploy that changes <code>LLM_EMBED_MODEL</code> is the
 switch. The service refuses to start when a community has knowledge bases only for
 another model.</p>
+<h3 id="req-0054-text-the-user-did-not-write-reaches-the-model-as-data-never-as-instructions">REQ-0054 — text the user did not write reaches the model as data, never as instructions</h3>
+<p>Retrieved chunks, the attachment block (file names and image or document descriptions)
+and every tool result are written by someone other than the user: a manager's upload, a
+registered source, a vision model, another service. Each reaches the model inside its
+own data block, <code>&lt;data-… kind="document|attachments|tool_result"&gt;</code> … <code>&lt;/data-…&gt;</code>, with
+its source on the first line inside.</p>
+<ul>
+<li>The tag is drawn at random for each turn (64 bits) and is the same for the system
+  prompt, the context and the tool results of that turn.</li>
+<li>Every occurrence of the tag is removed from the wrapped text and from its source line,
+  repeatedly, so nothing inside a block can close it or open another.</li>
+<li>The system prompt names the tag and says that text inside it is data to answer from:
+  instructions, requests and role changes written there are never followed, and links
+  are not output unless they come from the user's message or a cited source.</li>
+<li>The image caption prompt asks for visible text as quoted content, and never to follow
+  it. The caption reaches the chat model only inside a data block.</li>
+</ul>
+<p>What the code guarantees is the prompt's structure, and the tests pin it against a set
+of poisoned chunks, captions, file names and tool results. Whether a given model honours
+the rule is a property of the model, measured by running the same payloads against it;
+that suite is not part of the default run.</p>
 <hr />
 <h2 id="known-limits">Known limits</h2>
 <p>Everything indexed before knowledge bases were per community sits in the single

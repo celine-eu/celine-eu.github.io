@@ -4174,6 +4174,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0052-generated-text-is-marked-as-ai-generated-on-every-way-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0052 — generated text is marked as AI-generated on every way out
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0053-a-stored-answer-records-what-produced-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0053 — a stored answer records what produced it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#known-limits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4239,6 +4261,46 @@ history exceeds <code>CHAT_WORD_LIMIT</code> words, everything but the most rece
 back in the response.</p>
 <p>At least one turn always stays out of the summary: <code>CHAT_HOT_MESSAGES</code> is floored at
 one, because a configured zero would summarise nothing and drop nothing.</p>
+<h3 id="req-0052-generated-text-is-marked-as-ai-generated-on-every-way-out">REQ-0052 — generated text is marked as AI-generated on every way out</h3>
+<p>The assistant's answers are machine-marked as artificially generated (AI Act Art. 50(2)),
+on each channel by which they leave the service:</p>
+<ul>
+<li>the <code>meta</code> event of <code>POST /chat</code> carries <code>ai_generated: true</code> and
+  <code>generator: "celine-ai-assistant"</code> beside <code>conversation_id</code>;</li>
+<li>the <code>POST /chat</code> response carries the header <code>AI-Generated: true</code>;</li>
+<li>every <code>assistant</code> message returned by <code>GET /conversations/{id}/messages</code> carries
+  <code>ai_generated: true</code>, and every <code>user</code> message <code>ai_generated: false</code>.</li>
+</ul>
+<p>The mark is metadata, not a watermark in the text. No harmonised standard exists for
+text; a statistical watermark needs control of the model's sampler and does not survive
+editing, and C2PA describes media files, not a JSON stream. Metadata on every channel is
+what is technically feasible for this service. The stored-message mark is derived from
+the role: every <code>assistant</code> row is model output (REQ-0009).</p>
+<h3 id="req-0053-a-stored-answer-records-what-produced-it">REQ-0053 — a stored answer records what produced it</h3>
+<p>So that a disputed answer can be investigated after the fact, an <code>assistant</code> message is
+stored (REQ-0009) together with a trace of what produced it, in the <code>trace</code> column of the
+same row:</p>
+<ul>
+<li><code>model.requested</code>: the chat model the service asked for (<code>LLM_CHAT_MODEL</code>);</li>
+<li><code>model.reported</code>: the model the endpoint named in its response (the stream's <code>model</code>
+  field, the last one seen), and <code>model.fingerprint</code>: its <code>system_fingerprint</code>, when the
+  endpoint sends one. Null when the endpoint says nothing. The model's version is
+  whatever the endpoint reports here; the service has no other source for it;</li>
+<li><code>service_version</code>: the assistant's own version, which fixes the system prompt and the
+  tool definitions the model was given;</li>
+<li><code>attachments</code>: the ids of the attachments given to the model with the question;</li>
+<li><code>sources</code>: one entry per retrieved chunk given to the model, hidden ones included
+  (REQ-0022): its <code>source</code>, its <code>score</code>, and the identifiers in its metadata that name
+  what it came from (<code>kind</code>, <code>doc_id</code>, <code>source_id</code>, <code>attachment_id</code>). Not the text;</li>
+<li><code>tools</code>: one entry per tool call, in the order they ran: the tool <code>name</code>, the
+  <code>arguments</code> as the model sent them (the raw string when it is not valid JSON), and
+  <code>failed: true</code> when the tool raised. Not the tool's result.</li>
+</ul>
+<p>The trace lives and dies with its message: it is scoped to the same user, deleted with
+the conversation (REQ-0011), and kept exactly as long as the conversation is. No route
+returns it; <code>GET /conversations/{id}/messages</code> returns the same fields with or without
+it. An operator reads it from the database. A <code>user</code> message has no trace, and neither
+does an <code>assistant</code> message stored before this requirement: the column is null for both.</p>
 <hr />
 <h2 id="known-limits">Known limits</h2>
 <p><strong>Message timestamps are whole seconds.</strong> <code>created_at</code> is <code>int(time.time())</code>, and both

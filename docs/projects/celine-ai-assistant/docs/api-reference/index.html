@@ -796,6 +796,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-adminsubjectserase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/subjects/erase
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4644,6 +4655,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#post-adminsubjectserase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /admin/subjects/erase
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4725,7 +4747,13 @@
 - Creates a new conversation if <code>conversation_id</code> is omitted.
 - Loads authorized attachments and retrieves relevant document chunks from Qdrant.
 - The LLM autonomously invokes registered skills (energy data, weather, flexibility, etc.) via tool calls.
-- Persists the full assistant reply once streaming completes.</p>
+- Persists the full assistant reply once streaming completes.
+- Stores with that reply a trace of what produced it (REQ-0053): requested and reported
+  model, service version, attachment ids, source ids, tool names and arguments. Kept in
+  the database for investigation; no route returns it.
+- Marks the answer as AI-generated (REQ-0052): the response header <code>AI-Generated: true</code>,
+  and <code>"ai_generated": true, "generator": "celine-ai-assistant"</code> in the first (<code>meta</code>)
+  event beside <code>conversation_id</code>.</p>
 <hr />
 <h2 id="uploads-and-attachments">Uploads and Attachments</h2>
 <h3 id="post-upload"><code>POST /upload</code></h3>
@@ -4749,7 +4777,8 @@ PNG/JPEG/GIF/WebP, <code>.docx</code>/<code>.xlsx</code>/<code>.pptx</code>, <co
 <h3 id="get-conversations"><code>GET /conversations</code></h3>
 <p>List all conversations for the authenticated user.</p>
 <h3 id="get-conversationsidmessages"><code>GET /conversations/{id}/messages</code></h3>
-<p>Return all messages in a conversation.</p>
+<p>Return all messages in a conversation. Each message carries <code>ai_generated</code>: <code>true</code> for
+<code>assistant</code> messages, <code>false</code> for the caller's own (REQ-0052).</p>
 <h3 id="delete-conversationsid"><code>DELETE /conversations/{id}</code></h3>
 <p>Delete a conversation and all its messages.</p>
 <hr />
@@ -4774,6 +4803,17 @@ with the community as a system-scoped attachment, readable by its members.</p>
 <p>Body: <code>{"community_id": "…" | null, "full": false}</code>. Syncs every source registered for
 the community and returns one result per source; a failing source carries an <code>error</code>
 and does not stop the others. Replaces <code>POST /admin/training-materials/sync</code>.</p>
+<h3 id="post-adminsubjectserase"><code>POST /admin/subjects/erase</code></h3>
+<p>Body: <code>{"sub": "&lt;Keycloak user id&gt;"}</code>. Erases one person (REQ-0057): their conversations
+and messages (traces included), their own uploads (row, file and every vector), and any
+vector still carrying their id; shared material is kept. <strong>Not</strong> for managers or platform
+administrators: requires the scope <code>assistant.subject.erase</code> in the verified token's
+<code>scope</code> claim, <code>403</code> otherwise. Answers the counts removed per store:</p>
+<pre><code class="language-json">{&quot;sub&quot;: &quot;…&quot;, &quot;conversations&quot;: 2, &quot;messages&quot;: 14, &quot;attachments&quot;: 1, &quot;files&quot;: 1, &quot;vectors&quot;: 3, &quot;failed&quot;: []}
+</code></pre>
+<p>Idempotent. When anything could not be deleted it answers <code>503</code> with the same body, the
+attachment ids (or <code>"vectors"</code>) in <code>failed</code>; repeating the call retries them. The subject
+is in the body so that it stays out of access logs.</p>
 <hr />
 <h2 id="health">Health</h2>
 <h3 id="get-health"><code>GET /health</code></h3>
