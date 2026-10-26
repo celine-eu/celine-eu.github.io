@@ -5416,6 +5416,37 @@ three cases are indistinguishable to the caller and are separated only in the lo
 <p>Schedule a flexibility reminder for a suggestion via the nudging-tool.</p>
 <h3 id="post-apisuggestionssuggestion_idrespond"><code>POST /api/suggestions/{suggestion_id}/respond</code></h3>
 <p>Accept or reject a flexibility suggestion. Creates a commitment in the flexibility-api.</p>
+<p>When the flexibility-api refuses the response, its status is passed through and nothing is
+recorded locally (no interaction, no badge). The body is
+<code>{"detail": {"code": &lt;string|null&gt;, "message": &lt;string&gt;}}</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th><code>code</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>409</td>
+<td><code>no_meter</code></td>
+<td>the member has no meter, so the commitment could never be settled</td>
+</tr>
+<tr>
+<td>409</td>
+<td><code>not_a_member</code></td>
+<td>the member has no community membership</td>
+</tr>
+<tr>
+<td>503</td>
+<td><code>dt_unavailable</code></td>
+<td>the Digital Twin or registry is unreachable; retry later</td>
+</tr>
+</tbody>
+</table>
+<p>A 409 or 503 without a <code>code</code> in the upstream body is passed through with <code>code: null</code>.
+Any other upstream failure is logged and the response is recorded as before.</p>
 <h3 id="delete-apicommitmentscommitment_id"><code>DELETE /api/commitments/{commitment_id}</code></h3>
 <p>Cancel an active commitment.</p>
 <hr />
