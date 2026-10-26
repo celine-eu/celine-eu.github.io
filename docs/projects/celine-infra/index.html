@@ -5796,7 +5796,7 @@ and its inline scripts - SvelteKit's bootstrap, the theme script - carry a fresh
 host allows inline scripts. A static ConfigMap cannot carry a per-request nonce, and the
 controller replaces a header of the same name, so these charts set <code>csp.sentByApp: true</code> and
 their ConfigMap holds no enforced policy; the render stops if an environment gives them one.
-Grid and roi keep their Report-Only trial of the other directives here, without <code>script-src</code>
+Grid keeps its Report-Only trial of the other directives here, without <code>script-src</code>
 or <code>default-src</code>. An API Ingress of its own on such a host keeps an enforced policy from the controller
 (<code>securityHeaders.apiCsp</code>, ConfigMap <code>&lt;release&gt;-api-security-headers</code>): roi's calculator API
 allows nothing (<code>default-src 'none'</code>). Paths that share the page's Ingress - <code>/oauth2</code> on every
@@ -5828,8 +5828,8 @@ or the hosts are briefly without one.</p>
 </tr>
 <tr>
 <td>roi</td>
-<td>scripts enforced by the app (nonce); the rest Report-Only here</td>
-<td>inline styles, OpenStreetMap tiles, Nominatim, the static map image</td>
+<td>enforced, sent by the app</td>
+<td>scripts by nonce, inline styles, <code>data:</code>/<code>blob:</code> images, the <code>a</code>/<code>b</code>/<code>c</code> OpenStreetMap tile hosts, the static map image, Nominatim (no wildcard)</td>
 </tr>
 <tr>
 <td>legal</td>
@@ -5843,6 +5843,11 @@ or the hosts are briefly without one.</p>
 </tr>
 </tbody>
 </table>
+<p>The Keycloak host gets only <code>X-Content-Type-Options: nosniff</code> (ConfigMap
+<code>keycloak-security-headers</code> from the auth-setup release, named by the keycloak release's
+<code>custom-headers</code>): Keycloak sends its own policy, <code>X-Frame-Options</code> and <code>Referrer-Policy</code>,
+which a header of the same name would replace. It also reaches the controller's 404 on the
+paths outside the public rules, <code>/</code> included.</p>
 <p><strong>Before the first deployment with these headers</strong>, the controller must allow the header
 names. It refuses any other with a 503 on every path of the Ingress that names it. In the
 ingress-nginx ConfigMap (Helm chart: <code>controller.config</code>):</p>
