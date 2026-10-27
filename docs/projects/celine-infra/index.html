@@ -5374,6 +5374,11 @@ pipelines and Superset get
 included, is hardened, and a hardened service refuses to start with a development value
 (default database password, client secret equal to the client id, missing issuer or key).
 Images before the celine-sdk release that carries <code>posture</code> ignore the variable.</p>
+<p>The frontends built from celine-frontend (webapp, assistant, community, grid, roi) get the
+same value as <code>PUBLIC_CELINE_ENV</code>: anything but <code>prod</code> shows a banner saying the UI is a
+development version. Outside prod, with <code>prod_reads.domain</code> set, they also get
+<code>PUBLIC_CELINE_PROD_URL</code>, <code>https://&lt;the app's host&gt;.&lt;prod_reads.domain&gt;</code>, which the banner
+links; without it the banner has no link. Frontend images before the banner ignore both.</p>
 <table>
 <thead>
 <tr>

@@ -1786,6 +1786,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#every-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#appsassistant" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4254,6 +4265,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#every-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#appsassistant" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4326,6 +4348,29 @@
 
 
 <h1 id="apps">Apps</h1>
+<h2 id="every-app">Every app</h2>
+<p><strong>Environment</strong>, read at runtime (<code>$env/dynamic/public</code>), so one image serves every environment:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PUBLIC_CELINE_ENV</code></td>
+<td>—</td>
+<td>The deployment's environment. Anything but <code>prod</code> (trimmed, case-insensitive) — unset included — shows a banner above every page saying this is a development version (<code>EnvBanner</code> in <code>@celine-eu/ui</code>). Unlike the backends' <code>CELINE_ENV</code>, unset is <em>not</em> production here: set <code>prod</code> explicitly in production</td>
+</tr>
+<tr>
+<td><code>PUBLIC_CELINE_PROD_URL</code></td>
+<td>—</td>
+<td>Where the same app runs in production, e.g. <code>https://webapp.&lt;prod domain&gt;</code>. The banner links the current page there (path only, no query). Unset or not an absolute <code>http(s)</code> URL: the banner shows without a link</td>
+</tr>
+</tbody>
+</table>
 <h2 id="appsassistant">apps/assistant</h2>
 <p>Standalone full-page AI assistant application. Provides a single-route SvelteKit app that renders <code>ChatCore</code> in full-viewport mode.</p>
 <p><strong>Entry point:</strong> <code>apps/assistant/src/routes/+page.svelte</code></p>
