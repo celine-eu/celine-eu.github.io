@@ -4859,7 +4859,7 @@ substation reference layer.</p>
 <tbody>
 <tr>
 <td>sources</td>
-<td><code>meters_data_15m</code> (rec_metering, gold); <code>rec_device_membership</code> and <code>raw.rec_registry_mirror</code> (rec_registry); <code>raw.gse_cabine_primarie</code> (self-contained Meltano extractor)</td>
+<td><code>meters_data_15m</code> (rec_metering, gold); <code>rec_device_membership</code> (rec_registry); <code>raw.gse_cabine_primarie</code> (self-contained Meltano extractor)</td>
 </tr>
 <tr>
 <td>silver</td>
@@ -4867,7 +4867,7 @@ substation reference layer.</p>
 </tr>
 <tr>
 <td>gold</td>
-<td><code>gse_cabine_primarie</code>, <code>rec_virtual_consumption_15m</code>, <code>rec_virtual_consumption_hourly</code>, <code>rec_virtual_consumption_per_device_15m</code>, <code>rec_virtual_consumption_per_device_hourly</code>, <code>rec_measurements_15m</code>, <code>rec_measurements_per_device_15m</code>, <code>rec_member_supply_points</code></td>
+<td><code>gse_cabine_primarie</code>, <code>rec_virtual_consumption_15m</code>, <code>rec_virtual_consumption_hourly</code>, <code>rec_virtual_consumption_per_device_15m</code>, <code>rec_virtual_consumption_per_device_hourly</code>, <code>rec_measurements_15m</code>, <code>rec_measurements_per_device_15m</code></td>
 </tr>
 </tbody>
 </table>
@@ -4932,8 +4932,7 @@ app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cance
 <h2 id="rec_registry-registry-mirror"><code>rec_registry</code> — registry mirror</h2>
 <p>Full-replace mirror of the CELINE REC Registry API into <code>raw.rec_registry_mirror</code>, every
 5 minutes. One row per user/community pair of an active member: area, role, member type,
-topology nodes, the area's boundary id, delivery points in service (a point flagged
-<code>active: false</code> is left out), meter sensors. Python-only; no dbt,
+topology nodes, the area's boundary id, meter sensors; no supply points. Python-only; no dbt,
 no Meltano. OIDC-authenticated. Each run logs the areas whose <code>topology_ids[1]</code> is not their
 boundary id (it flags them; it does not refuse the export).</p>
 <blockquote>
