@@ -4173,6 +4173,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0100-the-member-export-carries-the-membership-and-nothing-that-names-a-member" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0100 — the member export carries the membership and nothing that names a member
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4315,6 +4326,18 @@ community (REQ-0006). On a deployed realm a bundle carries a community's adminis
 only, and members arrive through onboarding; members loaded from a file are for local
 development. Decided in
 <a href="../../decisions/ADR-0009-a-community-is-retired-by-a-forced-empty-import/">ADR-0009</a>.</p>
+<h3 id="req-0100-the-member-export-carries-the-membership-and-nothing-that-names-a-member">REQ-0100 — the member export carries the membership and nothing that names a member</h3>
+<p><code>GET /admin/export/members</code> answers JSON, <code>{"communities": [...]}</code>, one entry per community:
+its key, each area's <code>boundary_id</code> and <code>topology_ids</code>, and every member — <strong>whatever its
+status</strong> — with exactly its <code>key</code>, <code>area</code>, <code>role</code>, <code>type</code>, <code>status</code> and <code>sensor_ids</code> (the
+sensor ids of its meters). Nothing else: no user id, name, DID, delivery point, extra, area
+geometry or asset property other than a meter's sensor id. <code>community</code> may be repeated to
+name the communities; an unknown one is <code>404</code>. Members are ordered by key.</p>
+<p>It is read under the <code>export</code> action (<code>rec-registry.export</code>), like the full export, and is
+the route the data pipelines read: they need who belongs where with which meters, not who
+the person is. The full export (REQ-0037) stays the backup and carries everything; a caller
+that needs only the membership is given this one instead. Inactive members are exported with
+their status rather than left out, so a reader can tell a suspended member from a deleted one.</p>
 
 
 

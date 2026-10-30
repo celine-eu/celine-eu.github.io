@@ -1410,6 +1410,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-adminexportmembers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export/members
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5265,6 +5276,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-adminexportmembers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export/members
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5545,7 +5567,7 @@ satisfies (REQ-0065).</p>
 </tr>
 <tr>
 <td><code>import</code> / <code>export</code></td>
-<td><code>/admin/import*</code>, <code>/admin/export</code></td>
+<td><code>/admin/import*</code>, <code>/admin/export</code>, <code>/admin/export/members</code></td>
 <td><code>rec-registry.import</code> / <code>.export</code></td>
 </tr>
 <tr>
@@ -5917,6 +5939,27 @@ invariant refuses the whole request as <code>POST /admin/import</code> does.</p>
 <h3 id="get-adminexport"><code>GET /admin/export</code></h3>
 <p>Export communities as YAML multidocument.</p>
 <p><strong>Response:</strong> <code>text/plain</code> — YAML bundle(s).</p>
+<h3 id="get-adminexportmembers"><code>GET /admin/export/members</code></h3>
+<p>The membership of one or more communities, without member identity (REQ-0100): what the
+data pipelines read. <code>community</code> may be repeated; omitted, every community is exported, and
+an unknown one is <code>404</code>. Granted by <code>rec-registry.export</code>.</p>
+<p><strong>Response:</strong> <code>application/json</code></p>
+<pre><code class="language-json">{
+  &quot;communities&quot;: [
+    {
+      &quot;community&quot;: &quot;example-rec&quot;,
+      &quot;areas&quot;: {
+        &quot;north&quot;: {&quot;boundary_id&quot;: &quot;AC000E00001&quot;, &quot;topology_ids&quot;: [&quot;AC000E00001&quot;]}
+      },
+      &quot;members&quot;: [
+        {&quot;key&quot;: &quot;ex-00001&quot;, &quot;area&quot;: &quot;north&quot;, &quot;role&quot;: &quot;consumer&quot;,
+         &quot;type&quot;: &quot;schema:Person&quot;, &quot;status&quot;: &quot;active&quot;, &quot;sensor_ids&quot;: [&quot;ex-sensor-0001&quot;]}
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>Every member is listed whatever its status. No user id, name, DID, delivery point or extra.</p>
 <hr />
 <h2 id="admin-routes-writes">Admin Routes — Writes</h2>
 <p>Runtime changes to a community. Prefix: <code>/admin</code>.</p>

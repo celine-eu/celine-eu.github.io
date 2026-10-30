@@ -4930,15 +4930,17 @@ computed across devices is computed within one community.</p>
 app to <code>substation_id</code> at all; a deficit on one <em>cabina</em> cancels a surplus on another.</p>
 </blockquote>
 <h2 id="rec_registry-registry-mirror"><code>rec_registry</code> — registry mirror</h2>
-<p>Full-replace mirror of the CELINE REC Registry API into <code>raw.rec_registry_mirror</code>, every
-5 minutes. One row per user/community pair of an active member: area, role, member type,
-topology nodes, the area's boundary id, meter sensors; no supply points. Python-only; no dbt,
+<p>Full-replace mirror of the CELINE REC Registry API's member export
+(<code>GET /admin/export/members</code>) into <code>raw.rec_registry_mirror</code>, every 5 minutes. One row per
+member/community pair, whatever the member's status: area, role, member type, status,
+topology nodes, the area's boundary id, meter sensors; no user id, name, e-mail or supply
+points. Python-only; no dbt,
 no Meltano. OIDC-authenticated. Each run logs the areas whose <code>topology_ids[1]</code> is not their
 boundary id (it flags them; it does not refuse the export).</p>
 <blockquote>
-<p><strong>The mirror always equals the export's active members, the empty set included.</strong> When
-the export holds no active member the table is emptied, so a suspended last member stops
-feeding <code>rec_it</code>. A fetch that fails or returns an empty export raises before the mirror
+<p><strong>The mirror always equals the export's members, the empty set included.</strong> A suspended
+member is mirrored as suspended and <code>rec_device_membership</code> keeps active members only, so
+it stops feeding <code>rec_it</code>; an export with no member empties the table. A fetch that fails or returns an empty export raises before the mirror
 is touched, and the previous rows stay.</p>
 </blockquote>
 <h2 id="rec_flexibility_commitments-commitments-mirror"><code>rec_flexibility_commitments</code> — commitments mirror</h2>
