@@ -5589,7 +5589,7 @@ service that registers approved participants needs <code>members.write</code>, o
 attaches meters needs <code>assets.write</code>, one that corrects a member's area needs
 <code>members.area.write</code> — which reaches that one route and nothing else (ADR-0011) — and none
 has any business importing, exporting or purging. A member field is granted alone; identity
-(<code>user_id</code>, <code>did</code>, status, creating a member) is <code>members.write</code> only.</p>
+(<code>user_id</code>, <code>did</code>, <code>subject</code>, status, creating a member) is <code>members.write</code> only.</p>
 <p>Interactive OpenAPI docs are available at <code>http://localhost:8004/docs</code> under <code>CELINE_ENV=dev</code>,
 or with <code>CELINE_PUBLIC_DOCS=true</code> (REQ-0092).</p>
 <h2 id="refusal-codes">Refusal codes</h2>
@@ -5959,7 +5959,8 @@ an unknown one is <code>404</code>. Granted by <code>rec-registry.export</code>.
   ]
 }
 </code></pre>
-<p>Every member is listed whatever its status. No user id, name, DID, delivery point or extra.</p>
+<p>Every member is listed whatever its status. No user id, account subject, name, DID,
+delivery point or extra.</p>
 <hr />
 <h2 id="admin-routes-writes">Admin Routes — Writes</h2>
 <p>Runtime changes to a community. Prefix: <code>/admin</code>.</p>
@@ -5975,6 +5976,9 @@ that reads correctly in an exported bundle.</p>
 <p><code>did</code> is optional and unique across the whole registry, unlike <code>key</code> and
 <code>user_id</code>, which are unique per community. It is usually written afterwards
 rather than here — see <code>PATCH</code> below.</p>
+<p><code>subject</code> is optional: the Keycloak <code>sub</code> of the account <code>user_id</code> names. It must
+be a UUID (<code>422</code> otherwise) and is stored lower-case. It is written, never read
+back here: no member answer carries it, only the full export (REQ-0101).</p>
 <p><code>extra</code> is optional, and its keys are merged into the member's <code>extra</code> at the
 top level — the same place <code>PATCH</code> puts them. Other body keys that are not member
 fields are kept in <code>extra</code> too.</p>
@@ -5996,6 +6000,9 @@ delivery-point routes.</p>
 <p><strong>This is how a member's dataspace <code>did</code> is written</strong>, because the identity is
 minted a step after the member is registered. Re-sending a member the DID it
 already holds is a <code>200</code> that changes nothing, so the write is safe to retry.</p>
+<p><code>subject</code> is accepted here too, with the create route's rule (a UUID, <code>422</code>
+otherwise); <code>null</code> leaves it alone. It is how <code>backfill-subjects</code> writes it
+(REQ-0102).</p>
 <p><strong>Responses:</strong> <code>200</code>; <code>409 user_id_taken</code> if the new <code>user_id</code> belongs to another
 member of the community, or <code>409 did_taken</code> if the new <code>did</code> belongs to any other
 active member in the registry and this member is active after the patch (REQ-0096). A DID clash inside the addressed community names the

@@ -4330,8 +4330,8 @@ development. Decided in
 <p><code>GET /admin/export/members</code> answers JSON, <code>{"communities": [...]}</code>, one entry per community:
 its key, each area's <code>boundary_id</code> and <code>topology_ids</code>, and every member — <strong>whatever its
 status</strong> — with exactly its <code>key</code>, <code>area</code>, <code>role</code>, <code>type</code>, <code>status</code> and <code>sensor_ids</code> (the
-sensor ids of its meters). Nothing else: no user id, name, DID, delivery point, extra, area
-geometry or asset property other than a meter's sensor id. <code>community</code> may be repeated to
+sensor ids of its meters). Nothing else: no user id, account subject (REQ-0101), name, DID,
+delivery point, extra, area geometry or asset property other than a meter's sensor id. <code>community</code> may be repeated to
 name the communities; an unknown one is <code>404</code>. Members are ordered by key.</p>
 <p>It is read under the <code>export</code> action (<code>rec-registry.export</code>), like the full export, and is
 the route the data pipelines read: they need who belongs where with which meters, not who

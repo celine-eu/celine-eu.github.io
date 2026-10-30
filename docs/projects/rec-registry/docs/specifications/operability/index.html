@@ -4174,6 +4174,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0102-the-cli-fills-in-members-account-subjects-from-keycloak-and-prints-only-counts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0102 — the CLI fills in members' account subjects from Keycloak, and prints only counts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4338,6 +4349,35 @@ operator finds them and resolves each, with a correction (REQ-0084) or a deactiv
 the check blocks either. Decided in
 <a href="../../decisions/ADR-0013-duplicate-delivery-points-are-reported-to-the-operator/">ADR-0013</a>,
 which amends ADR-0012.</p>
+<h3 id="req-0102-the-cli-fills-in-members-account-subjects-from-keycloak-and-prints-only-counts">REQ-0102 — the CLI fills in members' account subjects from Keycloak, and prints only counts</h3>
+<p><code>celine-rec-registry backfill-subjects</code> reads every community through <code>GET /admin/export</code>
+and, for each member of any status, looks up the Keycloak account whose username is the
+member's <code>user_id</code> — the realm's Admin API user search, <code>exact</code>, its answer filtered again
+to the username itself, compared case-insensitively; one search per distinct username. A
+member holding no <code>subject</code> whose username names exactly one account is given that
+account's id through <code>PATCH /admin/communities/{ck}/members/{mk}</code> (REQ-0101).</p>
+<ul>
+<li><strong>Dry run unless <code>--apply</code>.</strong> Without it nothing is written.</li>
+<li><strong>Never replaces a subject.</strong> A member already holding one is not written to; one that
+  differs from Keycloak's is counted as <code>differs</code>. No account (<code>no_account</code>) and two
+  (<code>ambiguous</code>) leave the member as it is.</li>
+<li><strong>Idempotent.</strong> A second run finds the members it wrote as <code>already_set</code> and writes nothing.</li>
+<li><strong>Every lookup before the first write.</strong> A Keycloak failure exits <code>2</code> with nothing written;
+  so does an unreadable registry, before Keycloak is asked anything.</li>
+<li><strong>Counts only.</strong> It prints <code>examined</code>, <code>would_set</code> (dry run) or <code>set</code>, <code>already_set</code>,
+  <code>no_account</code>, <code>ambiguous</code>, <code>differs</code> and <code>failed</code>, tab-separated, and never a member key,
+  username, e-mail or subject — a Keycloak failure is reported by status alone, because the
+  request carries the username.</li>
+</ul>
+<p>It exits <code>0</code>, <code>1</code> when any member differs, is ambiguous or failed to write, and <code>2</code> when the
+registry or Keycloak cannot be read. The Keycloak token needs <code>view-users</code> in the realm:
+<code>--keycloak-token</code>, or <code>--keycloak-client-id</code>/<code>--keycloak-client-secret</code>; without either the
+registry's own token is presented. The Admin API URL is derived from <code>--auth-url</code>
+(<code>…/realms/&lt;realm&gt;</code> → <code>…/admin/realms/&lt;realm&gt;</code>) unless <code>--keycloak-url</code> names it.</p>
+<p>A member written between the export read and its <code>PATCH</code> is not re-read. Nothing else
+writes a subject onto an existing member: onboarding sends it only on the create (onboarding
+REQ-0052), so a member the run plans to write held no subject when it was read and is given
+none by anyone else.</p>
 <h3 id="req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it">REQ-0087 — a community's shared delivery points are readable per community, naming no one outside it</h3>
 <p><code>GET /admin/communities/{ck}/delivery-points/duplicates</code> answers <code>200</code> with
 <code>{"community_key": "&lt;ck&gt;", "items": [...]}</code>: one item per delivery point that an <strong>active</strong>
@@ -4460,7 +4500,8 @@ person.</p>
 <li><strong>The CLI's other commands.</strong> <code>list</code>, <code>tree</code>, <code>lookup-user</code> and <code>lookup-sensor</code> have no
   tests. So does <code>config</code>, and so does the authentication flow — every CLI test passes
   <code>--token</code> directly, so neither the client-credentials nor the password grant is
-  exercised.</li>
+  exercised. <code>backfill-subjects</code> (REQ-0102) runs against a mocked Keycloak: its token
+  request is never made, and the Admin API's own answer shape and permission are assumed.</li>
 <li><strong>Startup.</strong> <code>create_app</code> wiring, settings loading, and the policy engine's bundle load
   at boot. A service that starts with an unloadable Rego bundle is not something any test
   here would notice.</li>
