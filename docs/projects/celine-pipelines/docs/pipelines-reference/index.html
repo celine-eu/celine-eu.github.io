@@ -4944,9 +4944,19 @@ it stops feeding <code>rec_it</code>; an export with no member empties the table
 is touched, and the previous rows stay.</p>
 </blockquote>
 <h2 id="rec_flexibility_commitments-commitments-mirror"><code>rec_flexibility_commitments</code> — commitments mirror</h2>
-<p>90-day sliding mirror of the CELINE Flexibility API into
-<code>raw.flexibility_commitments_mirror</code>, every 15 minutes, tracking status evolution
-(accepted, settled, rejected, cancelled). Python-only. OIDC-authenticated.</p>
+<p>90-day sliding mirror of the CELINE Flexibility API's commitment export
+(<code>GET /api/commitments/export</code>) into <code>raw.flexibility_commitments_mirror</code>, every 15
+minutes, with each commitment's current status (accepted, settled, rejected, cancelled).
+Python-only. OIDC-authenticated. Each run also upserts its row in <code>raw.mirror_refresh</code>
+(<code>refreshed_at</code>, <code>rows</code>), which <code>rec_flexibility</code>'s <code>flexibility_commitments_mirror_is_fresh</code>
+test reads.</p>
+<blockquote>
+<p><strong>The mirror equals the export's window, the empty window included.</strong> Each run deletes
+every row and inserts the fetched ones, with the marker, in one transaction: a commitment
+the export no longer lists leaves the mirror, and an export with no commitment empties
+it while the marker still moves. A fetch that fails raises before the mirror is touched,
+and the previous rows and marker stay.</p>
+</blockquote>
 <hr />
 <h2 id="pipelines-with-no-readmemd">Pipelines with no <code>README.md</code></h2>
 <p><code>overture</code> and <code>trentino_rooftops</code> have no per-pipeline README yet; their entries above are

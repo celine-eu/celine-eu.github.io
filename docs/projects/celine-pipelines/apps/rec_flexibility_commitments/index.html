@@ -3562,6 +3562,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#execution-docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4298,6 +4309,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#execution-docker-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4351,6 +4373,19 @@
 <h2 id="overview">Overview</h2>
 <p>The <strong>REC Flexibility Commitments pipeline</strong> mirrors flexibility commitment data from the <strong>CELINE Flexibility API</strong> into a PostgreSQL raw table.</p>
 <p>It maintains a <strong>90-day sliding window</strong> of all commitment statuses (accepted, settled, rejected, cancelled), refreshed <strong>every 15 minutes</strong>.</p>
+<blockquote>
+<p><strong>The mirror equals the export's window, the empty window included.</strong> Each run reads
+<code>GET /api/commitments/export?created_after=&lt;now - 90 days&gt;</code>, then deletes every row and
+inserts the fetched ones in one transaction: a commitment the export no longer lists
+leaves the mirror, and rows older than the window are pruned with it. An export with no
+commitment empties the table. A fetch that fails raises before the mirror is touched, and
+the previous rows stay.</p>
+</blockquote>
+<p>The same transaction upserts the run marker in <code>raw.mirror_refresh</code>
+(<code>mirror = 'flexibility_commitments_mirror'</code>, <code>refreshed_at</code>, <code>rows</code>). <code>last_updated</code>
+cannot tell a stopped flow from an empty export; the marker can. <code>rec_flexibility</code>'s test
+<code>flexibility_commitments_mirror_is_fresh</code> fails when the marker is missing or older than
+2 hours.</p>
 <hr />
 <h2 id="data-sources">Data sources</h2>
 <ul>
@@ -4361,9 +4396,17 @@
 <h2 id="output-datasets">Output datasets</h2>
 <ul>
 <li><strong>RAW</strong></li>
-<li><code>flexibility_commitments_mirror</code> — full upsert mirror with status evolution tracking</li>
+<li><code>flexibility_commitments_mirror</code> — full replace of the export's 90-day window, current status per commitment</li>
+<li><code>mirror_refresh</code> — one run marker per raw mirror (this pipeline writes the row of <code>flexibility_commitments_mirror</code>)</li>
 </ul>
 <p>No dbt transformation layers are included in this pipeline. The raw table serves as a source for downstream dbt pipelines computing settlement analytics, gamification, and acceptance rate metrics.</p>
+<hr />
+<h2 id="tests">Tests</h2>
+<pre><code class="language-bash">uv run pytest apps/rec_flexibility_commitments/tests -q
+</code></pre>
+<p>A stub flexibility-api answers over real HTTP; no database. The tests in
+<code>test_the_mirror_on_postgres.py</code> run only when <code>REC_FLEXIBILITY_COMMITMENTS_TEST_PG_DSN</code>
+names a throwaway Postgres (they drop and recreate its <code>raw</code> schema).</p>
 <hr />
 <h2 id="execution-docker-image">Execution &amp; Docker image</h2>
 <p>Docker image:</p>
@@ -4386,7 +4429,7 @@
 <p>Contributions may include:
 - additional commitment fields or metrics
 - transformation layers (dbt silver/gold)
-- improved pruning or deduplication logic</p>
+- the same run marker for other raw mirrors</p>
 <p>Ensure:
 - access restrictions are respected (internal, contract-required)
 - derived datasets are documented in governance</p>
