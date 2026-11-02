@@ -6114,6 +6114,10 @@ default. A gateway firewall or WAF in front does not change this.</p>
 <td><code>keycloak.admin_forward_port</code></td>
 <td>the localhost port of the admin console, <code>KC_HOSTNAME_ADMIN=http://localhost:&lt;port&gt;</code>. Default <code>18080</code></td>
 </tr>
+<tr>
+<td><code>keycloak.admin_public</code></td>
+<td><code>{enabled, allow_source_ranges}</code>: the admin console on the public host, from an allowlist, outside prod only. Default off. See below</td>
+</tr>
 </tbody>
 </table>
 <p><strong>There is no admin ingress.</strong> The master realm and the admin console are reached only through
@@ -6165,6 +6169,27 @@ unset S T
 <p>Master's tokens then carry the issuer <code>http://localhost:18080/realms/master</code>; celine-policies
 checks only that it ends in <code>/realms/master</code>. The first console sign-in of a master admin outside
 dev enrols TOTP and recovery codes.</p>
+<p><strong>Outside prod, the console can move to the public host</strong> (<code>keycloak.admin_public</code>), for a
+browser impersonation that must start on the host whose cookies the platform sees:</p>
+<pre><code class="language-yaml">keycloak:
+  admin_public:
+    enabled: true
+    allow_source_ranges: [192.168.1.47/32]   # the addresses the ingress controller sees
+</code></pre>
+<ul>
+<li>a second Ingress, the chart's <code>keycloak-keycloakx-console</code>, serves <code>/admin</code> and
+  <code>/realms/master</code> on <code>keycloak.&lt;domain&gt;</code> with
+  <code>nginx.ingress.kubernetes.io/whitelist-source-range</code>; any other source gets 403. The public
+  realm's Ingress is unchanged;</li>
+<li><code>KC_HOSTNAME_ADMIN</code> and master's Frontend URL become <code>https://keycloak.&lt;domain&gt;</code>, so the
+  port-forward no longer serves the console; <code>task keycloak:forward</code> prints the public URL
+  instead;</li>
+<li>the render stops in prod (environment or <code>celine_env</code>), without a non-empty list of CIDRs,
+  on a range that admits everything (<code>/0</code>), with an ingress class other than <code>nginx</code> (the
+  annotation is ingress-nginx's), and with <code>keycloak.admin_mfa</code> off (or unset in dev);</li>
+<li>the allowlist filters the address the controller sees. Behind a proxy or a NAT that is the
+  proxy's address, not the client's: measure it in the controller's access log first.</li>
+</ul>
 <p><strong>Inside the cluster</strong> nothing administers Keycloak through the public host: the policies-shell
 bootstrap and sync, and provisioning, use <code>keycloak.internal_url</code>. Services keep validating
 tokens against the public realm URL, which the public host still serves.</p>
