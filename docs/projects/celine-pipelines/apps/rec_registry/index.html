@@ -3531,6 +3531,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Output datasets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pod-hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POD hashes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4339,6 +4356,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Output datasets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pod-hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POD hashes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4438,7 +4472,7 @@
 <h1 id="rec-registry-pipeline">REC Registry Pipeline</h1>
 <h2 id="overview">Overview</h2>
 <p>The <strong>REC Registry pipeline</strong> mirrors community membership data from the <strong>CELINE REC Registry API</strong> into a PostgreSQL raw table, then builds <code>rec_device_membership</code>, the one model every other REC app reads membership from.</p>
-<p>It performs a <strong>full-replace refresh every 5 minutes</strong> from the registry's <strong>member export</strong> (<code>GET /admin/export/members</code>, rec-registry 1.7.0, REQ-0100), providing a stable source of every member with its status, grid area, topology nodes and meter sensors. The export names no member: no user id, name, e-mail, DID, address, extras or supply points (POD codes), so the mirror holds none. An export with no member empties the table; a suspended member is mirrored as suspended, and <code>rec_device_membership</code> keeps active members only.</p>
+<p>It performs a <strong>full-replace refresh every 5 minutes</strong> from the registry's <strong>member export</strong> (<code>GET /admin/export/members</code>, rec-registry 1.7.0, REQ-0100), providing a stable source of every member with its status, grid area, topology nodes and meter sensors. The export names no member: no user id, name, e-mail, DID, address, extras or supply points (POD codes), so the mirror holds none. Supply points reach it only as <strong>POD hashes</strong> (<code>pod_hashes</code>, <code>meter_pod_hashes</code>, below): a POD leaves prod only as an HMAC hash, keyed by a secret that only prod's rec-registry holds; this pipeline never holds a POD code or the key. An export with no member empties the table; a suspended member is mirrored as suspended, and <code>rec_device_membership</code> keeps active members only.</p>
 <hr />
 <h2 id="data-sources">Data sources</h2>
 <ul>
@@ -4449,9 +4483,17 @@
 <h2 id="output-datasets">Output datasets</h2>
 <ul>
 <li><strong>RAW</strong></li>
-<li><code>rec_registry_mirror</code> — full-replace mirror of every community member, whatever its status (one row per member/community pair). An export with no member empties it. Columns: <code>member_key</code> (the member's registry key), <code>community_id</code> (the export's community key, the community's slug, carried unchanged), <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>status</code> (<code>active</code>, <code>suspended</code>, ...: only <code>active</code> rows reach <code>rec_device_membership</code> and the substation test), <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>sensor_ids</code> (text[], the sensor ids of the member's meters), <code>boundary_id</code> (the id of the member's area's boundary, registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>last_updated</code>. Primary key <code>(member_key, community_id)</code>. It was keyed by <code>(user_id, community_id)</code> and held active members only until the member export: the flow renames <code>user_id</code> to <code>member_key</code> in an existing table (keeping its primary key) and adds <code>status</code> with <code>active</code> for the rows already there (they were all active), then the same run replaces the rows. An older image cannot write to the migrated table (no <code>user_id</code> column): rolling back means renaming the column back. The column was named <code>rec_id</code> before; the table is created only when missing and never altered, so a deployment upgrading from it drops the table once and the next run recreates it. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area. <code>delivery_point_ids</code> was removed the same way: the flow drops it from an existing table (<code>DROP COLUMN IF EXISTS</code>). <strong>Drop the retired view first</strong> (<code>DROP VIEW IF EXISTS &lt;gold schema&gt;.rec_member_supply_points</code>): dbt does not remove a view whose model was deleted, and Postgres refuses to drop a column a view still reads, so the flow fails until the view is gone.</li>
+<li><code>rec_registry_mirror</code> — full-replace mirror of every community member, whatever its status (one row per member/community pair). An export with no member empties it. Columns: <code>member_key</code> (the member's registry key), <code>community_id</code> (the export's community key, the community's slug, carried unchanged), <code>area</code> (the member's area key), <code>role</code>, <code>member_type</code>, <code>status</code> (<code>active</code>, <code>suspended</code>, ...: only <code>active</code> rows reach <code>rec_device_membership</code> and the substation test), <code>topology_ids</code> (text[], the node ids listed by the member's area), <code>sensor_ids</code> (text[], the sensor ids of the member's meters), <code>boundary_id</code> (the id of the member's area's boundary, registry schema v0.7: the <code>cod_ac</code> of its GSE primary substation; null when the area has no boundary), <code>pod_hashes</code> (text[], GIN-indexed: the sorted hashes of the member's active delivery points), <code>meter_pod_hashes</code> (jsonb, <code>{sensor_id: hash or null}</code>: the delivery point behind each meter, null when it has none), <code>last_updated</code>. Primary key <code>(member_key, community_id)</code>. It was keyed by <code>(user_id, community_id)</code> and held active members only until the member export: the flow renames <code>user_id</code> to <code>member_key</code> in an existing table (keeping its primary key) and adds <code>status</code> with <code>active</code> for the rows already there (they were all active), then the same run replaces the rows. An older image cannot write to the migrated table (no <code>user_id</code> column): rolling back means renaming the column back. The column was named <code>rec_id</code> before; the table is created only when missing and never altered, so a deployment upgrading from it drops the table once and the next run recreates it. <code>boundary_id</code> was added after the table was first deployed; the flow adds it to an existing table (<code>ADD COLUMN IF NOT EXISTS</code>) on its next run, and rows keep a null value until the registry exports a boundary for their area. <code>delivery_point_ids</code> was removed the same way: the flow drops it from an existing table (<code>DROP COLUMN IF EXISTS</code>). <strong>Drop the retired view first</strong> (<code>DROP VIEW IF EXISTS &lt;gold schema&gt;.rec_member_supply_points</code>): dbt does not remove a view whose model was deleted, and Postgres refuses to drop a column a view still reads, so the flow fails until the view is gone.</li>
 </ul>
 <p>Every community the registry exports lands in the same table, keyed by <code>community_id</code>. A sensor listed on two active members appears in two rows of the view, and downstream models would count it twice: the <code>rec_device_membership_unique_per_community</code> test fails the run on it (below). The registry refuses that case at the source (<code>409 sensor_held</code>: one active holder per sensor id across every community, from rec-registry 1.6.0); a pair stored before then stays until it is fixed, and the registry's <code>duplicate-sensors</code> command lists them.</p>
+<h3 id="pod-hashes">POD hashes</h3>
+<p><code>pod_hashes</code> and <code>meter_pod_hashes</code> are <strong>pseudonymous identifiers</strong> (governance: dataset description and the <code>pseudonymous</code> tag; the grammar has no column-level classification): HMAC-SHA256 hashes, 64 lowercase hex characters, of POD codes, keyed by a secret held only by the production REC Registry. They are join keys, not reversible without the key, and still personal data: never join them with a source of POD codes.</p>
+<ul>
+<li>The registry exports them per member only when it has the key configured. <strong>Absent fields are stored as empty values</strong> (<code>'{}'</code>), never a failure, so the flow works unchanged against a registry without the key or older than the fields.</li>
+<li><strong>A value that is not 64-char lowercase hex is dropped before it reaches a row</strong>: from <code>pod_hashes</code> the value, from <code>meter_pod_hashes</code> that sensor's entry; a field of the wrong type counts as absent. The flow logs one warning per community with the count of dropped values, never a value or a member key, so a raw POD sent by a misbehaving source lands neither in the table nor in a log.</li>
+<li>Migration: the flow adds both columns to an existing table (<code>ADD COLUMN IF NOT EXISTS ... NOT NULL DEFAULT '{}'</code>) and the GIN index on <code>pod_hashes</code>; rows already there read empty until the same run's replace writes the export's values. An older image keeps working on the migrated table (its insert names neither column, and the defaults fill them), so rolling back needs no DDL; the columns then stay empty.</li>
+<li><code>rec_device_membership</code> does not carry them: it is exposed with a per-person row filter, and adding a pseudonymous identifier there is a separate decision.</li>
+</ul>
 <h2 id="substation-attribution-check">Substation attribution check</h2>
 <p><code>rec_it</code> takes <code>topology_ids[1]</code> as a member's <code>substation_id</code>. That is right only when the member's area lists exactly one topology node and its id is the area's <code>boundary_id</code>. On every run, before the mirror is replaced, the <strong>Check substation attribution</strong> task flags each <code>(community_id, area)</code> whose active members' rows break this: it logs one warning per area (community id and area key only, never a member) and reports <code>areas_mismatched</code> in its result. It does <strong>not</strong> refuse the export: withholding it would leave the previous mirror feeding <code>rec_it</code>, which is no better. Rows with a null <code>boundary_id</code>, and rows of inactive members, are not checked.</p>
 <p>The registry refuses such areas on area writes, topology node writes and bundle import from schema v0.7, so a hit means an area stored before that (the registry's <code>invalid-area-boundaries</code> command lists them). The same invariant is a dbt singular test of this app (<code>rec_registry_mirror_substation_is_area_boundary</code>), which fails the flow's dbt build.</p>
@@ -4466,7 +4508,7 @@
 </ul>
 <hr />
 <h2 id="tests">Tests</h2>
-<p>Pure-Python tests of the member-export request (mock HTTP transport), the flatten (every member with its status, no identity or supply point mirrored), the table replace and the substation check, on synthetic exports (no database, no registry). One test applies the DDL to an old-shaped table on a real Postgres; it runs only when <code>REC_REGISTRY_TEST_PG_DSN</code> names a throwaway database:</p>
+<p>Pure-Python tests of the member-export request (mock HTTP transport), the flatten (every member with its status, no identity or supply point mirrored; POD hashes with and without the fields, and a POD-shaped value rejected), the table replace and the substation check, on synthetic exports (no database, no registry). Two tests apply the DDL to an old-shaped table on a real Postgres (the second also writes POD hashes through the flow's insert); they run only when <code>REC_REGISTRY_TEST_PG_DSN</code> names a throwaway database:</p>
 <pre><code class="language-bash">uv run pytest apps/rec_registry/tests -q
 </code></pre>
 <hr />
