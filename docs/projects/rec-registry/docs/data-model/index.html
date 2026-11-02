@@ -4483,7 +4483,7 @@
 <tr>
 <td><code>extra</code></td>
 <td><code>JSONB</code></td>
-<td>Extensible properties; <code>extra.type</code> holds a schema.org CURIE</td>
+<td>Extensible properties; <code>extra.type</code> holds a schema.org CURIE; <code>extra.mirror_source</code> marks a mirror written by <code>celine-rec-registry mirror-members</code> (REQ-0104), the only members that command writes</td>
 </tr>
 </tbody>
 </table>
@@ -4497,6 +4497,9 @@ dataspace.</p>
 lookup or self-service answer carries it. It is the account's own id, written at
 provisioning (or by <code>celine-rec-registry backfill-subjects</code>), for the member mirrors of the
 intermediate environments, which create each mirrored account under prod's id.</p>
+<p>In an intermediate environment those mirrors are written by <code>celine-rec-registry
+mirror-members</code> (REQ-0104): <code>key</code>, <code>user_id</code> and <code>name</code> are the source's member key, and no
+e-mail, DID or delivery point is stored.</p>
 <h3 id="asset">Asset</h3>
 <p>A physical or virtual energy asset associated with a member and community.</p>
 <table>

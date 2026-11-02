@@ -1421,6 +1421,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-adminexportmirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export/mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5287,6 +5298,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get-adminexportmirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /admin/export/mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5567,8 +5589,18 @@ satisfies (REQ-0065).</p>
 </tr>
 <tr>
 <td><code>import</code> / <code>export</code></td>
-<td><code>/admin/import*</code>, <code>/admin/export</code>, <code>/admin/export/members</code></td>
+<td><code>/admin/import*</code>, <code>/admin/export</code></td>
 <td><code>rec-registry.import</code> / <code>.export</code></td>
+</tr>
+<tr>
+<td><code>export.members</code></td>
+<td><code>GET /admin/export/members</code></td>
+<td><code>rec-registry.export.members</code>, or <code>rec-registry.export</code></td>
+</tr>
+<tr>
+<td><code>mirror</code></td>
+<td><code>GET /admin/export/mirror</code></td>
+<td><code>rec-registry.mirror</code> (not <code>.export</code>)</td>
 </tr>
 <tr>
 <td><code>lookup</code></td>
@@ -5942,7 +5974,8 @@ invariant refuses the whole request as <code>POST /admin/import</code> does.</p>
 <h3 id="get-adminexportmembers"><code>GET /admin/export/members</code></h3>
 <p>The membership of one or more communities, without member identity (REQ-0100): what the
 data pipelines read. <code>community</code> may be repeated; omitted, every community is exported, and
-an unknown one is <code>404</code>. Granted by <code>rec-registry.export</code>.</p>
+an unknown one is <code>404</code>. Granted by <code>rec-registry.export.members</code> (what the pipelines hold:
+it reaches no other export) or <code>rec-registry.export</code>.</p>
 <p><strong>Response:</strong> <code>application/json</code></p>
 <pre><code class="language-json">{
   &quot;communities&quot;: [
@@ -5961,6 +5994,29 @@ an unknown one is <code>404</code>. Granted by <code>rec-registry.export</code>.
 </code></pre>
 <p>Every member is listed whatever its status. No user id, account subject, name, DID,
 delivery point or extra.</p>
+<p><strong>With <code>POD_HMAC_KEY</code> set</strong> (prod only, REQ-0105), each member also carries its PODs as
+keyed hashes — HMAC-SHA256 of the id with all whitespace removed and upper-cased, as
+lowercase hex — never as they are:</p>
+<pre><code class="language-json">{&quot;key&quot;: &quot;ex-00001&quot;, &quot;area&quot;: &quot;north&quot;, &quot;role&quot;: &quot;consumer&quot;, &quot;type&quot;: &quot;schema:Person&quot;,
+ &quot;status&quot;: &quot;active&quot;, &quot;sensor_ids&quot;: [&quot;ex-sensor-0001&quot;, &quot;ex-sensor-0002&quot;],
+ &quot;pod_hashes&quot;: [&quot;9b1c…64 hex…&quot;],
+ &quot;meter_pod_hashes&quot;: {&quot;ex-sensor-0001&quot;: &quot;9b1c…64 hex…&quot;, &quot;ex-sensor-0002&quot;: null}}
+</code></pre>
+<p><code>pod_hashes</code> covers the member's active delivery points (any type); <code>meter_pod_hashes</code>
+each meter's <code>pod</code>, <code>null</code> when it names none. Without the key both fields are absent, not
+empty.</p>
+<h3 id="get-adminexportmirror"><code>GET /admin/export/mirror</code></h3>
+<p>The member export above plus each member's account <code>subject</code> (a lower-case UUID, or <code>null</code>):
+what an intermediate environment's member mirror reads from prod (REQ-0103). Same <code>community</code>
+filter and <code>404</code>. Granted by <code>rec-registry.mirror</code> only: <code>rec-registry.export</code> is refused, and
+<code>rec-registry.mirror</code> reaches no other export.</p>
+<p><strong>Response:</strong> <code>application/json</code>, as <code>GET /admin/export/members</code> with, per member,</p>
+<pre><code class="language-json">{&quot;key&quot;: &quot;ex-00001&quot;, &quot;area&quot;: &quot;north&quot;, &quot;role&quot;: &quot;consumer&quot;, &quot;type&quot;: &quot;schema:Person&quot;,
+ &quot;status&quot;: &quot;active&quot;, &quot;sensor_ids&quot;: [&quot;ex-sensor-0001&quot;],
+ &quot;subject&quot;: &quot;0b6f6c3e-8d2a-4c41-9f0e-5a7d2c1b9e10&quot;}
+</code></pre>
+<p>and, with <code>POD_HMAC_KEY</code> set, <code>pod_hashes</code> and <code>meter_pod_hashes</code> exactly as the member
+export carries them (REQ-0105).</p>
 <hr />
 <h2 id="admin-routes-writes">Admin Routes — Writes</h2>
 <p>Runtime changes to a community. Prefix: <code>/admin</code>.</p>

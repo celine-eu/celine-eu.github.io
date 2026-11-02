@@ -4499,6 +4499,11 @@
 <td>Cache TTL in seconds</td>
 <td><code>300</code></td>
 </tr>
+<tr>
+<td><code>POD_HMAC_KEY</code></td>
+<td>Key for the POD hashes in the member and mirror exports (REQ-0105); prod only, at least 32 characters, never rotated without re-hashing; unset or empty = no hash fields</td>
+<td>unset</td>
+</tr>
 </tbody>
 </table>
 <h2 id="development-defaults-and-celine_env">Development defaults and <code>CELINE_ENV</code></h2>

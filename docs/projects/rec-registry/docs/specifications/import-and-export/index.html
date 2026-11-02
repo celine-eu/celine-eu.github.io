@@ -4184,6 +4184,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0103-the-mirror-export-is-the-member-export-plus-the-account-subject-under-a-grant-of-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0103 — the mirror export is the member export plus the account subject, under a grant of its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#req-0105-a-pod-leaves-the-registry-only-as-a-keyed-hash-and-only-the-registry-holds-the-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0105 — a POD leaves the registry only as a keyed hash, and only the registry holds the key
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4332,12 +4354,68 @@ its key, each area's <code>boundary_id</code> and <code>topology_ids</code>, and
 status</strong> — with exactly its <code>key</code>, <code>area</code>, <code>role</code>, <code>type</code>, <code>status</code> and <code>sensor_ids</code> (the
 sensor ids of its meters). Nothing else: no user id, account subject (REQ-0101), name, DID,
 delivery point, extra, area geometry or asset property other than a meter's sensor id. <code>community</code> may be repeated to
-name the communities; an unknown one is <code>404</code>. Members are ordered by key.</p>
-<p>It is read under the <code>export</code> action (<code>rec-registry.export</code>), like the full export, and is
-the route the data pipelines read: they need who belongs where with which meters, not who
+name the communities; an unknown one is <code>404</code>. Members are ordered by key. Where the
+registry holds a POD key, each member also carries its PODs as keyed hashes, <code>pod_hashes</code>
+and <code>meter_pod_hashes</code>, and never as they are (REQ-0105).</p>
+<p>It is read under an action of its own, <code>export.members</code>, granted by
+<code>rec-registry.export.members</code>, by <code>rec-registry.export</code> (whoever may read the full export may
+read this subset) or by <code>rec-registry.admin</code>. <code>rec-registry.export.members</code> reaches no other
+export: it is what the data pipelines hold, so their token reaches no raw POD, e-mail, name or
+subject (REQ-0105). It is the route the data pipelines read: they need who belongs where with which meters, not who
 the person is. The full export (REQ-0037) stays the backup and carries everything; a caller
 that needs only the membership is given this one instead. Inactive members are exported with
 their status rather than left out, so a reader can tell a suspended member from a deleted one.</p>
+<h3 id="req-0103-the-mirror-export-is-the-member-export-plus-the-account-subject-under-a-grant-of-its-own">REQ-0103 — the mirror export is the member export plus the account subject, under a grant of its own</h3>
+<p><code>GET /admin/export/mirror</code> answers what <code>GET /admin/export/members</code> answers (REQ-0100), same
+shape, filter and <code>404</code>, and adds to every member its account <code>subject</code> (REQ-0101), or <code>null</code>
+when it has none. Nothing else that names a member: no user id, name, DID, delivery point or
+extra. Where the registry holds a POD key, <code>pod_hashes</code> and <code>meter_pod_hashes</code> too, exactly
+as the member export carries them (REQ-0105).</p>
+<p>It is what an intermediate environment's member mirror reads from prod, to recreate each
+member's account under prod's <code>sub</code> without the person's details. It is read under an action
+of its own, <code>mirror</code>, granted by <code>rec-registry.mirror</code> (or <code>rec-registry.admin</code>) and <strong>not</strong>
+by <code>rec-registry.export</code> or <code>rec-registry.export.members</code>: the data pipelines need no subject, and the mirror
+job, holding <code>mirror</code> alone, reaches neither the full export nor the member export. Any other
+method or a longer path derives <code>admin</code> (REQ-0065).</p>
+<h3 id="req-0105-a-pod-leaves-the-registry-only-as-a-keyed-hash-and-only-the-registry-holds-the-key">REQ-0105 — a POD leaves the registry only as a keyed hash, and only the registry holds the key</h3>
+<p>The setting <code>POD_HMAC_KEY</code> is the key. <strong>Set</strong>, both <code>GET /admin/export/members</code> (REQ-0100)
+and <code>GET /admin/export/mirror</code> (REQ-0103) add to every member:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pod_hashes</code></td>
+<td>the sorted, distinct hashes of the ids of the member's <strong>active</strong> delivery points — every type; a point whose own <code>active</code> is <code>false</code> is left out — whatever the member's status</td>
+</tr>
+<tr>
+<td><code>meter_pod_hashes</code></td>
+<td><code>{sensor id: hash of that meter's pod, or null}</code> for each of its meters with a sensor id; <code>null</code> when the meter names no pod</td>
+</tr>
+</tbody>
+</table>
+<p>A hash is <code>HMAC-SHA256(key, id)</code>, key and id UTF-8, as 64 lowercase hex characters, where
+the id is first normalised by removing every whitespace character and upper-casing it —
+<code>core/pod_hash.py</code>, the one definition. A blank id has no hash and is left out. This is not
+the registry's own compared form (trimmed, lower-cased; REQ-0085): it is a contract with
+the readers that hash distributor readings the same way, and changes only with them.</p>
+<p><strong>Unset or empty</strong>, neither field is in either answer — not an empty list: a registry
+without the key never pretends to have hashed anything. <strong>Set but shorter than 32
+characters</strong> (or only whitespace), the service refuses to start: the settings validation
+fails, without echoing the value. The key is never logged, never in a response, never in
+an error.</p>
+<p>No raw delivery-point id or meter <code>pod</code> reaches either export, keyed or not. The full
+export (REQ-0037) is the backup and still carries them.</p>
+<p><strong>The key never leaves the registry that holds it.</strong> Italian PODs are about 10^8 values:
+whoever holds the key can hash them all and rebuild the mapping in minutes, so the hashes
+are pseudonyms only against readers without it. It is set in prod alone; an intermediate
+environment receives hashes (REQ-0104), never the key. <strong>It never changes</strong> without
+re-hashing every reader's history: a hash computed under the old key matches nothing under
+the new one, and losing the key orphans them all.</p>
 
 
 

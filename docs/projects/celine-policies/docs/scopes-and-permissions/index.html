@@ -2873,6 +2873,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#svc-member-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        svc-member-mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#celine-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4984,6 +4995,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#svc-member-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        svc-member-mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#celine-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5393,6 +5415,10 @@
 <tr>
 <td><code>rec-registry.export</code></td>
 <td>Export from the registry</td>
+</tr>
+<tr>
+<td><code>rec-registry.mirror</code></td>
+<td>Read the member mirror export (<code>GET /admin/export/mirror</code>): key, community, area, role, type, status, sensor ids and account subject, nothing personal (REQ-0021)</td>
 </tr>
 <tr>
 <td><code>rec-registry.lookup</code></td>
@@ -5839,6 +5865,24 @@ this repository cannot enforce that.</strong> A route added to this service by a
 <code>manage-realm</code> into an internet-facing credential. The guard lives with the ingress
 configuration, not here. See
 <a href="../decisions/ADR-0007-realm-wide-administration-is-declared-for-a-holder-with-no-public-route/">ADR-0007</a>.</p>
+<h3 id="svc-member-mirror">svc-member-mirror</h3>
+<p>The member-mirror job of an intermediate environment reads prod's members with this client
+of prod's realm (REQ-0021, <a href="../decisions/ADR-0015-an-intermediate-realm-mirrors-prod-members/">ADR-0015</a>).
+It reaches the registry through prod's API gateway, hence <code>oauth2_proxy</code>. It writes nothing
+anywhere; the job writes its own realm with that realm's admin client.</p>
+<pre><code class="language-yaml"># No scopes_prefix — it owns nothing, it only reads.
+extra_audiences:
+  - svc-rec-registry
+  - oauth2_proxy
+default_scopes:
+  - rec-registry.mirror
+</code></pre>
+<p>On the intermediate realm, <code>mirror-members --impersonator</code> grants named accounts
+<code>impersonate-members</code>, <code>view</code> and <code>view-members</code> on the realm group <code>/member-mirrors</code> (a user
+policy and a <code>Groups</code> permission named <code>celine-member-mirror:*</code>, which <code>sync</code> neither reads nor
+prunes). No <code>clients.yaml</code> declaration carries it: a client's <code>admin_permissions</code> is a service
+account's grant, the same in every environment, and this one is a person's, on non-prod realms
+only.</p>
 <h3 id="celine-cli">celine-cli</h3>
 <p>Admin CLI client — no <code>scopes_prefix</code> (sudo client, exempt from audience mapper generation):</p>
 <pre><code class="language-yaml">extra_audiences:

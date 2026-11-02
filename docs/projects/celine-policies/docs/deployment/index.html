@@ -2876,6 +2876,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#member-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keycloak" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4700,6 +4711,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#member-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keycloak" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5476,6 +5498,75 @@ skipping provisioning and revoking access are different acts.</p>
 <code>rec-registry.admin</code>, which is wider than that: see
 <a href="../decisions/ADR-0006-the-registry-is-the-source-of-members/">ADR-0006</a> for why,
 and what to change to narrow it.</p>
+<h3 id="member-mirror">Member mirror</h3>
+<p><code>keycloak mirror-members</code> (REQ-0021,
+<a href="../decisions/ADR-0015-an-intermediate-realm-mirrors-prod-members/">ADR-0015</a>) runs on an
+intermediate environment (staging, preprod) as a scheduled job, pulling from prod. It
+<strong>refuses <code>ENV</code> <code>prod</code>, <code>production</code> or unset</strong>, and a target Keycloak (<code>CELINE_KEYCLOAK_BASE_URL</code>)
+whose host is the source issuer's. It writes the target with the target realm's admin client
+(<code>CELINE_KEYCLOAK_ADMIN_CLIENT_ID</code> / <code>_SECRET</code>, as <code>sync</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Flag</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_SOURCE_URL</code></td>
+<td><code>--source-url</code></td>
+<td>—</td>
+<td>Prod's registry base URL; the job calls <code>&lt;url&gt;/admin/export/mirror</code></td>
+</tr>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_SOURCE_ISSUER</code></td>
+<td><code>--source-issuer</code></td>
+<td>—</td>
+<td><strong>Required.</strong> Prod's realm issuer URL: mints the token, is stored on <code>/member-mirrors</code>, and is the host the target must not be</td>
+</tr>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_SOURCE_CLIENT_ID</code></td>
+<td><code>--source-client-id</code></td>
+<td><code>svc-member-mirror</code></td>
+<td>Prod realm client holding <code>rec-registry.mirror</code></td>
+</tr>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_SOURCE_CLIENT_SECRET</code></td>
+<td>—</td>
+<td>—</td>
+<td>Its secret in prod's realm; required with a registry source</td>
+</tr>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_FILE</code></td>
+<td><code>--from-file</code></td>
+<td>—</td>
+<td>Read the export from a JSON file instead (tests, offline). Exclusive with the URL</td>
+</tr>
+<tr>
+<td><code>CELINE_MEMBER_MIRROR_IMPERSONATORS</code></td>
+<td><code>--impersonator</code> (repeatable)</td>
+<td>—</td>
+<td>Space-separated usernames of the target realm that may impersonate the mirrors. Unset: the permission is left as it is</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>--dry-run</code></td>
+<td>off</td>
+<td>Count what would change, write nothing</td>
+</tr>
+</tbody>
+</table>
+<p>Exit codes: <code>0</code> converged; <code>1</code> refused or failed (nothing written when refused); <code>2</code> ran, but
+a member could not be mirrored (collision with an account the mirror did not make, a username
+held by another mirror, a changed key, a contradiction in the export, a community without an
+organization, an impersonator not found). The output is counts only.</p>
+<pre><code class="language-bash">ENV=staging celine-policies keycloak mirror-members --dry-run \
+  --source-url https://api.prod.example.org/rec-registry \
+  --source-issuer https://keycloak.prod.example.org/realms/celine
+</code></pre>
 <h3 id="keycloak">Keycloak</h3>
 <p>The Keycloak service uses the custom image from <code>keycloak/Dockerfile</code> (KC 26.7.3 + rec theme). Key environment variables:</p>
 <table>

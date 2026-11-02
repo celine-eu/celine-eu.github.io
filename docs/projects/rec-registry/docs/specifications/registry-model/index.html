@@ -4482,7 +4482,7 @@ properties); no schema version is published for it.</p>
 <p><strong>No other read carries it</strong>: not the member read, list, create or <code>PATCH</code> answer, not the
 lookups, not self-service, and not the member export (REQ-0100). It is written for the
 member mirrors of the intermediate environments, which create each mirrored account under
-prod's id; a mirror reads it from an export of its own, not from these routes.</p>
+prod's id; a mirror reads it from an export of its own (REQ-0103), not from these routes.</p>
 <p>Rows written before the column existed are filled by <code>backfill-subjects</code> (REQ-0102).</p>
 <h3 id="req-0066-role-and-status-are-closed-sets-on-every-write-path-and-a-members-area-is-one-of-its-communitys">REQ-0066 — role and status are closed sets on every write path, and a member's area is one of its community's</h3>
 <p><code>role</code> must be one of <code>consumer</code>, <code>prosumer</code>, <code>producer</code>, <code>operator</code>, <code>admin</code>, and <code>status</code> one

@@ -4185,6 +4185,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#req-0104-the-cli-mirrors-another-registrys-members-writes-only-the-members-it-made-and-prints-only-counts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0104 — the CLI mirrors another registry's members, writes only the members it made, and prints only counts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4378,6 +4389,80 @@ registry's own token is presented. The Admin API URL is derived from <code>--aut
 writes a subject onto an existing member: onboarding sends it only on the create (onboarding
 REQ-0052), so a member the run plans to write held no subject when it was read and is given
 none by anyone else.</p>
+<h3 id="req-0104-the-cli-mirrors-another-registrys-members-writes-only-the-members-it-made-and-prints-only-counts">REQ-0104 — the CLI mirrors another registry's members, writes only the members it made, and prints only counts</h3>
+<p><code>celine-rec-registry mirror-members</code> makes the target registry (<code>--api</code>) hold mirrors of a
+source registry's members, for an intermediate environment whose people log in under
+prod's account ids without prod's personal data. It reads the source's mirror export
+(REQ-0103) — <code>GET &lt;source&gt;/admin/export/mirror</code> with the source's own client, or a saved
+answer from <code>--source-file</code> — and the target's full export, <code>GET /admin/export</code>.</p>
+<p>A target member is <strong>managed</strong> when its <code>extra</code> holds <code>mirror_source</code> (the source's host,
+or <code>file</code>; only its presence is read). For each source member of a community and an area
+the target has:</p>
+<ul>
+<li><strong>None under its key:</strong> created through <code>POST /admin/communities/{ck}/members</code> with
+  <code>key</code>, <code>user_id</code> and <code>name</code> all the member key, the source's <code>area</code>, <code>role</code>, <code>type</code>,
+  <code>status</code> and <code>subject</code> (a null <code>type</code> or <code>subject</code> is left out), and
+  <code>extra.mirror_source</code>. No e-mail, DID, delivery point or other extra.</li>
+<li><strong>A managed one:</strong> the fields that differ are written through
+  <code>PATCH /admin/communities/{ck}/members/{mk}</code>. A null <code>type</code> or <code>subject</code> in the source
+  leaves the target's as it is.</li>
+<li><strong>An unmanaged one under its key, or one holding the key as <code>user_id</code>:</strong> counted as
+  <code>skipped_unmanaged_key</code>; nothing is written.</li>
+<li><strong>Meters follow the source's sensor ids</strong>, each at <code>meter-&lt;sensor id&gt;</code> through
+  <code>PUT …/assets/meter-&lt;sensor id&gt;</code> with <code>name</code> = the asset key and
+  <code>meter_type: bidirectional</code> (the source carries no direction); a meter the source no
+  longer lists is removed through <code>DELETE …/assets/{ak}</code>. A sensor an active unmanaged
+  member holds in any community (REQ-0069), or whose <code>meter-&lt;sensor id&gt;</code> key an unmanaged
+  member of the community holds, is counted as <code>skipped_sensor_held</code> and not attached.</li>
+</ul>
+<p><strong>Delivery points follow the source's POD hashes</strong> (REQ-0105), when the source carries
+them. A mirror's delivery points of type <code>pod-hmac</code> become exactly its <code>pod_hashes</code>, each
+written through <code>PUT …/delivery-points/{hash}</code> as <code>{"id": &lt;hash&gt;, "type": "pod-hmac",
+"active": true}</code> — added when missing, re-added when stored inactive — and one the source
+no longer lists is <strong>removed</strong> through <code>DELETE …/delivery-points/{id}</code>, not set inactive:
+an active member holds every point it lists whatever the point's own flag (REQ-0085), so
+only a removal lets the hash go to another member. Each meter's <code>pod</code> becomes its hash in
+<code>meter_pod_hashes</code>, or none: on an attach in the meter's body, on a meter already there by
+<code>PUT</code>-ting it again. Points of any other type are never written. A hash an active unmanaged
+member holds, as a delivery point or a meter's <code>pod</code>, anywhere, is counted once per member
+as <code>skipped_pod_held</code>: not added, and no meter is given it. A source member without
+<code>pod_hashes</code> — a source without the key — is counted as <code>pod_hashes_absent</code> and its
+mirror's points and meter pods are left as they are; the run goes on, and says so on
+standard error. A mirror never holds a POD, only its hash, and never the key.</p>
+<p>A community or area the target lacks is never created: its members are counted
+(<code>communities_missing</code>, <code>skipped_no_community</code>, <code>skipped_no_area</code>). A managed member the
+source no longer lists, in any community, is set <code>inactive</code> — never purged — and keeps its
+meters, except one whose sensor this run attaches to another member, which is removed
+first. A member without the marker is never written.</p>
+<ul>
+<li><strong>Dry run unless <code>--apply</code>.</strong> Writes run in order — meters removed, meters whose pod
+  changes unlinked, points removed, deactivations, updates, creates, points added, meters
+  attached, changed pods linked — so no point is removed while a meter names it
+  (REQ-0084) and no hash is added before its previous holder let it go (REQ-0085); a member
+  whose create failed gets no point and no meter.</li>
+<li><strong>Idempotent.</strong> A second run against an unchanged source plans nothing.</li>
+<li><strong>Refuses</strong> (exit <code>2</code>, nothing read or written) when <code>CELINE_ENV</code> or <code>ENVIRONMENT</code> is
+  <code>prod</code> or <code>production</code>, when <code>--source-url</code> and <code>--api</code> name the same host, and when both
+  or neither of <code>--source-url</code> and <code>--source-file</code> are given; it exits <code>2</code> with nothing
+  written when the source lists no community — acting on an empty answer would deactivate
+  every mirror.</li>
+<li><strong>Counts only.</strong> It prints <code>source_members</code>; <code>would_create</code>, <code>would_update</code>,
+  <code>would_deactivate</code>, <code>would_attach_meter</code>, <code>would_detach_meter</code> (dry run) or <code>created</code>,
+  <code>updated</code>, <code>deactivated</code>, <code>attached_meter</code>, <code>detached_meter</code>; <code>unchanged</code>,
+  <code>communities_missing</code>, <code>skipped_no_community</code>, <code>skipped_no_area</code>,
+  <code>skipped_unmanaged_key</code>, <code>skipped_sensor_held</code>; <code>would_add_delivery_point</code>,
+  <code>would_remove_delivery_point</code>, <code>would_set_meter_pod</code> (dry run) or
+  <code>added_delivery_point</code>, <code>removed_delivery_point</code>, <code>set_meter_pod</code>; <code>skipped_pod_held</code>,
+  <code>pod_hashes_absent</code> and <code>failed</code>, tab-separated, and never a community, member key,
+  sensor id, subject or hash. A source failure is reported by status
+  alone.</li>
+</ul>
+<p>It exits <code>0</code>, <code>1</code> when any write failed, and <code>2</code> when it refused or could not read the
+source or the target. The source client needs <code>rec-registry.mirror</code> alone; the target
+client needs <code>rec-registry.export</code> (the read), <code>rec-registry.members.write</code> (members, and
+the delivery points it grants through <code>members.delivery_points.write</code>) and
+<code>rec-registry.assets.write</code> (meters). Skips are counted, not failures: a CronJob that
+should alert on them reads the counts.</p>
 <h3 id="req-0087-a-communitys-shared-delivery-points-are-readable-per-community-naming-no-one-outside-it">REQ-0087 — a community's shared delivery points are readable per community, naming no one outside it</h3>
 <p><code>GET /admin/communities/{ck}/delivery-points/duplicates</code> answers <code>200</code> with
 <code>{"community_key": "&lt;ck&gt;", "items": [...]}</code>: one item per delivery point that an <strong>active</strong>
@@ -4501,7 +4586,10 @@ person.</p>
   tests. So does <code>config</code>, and so does the authentication flow — every CLI test passes
   <code>--token</code> directly, so neither the client-credentials nor the password grant is
   exercised. <code>backfill-subjects</code> (REQ-0102) runs against a mocked Keycloak: its token
-  request is never made, and the Admin API's own answer shape and permission are assumed.</li>
+  request is never made, and the Admin API's own answer shape and permission are assumed.
+  <code>mirror-members</code> (REQ-0104) runs against mocked HTTP and once against the real write
+  API with a <code>--source-file</code>: neither token request is made, and the source's answer is
+  assumed to have the shape REQ-0103 pins.</li>
 <li><strong>Startup.</strong> <code>create_app</code> wiring, settings loading, and the policy engine's bundle load
   at boot. A service that starts with an unloadable Rego bundle is not something any test
   here would notice.</li>
