@@ -4173,6 +4173,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0022-bootstrap-creates-a-declared-platform-admin-account-once-and-never-rewrites-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0022 — bootstrap creates a declared platform-admin account once, and never rewrites it
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4390,8 +4401,14 @@ source realm, or the same JSON from <code>--from-file</code>) and converges the 
   username = the member key (lower-cased by Keycloak), enabled exactly while the member's
   status is <code>active</code>; created by partial import with <code>ifResourceExists: FAIL</code>. A subject in
   two communities is one mirror in both.</li>
-<li><strong>Nothing personal is written:</strong> the representation carries <code>id</code>, <code>username</code>, <code>enabled</code> and
-  <code>groups</code> only — no e-mail, name, credential or attribute.</li>
+<li><strong>Nothing personal is written:</strong> the representation carries <code>id</code>, <code>username</code>, <code>enabled</code>,
+  <code>groups</code> and a placeholder profile only — no credential, no attribute, nothing of the
+  person. The placeholder profile satisfies the realm's user profile (e-mail, first and last
+  name required): first name = the username, last name = <code>mirror</code>, e-mail =
+  <code>&lt;username&gt;@mirror.invalid</code>, <code>emailVerified</code> true; a username unfit for an address or a
+  name uses the subject instead. Without it an impersonation stops at <code>VERIFY_PROFILE</code>.
+  A mirror whose profile differs (made earlier, or edited by hand) is put back to it, and
+  counted as <code>profile_written</code>.</li>
 <li><strong>A member without a subject gets no account</strong>, and is counted.</li>
 <li><strong>Membership:</strong> the community's organization (alias = community key) and its <code>viewers</code>
   group, and the realm group <code>/member-mirrors</code>, which carries the source issuer as attribute
@@ -4408,8 +4425,13 @@ source realm, or the same JSON from <code>--from-file</code>) and converges the 
   <code>CELINE_MEMBER_MIRROR_IMPERSONATORS</code> (space-separated), a user policy
   <code>celine-member-mirror:impersonators</code> names exactly those accounts and a <code>Groups</code> permission
   <code>celine-member-mirror:impersonate</code> on <code>/member-mirrors</code> grants them <code>impersonate-members</code>,
-  <code>view</code> and <code>view-members</code>, nothing else. A name with no account is counted; a mirror is
-  never an impersonator. No list: the permission is left as it is.</li>
+  <code>view</code> and <code>view-members</code>, nothing else. Each named account also needs the realm-management
+  roles <code>query-users</code> and <code>query-groups</code> (the admin console refuses an account with no
+  realm-management role; searches run filtered by the permission above). The command <strong>checks
+  them and never grants them</strong>: an account missing either is counted as
+  <code>impersonators_without_console_roles</code>, and a master admin assigns them once. A name with no
+  account is counted; a mirror is never an impersonator. No list: the permission is left as it
+  is.</li>
 <li><strong>Refusals, before the source is read or Keycloak is asked anything:</strong> <code>ENV</code> (or
   <code>CELINE_KEYCLOAK_ENV</code>, <code>CELINE_ENV</code>) <code>prod</code> or <code>production</code>, or unset; a target Keycloak whose
   host is the source issuer's; no <code>--source-issuer</code>; both or neither source; a registry source
@@ -4417,11 +4439,29 @@ source realm, or the same JSON from <code>--from-file</code>) and converges the 
 <li><strong>Output is counts</strong> (and the community keys without an organization), never a member's key,
   subject or anything else of a member.</li>
 <li><strong>Exit codes:</strong> <code>0</code> converged; <code>1</code> refused or failed; <code>2</code> ran, but a member could not be
-  mirrored (a skip above other than a missing subject, or an impersonator not found or refused).</li>
+  mirrored (a skip above other than a missing subject, or an impersonator not found, refused
+  or without the console roles).</li>
 </ul>
 <p>The source client holds <code>rec-registry.mirror</code> alone, and its token names <code>svc-rec-registry</code>
 and <code>oauth2_proxy</code> (the source's API gateway). The target is written with the target realm's
 admin client.</p>
+<h3 id="req-0022-bootstrap-creates-a-declared-platform-admin-account-once-and-never-rewrites-it">REQ-0022 — <code>bootstrap</code> creates a declared platform-admin account once, and never rewrites it</h3>
+<p>A <code>platform_admin.users</code> entry is a username (REQ-0011: granted once the account exists,
+reported until then) or an <strong>account</strong>, <code>{username, email, first_name, last_name}</code>, in
+<code>platform.yaml</code> or a deployment's overlay. For an account, <code>celine-policies keycloak bootstrap</code>:</p>
+<ul>
+<li><strong>creates it when the realm has no such user</strong>, enabled, with the email marked verified, the
+  declared names, and a <strong>temporary</strong> password the user must change at first sign-in; then
+  grants <code>platform-admin</code> directly. The admin second factor follows from the role (REQ-0015).</li>
+<li>takes the temporary password from the environment, never from a file:
+  <code>CELINE_KEYCLOAK_ADMIN_TEMP_PASSWORD_TEMPLATE</code> with <code>{username}</code> replaced. A template without
+  <code>{username}</code> is refused; unset, the run is refused before any write. The variable is outside
+  the <code>CELINE_KEYCLOAK_PLATFORM_</code> prefix, which holds realm-setting overrides only.</li>
+<li><strong>never rewrites an existing account</strong>: no password is sent, the email is not changed, and a
+  disabled account is not enabled again. A disabled account and an email that differs from the
+  declaration are reported.</li>
+</ul>
+<p>A declaration names no password; an account with a <code>password</code> key is refused.</p>
 
 
 

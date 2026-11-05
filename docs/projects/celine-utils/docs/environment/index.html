@@ -4141,13 +4141,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mqtt-pipeline-run-events" class="md-nav__link">
+  <a href="#pipeline-run-events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MQTT — pipeline run events
+        Pipeline run events
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Pipeline run events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mqtt-deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MQTT (deprecated)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4450,8 +4478,42 @@ misconfigured credentials, and continuing would surface it much later as a confu
 together with the <code>celine-utils admin</code> command tree. Keycloak provisioning lives in
 <code>celine-policies</code>.</p>
 <hr />
-<h2 id="mqtt-pipeline-run-events">MQTT — pipeline run events</h2>
-<p>Published through <code>celine-sdk</code>, and configured with its <code>CELINE_*</code> names:</p>
+<h2 id="pipeline-run-events">Pipeline run events</h2>
+<p><code>flow_hooks</code> reports each flow run as <code>started</code>, <code>completed</code> or <code>failed</code>
+(a <code>celine-sdk</code> <code>PipelineRunEvent</code>). The transport is chosen at run time:</p>
+<ol>
+<li><code>RUN_EVENTS_URLS</code> set → <strong>HTTP</strong>. MQTT is not used, even when enabled.</li>
+<li>Otherwise <code>MQTT_EVENTS_ENABLED</code> → <strong>MQTT</strong> (deprecated).</li>
+<li>Neither → no event.</li>
+</ol>
+<h3 id="http">HTTP</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RUN_EVENTS_URLS</code></td>
+<td>Comma-separated <code>http(s)</code> URLs, one per receiver (a sync_tables relay per environment). An empty item or a non-http(s) URL is refused when the config is built</td>
+</tr>
+<tr>
+<td><code>RUN_EVENTS_TIMEOUT</code></td>
+<td>Seconds per attempt to one URL (default <code>5</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The event is POSTed as JSON, <strong>with no token</strong>: a receiver is reachable only from
+the pipelines' own network, and that is its access control. Every URL is tried
+concurrently and on its own, with one retry after a 5xx or a connection failure
+(a 4xx is not retried), so one receiver that is down or hanging never keeps the
+event from the others. The completion and failure hooks wait at most 12 s for the
+send; nothing in this path ever fails a pipeline.</p>
+<h3 id="mqtt-deprecated">MQTT (deprecated)</h3>
+<p>Published through <code>celine-sdk</code>, and configured with its <code>CELINE_*</code> names. Used
+only when <code>RUN_EVENTS_URLS</code> is not set:</p>
 <table>
 <thead>
 <tr>

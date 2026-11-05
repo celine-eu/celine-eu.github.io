@@ -5025,6 +5025,10 @@ already carries <code>VERIFY_EMAIL</code>, and turning it on would stop every ex
 <li><strong>Platform administrators</strong> are the realm admin plus the usernames a deployment lists in its
   overlay, <code>platform_admin: {users: [...]}</code>. <code>bootstrap</code> grants the role to each one that exists,
   reports one that does not exist yet, and reports (never revokes) a holder nobody declared.
+  An entry may instead be an account, <code>{username, email, first_name, last_name}</code>: <code>bootstrap</code>
+  creates it when missing, with a temporary password from
+  <code>CELINE_KEYCLOAK_ADMIN_TEMP_PASSWORD_TEMPLATE</code> (<code>{username}</code> replaced),
+  and never rewrites or re-enables an existing one (REQ-0022).
   It deletes the retired realm groups <code>/admins</code>, <code>/managers</code>, <code>/editors</code>, <code>/viewers</code> and realm
   roles <code>admin</code>, <code>manager</code>, <code>editor</code>, <code>viewer</code> on its first run, without <code>--allow-destructive</code>:
   every reader must already read <code>platform-admin</code> from <code>realm_access.roles</code> (REQ-0011, REQ-0012).</li>

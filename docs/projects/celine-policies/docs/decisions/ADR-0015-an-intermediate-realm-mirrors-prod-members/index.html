@@ -4129,6 +4129,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#amendment-2026-11-02-a-placeholder-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Amendment 2026-11-02 — a placeholder profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#amendment-2026-11-02-the-console-roles-are-checked-not-granted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Amendment 2026-11-02 — the console roles are checked, not granted
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4179,7 +4201,8 @@ an intermediate realm.</strong> It reads prod's registry (<code>GET /admin/expor
 file, and for every member with an account subject converges one account:</p>
 <ul>
 <li>id = the subject, username = the member key, enabled while the member is active;</li>
-<li>no e-mail, name, credential or attribute;</li>
+<li>no personal e-mail or name, no credential or attribute; a placeholder profile instead
+  (amended 2026-11-02, below);</li>
 <li>in the community's organization (alias = community key) and its <code>viewers</code> group, as
   provisioning files a participant;</li>
 <li>in the realm group <code>/member-mirrors</code>, which marks it as a mirror and carries the source
@@ -4196,7 +4219,11 @@ added, never removed.</p>
 <code>CELINE_MEMBER_MIRROR_IMPERSONATORS</code>), the command keeps a user policy naming those accounts
 and a <code>Groups</code> permission on <code>/member-mirrors</code> with <code>impersonate-members</code>, <code>view</code> and
 <code>view-members</code>, and nothing that writes. Their names are <code>celine-member-mirror:*</code>, outside the
-<code>celine-policies:</code> prefix <code>keycloak sync</code> reads and prunes. The list is the deployment's.</p>
+<code>celine-policies:</code> prefix <code>keycloak sync</code> reads and prunes. The list is the deployment's. The
+named accounts also need <code>query-users</code> and <code>query-groups</code> (realm-management): without any
+realm-management role the admin console refuses them (staging, 2026-11-02), and those two
+open it without widening what the permission lets them see. The command checks them and
+does not grant them (amended 2026-11-02, below).</p>
 <p><strong>It writes with the target realm's admin client</strong> (<code>celine-admin-cli</code>, the credential the
 policies shell already holds), not with a client of its own: partial import needs
 <code>manage-realm</code>, organization membership <code>manage-organizations</code> and the user writes
@@ -4244,6 +4271,28 @@ happened, not a substitute for one. On prod nothing changes and the command refu
   of the user can lose it; a group membership is kept and is also what the impersonation grant
   is scoped to.</li>
 </ul>
+<h2 id="amendment-2026-11-02-a-placeholder-profile">Amendment 2026-11-02 — a placeholder profile</h2>
+<p>The realm's user profile requires an e-mail, a first and a last name. On staging, an
+impersonation of a mirror carrying none of them stopped at Keycloak's "Update Account
+Information" form (<code>VERIFY_PROFILE</code>), before the webapp. A mirror now carries placeholders
+made from its own key: first name = the key, last name = <code>mirror</code>, e-mail =
+<code>&lt;key&gt;@mirror.invalid</code> (<code>.invalid</code> is reserved, RFC 2606, and never delivers), verified so
+that no <code>VERIFY_EMAIL</code> follows. A key unfit for an address or a name uses the subject. The
+decision reads "no <strong>personal</strong> e-mail or name": nothing of the person is written, as before.
+Mirrors made earlier get the placeholders on the next run.</p>
+<p>Rejected: relaxing the realm's user profile (or <code>VERIFY_PROFILE</code>) on the intermediate realm.
+It changes the invitation path of the realm's own accounts and moves the intermediate realm
+away from prod's.</p>
+<h2 id="amendment-2026-11-02-the-console-roles-are-checked-not-granted">Amendment 2026-11-02 — the console roles are checked, not granted</h2>
+<p>celine-policies 1.12.0 had <code>mirror-members</code> assign <code>query-users</code> and <code>query-groups</code> to each
+impersonator. On staging Keycloak answered 403 to that grant (<code>POST
+…/users/&lt;id&gt;/role-mappings/clients/&lt;realm-management&gt;</code>) although <code>celine-admin-cli</code> holds
+<code>manage-users</code> and both roles, in its token and on its service account; the job failed
+every run and its registry half stopped. Admin roles for people are not a scheduled job's
+to give anyway. The command now only checks them: an impersonator missing either is
+counted as <code>impersonators_without_console_roles</code> and the run exits 2 (the CronJob's
+registry half still runs). A master admin assigns them once, from the console. Which
+Keycloak check refused the grant was not investigated.</p>
 
 
 
