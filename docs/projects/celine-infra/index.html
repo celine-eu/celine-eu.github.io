@@ -6041,11 +6041,19 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 </tr>
 <tr>
 <td><code>policies_shell.bootstrap.client_secret</code></td>
-<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, through a Secret, to the bootstrap init container and the shell. <strong>Required outside dev</strong>, at least 32 characters (<code>openssl rand -hex 32</code>): the render stops without it. The client holds master's <code>admin</code> role, so treat the secret as the master credential. Rotate it in the console first (master &gt; Clients &gt; <code>svc-celine-policies-bootstrap</code> &gt; Credentials), then here</td>
+<td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, through a Secret, to the bootstrap init container (and the shell, unless <code>policies_shell.master_credentials</code> is false). <strong>Required outside dev</strong>, at least 32 characters (<code>openssl rand -hex 32</code>): the render stops without it. The client holds master's <code>admin</code> role, so treat the secret as the master credential. Rotate it in the console first (master &gt; Clients &gt; <code>svc-celine-policies-bootstrap</code> &gt; Credentials), then here</td>
 </tr>
 <tr>
 <td><code>policies_shell.bootstrap.client_id</code></td>
 <td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_ID</code>. Unset: <code>svc-celine-policies-bootstrap</code></td>
+</tr>
+<tr>
+<td><code>policies_shell.master_credentials</code></td>
+<td><code>true</code> (default) or <code>false</code>; anything else stops the render. <code>false</code>: master's credentials (the bootstrap client's secret, the master administrator's password) reach the bootstrap init container only. Bootstrap records the realm's own admin client, <code>celine-admin-cli</code> (realm-management roles of that realm only), in a memory volume, and the shell's <code>sync</code> signs in as it, so an exec into the shell reaches that realm and nothing else. <code>bootstrap</code> run by hand from the shell then needs master's credentials passed explicitly. <code>task test:policies-shell</code> checks the render</td>
+</tr>
+<tr>
+<td><code>policies_shell.namespace</code>, <code>policies_shell.release_name</code></td>
+<td>where the realm's shell runs and its release (and resource) name. Unset: the environment's namespace, <code>policies-shell</code>. For a Keycloak several environments share: each environment's shell runs in Keycloak's namespace, under its own name, so master's credentials live in that namespace only</td>
 </tr>
 <tr>
 <td><code>keycloak.internal_url</code></td>
