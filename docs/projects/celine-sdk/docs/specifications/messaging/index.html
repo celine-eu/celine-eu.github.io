@@ -4433,6 +4433,13 @@ loop. Timing out is a <code>ConnectionError</code> naming the host and port.</p>
 means unlimited: a service should outlive its broker's restart. The same defaults hold for
 <code>MqttSettings</code> (<code>CELINE_MQTT_RECONNECT_INTERVAL</code>, <code>CELINE_MQTT_MAX_RECONNECT_ATTEMPTS</code>), the
 configuration services build their broker from.</p>
+<p>When the bound is reached before the first successful connect, <code>connect()</code> raises a
+<code>ConnectionError</code> naming the host, the port and the number of attempts, chained to the last
+failure — it does not wait for a connection the loop will no longer attempt. The broker is then
+not ready, its connection loop has stopped and no token watcher was started. The subscription
+registry is kept, so a later <code>connect()</code> starts a new loop and re-applies them (REQ-0071,
+REQ-0072). With the default of <code>0</code>, <code>connect()</code> keeps waiting while the loop retries; a caller
+that needs an answer in bounded time sets a bound or its own timeout.</p>
 <h3 id="req-0079-every-client-has-an-identifier">REQ-0079 — every client has an identifier</h3>
 <p>Configured, or auto-generated as <code>celine-&lt;8 hex&gt;</code>. Two instances of the same service must
 not silently take over each other's session.</p>
