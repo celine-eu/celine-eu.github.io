@@ -4430,7 +4430,9 @@ completes the MQTT handshake hangs the service at startup instead of failing int
 loop. Timing out is a <code>ConnectionError</code> naming the host and port.</p>
 <h3 id="req-0078-connection-attempts-are-retried-bounded-only-when-asked">REQ-0078 — connection attempts are retried, bounded only when asked</h3>
 <p>Failures retry after <code>reconnect_interval</code>. <code>max_reconnect_attempts</code> of <code>0</code> — the default —
-means unlimited: a service should outlive its broker's restart.</p>
+means unlimited: a service should outlive its broker's restart. The same defaults hold for
+<code>MqttSettings</code> (<code>CELINE_MQTT_RECONNECT_INTERVAL</code>, <code>CELINE_MQTT_MAX_RECONNECT_ATTEMPTS</code>), the
+configuration services build their broker from.</p>
 <h3 id="req-0079-every-client-has-an-identifier">REQ-0079 — every client has an identifier</h3>
 <p>Configured, or auto-generated as <code>celine-&lt;8 hex&gt;</code>. Two instances of the same service must
 not silently take over each other's session.</p>

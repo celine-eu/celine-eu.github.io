@@ -4493,12 +4493,12 @@ settings = MqttSettings()
 <tr>
 <td><code>CELINE_MQTT_RECONNECT_INTERVAL</code></td>
 <td><code>float</code></td>
-<td><code>0.0</code></td>
+<td><code>5.0</code></td>
 </tr>
 <tr>
 <td><code>CELINE_MQTT_MAX_RECONNECT_ATTEMPTS</code></td>
 <td><code>int</code></td>
-<td><code>10</code></td>
+<td><code>0</code> (unlimited)</td>
 </tr>
 <tr>
 <td><code>CELINE_MQTT_TOKEN_REFRESH_MARGIN</code></td>
@@ -4508,7 +4508,8 @@ settings = MqttSettings()
 </tbody>
 </table>
 <p><code>MqttSettings</code> configures the deployment; <code>MqttBroker</code> takes an <code>MqttConfig</code> — see
-<a href="../broker/">broker.md</a>, whose defaults differ (<code>localhost</code>, unlimited reconnects).</p>
+<a href="../broker/">broker.md</a>. Only the host differs (<code>localhost</code> there); the reconnect defaults
+are the same, so a service built from the environment outlives a broker restart (REQ-0078).</p>
 <h2 id="policiessettings-celine_policies_">PoliciesSettings — <code>CELINE_POLICIES_*</code></h2>
 <p>Policies are evaluated <strong>in process</strong> from the service's own Rego bundle. There is no policy
 service to point at.</p>
