@@ -4223,6 +4223,10 @@ edited to say something else.</p>
 <td><a href="ADR-0015-an-intermediate-realm-mirrors-prod-members/">ADR-0015</a></td>
 <td>An intermediate (non-prod) realm holds mirrors of prod's members (id = prod's <code>sub</code>, username = member key, nothing personal), written by <code>keycloak mirror-members</code> from prod's registry; it never runs on prod, never touches an account it did not make, disables and never deletes; the team enters a mirror by impersonation (refines ADR-0010 and ADR-0008)</td>
 </tr>
+<tr>
+<td><a href="ADR-0016-a-non-prod-realm-holds-declared-test-accounts/">ADR-0016</a></td>
+<td>A non-prod realm (<code>ENV</code> exactly <code>dev</code>, <code>staging</code> or <code>preprod</code>; unset is refused) holds test accounts declared by the deployment (realm roles, organization groups, a <code>temporary</code> or <code>fixed</code> password mode, never a password), written by <code>keycloak sync-test-accounts</code>; marked by <code>/test-accounts</code>, it never touches an account it did not make, sets exactly the declared authority, disables and never deletes; registry data stays the registry's (refines ADR-0010 and ADR-0008, alongside ADR-0015)</td>
+</tr>
 </tbody>
 </table>
 

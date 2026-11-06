@@ -4578,7 +4578,7 @@ not how often it changes:</p>
 </tr>
 <tr>
 <td><strong>organizations and users</strong>: REC organizations, org groups, participants, memberships</td>
-<td>the provisioning service (<code>POST /reconcile/{community}</code> creates a REC's organization, org roles and groups, even with no members; <code>PUT /participants</code> files a participant, <code>PATCH /participants</code> corrects their names or address), <code>keycloak set-user-organization</code> (a manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>keycloak sync-orgs</code>; <code>keycloak sync-users</code> in local development only — see <a href="docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>; on an intermediate (non-prod) realm, mirrors of prod's members by <code>keycloak mirror-members</code> — see <a href="docs/decisions/ADR-0015-an-intermediate-realm-mirrors-prod-members/">ADR-0015</a></td>
+<td>the provisioning service (<code>POST /reconcile/{community}</code> creates a REC's organization, org roles and groups, even with no members; <code>PUT /participants</code> files a participant, <code>PATCH /participants</code> corrects their names or address), <code>keycloak set-user-organization</code> (a manager's <code>managers</code> or <code>admins</code> group, run by a platform admin), <code>keycloak sync-orgs</code>; <code>keycloak sync-users</code> in local development only — see <a href="docs/decisions/ADR-0010-on-a-deployed-realm-members-arrive-through-onboarding/">ADR-0010</a>; on an intermediate (non-prod) realm, mirrors of prod's members by <code>keycloak mirror-members</code> — see <a href="docs/decisions/ADR-0015-an-intermediate-realm-mirrors-prod-members/">ADR-0015</a>; on a non-prod realm (<code>ENV</code> dev, staging or preprod), declared test accounts by <code>keycloak sync-test-accounts</code> — see <a href="docs/decisions/ADR-0016-a-non-prod-realm-holds-declared-test-accounts/">ADR-0016</a></td>
 <td>the registry, owners and REC YAML</td>
 </tr>
 </tbody>
@@ -4687,6 +4687,7 @@ celine-policies keycloak set-password    # Set a user's password (development re
 celine-policies keycloak seed-dev-users  # Create admin, manager, editor, viewer (development realms only)
 celine-policies keycloak set-user-organization  # Assign user to org + groups
 celine-policies keycloak mirror-members  # Mirror prod's members into an intermediate realm (never prod; ADR-0015)
+celine-policies keycloak sync-test-accounts &lt;file&gt;  # Declared test accounts (ENV dev, staging or preprod only; ADR-0016)
 celine-policies keycloak status          # Show current Keycloak state
 </code></pre>
 <h3 id="env-production-safety"><code>ENV</code> — production safety</h3>

@@ -2887,6 +2887,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#test-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test accounts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keycloak" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4722,6 +4733,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#test-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test accounts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keycloak" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5570,6 +5592,80 @@ organization, an impersonator not found). The output is counts only.</p>
 <pre><code class="language-bash">ENV=staging celine-policies keycloak mirror-members --dry-run \
   --source-url https://api.prod.example.org/rec-registry \
   --source-issuer https://keycloak.prod.example.org/realms/celine
+</code></pre>
+<h3 id="test-accounts">Test accounts</h3>
+<p><code>keycloak sync-test-accounts &lt;file&gt;</code> (REQ-0023,
+<a href="../decisions/ADR-0016-a-non-prod-realm-holds-declared-test-accounts/">ADR-0016</a>) keeps the
+accounts a non-prod environment declares for platform tests and security assessments: each
+holds a chosen level of authority — <code>platform-admin</code>, and one group in each declared
+organization — and stands for no person. It <strong>runs only where <code>ENV</code> (or <code>CELINE_KEYCLOAK_ENV</code>,
+<code>CELINE_ENV</code>, which outrank it) is exactly <code>dev</code>, <code>staging</code> or <code>preprod</code></strong>; prod, a typo, unset
+and empty are refused before the file is read, <code>--dry-run</code> included. A deployed policies shell
+sets <code>CELINE_KEYCLOAK_ENV</code>, so that is the variable to set there. It writes with the target
+realm's admin client (<code>CELINE_KEYCLOAK_ADMIN_CLIENT_ID</code> / <code>_SECRET</code>, as <code>sync</code>).</p>
+<p>The declaration (<code>config/keycloak/test-accounts.example.yaml</code>) names usernames, <code>realm_roles</code>
+(<code>platform-admin</code> only), <code>organizations</code> (alias → <code>admins</code>, <code>managers</code>, <code>editors</code> or
+<code>viewers</code>), <code>password: temporary</code> (default; people set their own at first sign-in) or
+<code>password: fixed</code> (automation), and <code>enabled</code>. Never a password, an e-mail or a name.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Flag</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CELINE_KEYCLOAK_TEST_ACCOUNT_PASSWORD_TEMPLATE</code></td>
+<td>—</td>
+<td>—</td>
+<td>Password of a new account, and of a fixed one on <code>--rotate</code>: the template with <code>{username}</code> replaced. Must contain <code>{username}</code>. Required when the run creates an account or rotates; from the deployment's secrets, distinct from <code>CELINE_KEYCLOAK_ADMIN_TEMP_PASSWORD_TEMPLATE</code></td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>--rotate</code></td>
+<td>off</td>
+<td>Reset every enabled fixed test account's password from the current template (a changed or leaked template). Temporary accounts are never reset</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>--dry-run</code></td>
+<td>off</td>
+<td>Report what would change, write nothing</td>
+</tr>
+</tbody>
+</table>
+<p>What it does to the realm:</p>
+<ul>
+<li>creates a declared account the realm lacks, in <code>/test-accounts</code> (a group carrying
+  <code>celine_test_accounts=sync-test-accounts</code>; a hand-made group of that name is refused), with
+  first name = the username, last name <code>test</code>, e-mail <code>&lt;username&gt;@test.invalid</code> (verified);</li>
+<li>sets each test account's <code>platform-admin</code> role and organization groups to exactly what is
+  declared, removing what is not — so a downgrade test gets its downgrade. A test
+  <code>platform-admin</code> meets the admin second factor (REQ-0015) whatever its password mode;</li>
+<li>disables a test account the file no longer names, or names <code>enabled: false</code>. <strong><code>users: []</code>
+  disables them all</strong>: that is how an assessment ends. Nothing is deleted;</li>
+<li>never writes an account outside <code>/test-accounts</code> (a person, a mirror) and never creates an
+  organization or a group: either is reported for the account concerned.</li>
+</ul>
+<p>A password is sent when the account is made and with <code>--rotate</code>, never otherwise; a fixed
+account's credential carries the label <code>celine-test-account:fixed</code>. A declared mode that
+differs from the account's (<code>temporary</code> declared, <code>fixed</code> made, or the reverse) is reported,
+not applied: <code>--rotate</code> makes a declared-fixed account fixed; a declared-temporary one keeps
+what it has.</p>
+<p>A test account in <strong>two organizations</strong> tests exactly that case: Keycloak then puts an empty
+<code>organization</code> claim in a token requested without <code>organization:*</code>. Declare one organization
+per account to test a normal member.</p>
+<p>Exit codes: <code>0</code> converged; <code>1</code> refused or failed (nothing written when refused); <code>2</code> ran, but a
+declared account could not be converged (a collision with an account outside the group, a
+missing organization or group, a password the realm's policy refused, a password mode that
+differs from the declaration, a <code>MANAGED</code> membership). The output is usernames and counts,
+never a password.</p>
+<pre><code class="language-bash">ENV=staging celine-policies keycloak sync-test-accounts test-accounts.yaml --dry-run
+ENV=staging CELINE_KEYCLOAK_TEST_ACCOUNT_PASSWORD_TEMPLATE='…{username}…' \
+  celine-policies keycloak sync-test-accounts test-accounts.yaml
 </code></pre>
 <h3 id="keycloak">Keycloak</h3>
 <p>The Keycloak service uses the custom image from <code>keycloak/Dockerfile</code> (KC 26.7.3 + rec theme). Key environment variables:</p>

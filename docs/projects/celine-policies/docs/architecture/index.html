@@ -4532,6 +4532,14 @@ run instead of writing them:</p>
 - <code>set-user-organization</code> — assign a user to organizations and org-level groups; group names
   are plural (<code>admins</code>, <code>managers</code>, <code>editors</code>, <code>viewers</code>) and a group the organization does not
   have is refused, so it runs after the reconcile has created the organization
+- <code>sync-test-accounts &lt;file&gt;</code> — keep the declared test accounts of a non-prod realm
+  (<a href="../decisions/ADR-0016-a-non-prod-realm-holds-declared-test-accounts/">ADR-0016</a>, REQ-0023):
+  accounts in the realm group <code>/test-accounts</code> with a placeholder profile, exactly the declared
+  <code>platform-admin</code> role and organization groups (added and removed), a <code>temporary</code> or <code>fixed</code>
+  password from <code>CELINE_KEYCLOAK_TEST_ACCOUNT_PASSWORD_TEMPLATE</code>. It runs only where <code>ENV</code> is
+  <code>dev</code>, <code>staging</code> or <code>preprod</code> (unset refused), never touches an account outside the group,
+  and disables a test account no longer declared, never deletes it. Example:
+  <code>config/keycloak/test-accounts.example.yaml</code>
 - <code>status</code> — show current scopes, clients, and assignments</p>
 <p>Authentication to Keycloak uses either admin user credentials (<code>--admin-user</code>) or a service account client (<code>celine-admin-cli</code>) whose secret is stored in <code>.client.secrets.yaml</code> after bootstrap. Both <code>bootstrap</code> and <code>sync</code> write that file through one merging writer, so a sync cannot delete the credential a bootstrap put there; it holds one realm at a time, and is mode <code>0600</code>. Outside dev neither command writes it unless given <code>--secrets-file</code> or <code>CELINE_KEYCLOAK_SECRETS_FILE</code> (REQ-0020); a run there that was not asked authenticates with <code>CELINE_KEYCLOAK_ADMIN_CLIENT_SECRET</code> or the bootstrap client instead.</p>
 <h3 id="4-rego-policies">4. Rego Policies</h3>

@@ -3717,6 +3717,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fair-gamification-rec_fair_-since-0230" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fair gamification (rec_fair_*, since 0.23.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4759,6 +4770,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fair-gamification-rec_fair_-since-0230" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fair gamification (rec_fair_*, since 0.23.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5024,6 +5046,97 @@ daily_points             = daily_settlement_points + daily_bonus_points
 <p>Per-device daily CO2 avoided from all self-consumed renewable energy (not limited to flexibility windows). <code>co2_avoided_kg = consumption_kwh × kg_co2_per_kwh</code>. Country factor from <code>co2_factors</code> seed via <code>co2_country</code> var.</p>
 <h4 id="rec_co2_savings_community"><code>rec_co2_savings_community</code></h4>
 <p>Community-level daily CO2 avoided scoped to intervals inside flexibility windows only (<code>window_start IS NOT NULL</code>), attributing impact to the flexibility programme specifically. Includes <code>participating_devices</code> count.</p>
+<h2 id="fair-gamification-rec_fair_-since-0230">Fair gamification (<code>rec_fair_*</code>, since 0.23.0)</h2>
+<p>Shadow computation of the fair points described in the demo3 spec
+<code>docs/superpowers/specs/2026-10-07-gamification-equa-concept.md</code> (design approved 2026-10-09).
+It runs inside the same flow (<code>dbt run --select gold</code> picks up the <code>fair</code> tag) and does not
+touch the settlement points; the webapp switches between the two with its own variant flag.</p>
+<p>Inputs: the M1 channel of <code>ds_dev_silver.meters_data</code> for EVERY community POD (source
+<code>metering_silver</code>), <code>rec_device_membership</code> (category from <code>member_type</code>, substation), the
+durable <code>rec_commitment_settlement</code>, <code>rec_flexibility_windows_community</code>, and the seed
+<code>rec_device_overrides</code> (written at flow start from <code>REC_FAIR_OVERRIDES_CSV</code>, never in git).</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Grain</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rec_fair_device_registry</code> (view)</td>
+<td>device</td>
+<td>category (household / public_entity / business / unknown), meter kind, overrides</td>
+</tr>
+<tr>
+<td><code>rec_fair_meters_15m</code> (view)</td>
+<td>device × quarter</td>
+<td>M1 import/export with Europe/Rome features (night 21–06, midday 11–15)</td>
+</tr>
+<tr>
+<td><code>rec_fair_daily</code></td>
+<td>device × day</td>
+<td>quarters, valid day (≥ 87), night/midday import</td>
+</tr>
+<tr>
+<td><code>rec_fair_community_days</code></td>
+<td>community × day</td>
+<td>community export, causal cloudy flag (p30 of the 28 days ending on the week's Sunday)</td>
+</tr>
+<tr>
+<td><code>rec_fair_device_class</code></td>
+<td>device × week</td>
+<td>PV class from data (export p75 &gt; 0.5 kWh/day, hidden-PV midday dip) or override; quarantine; silence; rankable</td>
+</tr>
+<tr>
+<td><code>rec_fair_import_baseline</code></td>
+<td>device × week × slot × weekday</td>
+<td>median import over the 28 days before the week</td>
+</tr>
+<tr>
+<td><code>rec_fair_surplus_hours</code></td>
+<td>scope × hour</td>
+<td>true surplus per substation (≥ 6 PODs) or community</td>
+</tr>
+<tr>
+<td><code>rec_fair_commitment_outcomes</code></td>
+<td>commitment</td>
+<td>overlap-matched window, kept (import ≥ 110% of baseline), fixed points, surplus hours</td>
+</tr>
+<tr>
+<td><code>rec_fair_weekly_metrics</code></td>
+<td>device × week</td>
+<td>night share / kWh per night hour, Level metric with carry-forward, Growth windows, reference group (households and public entities only)</td>
+</tr>
+<tr>
+<td><code>rec_fair_weekly_scores</code></td>
+<td>device × week</td>
+<td>Level / Growth percentiles and points, Actions (capped), weekly points, reason codes, waste flag</td>
+</tr>
+<tr>
+<td><code>rec_fair_season_boards</code></td>
+<td>device × season</td>
+<td>Virtuosi / In crescita / Generale standings per category (Generale: mean ½L+½G, or L alone when night is already ~0, plus mean weekly Actions), rank reasons, season points</td>
+</tr>
+<tr>
+<td><code>rec_fair_anti_gaming_flags</code></td>
+<td>device × week × flag</td>
+<td><code>F1_IMPORT_RISE</code></td>
+</tr>
+</tbody>
+</table>
+<p>Parameters: <code>flexibility_config.yaml</code> block <code>fair</code> ↔ dbt vars <code>fair_*</code> (kept equal by
+<code>tests/test_config.py</code>). <code>fair_as_of</code> ("" = today) pins the weekly models in unit tests.
+A first build or <code>--full-refresh</code> computes every completed week since <code>fair_history_start</code>;
+an incremental run recomputes the trailing <code>fair_recompute_weeks</code> weeks, reading the whole
+stored history for growth windows, 8-week medians and carry-forward. <code>rec_fair_season_boards</code>
+is accumulate-only (<code>full_refresh=false</code>): past seasons stay frozen; drop the table by hand if
+it must be recreated. Commitment outcomes are produced only for completed weeks, so a
+commitment is judged once, with its week's baseline, and never revised after settlement.</p>
+<p>Local check: <code>dbt build --select tag:fair</code> then <code>dbt test --select tag:fair,test_type:unit</code>
+(needs <code>dbt seed --select rec_device_overrides</code> once). The Python twins of the formulas are
+in <code>lib/fair_scoring.py</code>; the reference backtest lives in demo3 <code>src/analysis/fair_gamification/</code>.</p>
 <h2 id="tests">Tests</h2>
 <h3 id="schema-tests-dbt-test-select-tagrec_flexibility">Schema tests (<code>dbt test --select tag:rec_flexibility</code>)</h3>
 <p><code>unique</code> and <code>not_null</code> on all surrogate keys and key dimension columns across all gold models. Defined in <code>models/gold/schema.yml</code>.</p>
