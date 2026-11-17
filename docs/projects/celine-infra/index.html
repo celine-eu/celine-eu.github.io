@@ -6394,7 +6394,7 @@ onboarding:
 </tr>
 <tr>
 <td><code>dataspace.policies_shell.clients</code></td>
-<td><strong>required</strong> list: each realm client id gets its secret as <code>SVC_&lt;ID&gt;_SECRET</code> in policies-shell (the id upper-cased, <code>-</code> as <code>_</code>: <code>svc-ds-portal</code> gives <code>SVC_DS_PORTAL_SECRET</code>) from <code>client_secrets.&lt;id&gt;</code>, <strong>required</strong>. A name the shell already sets stops the render</td>
+<td><strong>required</strong> list: each realm client id gets its secret as <code>SVC_&lt;ID&gt;_SECRET</code> in policies-shell, in the chart's Secret <code>&lt;release&gt;-env</code> (<code>secretEnv</code>, loaded with envFrom, never a value in the pod spec) (the id upper-cased, <code>-</code> as <code>_</code>: <code>svc-ds-portal</code> gives <code>SVC_DS_PORTAL_SECRET</code>) from <code>client_secrets.&lt;id&gt;</code>, <strong>required</strong>. A name the shell already sets stops the render</td>
 </tr>
 </tbody>
 </table>
