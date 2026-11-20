@@ -4861,7 +4861,7 @@
 <h3 id="grid_heat_risks"><code>grid_heat_risks</code></h3>
 <p>Heat risk per underground cable segment (<code>conductor_type = 'underground_cable'</code>), against <code>grid_heat_status</code> (nearest point within 5 km per segment per date, today + 2 days). Heat risk applies to buried conductors sensitive to soil temperature; overhead lines are excluded.</p>
 <p>Arcs the thermal model does not cover read <code>thermal_tier = 'low'</code> with <code>thermal_modelled = false</code>, so a coverage gap never invents a high-tier risk. This is not the same as the old air-only model, though: under the matrix an ORANGE status now reads NORMAL for tier <code>low</code>/<code>mid</code>, where the pre-matrix air-only model read WARNING. This province-wide reduction in sensitivity for uncovered/low-tier arcs is intended by the tier-based matrix decision, not a regression.</p>
-<p>Materialized as <strong>incremental</strong> (<code>schema: gold</code>) with <code>on_schema_change='append_new_columns'</code>, the same accumulation strategy as <code>grid_wind_risks</code>. The columns added by the two-axis model reach an existing table on the next run with NULLs; a one-off <code>--full-refresh</code> is required to populate them, but note it does <strong>not</strong> recompute history by itself, since <code>date_range</code> defaults to today + 2 days (see "Upgrading to the two-axis heat vector (0.13.0)" below for what a plain <code>--full-refresh</code> actually does and how to recompute history on purpose).</p>
+<p>Materialized as <strong>incremental</strong> (<code>schema: gold</code>) with <code>on_schema_change='append_new_columns'</code>, the same accumulation strategy as <code>grid_wind_risks</code>. The columns added by the two-axis model reach an existing table on the next run with NULLs; a one-off <code>--full-refresh</code> is required to populate them, but note it does <strong>not</strong> recompute history by itself, since the date window defaults to today through today + 2 days (see "Upgrading to the two-axis heat vector (0.13.0)" below for what a plain <code>--full-refresh</code> actually does and how to recompute history on purpose).</p>
 <h3 id="grid_joint_heat_risks"><code>grid_joint_heat_risks</code></h3>
 <p>Heat risk per MT cable joint. A joint is the weak point of a buried run: the same soil, a shorter thermal path and an insulation class of its own, so the physical model tiers it separately from the arcs around it. Same matrix, on <code>joint_tier</code>, same 5 km nearest-point join.</p>
 <p>Only joints the thermal model tiered are assessed (<code>joint_tier is not null</code>): an untiered joint would read <code>low</code> and pretend to be safe. Those joints still appear on the map with <code>thermal_tier = 'unmodelled'</code>, they simply carry no risk row.</p>
@@ -4900,7 +4900,7 @@ A <strong>one-off <code>--full-refresh</code> is required, not optional</strong>
 <code>not_null_grid_heat_risks_escalated_by_thermal</code> and the load-bearing <code>grid_heat_risks_matrix_truth_table</code>
 are red on the historical rows.</p>
 <p><strong><code>--full-refresh</code> alone does not recompute history.</strong> Every model in this pipeline builds its rows from
-a <code>date_range</code> CTE that defaults to today through today + 2 days unless a <code>start_date</code> var is passed. A
+a date window that defaults to today through today + 2 days unless a <code>start_date</code> var is passed. A
 plain <code>dbt run --full-refresh</code> therefore drops the table and rebuilds only those three days: history before
 the refresh is <strong>discarded</strong>, not recomputed. If you need the thermal columns populated for historical
 dates, pass <code>--vars '{"start_date": "&lt;earliest date&gt;"}'</code> on every command below. Two limits on how far back
@@ -4941,7 +4941,11 @@ a <code>start_date</code> override:</p>
 honours the same <code>start_date</code> var; run the heat models without it and the status table still holds only
 today + 2 days, so every backfilled row falls outside the join and silently gets a NULL date and a NULL
 <code>heat_status</code>, which the matrix turns into a NULL <code>risk_level</code>.</p>
-<p>The <code>date_range</code> CTE will expand from <code>start_date</code> through today + 2 days in all four models. The
+<p>The date window will expand from <code>start_date</code> through today + 2 days in every model that reads the
+weather: <code>grid_heat_status</code> through its <code>date_range</code> CTE, and <code>grid_wind_risks</code>, <code>grid_wind_risks_8h</code>,
+<code>grid_heat_risks</code> and <code>grid_joint_heat_risks</code> through the <code>grid_forecast_date_window</code> macro, a plain
+predicate on the weather date. Do not turn that macro back into a join to a <code>generate_series</code> date range:
+the planner misestimates the series and runs the spatial join over the whole weather history first. The
 incremental unique keys prevent duplicates on re-runs. Note that the soil axis reads GREEN wherever
 <code>om_soil_heat_risk</code> has no complete row within 10 days of the backfilled date, and GREEN maps to NORMAL
 for every tier under the matrix, so a backfill that predates the soil history silently produces an
