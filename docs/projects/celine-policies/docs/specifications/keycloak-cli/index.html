@@ -4195,6 +4195,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#req-0024-outside-dev-bootstrap-turns-on-the-realms-user-and-admin-events-with-an-expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-0024 — outside dev, bootstrap turns on the realm's user and admin events, with an expiry
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4524,6 +4535,35 @@ accounts on the declaration in <code>&lt;file&gt;</code>
 </ul>
 <p>The target is written with the target realm's admin client. Registry members are not
 written: mock members are the REC registry's own import.</p>
+<hr />
+<h3 id="req-0024-outside-dev-bootstrap-turns-on-the-realms-user-and-admin-events-with-an-expiry">REQ-0024 — outside dev, <code>bootstrap</code> turns on the realm's user and admin events, with an expiry</h3>
+<p>A team member who impersonates a mirrored member (REQ-0021) acts in that member's name, and
+Keycloak's <code>IMPERSONATE</code> event is the only record of who did; sign-ins and admin changes are
+the platform's access audit. A realm records none of them until told to (requester,
+2026-11-24; <a href="../../decisions/ADR-0017-bootstrap-turns-on-the-realms-events/">ADR-0017</a>).
+<code>CELINE_KEYCLOAK_EVENTS_ENABLED</code> decides; <strong>unset, it is on unless the environment is exactly
+<code>dev</code></strong> (the guard REQ-0015 uses).</p>
+<p>When it is on, on every run, <code>bootstrap</code> converges the events configuration of the realm it
+administers (<code>/admin/realms/{realm}/events/config</code>), never master's:</p>
+<ul>
+<li><strong>user events and admin events recorded</strong> (<code>eventsEnabled</code>, <code>adminEventsEnabled</code>);</li>
+<li><strong>at least the declared user event types</strong> (<code>events.user_event_types</code> in <code>platform.yaml</code>),
+  which must name <code>IMPERSONATE</code>, <code>IMPERSONATE_ERROR</code>, <code>LOGIN</code> and <code>LOGIN_ERROR</code>. A realm that
+  stores no list records Keycloak's default set, which holds them, and is left on it; a stored
+  list missing one gets it added. A type is never removed;</li>
+<li><strong>an expiry for user events</strong> (<code>events.expiration</code>, seconds; one year in the image),
+  overridden by <code>CELINE_KEYCLOAK_PLATFORM_EVENTS_EXPIRATION</code>, whose value <code>null</code> keeps the
+  realm's own;</li>
+<li><strong>admin event details as declared</strong> (<code>events.admin_details</code>, off in the image: the request
+  representation of a change to a user carries personal data). Turning them off where they are
+  on is destructive and needs <code>--allow-destructive</code> outside dev;</li>
+<li><strong>the realm's event listeners unchanged</strong> (<code>jboss-logging</code> stays).</li>
+</ul>
+<p>A realm already so configured is not written to. A write that Keycloak accepts but does not
+apply is an error. When the switch is off, the realm's events are left exactly as they are:
+<code>bootstrap</code> never turns recording off. <code>--check</code> fails while anything above would change. The
+report has one line for the events on every run: the changes, "no change", or why they were
+left alone.</p>
 
 
 

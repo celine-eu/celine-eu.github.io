@@ -4227,6 +4227,10 @@ edited to say something else.</p>
 <td><a href="ADR-0016-a-non-prod-realm-holds-declared-test-accounts/">ADR-0016</a></td>
 <td>A non-prod realm (<code>ENV</code> exactly <code>dev</code>, <code>staging</code> or <code>preprod</code>; unset is refused) holds test accounts declared by the deployment (realm roles, organization groups, a <code>temporary</code> or <code>fixed</code> password mode, never a password), written by <code>keycloak sync-test-accounts</code>; marked by <code>/test-accounts</code>, it never touches an account it did not make, sets exactly the declared authority, disables and never deletes; registry data stays the registry's (refines ADR-0010 and ADR-0008, alongside ADR-0015)</td>
 </tr>
+<tr>
+<td><a href="ADR-0017-bootstrap-turns-on-the-realms-events/">ADR-0017</a></td>
+<td><code>bootstrap</code> turns on the administered realm's user and admin events outside dev (<code>CELINE_KEYCLOAK_EVENTS_ENABLED</code>): at least <code>IMPERSONATE</code>, <code>IMPERSONATE_ERROR</code>, <code>LOGIN</code>, <code>LOGIN_ERROR</code> on top of Keycloak's defaults, a one-year expiry, admin event details off, listeners untouched; off leaves them alone; master is not touched</td>
+</tr>
 </tbody>
 </table>
 

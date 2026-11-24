@@ -5000,6 +5000,11 @@ infra's <code>IGNORE_EXISTING</code> skip a realm that already exists).</p>
 <td>Unset: on, and off when <code>ENV</code> is exactly <code>dev</code>. Below</td>
 </tr>
 <tr>
+<td>the realm's user and admin events: at least <code>IMPERSONATE</code>, <code>IMPERSONATE_ERROR</code>, <code>LOGIN</code>, <code>LOGIN_ERROR</code>, an expiry, admin event details off (REQ-0024)</td>
+<td><code>CELINE_KEYCLOAK_EVENTS_ENABLED</code>; the types, the expiry and the details in <code>platform.yaml</code> (<code>events</code>), the expiry overridden by <code>CELINE_KEYCLOAK_PLATFORM_EVENTS_EXPIRATION</code> (<code>null</code>: the realm's own)</td>
+<td>Unset: on, and left alone when <code>ENV</code> is exactly <code>dev</code>; never turned off. Master's events are not touched. Needs <code>manage-events</code>, which the bootstrap client has and the admin CLI client does not</td>
+</tr>
+<tr>
 <td>the master realm: <code>bootstrap</code>'s own client, brute force, a second factor for master admins (REQ-0016)</td>
 <td><code>CELINE_KEYCLOAK_BOOTSTRAP_CLIENT_SECRET</code>, and the two switches above</td>
 <td>Outside dev the secret is required. Below</td>
@@ -5419,6 +5424,16 @@ no group of either level reaches the policy, so a person's token reaches no topi
 <td><code>CELINE_KEYCLOAK_ADMIN_MFA_REQUIRED</code></td>
 <td>on unless <code>ENV=dev</code></td>
 <td>The admin second factor, platform realm (<code>platform-admin</code>) and master (<code>admin</code>)</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_EVENTS_ENABLED</code></td>
+<td>on unless <code>ENV=dev</code></td>
+<td>User and admin events of the platform realm (REQ-0024); off leaves them as they are. Not master</td>
+</tr>
+<tr>
+<td><code>CELINE_KEYCLOAK_PLATFORM_EVENTS_EXPIRATION</code></td>
+<td><code>31536000</code> (<code>platform.yaml</code>)</td>
+<td>Seconds a user event is kept; <code>null</code> keeps the realm's own</td>
 </tr>
 </tbody>
 </table>

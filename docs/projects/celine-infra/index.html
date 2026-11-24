@@ -6235,7 +6235,7 @@ default. A gateway firewall or WAF in front does not change this.</p>
 </tr>
 <tr>
 <td><code>keycloak.admin_public</code></td>
-<td><code>{enabled, allow_source_ranges}</code>: the admin console on the public host, from an allowlist, outside prod only. Default off. See below</td>
+<td><code>{enabled, allow_source_ranges, realms}</code>: the admin console on the public host, from an allowlist, outside prod only; <code>realms</code> limits it to those realms' consoles. Default off. See below</td>
 </tr>
 </tbody>
 </table>
@@ -6297,18 +6297,55 @@ browser impersonation that must start on the host whose cookies the platform see
 </code></pre>
 <ul>
 <li>a second Ingress, the chart's <code>keycloak-keycloakx-console</code>, serves <code>/admin</code> and
-  <code>/realms/master</code> on <code>keycloak.&lt;domain&gt;</code> with
-  <code>nginx.ingress.kubernetes.io/whitelist-source-range</code>; any other source gets 403. The public
-  realm's Ingress is unchanged;</li>
-<li><code>KC_HOSTNAME_ADMIN</code> and master's Frontend URL become <code>https://keycloak.&lt;domain&gt;</code>, so the
-  port-forward no longer serves the console; <code>task keycloak:forward</code> prints the public URL
-  instead;</li>
-<li>the render stops in prod (environment or <code>celine_env</code>), without a non-empty list of CIDRs,
-  on a range that admits everything (<code>/0</code>), with an ingress class other than <code>nginx</code> (the
-  annotation is ingress-nginx's), and with <code>keycloak.admin_mfa</code> off (or unset in dev);</li>
-<li>the allowlist filters the address the controller sees. Behind a proxy or a NAT that is the
-  proxy's address, not the client's: measure it in the controller's access log first.</li>
+  <code>/realms/master</code> on <code>keycloak.&lt;domain&gt;</code> from the allowlist; any other source gets 403. The
+  public realm's Ingress is unchanged. Under ingress-nginx the allowlist is the Ingress's
+  <code>nginx.ingress.kubernetes.io/whitelist-source-range</code>. Behind Traefik
+  (<code>ingress_controller.annotations: traefik</code>) it is a Traefik <code>Middleware</code>
+  <code>keycloak-admin-allowlist</code> (<code>ipAllowList.sourceRange</code>), bound with
+  <code>traefik.ingress.kubernetes.io/router.middlewares</code>, with the same entrypoint and TLS options
+  as the public Ingress. The Middleware is the release <code>keycloak-admin-allowlist</code>'s
+  (<code>charts/keycloak-admin-allowlist</code>, values from
+  <code>defaults/0020-auth/keycloak-admin-allowlist/values.yaml.gotmpl</code>): the keycloakx chart
+  renders no extra manifests, and an environment that runs a shared Keycloak installs the
+  <code>keycloak</code> release without <code>auth-setup</code>. That release is installed only with
+  <code>keycloak.enabled</code> (default true), <code>keycloak.admin_public.enabled</code> and
+  <code>ingress_controller.annotations: traefik</code>, and <code>keycloak</code> then <code>needs</code> it. An environment
+  applied release by release (a <code>releases</code> list in its deployment repository) lists it before
+  <code>keycloak</code> and applies it first: until the Middleware exists, Traefik does not serve the
+  console's router at all;</li>
+<li>with <code>realms</code> (a list of realm names, never <code>master</code>), the console Ingress serves only, for
+  each realm, its console <code>/admin/&lt;realm&gt;/</code> and its admin REST API <code>/admin/realms/&lt;realm&gt;</code>
+  (Exact) and <code>/admin/realms/&lt;realm&gt;/</code>, plus the shared admin endpoints a realm console calls
+  (one list in <code>defaults/0020-auth/keycloak/values.yaml.gotmpl</code>: <code>/admin/serverinfo</code>, the only
+  one measured on Keycloak 26.8.1). <code>/admin/master/...</code>, <code>/admin/realms/master...</code>, <code>/realms/master</code> and other
+  realms' consoles stay 404. Prefix paths end in <code>/</code> because Traefik reads Prefix as a plain
+  string prefix. The realm's own sign-in is the public Ingress's (<code>keycloak.public_realms</code>):</li>
 </ul>
+<p><code>yaml
+  ingress_controller:
+    class: traefik
+    annotations: traefik
+  keycloak:
+    public_realms: [celine-staging]
+    admin_public:
+      enabled: true
+      allow_source_ranges: [192.168.1.47/32]
+      realms: [celine-staging]</code>
+- <code>KC_HOSTNAME_ADMIN</code> and master's Frontend URL become <code>https://keycloak.&lt;domain&gt;</code>, so the
+  port-forward no longer serves the console; <code>task keycloak:forward</code> prints the public URL
+  instead. This holds with <code>realms</code> too, for now: <code>KC_HOSTNAME_ADMIN</code> is global to the
+  instance, and whether master's console keeps working on the port-forward while it points to
+  the public host is da decidere, once measured. With <code>realms</code>, <code>task keycloak:forward</code> reads
+  the console Ingress and prints the listed realms' consoles (<code>&lt;url&gt;/admin/&lt;realm&gt;/console/</code>),
+  never master's: master is administered by API and CLI only (policies-shell, bootstrap
+  client);
+- the render stops in prod (environment or <code>celine_env</code>), without a non-empty list of CIDRs,
+  on a range that admits everything (<code>/0</code>), with an ingress class other than <code>nginx</code> unless
+  the Ingresses are written for Traefik (another controller ignores both allowlists), on
+  <code>realms</code> naming <code>master</code> or not a non-empty list of names, and with <code>keycloak.admin_mfa</code> off
+  (or unset in dev);
+- the allowlist filters the address the controller sees. Behind a proxy or a NAT that is the
+  proxy's address, not the client's: measure it in the controller's access log first.</p>
 <p><strong>Inside the cluster</strong> nothing administers Keycloak through the public host: the policies-shell
 bootstrap and sync, and provisioning, use <code>keycloak.internal_url</code>. Services keep validating
 tokens against the public realm URL, which the public host still serves.</p>
@@ -6476,6 +6513,7 @@ without the layer.</p>
 <h3 id="platform">Platform</h3>
 <ul>
 <li><code>auth-setup</code> — secrets and configmaps for <code>oauth2-proxy</code> and <code>keycloak</code></li>
+<li><code>keycloak-admin-allowlist</code> — the Traefik allowlist of the Keycloak admin console on the public host (<code>keycloak.admin_public</code> behind Traefik only). See <a href="#keycloak-admin-access">Keycloak admin access</a></li>
 <li><code>mqtt-setup</code> — MQTT access for services</li>
 <li><code>mqtt-ingestor</code> — ingests every MQTT message on the configured topics into a database</li>
 <li><code>marquez</code> — Marquez OpenLineage endpoints and UI</li>
