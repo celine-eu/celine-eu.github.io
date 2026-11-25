@@ -6198,6 +6198,10 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 <td><code>auth_setup.clientSecret</code>, <code>domain</code></td>
 <td><code>OAUTH2_PROXY_CLIENT_SECRET</code>, <code>CELINE_DOMAIN</code>: <code>sync</code> owns the <code>oauth2_proxy</code> client, its secret and its redirect URIs (<code>sso</code>, <code>superset</code>, <code>webapp</code>, <code>assistant</code> on the domain)</td>
 </tr>
+<tr>
+<td><code>oauth2_proxy.provider_ca</code></td>
+<td><code>{configmap, key}</code>: a CA bundle in a ConfigMap of the namespace (e.g. trust-manager's <code>platform-ca-bundle</code>, key <code>ca-certificates.crt</code>) mounted into oauth2-proxy as <code>OAUTH2_PROXY_PROVIDER_CA_FILES</code>, for a provider whose certificate comes from a private CA (a realm on <code>keycloak.internal_ingress</code>). Both keys required; refused with <code>tls_setup.self_signed</code>. Default none</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Who is a platform admin.</strong> Exactly two levels (celine-policies ADR-0012). The realm role
@@ -6240,6 +6244,18 @@ default. A gateway firewall or WAF in front does not change this.</p>
 <tr>
 <td><code>keycloak.admin_public</code></td>
 <td><code>{enabled, allow_source_ranges, realms}</code>: the admin console on the public host, from an allowlist, outside prod only; <code>realms</code> limits it to those realms' consoles. Default off. See below</td>
+</tr>
+<tr>
+<td><code>keycloak.internal_ingress</code></td>
+<td><code>{host, cluster_issuer, realms}</code>: those realms on an internal host (release <code>keycloak-internal-ingress</code>). Default none. See below</td>
+</tr>
+<tr>
+<td><code>keycloak.realm_frontend_url</code></td>
+<td>the policies-shell's own realm's <code>frontendUrl</code> (its issuer), for a realm on another host than <code>KC_HOSTNAME</code>. Default: left alone</td>
+</tr>
+<tr>
+<td><code>keycloak.master_frontend_url</code></td>
+<td>master's Frontend URL, named outright instead of derived (below). Default: derived</td>
 </tr>
 </tbody>
 </table>
@@ -6350,6 +6366,33 @@ browser impersonation that must start on the host whose cookies the platform see
   (or unset in dev);
 - the allowlist filters the address the controller sees. Behind a proxy or a NAT that is the
   proxy's address, not the client's: measure it in the controller's access log first.</p>
+<p><strong>A realm can live on an internal host instead</strong> (<code>keycloak.internal_ingress</code>), so that its
+sign-in never answers from the internet: a host only the LAN and the VPN resolve, with a
+certificate from the platform's own CA.</p>
+<pre><code class="language-yaml">keycloak:
+  public_realms: [celine-staging]            # the realm leaves the public host
+  internal_ingress:
+    host: auth.celine.apps.labs
+    cluster_issuer: platform-ca
+    realms: [celine-warehouse]
+</code></pre>
+<ul>
+<li>the release <code>keycloak-internal-ingress</code> (<code>charts/keycloak-internal-ingress</code>) renders one
+  Ingress <code>keycloak-internal</code> on that host: per realm <code>/realms/&lt;realm&gt;</code> (Exact) and
+  <code>/realms/&lt;realm&gt;/</code> (Prefix), plus <code>/resources/</code>; nothing of <code>/admin</code>, never master. It is
+  installed with the <code>keycloak</code> release and a <code>realms</code> key only; the render stops without
+  <code>host</code> or <code>cluster_issuer</code>, on <code>master</code>, or on <code>realms</code> not a non-empty list of names;</li>
+<li>the realm's issuer follows its own <code>frontendUrl</code>, not <code>KC_HOSTNAME</code>: the environment of that
+  realm sets <code>keycloak.realm_frontend_url</code> to the internal host, and its policies-shell
+  converges it in the same <code>bootstrap</code> step as master's (<code>&lt;realm&gt; frontendUrl: ...</code> in the log
+  and in <code>frontend-url.txt</code>), as the bootstrap client; it never names master. The same
+  environment's <code>keycloak.public_url</code> is the internal host, so its clients (oauth2-proxy's
+  issuer) follow, and <code>oauth2_proxy.provider_ca</code> makes oauth2-proxy trust the platform's CA;</li>
+<li>a shell of a shared instance whose realm moved keeps writing the master Frontend URL the
+  instance's other shells write: <code>keycloak.master_frontend_url</code> names it outright;</li>
+<li>order: the internal Ingress and the realm's <code>frontendUrl</code> first, then its clients, then the
+  realm out of <code>public_realms</code>.</li>
+</ul>
 <p><strong>Inside the cluster</strong> nothing administers Keycloak through the public host: the policies-shell
 bootstrap and sync, and provisioning, use <code>keycloak.internal_url</code>. Services keep validating
 tokens against the public realm URL, which the public host still serves.</p>
