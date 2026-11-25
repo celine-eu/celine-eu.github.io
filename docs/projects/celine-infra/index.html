@@ -6199,6 +6199,10 @@ to a release: the tag is the version of <code>platform.yaml</code>.</p>
 <td><code>OAUTH2_PROXY_CLIENT_SECRET</code>, <code>CELINE_DOMAIN</code>: <code>sync</code> owns the <code>oauth2_proxy</code> client, its secret and its redirect URIs (<code>sso</code>, <code>superset</code>, <code>webapp</code>, <code>assistant</code> on the domain)</td>
 </tr>
 <tr>
+<td><code>auth_setup.cookie_name</code></td>
+<td>the session cookie's name (oauth2-proxy <code>cookie_name</code>; the CSRF cookie becomes <code>&lt;name&gt;_csrf</code>). An environment whose domain sits under another's needs its own: oauth2-proxy sets its cookie on <code>.&lt;domain&gt;</code>, so the outer environment's cookie reaches the inner one's hosts under the same default name and the inner proxy, unable to validate it, signs in again in a loop. Letters, digits, <code>_ . -</code>, no <code>__Host-</code>/<code>__Secure-</code> prefix, or the render stops. Default <code>_oauth2_proxy</code></td>
+</tr>
+<tr>
 <td><code>oauth2_proxy.provider_ca</code></td>
 <td><code>{configmap, key}</code>: a CA bundle in a ConfigMap of the namespace (e.g. trust-manager's <code>platform-ca-bundle</code>, key <code>ca-certificates.crt</code>) mounted into oauth2-proxy as <code>OAUTH2_PROXY_PROVIDER_CA_FILES</code>, for a provider whose certificate comes from a private CA (a realm on <code>keycloak.internal_ingress</code>). Both keys required; refused with <code>tls_setup.self_signed</code>. Default none</td>
 </tr>
