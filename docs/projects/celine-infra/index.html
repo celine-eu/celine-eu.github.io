@@ -5627,6 +5627,10 @@ does not set it renders unchanged.</p>
 <td>further namespaces allowed in (a dataspace calling celine, a metrics scraper), default none</td>
 </tr>
 <tr>
+<td><code>network_policy.allow_pods</code></td>
+<td>single workloads of another namespace, <code>[{namespace, labels}]</code>: only that namespace's pods carrying every one of <code>labels</code> (a shared Keycloak admitting the one service that calls its Service). Both keys required, <code>labels</code> non-empty, or the render stops. Default none</td>
+</tr>
+<tr>
 <td><code>network_policy.pod_security.{enforce,warn,audit}</code></td>
 <td>Pod Security Admission level per mode (<code>privileged</code>, <code>baseline</code>, <code>restricted</code>), set as namespace labels by a presync hook; any other value stops the render</td>
 </tr>
